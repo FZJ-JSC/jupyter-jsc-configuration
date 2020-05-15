@@ -54,11 +54,11 @@ class JupyterLabHandler(Resource):
                 slave_id, containername = results
             else:
                 app.log.error("uuidcode={} - Containerinfo is empty for: user_id: {} , servername={}".format(uuidcode, user_id, servername))
-                return "unknown", 200
+                return "true", 200
             
             if slave_id == 0:
                 app.log.error("uuidcode={} - Could not check if container {} is running".format(uuidcode, containername))
-                return "unknown", 200
+                return "true", 200
             slave_hostname = utils_db.get_slave_hostname(app.log, uuidcode, app.database, slave_id)
             url = app.urls.get('dockerspawner', {}).get('url_jlab_hostname', '<no_url_found>').replace('<hostname>', slave_hostname)
             header = {
@@ -74,10 +74,12 @@ class JupyterLabHandler(Resource):
                     return r.text.strip(), 200
                 else:
                     app.log.error("uuidcode={} - Could not check if container {} is running. DockerSpawner answered with: {} {}".format(uuidcode, containername, r.text, r.status_code))
-                    return "unknown", 200
+                    # answer with true. Better than destroying the container
+                    return "true", 200
         except:
             app.log.exception("JLab.get failed. Bugfix required")
-        return '', 202
+        # return true, so that container will not be killed
+        return "true", 200
 
     def post(self):
         try:
