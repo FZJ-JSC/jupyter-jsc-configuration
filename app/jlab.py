@@ -139,7 +139,7 @@ class JupyterLabHandler(Resource):
                                                     app.database,
                                                     app.urls,
                                                     userfolder,
-                                                    config.get('jlab', '<no_jlab_path_defined>'),
+                                                    config,
                                                     quota_config,
                                                     set_user_quota,
                                                     user_id,

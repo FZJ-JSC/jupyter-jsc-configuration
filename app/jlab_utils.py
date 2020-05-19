@@ -8,11 +8,27 @@ import os
 import shutil
 
 import requests
+
+from app.utils_common import remove_secret
 from contextlib import closing
 from pathlib import Path
 from app import utils_db, utils_file_loads, jlab_utils
 
-def call_slave_start(app_logger, uuidcode, app_database, app_urls, userfolder, jlab_path, quota_config, set_user_quota, user_id, servername, email, environments, image, port, jupyterhub_api_url):
+def call_slave_start(app_logger, uuidcode, app_database, app_urls, userfolder, config, quota_config, set_user_quota, user_id, servername, email, environments, image, port, jupyterhub_api_url):
+    user_running = utils_db.get_user_running(app_logger, uuidcode, app_database, user_id)
+    if user_running >= config.get('user_running_limit', 10):
+        app_logger.info("uuidcode={} - User has already {} JupyterLabs running (Limit: {}). Cancel start.".format(uuidcode, user_running, config.get('user_running_limit', 5)))
+        try:
+            cancel(app_logger,
+                   uuidcode,
+                   config.get('jupyterhub_cancel_url', '<no_jupyterhub_cancel_url_defined>'),
+                   environments.get('JUPYTERHUB_API_TOKEN'),
+                   "Due to heavy load on the HDF-Cloud, the access is currently limited to {} JupyterLabs per user.".format(config.get('user_running_limit', 10)),
+                   email.replace("_at_", "@"),
+                   servername)
+        except:
+            app_logger.exception("uuidcode={} - Could not cancel start.".format(uuidcode))
+        return False
     next_slave_id, next_slave_hostname = utils_db.get_next_slave(app_logger, uuidcode, app_database)
     if next_slave_id == 0:
         app_logger.error("uuidcode={} - Could not find any slaves in database".format(uuidcode))
@@ -54,8 +70,8 @@ def call_slave_start(app_logger, uuidcode, app_database, app_urls, userfolder, j
                                                       set_user_quota,
                                                       user_running == 1)
     
-    app_logger.debug("uuidcode={} - Write {} to {}".format(uuidcode, jlab_output, os.path.join(jlab_path, uuidcode)))
-    with open(os.path.join(jlab_path, uuidcode), 'w') as f:
+    app_logger.debug("uuidcode={} - Write {} to {}".format(uuidcode, jlab_output, os.path.join(config.get('jlab', '<no_jlab_path_defined>'), uuidcode)))
+    with open(os.path.join(config.get('jlab', '<no_jlab_path_defined>'), uuidcode), 'w') as f:
         f.write(jlab_output)
     return True
     
@@ -215,3 +231,30 @@ def get_slave_infos(app_logger, uuidcode, app_database, servername, email):
     return user_id, slave_id, slave_hostname, containername, running_no
 
 
+def cancel(app_logger, uuidcode, app_hub_cancel_url, jhubtoken, errormsg, username, server_name):
+    app_logger.debug("uuidcode={} - Send cancel to JupyterHub".format(uuidcode))
+    hub_header = {"Authorization": "token {}".format(jhubtoken),
+                  "uuidcode": uuidcode,
+                  "Error": errormsg,
+                  "Stopped": "True"}
+    try:
+        app_logger.info("uuidcode={} - Cancel JupyterHub Server".format(uuidcode))
+        url = app_hub_cancel_url
+        if ':' in server_name:
+            server_name = server_name.split(':')[1]
+        url = url + '/' + username
+        if server_name != '':
+            url = url + '/' + server_name
+        with closing(requests.delete(url,
+                                     headers = hub_header,
+                                     verify = False,
+                                     timeout = 1800)) as r:
+            if r.status_code == 202:
+                app_logger.trace("uuidcode={} - Cancel successful: {} {} {}".format(uuidcode, r.text, r.status_code, r.headers))
+                return
+            else:
+                app_logger.warning("uuidcode={} - JupyterHub.cancel sent wrong status_code: {} {} {}".format(uuidcode, r.text, r.status_code, remove_secret(r.headers)))
+    except requests.exceptions.ConnectTimeout:
+        app_logger.exception("uuidcode={} - Timeout (1800) reached. Could not send cancel to JupyterHub".format(uuidcode))
+    except:
+        app_logger.exception("uuidcode={} - Could not send cancel to JupyterHub".format(uuidcode))
