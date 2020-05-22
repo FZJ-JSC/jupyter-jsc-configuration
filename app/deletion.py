@@ -114,4 +114,4 @@ class DeletionHandler(Resource):
         except:
             app.log.exception("JLabs.delete failed. Bugfix required")
             return "", 500
-        return '', 202
+        return '', 204
