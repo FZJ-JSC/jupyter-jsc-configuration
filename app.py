@@ -14,6 +14,7 @@ from flask import Flask
 from flask_restful import Api
 
 from app.jlab import JupyterLabHandler
+from app.deletion import DeletionHandler
 from app.health import HealthHandler
 
 # Who should receive the emails if an error or an exception occures?
@@ -87,6 +88,7 @@ api = Api(application)
 
 # Add endpoints
 api.add_resource(JupyterLabHandler, '/jlab')
+api.add_resource(DeletionHandler, '/deletion')
 api.add_resource(HealthHandler, '/health')
 
 if __name__ == "__main__":

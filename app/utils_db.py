@@ -76,6 +76,25 @@ def insert_container(app_logger, uuidcode, database, userid, slaveid, servername
                              slaveid,
                              uuidcode,
                              servername))
+def get_all_user_container_names(app_logger, uuidcode, database, user_id):
+    with closing(psycopg2.connect(host=database.get('host'),
+                                  port=database.get('port'),
+                                  user=database.get('user'),
+                                  password=database.get('password'),
+                                  database=database.get('database'))) as con: # auto closes
+        with closing(con.cursor()) as cur: # auto closes
+            with con: # auto commit
+                cmd = "SELECT \"name\" FROM \"Containers\" WHERE \"user_id\" = %s"
+                app_logger.trace("uuidcode={} - Execute: {} with {}".format(uuidcode, cmd, user_id))
+                cur.execute(cmd,
+                            (user_id, ))
+                results = cur.fetchall()
+                app_logger.trace("uuidcode={} - Results: {}".format(uuidcode, results))
+    if len(results) > 0:
+        return results
+    else:
+        return []
+
 
 def get_user_running(app_logger, uuidcode, database, user_id):
     with closing(psycopg2.connect(host=database.get('host'),
@@ -180,3 +199,15 @@ def remove_container(app_logger, uuidcode, database, user_id, servername):
                 cur.execute(cmd,
                             (user_id, servername ))
 
+def delete_account(app_logger, uuidcode, database, user_id):
+    with closing(psycopg2.connect(host=database.get('host'),
+                                  port=database.get('port'),
+                                  user=database.get('user'),
+                                  password=database.get('password'),
+                                  database=database.get('database'))) as con: # auto closes
+        with closing(con.cursor()) as cur: # auto closes
+            with con: # auto commit
+                cmd = "DELETE FROM \"User\" WHERE \"id\" = %s"
+                app_logger.trace("uuidcode={} - Execute: {} with {} {}".format(uuidcode, cmd, user_id))
+                cur.execute(cmd,
+                            (user_id, ))
