@@ -12,6 +12,7 @@ import requests
 from app.utils_common import remove_secret
 from contextlib import closing
 from pathlib import Path
+from time import sleep
 from app import utils_db, utils_file_loads, jlab_utils
 
 def call_slave_start(app_logger, uuidcode, app_database, app_urls, userfolder, config, quota_config, set_user_quota, user_id, servername, email, environments, image, port, jupyterhub_api_url):
@@ -19,6 +20,8 @@ def call_slave_start(app_logger, uuidcode, app_database, app_urls, userfolder, c
     if user_running >= config.get('user_running_limit', 10):
         app_logger.info("uuidcode={} - User has already {} JupyterLabs running (Limit: {}). Cancel start.".format(uuidcode, user_running, config.get('user_running_limit', 5)))
         try:
+            # we have to sleep for 2 seconds, otherwise JupyterHub is not ready for this call
+            sleep(2)
             cancel(app_logger,
                    uuidcode,
                    config.get('jupyterhub_cancel_url', '<no_jupyterhub_cancel_url_defined>'),
