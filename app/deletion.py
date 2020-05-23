@@ -147,7 +147,7 @@ class DeletionHandler(Resource):
             for key, value in request.headers.items():
                 if 'Token' in key: # refresh, jhub, access
                     key = key.replace('-', '_')
-                request_headers[key.lower()] = value           
+                request_headers[key.lower()] = value
             
             config = utils_file_loads.get_general_config()
             email = request_headers.get('email', '<no_email_submitted>')
@@ -178,7 +178,7 @@ class DeletionHandler(Resource):
                 for file in files:
                     filepath = os.path.join(root, file)
                     totalsize += os.path.getsize(filepath)
-            sizeof_fmt(totalsize)
+            totalsize = sizeof_fmt(totalsize)
         except:
             app.log.exception("Deletion.get failed. Bugfix required")
             return "", 500
