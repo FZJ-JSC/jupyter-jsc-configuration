@@ -51,6 +51,8 @@ class DeletionHandler(Resource):
             config = utils_file_loads.get_general_config()
             email = request_headers.get('email', '<no_email_submitted>')
             email = email.replace("@", "_at_")
+            basefolder = config.get('basefolder', '<no basefolder defined>')
+            userfolder = os.path.join(basefolder, email)
             
             user_id = utils_db.get_user_id(app.log,
                                            uuidcode,
@@ -85,8 +87,6 @@ class DeletionHandler(Resource):
                             app.log.error("uuidcode={} - DockerSpawner delete failed: {} {}".format(uuidcode, r.text, r.status_code))
                 except:
                     app.log.exception("uuidcode={} - Could not call DockerSpawner {}".format(uuidcode, slave_hostname))
-                basefolder = config.get('basefolder', '<no basefolder defined>')
-                userfolder = os.path.join(basefolder, email)
                 serverfolder = Path(os.path.join(userfolder, '.{}'.format(containername)))
                 utils_db.decrease_slave_running(app.log, uuidcode, app.database, slave_id)
                 utils_db.remove_container(app.log, uuidcode, app.database, user_id, servername)
