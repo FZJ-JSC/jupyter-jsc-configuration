@@ -208,6 +208,6 @@ def delete_account(app_logger, uuidcode, database, user_id):
         with closing(con.cursor()) as cur: # auto closes
             with con: # auto commit
                 cmd = "DELETE FROM \"User\" WHERE \"id\" = %s"
-                app_logger.trace("uuidcode={} - Execute: {} with {} {}".format(uuidcode, cmd, user_id))
+                app_logger.trace("uuidcode={} - Execute: {} with {}".format(uuidcode, cmd, user_id))
                 cur.execute(cmd,
                             (user_id, ))
