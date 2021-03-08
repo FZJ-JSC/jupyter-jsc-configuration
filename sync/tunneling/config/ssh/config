@@ -7,7 +7,7 @@ Host available_hdfcloud
     User userlab
     HostName manager-service-ssh.userlabs.svc.cluster.local
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_hdfcloud
@@ -18,7 +18,7 @@ Host remote_hdfcloud
     User userlab
     HostName manager-service-ssh.userlabs.svc.cluster.local
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_hdfcloud
@@ -29,7 +29,7 @@ Host tunnel_hdfcloud
     User userlab
     HostName manager-service-ssh.userlabs.svc.cluster.local
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_hdfcloud
@@ -41,7 +41,7 @@ HOST reservation_hdfml
     User ljupyter
     HostName hdfml.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_hdfml
@@ -52,7 +52,7 @@ Host available_hdfml01
     User ljupyter
     HostName 134.94.1.48
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_hdfml01
@@ -63,7 +63,7 @@ Host remote_hdfml01
     User ljupyter
     HostName 134.94.1.48
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlMaster auto
@@ -74,7 +74,7 @@ Host tunnel_hdfml01
     User ljupyter
     HostName 134.94.1.48
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_hdfml01
@@ -86,7 +86,7 @@ HOST reservation_jusuf
     User ljupyter
     HostName jusuf.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_jusuf
@@ -97,7 +97,7 @@ Host available_jusuf01
     User ljupyter
     HostName 134.94.0.184
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jusuf01
@@ -108,7 +108,7 @@ Host remote_jusuf01
     User ljupyter
     HostName 134.94.0.184
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jusuf01
@@ -119,7 +119,7 @@ Host tunnel_jusuf01
     User ljupyter
     HostName 134.94.0.184
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jusuf01
@@ -131,7 +131,7 @@ HOST reservation_deep
     User ljupyter
     HostName deep.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_deep
@@ -142,7 +142,7 @@ Host available_deep01
     User ljupyter
     HostName deep.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_deep01
@@ -153,7 +153,7 @@ Host remote_deep01
     User ljupyter
     HostName deep.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_deep01
@@ -164,7 +164,7 @@ Host tunnel_deep01
     User ljupyter
     HostName deep.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_deep01
@@ -176,7 +176,7 @@ HOST reservation_juropa
     User kreuzer1
     HostName juropa3.zam.kfa-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_juropa
@@ -187,7 +187,7 @@ Host available_juropa01
     User kreuzer1
     HostName juropa3.zam.kfa-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juropa01
@@ -198,7 +198,7 @@ Host remote_juropa01
     User kreuzer1
     HostName juropa3.zam.kfa-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juropa01
@@ -209,7 +209,7 @@ Host tunnel_juropa01
     User kreuzer1
     HostName juropa3.zam.kfa-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juropa01
@@ -221,7 +221,7 @@ HOST reservation_vulcan
     User ljupyter
     HostName cl5fr3.hww.hlrs.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_vulcan
@@ -232,7 +232,7 @@ Host available_vulcan01
     User ljupyter
     HostName cl5fr3.hww.hlrs.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_vulcan01
@@ -243,7 +243,7 @@ Host remote_vulcan01
     User ljupyter
     HostName cl5fr3.hww.hlrs.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_vulcan01
@@ -254,7 +254,7 @@ Host tunnel_vulcan01
     User ljupyter
     HostName cl5fr3.hww.hlrs.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_vulcan01
@@ -266,7 +266,7 @@ HOST reservation_supermuc
     User di76bev
     HostName skx.supermuc.lrz.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_muc
@@ -277,7 +277,7 @@ Host available_supermuc01
     User di76bev
     HostName 129.187.1.1
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_muc01
@@ -288,7 +288,7 @@ Host remote_supermuc01
     User di76bev
     HostName 129.187.1.1
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_muc01
@@ -299,7 +299,7 @@ Host tunnel_supermuc01
     User di76bev
     HostName 129.187.1.1
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_muc01
@@ -311,7 +311,7 @@ Host reservation_jureca
     User ljupyter
     HostName jureca.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_jureca
@@ -322,7 +322,7 @@ Host available_jureca01
     User ljupyter
     HostName jureca01.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca01
@@ -333,7 +333,7 @@ Host available_jureca02
     User ljupyter
     HostName jureca02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca02
@@ -344,7 +344,7 @@ Host available_jureca03
     User ljupyter
     HostName jureca03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca03
@@ -355,7 +355,7 @@ Host available_jureca04
     User ljupyter
     HostName jureca04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca04
@@ -366,7 +366,7 @@ Host available_jureca05
     User ljupyter
     HostName jureca05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca05
@@ -377,7 +377,7 @@ Host available_jureca06
     User ljupyter
     HostName jureca06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca06
@@ -388,7 +388,7 @@ Host available_jureca07
     User ljupyter
     HostName jureca07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca07
@@ -399,7 +399,7 @@ Host available_jureca08
     User ljupyter
     HostName jureca08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca08
@@ -410,7 +410,7 @@ Host available_jureca09
     User ljupyter
     HostName jureca09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca09
@@ -421,7 +421,7 @@ Host available_jureca10
     User ljupyter
     HostName jureca10.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca10
@@ -432,7 +432,7 @@ Host available_jureca11
     User ljupyter
     HostName jureca11.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca11
@@ -443,7 +443,7 @@ Host available_jureca12
     User ljupyter
     HostName jureca12.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_jureca12
@@ -454,7 +454,7 @@ Host remote_jureca01
     User ljupyter
     HostName jureca01.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca01
@@ -465,7 +465,7 @@ Host remote_jureca02
     User ljupyter
     HostName jureca02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca02
@@ -476,7 +476,7 @@ Host remote_jureca03
     User ljupyter
     HostName jureca03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca03
@@ -487,7 +487,7 @@ Host remote_jureca04
     User ljupyter
     HostName jureca04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca04
@@ -498,7 +498,7 @@ Host remote_jureca05
     User ljupyter
     HostName jureca05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca05
@@ -509,7 +509,7 @@ Host remote_jureca06
     User ljupyter
     HostName jureca06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca06
@@ -520,7 +520,7 @@ Host remote_jureca07
     User ljupyter
     HostName jureca07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca07
@@ -531,7 +531,7 @@ Host remote_jureca08
     User ljupyter
     HostName jureca08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca08
@@ -542,7 +542,7 @@ Host remote_jureca09
     User ljupyter
     HostName jureca09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca09
@@ -553,7 +553,7 @@ Host remote_jureca10
     User ljupyter
     HostName jureca10.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca10
@@ -564,7 +564,7 @@ Host remote_jureca11
     User ljupyter
     HostName jureca11.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca11
@@ -575,7 +575,7 @@ Host remote_jureca12
     User ljupyter
     HostName jureca12.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_jureca12
@@ -586,7 +586,7 @@ Host tunnel_jureca01
     User ljupyter
     HostName jureca01.fz-juelich.de
     #Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca01
@@ -597,7 +597,7 @@ Host tunnel_jureca02
     User ljupyter
     HostName jureca02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca02
@@ -608,7 +608,7 @@ Host tunnel_jureca03
     User ljupyter
     HostName jureca03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca03
@@ -619,7 +619,7 @@ Host tunnel_jureca04
     User ljupyter
     HostName jureca04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca04
@@ -630,7 +630,7 @@ Host tunnel_jureca05
     User ljupyter
     HostName jureca05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca05
@@ -641,7 +641,7 @@ Host tunnel_jureca06
     User ljupyter
     HostName jureca06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca06
@@ -652,7 +652,7 @@ Host tunnel_jureca07
     User ljupyter
     HostName jureca07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca07
@@ -663,7 +663,7 @@ Host tunnel_jureca08
     User ljupyter
     HostName jureca08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca08
@@ -674,7 +674,7 @@ Host tunnel_jureca09
     User ljupyter
     HostName jureca09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca09
@@ -685,7 +685,7 @@ Host tunnel_jureca10
     User ljupyter
     HostName jureca10.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca10
@@ -696,7 +696,7 @@ Host tunnel_jureca11
     User ljupyter
     HostName jureca11.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca11
@@ -707,7 +707,7 @@ Host tunnel_jureca12
     User ljupyter
     HostName jureca12.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_jureca12
@@ -719,7 +719,7 @@ Host reservation_juron
     User jupyter
     HostName juron.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_juron
@@ -730,7 +730,7 @@ Host available_juron1
     User jupyter
     HostName juron1.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juron1
@@ -741,7 +741,7 @@ Host remote_juron1
     User jupyter
     HostName juron1.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juron1
@@ -752,7 +752,7 @@ Host tunnel_juron1
     User jupyter
     HostName juron1.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juron1
@@ -764,7 +764,7 @@ Host reservation_juwels
     User ljupyter
     HostName juwels.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/reservation
+    IdentityFile /home/tunnel/keys/reservation
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/reservation_juwels
@@ -775,7 +775,7 @@ Host available_juwels00 available_jwlogin00.ib.juwels.fzj.de
     User ljupyter
     HostName juwels00.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels00
@@ -786,7 +786,7 @@ Host available_juwels01 available_jwlogin01.ib.juwels.fzj.de
     User ljupyter
     HostName juwels01.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels01
@@ -797,7 +797,7 @@ Host available_juwels02 available_jwlogin02.ib.juwels.fzj.de
     User ljupyter
     HostName juwels02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels02
@@ -808,7 +808,7 @@ Host available_juwels03 available_jwlogin03.ib.juwels.fzj.de
     User ljupyter
     HostName juwels03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels03
@@ -819,7 +819,7 @@ Host available_juwels04 available_jwlogin04.ib.juwels.fzj.de
     User ljupyter
     HostName juwels04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels04
@@ -830,7 +830,7 @@ Host available_juwels05 available_jwlogin05.ib.juwels.fzj.de
     User ljupyter
     HostName juwels05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels05
@@ -841,7 +841,7 @@ Host available_juwels06 available_jwlogin06.ib.juwels.fzj.de
     User ljupyter
     HostName juwels06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels06
@@ -852,7 +852,7 @@ Host available_juwels07 available_jwlogin07.ib.juwels.fzj.de
     User ljupyter
     HostName juwels07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels07
@@ -863,7 +863,7 @@ Host available_juwels08 available_jwlogin08.ib.juwels.fzj.de
     User ljupyter
     HostName juwels08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels08
@@ -874,7 +874,7 @@ Host available_juwels09 available_jwlogin09.ib.juwels.fzj.de
     User ljupyter
     HostName juwels09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/available
+    IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/available_juwels09
@@ -885,7 +885,7 @@ Host remote_juwels00 remote_jwlogin00.ib.juwels.fzj.de
     User ljupyter
     HostName juwels00.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels00
@@ -896,7 +896,7 @@ Host remote_juwels01 remote_jwlogin01.ib.juwels.fzj.de
     User ljupyter
     HostName juwels01.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels01
@@ -907,7 +907,7 @@ Host remote_juwels02 remote_jwlogin02.ib.juwels.fzj.de
     User ljupyter
     HostName juwels02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels02
@@ -918,7 +918,7 @@ Host remote_juwels03 remote_jwlogin03.ib.juwels.fzj.de
     User ljupyter
     HostName juwels03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels03
@@ -929,7 +929,7 @@ Host remote_juwels04 remote_jwlogin04.ib.juwels.fzj.de
     User ljupyter
     HostName juwels04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels04
@@ -940,7 +940,7 @@ Host remote_juwels05 remote_jwlogin05.ib.juwels.fzj.de
     User ljupyter
     HostName juwels05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels05
@@ -951,7 +951,7 @@ Host remote_juwels06 remote_jwlogin06.ib.juwels.fzj.de
     User ljupyter
     HostName juwels06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels06
@@ -962,7 +962,7 @@ Host remote_juwels07 remote_jwlogin07.ib.juwels.fzj.de
     User ljupyter
     HostName juwels07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels07
@@ -973,7 +973,7 @@ Host remote_juwels08 remote_jwlogin08.ib.juwels.fzj.de
     User ljupyter
     HostName juwels08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels08
@@ -984,7 +984,7 @@ Host remote_juwels09 remote_jwlogin09.ib.juwels.fzj.de
     User ljupyter
     HostName juwels09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/remote
+    IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/remote_juwels09
@@ -995,7 +995,7 @@ Host tunnel_juwels00 tunnel_jwlogin00.ib.juwels.fzj.de
     User ljupyter
     HostName juwels00.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels00
@@ -1006,7 +1006,7 @@ Host tunnel_juwels01 tunnel_jwlogin01.ib.juwels.fzj.de
     User ljupyter
     HostName juwels01.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels01
@@ -1017,7 +1017,7 @@ Host tunnel_juwels02 tunnel_jwlogin02.ib.juwels.fzj.de
     User ljupyter
     HostName juwels02.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels02
@@ -1028,7 +1028,7 @@ Host tunnel_juwels03 tunnel_jwlogin03.ib.juwels.fzj.de
     User ljupyter
     HostName juwels03.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels03
@@ -1039,7 +1039,7 @@ Host tunnel_juwels04 tunnel_jwlogin04.ib.juwels.fzj.de
     User ljupyter
     HostName juwels04.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels04
@@ -1050,7 +1050,7 @@ Host tunnel_juwels05 tunnel_jwlogin05.ib.juwels.fzj.de
     User ljupyter
     HostName juwels05.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels05
@@ -1061,7 +1061,7 @@ Host tunnel_juwels06 tunnel_jwlogin06.ib.juwels.fzj.de
     User ljupyter
     HostName juwels06.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels06
@@ -1072,7 +1072,7 @@ Host tunnel_juwels07 tunnel_jwlogin07.ib.juwels.fzj.de
     User ljupyter
     HostName juwels07.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels07
@@ -1083,7 +1083,7 @@ Host tunnel_juwels08 tunnel_jwlogin08.ib.juwels.fzj.de
     User ljupyter
     HostName juwels08.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels08
@@ -1094,7 +1094,7 @@ Host tunnel_juwels09 tunnel_jwlogin09.ib.juwels.fzj.de
     User ljupyter
     HostName juwels09.fz-juelich.de
     Port 22
-    IdentityFile /mnt/config/ssh/keys/tunnel
+    IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     ControlPath /home/tunnel/ssh_socket/tunnel_juwels09
