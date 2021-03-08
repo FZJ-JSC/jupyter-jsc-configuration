@@ -1,0 +1,9 @@
+# HDFCloud
+no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0JYsXtR7Kx7pBX6LLIIZ2UtoLCaPhGxWbM3jGnhjix
+
+# JURECA
+#restrict,port-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM/mrHMbipNFk92TUcq+Y4R2Xj1cjGEnlFk4WSvsHuS3
+no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM/mrHMbipNFk92TUcq+Y4R2Xj1cjGEnlFk4WSvsHuS3
+
+# JUWELS
+no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDxFLOzaPHCW2cNbupLtJLWt8fDBDR1xmEGjmZC+E4C
