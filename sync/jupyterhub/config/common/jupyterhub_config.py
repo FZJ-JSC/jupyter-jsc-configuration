@@ -99,7 +99,7 @@ c.BackendSpawner.options_form = functions.options_form
 c.JupyterHub.tornado_settings = {'slow_spawn_timeout': 0, 'version_hash': ''}
 
 
-c.JupyterHub.cookie_secret_file = "/mnt/config/bin/jupyterhub_cookie_secret"
+c.JupyterHub.cookie_secret_file = "/mnt/bin/jupyterhub_cookie_secret"
 
 
 c.JupyterHub.authenticator_class = unity.UnityOAuthenticator
