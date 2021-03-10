@@ -1,0 +1,46 @@
+{
+	"reservation_systems": ["JURECA", "JUWELS"],
+        "refresh_required": [
+        	"Could not submit job: eu.unicore.security.AuthorisationException: There are no accessible targetsystem factories for: Name: CN=ANONYMOUS,O=UNKNOWN,OU=UNKNOWN"
+        ],
+	"error_mapping": {
+		"Staging in failed": "Could not upload necessary files to system."
+	},
+	"Registry": {
+		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/FZJ/rest/registries/default_registry",
+		"site_mapping": {
+			"JURECA": "FZJ_JURECA"
+		}
+	},
+	"JURECA": {
+		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JURECA/rest/core",
+		"strict_session_ids": true,
+		"LoginNode": ["jureca??.fz-juelich.de"],
+		"fuser": "ljupyter",
+		"host": "jureca.fz-juelich.de",
+		"project_kernel": [],
+		"project_symlink": [],
+                "nodes": ["jureca04"],
+                "node_mapping": {
+                        "jureca04": "jrlogin04i",
+                        "jureca09": "jrlogin09i"
+                },
+                "remote_port": 25490,
+		"vos": ["admins", "my_vo"]
+	},
+	"JUWELS": {
+		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
+		"strict_session_ids": true,
+		"LoginNode": ["juwels09.fz-juelich.de"],
+		"LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
+		"fuser": "ljupyter",
+		"host": "juwels.fz-juelich.de",
+		"project_kernel": ["training2020"],
+		"project_symlink": ["training2020"],
+		"nodes": ["juwels09"],
+		"node_mapping": {
+			"juwels09": "jwlogin09.ib.juwels.fzj.de"
+		},
+                "no_remote_port": 25490
+	}
+}
