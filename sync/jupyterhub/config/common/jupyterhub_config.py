@@ -5,6 +5,7 @@ import sys
 path = os.environ.get("JUPYTER_JSC_PATH")
 sys.path.insert(1, path)
 print(sys.path)
+# test
 
 c = get_config()
 c.JupyterHub.log_level = logging.DEBUG
