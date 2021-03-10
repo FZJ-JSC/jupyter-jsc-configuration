@@ -1,0 +1,29 @@
+{
+    "refresh_call_at": 0,
+    "values": {
+        "default":{
+            "authenticators": ["ldap"],
+            "usernames": [],
+            "admin": false,
+	    "weight": 1
+        },
+        "HIFIS":{
+            "authenticators": ["hdfaai"],
+            "usernames": [],
+            "admin": false,
+	    "weight": 3
+        },
+        "admins":{
+            "authenticators": [],
+            "usernames": [],
+            "admin": true,
+	    "weight": 2
+        },
+        "my_vo":{
+            "authenticators": [],
+            "usernames": ["t.kreuzer@fz-juelich.de"],
+            "admin": false,
+	    "weight": 4
+        }
+    }
+}

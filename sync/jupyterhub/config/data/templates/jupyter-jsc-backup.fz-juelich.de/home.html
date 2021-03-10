@@ -1,0 +1,282 @@
+{% extends "jupyter-jsc-backup.fz-juelich.de/page.html" %}
+{% if announcement_home %}
+  {% set announcement = announcement_home %}
+{% endif %}
+
+{% block stylesheet -%}
+  <link rel="stylesheet" href="{{ static_url("css/pages/home.css", include_version=False) }}" type="text/css"/>
+{% endblock %}
+
+{% block main %}
+
+<script src="{{static_url("js/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script>
+require(["pages/home", "home"]);
+$(document).ready(function() {
+  ready()
+});
+</script>
+
+
+<div class="content" id="JupyterLabs-div">
+  {% if allow_named_servers %}
+    <h2>
+      Configurations 
+    </h2>
+    <p>
+      Please give each of your configurations a name.<br>
+      This way you can run multiple instances at the same time.<br>
+      Supported characters are a-z, 0-9 and '_'.
+    </p>
+    {% set named_spawners = user.all_spawners(include_default=False)|list %}
+    {% set vo_available = auth_state.get("vo_available", []) %}
+    {% set vo_active = auth_state.get("vo_active", '' ) %}
+    {{ auth_state }}
+    <div class="table-div">
+      <div class="table-tabs">
+        <div class="tab active tab_JupyterLab_div" onclick="onClickTableTab('JupyterLab')">
+          <a id="firstdd_JupyterLab">JupyterLab</a>
+        </div>
+        <div class="tab tab_Dashboard_div" onclick="onClickTableTab('Dashboard')">
+          <a id="firstdd_Dashboard">Dashboard</a>
+        </div>
+      </div>
+      <table class="server-table table table-striped">
+        <thead class="thead-sticky">
+          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
+            <td colspan="8" class="no-right-border no-top-border" style="width: 100%">
+              <div  class="table-top-row-parent">
+                <div  class="table-top-row">
+		  <div style="display: flex">
+                    <input id="labname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your JupyterLab" title="Allowed characters: a-z, 0-9 and _"/>
+                    <a id="labbutton" class="new-server-btn button-container btn btn-j4j ">
+                      <div class="resize-text-button button-container-text">
+                        <span>Add new JupyterLab</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="home-server-row tr-header">
+            <th style="width:17%">Name</th>
+            <th style="width:10%">System</th>
+            <th style="width:13%">Account/Image</th>
+            <th style="width:12%">Project</th>
+            <th style="width:11%">Partition</th>
+            <th style="width:11%">Reservation</th>
+            <th style="width:13%">Resources</th>
+            <th style="width:13%">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-scroll">
+          {% for _spawner in named_spawners %}
+          {# {% for spawner in named_spawners %} #}
+          {# {% for spawner in spawners %} #}
+            {% set spawner = _spawner.orm_spawner %}
+            {% set user_options = spawner.user_options %}
+            {% if user_options -%}
+              {% if user_options.get("service_input", "Dashboard") != "Dashboard" -%}
+                <tr class="home-server-row" data-server-name="{{ spawner.name }}">
+                  <td style="width:17%">
+                    <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
+                      {{ spawner.name }}
+                    </a>
+                    <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
+                      {{ spawner.name }}
+                    </a>
+                  </td>
+                  {# system #}
+                  <td style="width:10%">
+                    {{ user_options.get("display", {}).get("system", user_options.get("system_input")) }}
+                  </td>
+                  {# account / image #}
+                  <td style="width:13%">
+                    {{ user_options.get("display", {}).get("account", user_options.get("account_input")) }}
+                  </td>
+                  {# project #}
+                  <td style="width:12%">
+                    {{ user_options.get("project_input", "") }}
+                  </td>
+                  {# partition #}
+                  <td style="width:11%">
+                    {{ user_options.get("partition_input", "") }}
+                  </td>
+                  {# reservation #}
+                  <td style="width:11%">
+                    {% if user_options.get("reservation_input", None) %}
+                      {{ user_options.get("reservation_input") }}
+                    {% endif %}
+                  </td>
+                  {# Resources #}
+                  <td style="width:13%">
+                    {% if user_options.get("resource_nodes_input", None) %}
+                      Nodes: {{ user_options.get("resource_nodes_input") }}<br>
+                    {% endif %}
+                    {% if user_options.get("resource_gpus_input", None) %}
+                      GPUs: {{ user_options.get("resource_gpus_input") }}<br>
+                    {% endif %}
+                    {% if user_options.get("resource_runtime_input", None) %}
+                      Runtime: {{ user_options.get("resource_runtime_input") }}
+                    {% endif %}
+                  </td>
+                  {# action #}
+                  <td style="width:13%">
+                    {% if user_options.get("system_input") in maintenance_list -%}
+                      {% set na = 1 -%}
+		    {% elif user_options.get("system_input") == "hdfcloud" and vo_active not in hdfcloud.get(user_options.get("display", {}).get("account", ""), {}).get("vos", []) -%}
+                      {% set na = 1 -%}
+		    {% elif user_options.get("system_input") in ["JUWELS", "JURECA", "HDFML", "JUSUF", "DEEP"] and "vos" in unicore_config.get(user_options.get("system_input"), {}).keys() and vo_active not in unicore_config.get(user_options.get("system_input", {})).get("vos", []) -%}
+		      {% set na = 1 -%}
+                    {% else -%}
+                      {% set na = 0 -%}
+                    {% endif -%}
+                    {% if _spawner.ready -%}
+                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                    {% else -%}
+                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                    {% endif -%}
+                    <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %}" {% if na == 1 %}disabled{% endif %} id="start-{{ spawner.name }}"
+                      href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}" onClick="enableRow(true);" onauxclick="enableRow(true);">{% if na == 1 %}n/a{% else %}Start{% endif %}</a>
+
+                    <a role="button" class="delete-server btn btn-xs btn-danger{% if _spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
+                    <a role="button" class="stop-server btn btn-xs btn-danger{% if not _spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
+                  </td>
+                </tr>
+              {% endif -%}
+            {% endif -%}
+          {% endfor -%}
+        </tbody>
+      </table>
+    </div>
+  {% endif -%}
+</div>
+
+<div class="content" id="Dashboards-div">
+  {% if allow_named_servers %}
+    <h2>
+    Configurations
+    </h2>
+    <p>
+    Please give each of your configurations a name.<br>
+    This way you can run multiple instances at the same time.<br>
+    Supported characters are a-z, 0-9 and '_'.
+    </p>
+    {% set named_spawners = user.all_spawners(include_default=False)|list %}
+    <div class="table-div">
+      <div class="table-tabs">
+        <div class="tab active tab_JupyterLab_div" onclick="onClickTableTab('JupyterLab')">
+          <a id="firstdd_Dashboard">JupyterLab</a>
+        </div>
+        <div class="tab tab_Dashboard_div" onclick="onClickTableTab('Dashboard')">
+          <a id="firstdd_Dashboard">Dashboard</a>
+        </div>
+      </div>
+      <table class="server-table table table-striped">
+        <thead class="thead-sticky">
+          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
+            <td colspan="8" class="no-right-border no-top-border" style="width: 100%">
+              <div  class="table-top-row-parent">
+              <div  class="table-top-row">
+                <input id="dashboardname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your Dashboard" title="Allowed characters: a-z, 0-9 and _"/>
+                <a id="dashboardbutton" class="new-server-btn-dashboard button-container btn btn-j4j ">
+                  <div class="resize-text-button button-container-text">
+                    <span>Add new Dashboard</span>
+                  </div>
+                </a>
+              </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="home-server-row tr-header">
+            <th style="width:17%">Name</th>
+            <th style="width:15%">Dashboard</th>
+            <th style="width:10%">System</th>
+            <th style="width:11%">Account</th>
+            <th style="width:12%">Project</th>
+            <th style="width:11%">Partition</th>
+            <th style="width:11%">Reservation</th>
+            <th style="width:13%">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="tbody-scroll">
+          {% for spawner in named_spawners -%}
+            {% if spawner.service == "Dashboard" -%}
+              <tr class="home-server-row" data-server-name="{{ spawner.name }}">
+                <td style="width:17%">
+                  <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
+                    {{ spawner.name }}
+                  </a>
+                  <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
+                    {{ spawner.name }}
+                  </a>
+                </td>
+                {# Resources #}
+                <td style="width:15%">
+                  {{  spawner.dashboard }}
+                </td>
+                {# system #}
+                <td style="width:10%">
+                  {{ spawner.system }}
+                </td>
+                {# account / image #}
+                <td style="width:11%">
+                  {% if not spawner.account == "undefined" -%}
+                    {{  spawner.account }}
+                  {% endif -%}
+                </td>
+                {# project #}
+                <td style="width:12%">
+                  {% if not spawner.project == "undefined" -%}
+                    {{  spawner.project }}
+                  {% endif -%}
+                </td>
+                {# partition #}
+                <td style="width:11%">
+                  {% if not spawner.partition == "undefined" -%}
+                    {{  spawner.partition }}
+                  {% endif -%}
+                </td>
+                {# reservation #}
+                <td style="width:11%">
+                  {% if spawner.reservation -%}
+                    {{  spawner.reservation }}
+                  {% endif -%}
+                </td>
+                {# action #}
+                <td style="width:13%">
+                  {% if _spawner.ready %}
+                  <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                  {% else %}
+                  <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                  {% endif %}
+                  <a role="button" class="stop-server btn btn-xs btn-danger{% if not _spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
+                  {% if user.authenticator.spawnable(spawner.system) %}
+                    <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %}" id="start-{{ spawner.name }}"
+                    href="{{ base_url }}spawn/{{ user.name }}/{{ spawner.name }}" onClick="enableRow(true);" onauxclick="enableRow(true);"
+                    >start</a>
+                  {% else %}
+                    <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %} disabled" id="start-{{ spawner.name }}">n/a</a>
+                  {% endif %}
+                    <a role="button" class="delete-server btn btn-xs btn-danger{% if _spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif -%}
+</div> <!-- #Dashboards-div-->
+
+
+{% endblock main %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+require(["pages/home", "home"]);
+</script>
+<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}

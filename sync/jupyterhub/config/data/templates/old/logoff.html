@@ -1,0 +1,350 @@
+{% extends "page.html" %}
+{% if announcement_home %}
+  {% set announcement = announcement_home %}
+{% endif %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ static_url("css/j4j_page_home.min.css", include_version=False) }}" type="text/css"/>
+<link rel="stylesheet" href="{{ static_url("css/spawn_style.css", include_version=False) }}" type="text/css"/>
+{% endblock %}
+
+{% block main %}
+
+<script>
+$(document).ready(function() {
+    $("#logout").attr("disabled", "disabled");
+    $(".resize-text").textfit('bestfit_min');
+    $(".resize-text-min").textfit('bestfit_min');
+    $(".resize-text-min-call").textfit('bestfit');
+    if (window.location.hash === "#dashboard") {
+        onClickDD1("Dashboard");
+    }
+    else if (window.location.hash === "#jupyterlab") {
+        onClickDD1("JupyterLab");
+    }
+    else if (localStorage.getItem('tab') != null) {
+        onClickDD1(localStorage.getItem('tab'));
+    }
+    var user = window.jhdata.user;
+    var user_active = window.jhdata.user_active;
+
+    if ( user_active ) {
+      $.confirm({
+      title: 'Logout',
+      backgroundDismiss: 'Logout',
+      content: 'There are still JupyterLabs running.'+
+      '<div class="checkbox"><label><input type="checkbox" id="enableCheckbox" checked="checked">Stop all running JupyterLabs.</label></div>',
+      buttons: {
+          Logout: function () {
+              var $checkbox = this.$content.find('#enableCheckbox');
+              if ($checkbox.prop('checked')) {
+                window.location.replace("https://zam2054.zam.kfa-juelich.de/hub/logout");
+              }else {
+                window.location.replace("https://zam2054.zam.kfa-juelich.de/hub/logout?stopall=false");
+              }
+          },
+          cancel: function () {
+            window.location.replace("https://zam2054.zam.kfa-juelich.de/hub/home");
+          }
+      }
+      });
+    } else {
+      window.location.replace("https://zam2054.zam.kfa-juelich.de/hub/logout");
+    }
+
+});
+function onClickDD1(value) {
+    if ( value == "JupyterLab" ) {
+      $('#firstdd_JupyterLab-div').addClass('active');
+      $('#firstdd_Dashboard-div').removeClass('active');
+      $('#Dashboards-div').hide();
+      $('#JupyterLabs-div').show();
+      localStorage.setItem("tab", "JupyterLab");
+    }
+    else if ( value == "Dashboard" ) {
+      $('#firstdd_JupyterLab-div').removeClass('active');
+      $('#firstdd_Dashboard-div').addClass('active');
+      $('#JupyterLabs-div').hide();
+      $('#Dashboards-div').show();
+      localStorage.setItem("tab", "Dashboard");
+    }
+}
+
+</script>
+
+<div class="background-wrapper">
+  <div class="content" id="Dashboards-div">
+    {% if allow_named_servers %}
+      <!--<center><h2 style="color:red">jupyter-jsc maintenance: 25-02-2020 - 26-02-2020</h2></center>-->
+      <h2>
+      Configurations
+      </h2>
+      <!-- $INFOMESSAGE -->
+      <!-- $ERRORMSG -->
+      <p>
+      Please give each of your configurations a name.<br>
+      This way you can run multiple instances at the same time.<br>
+      Supported characters are a-z, 0-9 and '_'.
+      </p>
+      {% set named_spawners = user.all_spawners(include_default=False)|list %}
+      <div class="table-div">
+        <div class="table-tabs">
+          <div class="tab active" id="firstdd_JupyterLab-div" onclick="onClickDD1('JupyterLab')">
+            <!--<a onclick="onClickDD1('JupyterLab')" id="firstdd_JupyterLab">JupyterLab</a>-->
+            <a id="firstdd_Dashboard">JupyterLab</a>
+          </div>
+          <div class="tab" id="firstdd_Dashboard-div" onclick="onClickDD1('Dashboard')">
+            <!--<a onclick="onClickDD1('Dashboard')" id="firstdd_Dashboard">Dashboard</a>-->
+            <a id="firstdd_Dashboard">Dashboard</a>
+          </div>
+        </div>
+      <table class="server-table table table-striped">
+      <table class="server-table table table-striped">
+        <tbody>
+          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
+            <td colspan="8">
+              <div  class="table-top-row-parent">
+              <div  class="table-top-row">
+                <input id="dashboardname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your Dashboard" title="Allowed characters: a-z, 0-9 and _"/>
+                <a id="dashboardbutton" class="new-server-btn-dashboard button-container btn btn-j4j ">
+                  <div class="resize-text-button button-container-text">
+                    <span>Add new Dashboard</span>
+                  </div>
+                </a>
+                <div class="btn-group btn_group_j4spawner">
+                  <button type="button" onchange="onChangeDD1()" class="btn btn-primary dropdown-toggle button_j4j" data-toggle="dropdown" aria-expanded="false" id="firstdd" name="firstdd_name" value="Dashboard">Dashboard <span class="caret"></span></button>
+                  <ul class="dropdown-menu" name="uid" id="firstdd_ul">
+                    <li><a href="#" onclick="onClickDD1('JupyterLab')" id="firstdd_JupyterLab">JupyterLab</a></li>
+                    <li><a href="#" onclick="onClickDD1('Dashboard')" id="firstdd_Dashboard">Dashboard</a></li>
+                  </ul>
+                </div>
+                <!--<a id="labbutton" role="button" class="new-server-btn add-server btn btn-j4j btn-primary" style="border-radius: 10px;">
+                  Add New JupyterLab
+                </a>-->
+              </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="home-server-row tr-header">
+            <th style="width:17%">Name</th>
+            <th style="width:15%">Dashboard</th>
+            <th style="width:10%">System</th>
+            <th style="width:11%">Account</th>
+            <th style="width:12%">Project</th>
+            <th style="width:12%">Partition</th>
+            <th style="width:10%">Reservation</th>
+            <th style="width:13%">Actions</th>
+          </tr>
+          {% for spawner in named_spawners %}
+            {% if spawner.service == "Dashboard" %}
+            <tr class="home-server-row" data-server-name="{{ spawner.name }}">
+              <td>
+                <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
+                  {{ spawner.name }}
+                </a>
+                <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
+                  {{ spawner.name }}
+                </a>
+              </td>
+              {# Resources #}
+              <td>
+                {{  spawner.dashboard }}
+              </td>
+              {# system #}
+              <td>
+                {{ spawner.system }}
+              </td>
+              {# account / image #}
+              <td>
+                {% if not spawner.account == "undefined" %}
+                  {{  spawner.account }}
+                {% endif %}
+              </td>
+              {# project #}
+              <td>
+                {% if not spawner.project == "undefined" %}
+                  {{  spawner.project }}
+                {% endif %}
+              </td>
+              {# partition #}
+              <td>
+                {% if not spawner.partition == "undefined" %}
+                  {{  spawner.partition }}
+                {% endif %}
+              </td>
+              {# reservation #}
+              <td>
+                {% if spawner.reservation %}
+                  {{  spawner.reservation }}
+                {% endif %}
+              </td>
+              {# action #}
+              <td>
+                {% if spawner.ready %}
+                <a role="button" class="url-server btn btn-xs btn-url{% if not spawner.active %} hidden{% endif %}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                {% else %}
+                <a role="button" class="url-server btn btn-xs btn-url{% if not spawner.active %} hidden{% endif %}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                {% endif %}
+                <a role="button" class="stop-server btn btn-xs btn-danger{% if not spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
+                {% if user.authenticator.spawnable(user.name, spawner.name) %}
+                  <a role="button" class="start-server btn btn-xs btn-start{% if spawner.active %} hidden{% endif %}" id="start-{{ spawner.name }}"
+                  href="{{ base_url }}prespawn/{{ user.name }}/{{ spawner.name }}" onClick="enableRow(true);" onauxclick="enableRow(true);"
+                  >start</a>
+                {% else %}
+                  <a role="button" class="start-server btn btn-xs btn-start{% if spawner.active %} hidden{% endif %} disabled" id="start-{{ spawner.name }}">n/a</a>
+                {% endif %}
+                  <a role="button" class="delete-server btn btn-xs btn-danger{% if spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
+              </td>
+            </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    {% endif %}
+  </div>
+  <div class="content" id="JupyterLabs-div">
+    {% if allow_named_servers %}
+      <!--<center><h2 style="color:red">jupyter-jsc maintenance: 25-02-2020 - 26-02-2020</h2></center>-->
+      <h2>
+      Configurations 
+      </h2>
+      <!-- $INFOMESSAGE -->
+      <!-- $ERRORMSG -->
+      <p>
+      Please give each of your configurations a name.<br>
+      This way you can run multiple instances at the same time.<br>
+      Supported characters are a-z, 0-9 and '_'.
+      </p>
+      {% set named_spawners = user.all_spawners(include_default=False)|list %}
+      <div class="table-div">
+        <div class="table-tabs">
+          <div class="tab active" id="firstdd_JupyterLab-div" onclick="onClickDD1('JupyterLab')">
+            <a id="firstdd_JupyterLab">JupyterLab</a>
+            <!--<a onclick="onClickDD1('JupyterLab')" id="firstdd_JupyterLab">JupyterLab</a>-->
+          </div>
+          <div class="tab" id="firstdd_Dashboard-div" onclick="onClickDD1('Dashboard')">
+            <a id="firstdd_Dashboard">Dashboard</a>
+            <!--<a onclick="onClickDD1('Dashboard')" id="firstdd_Dashboard">Dashboard</a>-->
+          </div>
+        </div>
+      <table class="server-table table table-striped">
+        <tbody>
+          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
+            <td colspan="8">
+              <div  class="table-top-row-parent">
+              <div  class="table-top-row">
+                <input id="labname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your JupyterLab" title="Allowed characters: a-z, 0-9 and _"/>
+                <a id="labbutton" class="new-server-btn button-container btn btn-j4j ">
+                  <div class="resize-text-button button-container-text">
+                    <span>Add new JupyterLab</span>
+                  </div>
+                </a>
+                <div class="btn-group btn_group_j4spawner">
+                  <button type="button" onchange="onChangeDD1()" class="btn btn-primary dropdown-toggle button_j4j" data-toggle="dropdown" aria-expanded="false" id="firstdd" name="firstdd_name" value="JupyterLab">JupyterLab <span class="caret"></span></button>
+                  <ul class="dropdown-menu" name="uid" id="firstdd_ul">
+                    <li><a href="#" onclick="onClickDD1('JupyterLab')" id="firstdd_JupyterLab">JupyterLab</a></li>
+                    <li><a href="#" onclick="onClickDD1('Dashboard')" id="firstdd_Dashboard">Dashboard</a></li>
+                  </ul>
+                </div>
+                <!--<a id="labbutton" role="button" class="new-server-btn add-server btn btn-j4j btn-primary" style="border-radius: 10px;">
+                  Add New JupyterLab
+                </a>-->
+              </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="home-server-row tr-header">
+            <th style="width:17%">Name</th>
+            <th style="width:10%">System</th>
+            <th style="width:13%">Account/Image</th>
+            <th style="width:12%">Project</th>
+            <th style="width:12%">Partition</th>
+            <th style="width:10%">Reservation</th>
+            <th style="width:13%">Resources</th>
+            <th style="width:13%">Actions</th>
+          </tr>
+          {% for spawner in named_spawners %}
+            {% if spawner.service != "Dashboard" and spawner.system != "" %}
+            <tr class="home-server-row" data-server-name="{{ spawner.name }}">
+              <td>
+                <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
+                  {{ spawner.name }}
+                </a>
+                <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
+                  {{ spawner.name }}
+                </a>
+              </td>
+              {# system #}
+              <td>
+                {{ spawner.system }}
+              </td>
+              {# account / image #}
+              <td>
+                {% if not spawner.account == "undefined" %}
+                  {{ spawner.account }}
+                {% endif %}
+              </td>
+              {# project #}
+              <td>
+                {% if not spawner.project == "undefined" %}
+                  {{ spawner.project }}
+                {% endif %}
+              </td>
+              {# partition #}
+              <td>
+                {% if not spawner.partition == "undefined" %}
+                  {{ spawner.partition }}
+                {% endif %}
+              </td>
+              {# reservation #}
+              <td>
+                {% if spawner.reservation %}
+                  {{ spawner.reservation }}
+                {% endif %}
+              </td>
+              {# Resources #}
+              <td>
+                {{  spawner.resources }}
+              </td>
+              {# action #}
+              <td>
+                {% if spawner.ready %}
+                <a role="button" class="url-server btn btn-xs btn-url{% if not spawner.active %} hidden{% endif %}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                {% else %}
+                <a role="button" class="url-server btn btn-xs btn-url{% if not spawner.active %} hidden{% endif %}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                {% endif %}
+                <a role="button" class="stop-server btn btn-xs btn-danger{% if not spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
+                {% if user.authenticator.spawnable(user.name, spawner.name) %}
+                  <a role="button" class="start-server btn btn-xs btn-start{% if spawner.active %} hidden{% endif %}" id="start-{{ spawner.name }}"
+                  href="{{ base_url }}prespawn/{{ user.name }}/{{ spawner.name }}" onClick="enableRow(true);" onauxclick="enableRow(true);"
+                  >start</a>
+                {% else %}
+                  <a role="button" class="start-server btn btn-xs btn-start{% if spawner.active %} hidden{% endif %} disabled" id="start-{{ spawner.name }}">n/a</a>
+                {% endif %}
+                  <a role="button" class="delete-server btn btn-xs btn-danger{% if spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
+              </td>
+            </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+require(["home"]);
+var input = document.getElementById("labname");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("labbutton").click();
+  }
+});
+</script>
+{% endblock %}

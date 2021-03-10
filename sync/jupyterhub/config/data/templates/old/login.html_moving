@@ -1,0 +1,183 @@
+{% extends "page.html" %}
+{% if announcement_login %}
+  {% set announcement = announcement_login %}
+{% endif %}
+
+{% block login_widget %}
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ static_url("css/j4j_page_login.min.css", include_version=False) }}" type="text/css"/>
+{% endblock %}
+
+{% block main %}
+
+<div class="background-wrapper">
+  <div class="content-box">
+    <div class="prev-div">
+      <button class="prev" title="previous page" onclick="plusDivs(-1)"></button>
+    </div>
+    <div class="content-box-sub">
+      <h3 class="" id="header-zero">
+        <a target="_blank" href="https://jupyter-jsc.fz-juelich.de" title="Jupyter-jsc">
+          <div class="small-line"><small><ul type="square"><li>Jupyter-JSC</li></ul></small></div>
+          <span style="color:red">Jupyter-JSC migrating</span>
+        </a>
+      </h3>
+      <p class="" id="text-zero" style="color:darkorange">We're moving Jupyter-JSC to another host. This should be done within the next minutes. Please visit this site again in a few minutes.</p>
+    </div>
+    <div class="content-box-sub">
+      <h3 class="" id="header-one">
+        <a target="_blank" href="https://jupyter.org" title="JupyterLab">
+          <div class="small-line"><small><ul type="square"><li>Jupyter</li></ul></small></div>
+          Supercomputing in Your Browser
+        </a>
+      </h3>
+      <p class="" id="text-one" >We are pleased to bring "Supercomputing in your browser". Jupyter-JSC is designed to provide the rich high performance computing (HPC) ecosystem to the world's most popular software: web browsers. JupyterLab is a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible to support a wide range of workflows in data science, scientific computing, and machine learning.
+<a target="_blank" href="https://jupyter.org">Read more.</a>
+</p>
+    </div>
+    <div class="content-box-sub">
+      <h3 class="" id="header-two">
+        <a target="_blank" href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html" title="Jupyter Notebooks">
+          <div class="small-line"><small><ul type="square"><li>Jupyter Notebooks</li></ul></small></div>
+          Share your Workflows
+        </a>
+      </h3>
+      <p id="text-two" >We are pleased to bring "Supercomputing in your browser". Jupyter-JSC allows you to create and share documents that contain live code, equations, visualizations and explanatory text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, machine learning and much more.
+<a target="_blank" href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">Read more.</a></p>
+    </div>
+    <div class="content-box-sub">
+      <h3 class="" id="header-three">
+        <a target="_blank" href="https://jupyterlab.readthedocs.io" title="JupyterLab">
+          <div class="small-line"><small><ul type="square"><li>JupyterLab</li></ul></small></div>
+          Next-Generation Notebook Interface
+        </a>
+      </h3>
+      <p id="text-three">We are pleased to bring "Supercomputing in your browser". Jupyter-JSC gives access to JupyterLab, a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible: configure and arrange the user interface to support a wide range of workflows in data science, scientific computing, and machine learning. JupyterLab is extensible and modular: write plugins that add new components and integrate with existing ones.
+<a target="_blank" href="https://jupyterlab.readthedocs.io">Read more.</a></p>
+    </div>
+    <div class="content-box-sub">
+      <h3 class="" id="header-four">
+        <a target="_blank" href="https://jupyterhub.readthedocs.io" title="JupyterHub">
+          <div class="small-line"><small><ul type="square"><li>JupyterHub</li></ul></small></div>
+          Serving Jupyter Notebooks for Multiple Users
+        </a>
+      </h3>
+      <p id="text-four">We are pleased to bring "Supercomputing in Your browser". Jupyter-JSC is a JupyterHub to serve Jupyter notebooks for multiple users. It can be used in classes of students, a corporate data science group or scientific research group. It is a multi-user hub that spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server.
+<a target="_blank" href="https://jupyterhub.readthedocs.io">Read more.</a></p>
+    </div>
+    <div class="circles">
+      <ul>
+        <li>
+          <button class="circle-button" onclick="totalDivs(1)" >
+        </li>
+        <li>
+          <button class="circle-button" onclick="totalDivs(2)" >
+        </li>
+        <li>
+          <button class="circle-button" onclick="totalDivs(3)" >
+        </li>
+        <li>
+          <button class="circle-button" onclick="totalDivs(4)" >
+        </li>
+        <li>
+          <button class="circle-button" onclick="totalDivs(5)" >
+        </li>
+      </ul>
+    </div>
+    <div class="next-div">
+      <button class="next" title="next page" onclick="plusDivs(1)"></button>
+    </div>
+  </div>
+  <div class="login-content">
+    <div class="login-content-top">
+      <h1 class="resize-text">Jupyter-JSC</h1>
+      <h2 class="resize-text">Supercomputing in Your Browser</h2>
+      <div class="login-content-top-p-div">
+        <p class="resize-text-top-buttons" >Jupyter-JSC starts and provides access to your Jupyter Notebook servers running on JSC computer resources. These can be JUWELS, JURECA, JUSUF, HDFML or DEEP's login or compute nodes or even the HDF cloud - depending on the computing resources available to you.<br><br>Please use your JSC account to log in or register if you have not already done so. It's also possible to log in via Helmholtz AAI.</p>
+      </div>
+      <!--<p class="resize-text" >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>-->
+    </div>
+    <div class="login-content-bottom">
+      <div class="no-border-div">
+        <div class="login">
+          <a class="button-container btn btn-j4j btn-lg" href="/hub/jscldap_login">
+            <div class="resize-text-button-login button-container-text">
+              <span>Login</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="white-line">
+      </div>
+      <img src="/static/images/User.svg"/>
+      <div class="white-line">
+      </div>
+      <div class="border-div">
+        <div class="register">
+          <a class="button-container btn btn-j4j btn-lg" href="https://judoor.fz-juelich.de">
+            <div class="resize-text-button button-container-text">
+              <span>Register</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% block login %}
+        
+{% endblock login %}
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+if (window.location.protocol === "http:") {
+  // unhide http warning
+  var warning = document.getElementById('insecure-login-warning');
+  warning.className = warning.className.replace(/\bhidden\b/, '');
+}
+</script>
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+      $(document).ready(function() {
+        $(".resize-text-button").textfit('bestfit_button_start');
+        $(".resize-text-top-buttons").textfit('bestfit_button_start_after');
+        $("#text-three").textfit('bestfit');
+        var fs =  $("#text-three").css("font-size");
+        $("#text-zero").css("font-size", fs);
+        $("#text-one").css("font-size", fs);
+        $("#text-two").css("font-size", fs);
+        $("#text-four").css("font-size", fs);
+        $("#header-four").textfit('bestfit');
+        var fs =  $("#header-four").css("font-size");
+        $("#header-zero").css("font-size", fs);
+        $("#header-one").css("font-size", fs);
+        $("#header-two").css("font-size", fs);
+        $("#header-three").css("font-size", fs);
+        //totalDivs(Math.floor(Math.random() * 4 ) + 1);
+      });
+      $(window).resize(function() {
+        $(".resize-text-button").textfit('bestfit_button_start');
+        $(".resize-text-top-buttons").textfit('bestfit_button_start_after');
+        $("#text-three").textfit('bestfit');
+        var fs =  $("#text-three").css("font-size");
+        $("#text-zero").css("font-size", fs);
+        $("#text-one").css("font-size", fs);
+        $("#text-two").css("font-size", fs);
+        $("#text-four").css("font-size", fs);
+        $("#header-four").textfit('bestfit');
+        var fs =  $("#header-four").css("font-size");
+        $("#header-zero").css("font-size", fs);
+        $("#header-one").css("font-size", fs);
+        $("#header-two").css("font-size", fs);
+        $("#header-three").css("font-size", fs);
+      });
+</script>
+
+{% endblock %}

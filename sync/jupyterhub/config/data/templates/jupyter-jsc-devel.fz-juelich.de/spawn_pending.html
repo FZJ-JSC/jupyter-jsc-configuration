@@ -1,0 +1,114 @@
+{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
+
+
+{% block stylesheet -%}
+  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending_bar.css", include_version=False) }}" type="text/css"/>
+{% endblock -%}
+
+
+
+
+{% block main -%}
+
+  <div class="content">
+    <div class="progress_row">
+      <div class="progress_div">
+        <div class="custom_progress">
+          <span class="custom_progress-left">
+            <span class="custom_progress-bar" id="pbleft"></span>
+          </span>
+          <span class="custom_progress-right">
+            <span class="custom_progress-bar" id="pbright"></span>
+          </span>
+          <div class="custom_progress-value" id="sr-progress"></div>
+        </div>
+        <a id="cancel" role="button" class="btn btn-lg btn-danger" disabled>Cancel</a>
+      </div>
+      <div class="text_div">
+        <p>Your server is starting up.</p>
+        <p>You will be redirected automatically when it's ready for you.</p>
+        <p id="progress-message">Submitting Job to UNICORE.</p>
+        <div id="progress-log">
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock -%}
+
+{% block script -%}
+  {{ super() }}
+  <script type="text/javascript" src="{{ static_url("js/pages/spawn_pending.js", include_version=False) }}"></script>
+
+  <script type="text/javascript">
+    require(["jquery", "home", "jhapi"], function ($) {
+      $("#refresh").click(function () {
+        window.location.reload();
+      });
+
+      // hook up event-stream for progress
+      var evtSource = new EventSource("{{ progress_url }}");
+      var progressMessage = $("#progress-message");
+      // var progressBar = $("#progress-bar");
+      var srProgress = $("#sr-progress");
+      var progressLog = $("#progress-log");
+
+      $( document ).ready(function() {
+        checkStatusEverySecond();
+      });
+
+      function checkStatusEverySecond(){
+        interv = setInterval(checkStatus, {{cancel_progress_refresh_rate}});
+        function checkStatus() {
+          var str = document.getElementById("sr-progress").innerHTML;
+          var i = parseInt(str.substring(0, str.length-1));
+          if ( i >= {{cancel_progress_activation}} ) {
+            $('#cancel').attr("disabled", false);
+            clearInterval(interv);
+          }
+        }
+      }
+
+      evtSource.onmessage = function(e) {
+        var evt = JSON.parse(e.data);
+        console.log(evt);
+        if (evt.progress !== undefined) {
+          // update progress
+          var progText = evt.progress.toString();
+          moveBarTo(progText);
+        }
+        // update message
+        var html_message;
+        if (evt.html_message !== undefined) {
+          progressMessage.html(evt.html_message);
+          html_message = evt.html_message;
+        } else if (evt.message !== undefined) {
+          progressMessage.text(evt.message);
+          html_message = progressMessage.html();
+        }
+        if (html_message) {
+          progressLog.append(
+            $("<div>")
+              .addClass('progress-log-event')
+              .html(html_message)
+          );
+        }
+
+        if (evt.ready) {
+          evtSource.close();
+          // reload the current page
+          // which should result in a redirect to the running server
+          window.location.reload();
+        }
+
+        if (evt.failed) {
+          evtSource.close();
+          // open event log for debugging
+          moveBarToFull(100, 0.2, true);
+        }
+      };
+
+    });
+  </script>
+{% endblock -%}

@@ -1,0 +1,21 @@
+{
+  "jureca_booster": "JURECA",
+  "jureca_cpu": "JURECA",
+  "jureca_gpu": "JURECA",
+  "jureca-dc_cpu": "JURECA",
+  "jureca-dc_gpu": "JURECA",
+  "juwels": "JUWELS",
+  "juwels_devel": "JUWELS",
+  "juwels_develgpus": "JUWELS",
+  "juwels_booster": "JUWELS",
+  "juwels_gpus": "JUWELS",
+  "jusuf": "JUSUF",
+  "jusuf_cpu": "JUSUF",
+  "jusuf_gpus": "JUSUF",
+  "jusuf_develgpus": "JUSUF",
+  "hdfml": "HDFML",
+  "deep_dam": "DEEP",
+  "deep_cpu": "DEEP",
+  "deep_ml-gpu": "DEEP",
+  "deep_booster": "DEEP"
+}

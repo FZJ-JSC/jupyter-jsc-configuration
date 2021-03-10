@@ -1,0 +1,35 @@
+{% extends "page.html" %}
+{% if announcement_home %}
+  {% set announcement = announcement_home %}
+{% endif %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ static_url("css/j4j_page_kernel.min.css", include_version=False) }}" type="text/css"/>
+{% endblock %}
+
+{% block main %}
+
+<div class="background-wrapper">
+  <div class="content">
+
+<h2 dir="auto">&#x000A;<a id="user-content-how-to-use-other-modules-or-python-libraries" class="anchor" href="#how-to-use-other-modules-or-python-libraries" aria-hidden="true"></a>How to use other modules or python libraries in a kernel</h2>&#x000A;<font size="4">1.</font> Start a Jupyter Application with Jupyter@JSC on the Login Node of the HPC System of your choice.&#x000A;<br><font size="4">2.</font> Open a new Terminal&#x000A;<br><font size="4">3.</font> Load these modules (you can paste into the terminal with SHIFT+Right Mouse Button):&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">$ module --force purge</span>&#x000A;<span id="LC1" class="line" lang="plaintext">$ module use $OTHERSTAGES</span>&#x000A;<span id="LC2" class="line" lang="plaintext">$ module load Stages/Devel-2019a</span></code> &#x000A;<span id="LC1" class="line" lang="plaintext">$ module load GCCcore/.8.3.0</span> &#x000A;<span id="LC1" class="line" lang="plaintext">$ module load JupyterCollection/2019a.2.2</span> </pre>&#x000A;<font size="4">4.</font> Create a virtual environment named &lt;name&gt; at a path of your choice&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">$ python3 -m venv &lt;your_path&gt;/&lt;name&gt;</span></code></pre>&#x000A;<font size="4">5.</font> Activate your environment and update PYTHONPATH&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">$ source &lt;your_path&gt;/&lt;name&gt;/bin/activate</span>&#x000A;<span id="LC2" class="line" lang="plaintext">(&lt;name&gt;) $ export PYTHONPATH=&lt;your_path&gt;/&lt;name&gt;/lib/python3.6/site-packages:${PYTHONPATH}</span></code></pre>&#x000A;<font size="4">6.</font> Install python libraries&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">(&lt;name&gt;) $ pip install --ignore-installed ipykernel</span>&#x000A;<span id="LC2" class="line" lang="plaintext">(&lt;name&gt;) $ &lt;install whatever else you need in your Python virtual environment using pip&gt;</span></code></pre>&#x000A;<font size="4">7.</font> Create your Kernel&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">(&lt;name&gt;) $ python3 -m ipykernel install --user --name=&lt;name&gt;</span></code></pre>&#x000A; <font size="4">8.</font> Now you have to write a launch script for your kernel to load other modules&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">(&lt;name&gt;) $ vi &lt;your_path&gt;/&lt;name&gt;/kernel.sh</span></code></pre>&#x000A;<p dir="auto">Write into it:</p>&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">#!/bin/bash</span>&#x000A;&lt;load your modules here, you can even load modules from other Stages&gt;</span>&#x000A;<span id="LC5" class="line" lang="plaintext"></span>&#x000A;<span id="LC6" class="line" lang="plaintext">source &lt;your_path&gt;/&lt;name&gt;/bin/activate</span>&#x000A;<span id="LC7" class="line" lang="plaintext">export PYTHONPATH=&lt;your_path&gt;/&lt;name&gt;/lib/python3.6/site-packages:${PYTHONPATH}</span>&#x000A;<span id="LC8" class="line" lang="plaintext">exec python -m ipykernel $@</span></code></pre>&#x000A;<h4 dir="auto">&#x000A;<a id="user-content-make-the-file-executable" class="anchor" href="#make-the-file-executable" aria-hidden="true"></a>Make the file executable:</h4>&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">(&lt;name&gt;) $ chmod +x &lt;your_path&gt;/&lt;name&gt;/kernel.sh</span></code></pre>&#x000A;<p dir="auto">Here is an example of a kernel.sh file:<br>&#x000A;<img src="https://zam2054.zam.kfa-juelich.de/hub/static/images/kernel_sh.png" style="border:5px solid black"><br><br>&#x000A;<font size="4">9.</font> Update your kernel file to use the kernel.sh script</p>&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">(&lt;name&gt;) $ vi ~/.local/share/jupyter/kernels/&lt;name&gt;/kernel.json</span></code></pre>&#x000A;<p dir="auto">Change the argv part to this:</p>&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">"argv": [</span>&#x000A;<span id="LC2" class="line" lang="plaintext">  "&lt;your_path&gt;/&lt;name&gt;/kernel.sh",</span>&#x000A;<span id="LC3" class="line" lang="plaintext">  "-f",</span>&#x000A;<span id="LC4" class="line" lang="plaintext">  "{connection_file}"</span>&#x000A;<span id="LC5" class="line" lang="plaintext"> ],</span></code></pre>&#x000A;<p dir="auto">Here is an example of a kernel.json file:<br>&#x000A;<img src="https://zam2054.zam.kfa-juelich.de/hub/static/images/kernel_json.png" style="border:5px solid black"><br><br>&#x000A;<font size="4">10.</font> Now you can use your new kernel! You have to restart your JupyterLab in Jupyter@JSC to see it in the launcher. But it can be directly used on the top right of each of your notebooks.&#x000A;<br><font size="4">11.</font> If other users should use your kernel they have to run these commands:&#x000A;<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">$ &lt;your_path&gt;/&lt;name&gt;/bin/python3 -m ipykernel install --user --name=&lt;name&gt;</span>&#x000A;<span id="LC2" class="line" lang="plaintext">$ vi ~/.local/share/jupyter/kernels/&lt;name&gt;/kernel.json</span>&#x000A;<span id="LC3" class="line" lang="plaintext">$ # Change the file like it is described in point 9</span></code></pre></p>
+
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+require(["home"]);
+var input = document.getElementById("labname");
+input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("labbutton").click();
+  }
+});
+</script>
+{% endblock %}
