@@ -1,0 +1,69 @@
+#header {
+  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
+  min-width: calc(1024px * .94) !important;
+  max-width: 94% !important;
+}
+
+.footer-bottom {
+  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
+  min-width: calc(1024px * .94) !important;
+  max-width: 94% !important;
+  margin: 0 auto;
+}
+
+#body {
+  height: calc( 94vw * calc(840 / 1810));
+}
+
+.background-wrapper {
+  height: calc( 94vw * calc(840 / 1810));
+  min-height: 445px;
+  max-height: calc(100% - 113px - 153px);
+
+  width: calc((100vh - 113px - 153px)*calc(1810 / 840));
+  min-width: 1024px;
+  max-width: 94%;
+
+  margin: 0 auto;
+  background: url("/hub/static/images/pages/spawn_pending/background.jpg") top center no-repeat;
+  background-size: contain;
+  position: absolute;
+
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#cancel {
+  border-color: red !important;
+}
+
+.content {
+  width: 70%;
+  height: 100%;
+
+  text-align: justify;
+  color: black;
+  font-family: "Weissenhof_Grotesk", Arial, Helvetica, sans-serif;
+  padding: 4vh 0vh;
+  margin: auto;
+  margin-left: 15%;
+}
+
+#progress-message {
+  display: none;
+}
+
+#sr-progress {
+  visibility: none;
+}
+
+.content > h2,
+.content > p {
+  color: white;
+}

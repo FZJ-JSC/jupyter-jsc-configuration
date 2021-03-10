@@ -1,0 +1,136 @@
+#header {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  height: 113px;
+  max-width: 94%;
+  min-width: 94%;
+  height: 100%;
+  border: 0px;
+}
+
+.jpy-logo {
+  height: 51px;
+  margin: 31px 31px 31px 0px;
+}
+
+.menu-btn {
+  cursor: pointer;
+  vertical-align: bottom;
+  border: 0px;
+  outline: none;
+  background-color: inherit;
+  margin: 0; /* Important for vertical align on mobile phones */
+}
+
+.navbar-nav {
+  display: inline-block;
+}
+
+.navbar-btn {
+  margin-right: 20px;
+}
+
+.navbar-nav > li > a:hover{
+  background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 90.0%, #004671 90.1%, #004671 100%);
+}
+
+
+.navbar-default .navbar-nav > li {
+  margin: 0px 15px !important;
+}
+
+.navbar-default .navbar-nav > li > a {
+  font-family: "Weissenhof_Grotesk", Arial, helvetica, sans-serif, "Droid Sans";
+  font-size: 19px;
+
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  margin: 0px !important;
+  color: black;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #004176;
+}
+
+#logout, #login {
+  font-family: Arial, helvetica, sans-serif, "Droid Sans" !important;
+}
+#thenavbar > ul {
+  position: absolute;
+  bottom: 0px;
+}
+
+.navbar-right {
+  right: 0px;
+}
+
+.navbar {
+  background-color: white;
+  vertical-align: bottom;
+  margin-bottom: 0px;
+  border: 0px;
+  height: 113px;
+}
+
+.container-fluid {
+  padding-left: 0px;
+  height: 113px;
+  max-height: 113px;
+}
+
+.menu-box-parent {
+  position: relative;
+}
+
+.menu-box {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: 40px;
+  width: 167px;
+  background-color: #eeeeee;
+}
+
+.menu-box .menu-sub-box-3 {
+}
+
+.menu-box .menu-sub-box-2 {
+}
+
+.menu-box .menu-sub-box-1 {
+  width: 270px !important;
+}
+
+.menu-box .menu-sub-box {
+  display: none;
+  width: 167px;
+  top: 0px;
+  left: 167px;
+}
+
+.menu-box > ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.menu-box > ul > li {
+  background: url(/hub/static/images/sprite.png) no-repeat 5px -5158px;
+  margin: 10px 0px 10px 10px;
+}
+
+.menu-box > ul > li > a {
+  padding-left: 30px;
+  color: black;
+}
+
+.menu-box > ul > li > a:hover {
+  color: #004176;
+}
+
+.show-header {
+  display: block !important;
+}
+
