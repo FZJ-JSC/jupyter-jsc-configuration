@@ -41,6 +41,6 @@
 		"node_mapping": {
 			"juwels09": "jwlogin09.ib.juwels.fzj.de"
 		},
-                "no_remote_port": 25490
+                "remote_port": 25490
 	}
 }

@@ -32,9 +32,10 @@ if [[ ! -f ${HOME}/.${JUPYTER_JSC_STARTUUID} ]]; then
     EC2=$?
     if [[ $EC1 -ne 0 || $EC1 -ne 0 ]]; then
         curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"error": "Disk quota exceeded in $HOME. You have to clean up your home directory before you can start a JupyterLab.", "detail_error": "Jupyter-JSC tried to create a testfile in ${HOME} and failed. Job directory may contain further information: '"${DIR}"'"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_CANCEL_URL} &> /dev/null
+      rm ${HOME}/.${JUPYTER_JSC_STARTUUID}
+      exit 0
     fi
     rm ${HOME}/.${JUPYTER_JSC_STARTUUID}
-    exit 0
 fi
 
 
@@ -52,6 +53,7 @@ POSTMOD=$(date)
 echo "PostModules: ${POSTMOD}"
 
 
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 95, "failed": false, "message": "", "html_message": "JupyterLab started. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 
 cd ${JUPYTER_JSC_HOME}
 jupyterhub-singleuser --config ${DIR}/.config.py &

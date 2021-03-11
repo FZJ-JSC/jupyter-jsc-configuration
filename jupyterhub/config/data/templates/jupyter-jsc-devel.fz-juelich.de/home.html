@@ -31,7 +31,6 @@ $(document).ready(function() {
     {% set named_spawners = user.all_spawners(include_default=False)|list %}
     {% set vo_available = auth_state.get("vo_available", []) %}
     {% set vo_active = auth_state.get("vo_active", '' ) %}
-    {{ auth_state }}
     <div class="table-div">
       <div class="table-tabs">
         <div class="tab active tab_JupyterLab_div" onclick="onClickTableTab('JupyterLab')">
