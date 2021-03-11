@@ -1,4 +1,4 @@
-{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
+{% extends "jupyter-jsc-backup.fz-juelich.de/page.html" %}
 {% if announcement_spawn %}
   {% set announcement = announcement_spawn %}
 {% endif %}
@@ -25,6 +25,7 @@
       {% endif %}
       <form enctype="multipart/form-data" id="spawn_form" action="{{url}}" method="post" role="form">
         <div class="custom-div">
+          <input autocomplete="off" id="vo_active_input" name="vo_active_input" value="{{auth_state.get("vo_active")}}" style="display:none">
           <input autocomplete="off" id="service_input" name="service_input" value="JupyterLab" style="display:none">
           <input autocomplete="off" id="system_input" name="system_input" value="undefined" style="display:none">
           <input autocomplete="off" id="account_input" name="account_input" value="undefined" style="display:none">

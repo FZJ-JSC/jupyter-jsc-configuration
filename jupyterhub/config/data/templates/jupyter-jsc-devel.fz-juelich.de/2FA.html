@@ -1,4 +1,4 @@
-{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
+{% extends "jupyter-jsc-backup.fz-juelich.de/page.html" %}
 {% if announcement_home %}
   {% set announcement = announcement_home %}
 {% endif %}
@@ -37,7 +37,7 @@
                 <ul>
                   <li><a href="https://freeotp.github.io" target="_blank"><b>FreeOTP</b></a> (iOS, Android)</li>
                   <li><a href="https://keeweb.info" target="_blank"><b>KeeWeb</b></a> (Linux, macOS, Windows, Online)</li>
-                  <li>more alternatives can be found in <a href="https://jupyter-jsc-devel.fz-juelich.de/2fadetails" target="_blank">Detailed Informations</a></li>
+                  <li>more alternatives can be found in <a href="https://jupyter-jsc-backup.fz-juelich.de/2fadetails" target="_blank">Detailed Informations</a></li>
                 </ul>
               </li>
             </ul>
@@ -163,5 +163,6 @@ require(["home"]);
   });
 </script>
 
+<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 <script src="{{static_url("js/pages/2FA.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

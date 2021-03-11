@@ -1,4 +1,4 @@
-{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
+{% extends "jupyter-jsc-backup.fz-juelich.de/error.html" %}
 
 {% block main %}
 
@@ -21,21 +21,10 @@
         {% if failed_message %}
           {{ failed_message }}
         {% endif %}
-        Would you like to retry starting it?
         {% else %}
-        Your server {{ server_name }} is not running. Would you like to start it?
+        Your server {{ server_name }} is not running. 
         {% endif %}
       </p>
-      {% endblock %}
-      {% block start_button %}
-      <a id="start" role="button" class="btn btn-lg btn-primary" href="{{ spawn_url }}">
-        {% if failed %}
-        Relaunch
-        {% else %}
-        Launch
-        {% endif %}
-        Server {{ server_name }}
-      </a>
       {% endblock %}
     </div>
   </div>

@@ -34,7 +34,7 @@
     <meta property="og:site_name" content="jupyter-jsc">
     <meta property="og:title" content="jupyter-jsc">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jupyter-jsc-devel.fz-juelich.de/">
+    <meta property="og:url" content="https://jupyter-jsc-backup.fz-juelich.de/">
 
 
     <link rel="stylesheet" href="{{ static_url("css/style.min.css", include_version=False) }}" type="text/css"/>
@@ -137,13 +137,13 @@
                       <li id="navbarbtn-links-1" class="menu-btn"><a>Jupyter-JSC</a>
                         <div id="navbarmenu-links-1" class="menu-box menu-sub-box menu-sub-box-1 show-sub-header" style="">
                           <ul>
-                            <li class=""><a target="_blank" href="https://jupyter-jsc-devel.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf">Presentation</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb">Extensions at Jupyter-JSC</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/FAQ_HDFCloud.ipynb">HDFCloud FAQ</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb">Markdown Tips and Tricks</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/hub/static/files/projects.html">Link Projects to Home</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/kernel">Setup your own kernel</a></li>
-                            <li class=""><a href="https://jupyter-jsc-devel.fz-juelich.de/kernel_conda">Setup your own kernel with conda</a></li>
+                            <li class=""><a target="_blank" href="https://jupyter-jsc-backup.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf">Presentation</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb">Extensions at Jupyter-JSC</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/FAQ_HDFCloud.ipynb">HDFCloud FAQ</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/nbviewer/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb">Markdown Tips and Tricks</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/hub/static/files/projects.html">Link Projects to Home</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/kernel">Setup your own kernel</a></li>
+                            <li class=""><a href="https://jupyter-jsc-backup.fz-juelich.de/kernel_conda">Setup your own kernel with conda</a></li>
                             <li class=""><a target="_blank" href="https://www.unicore.eu/about-unicore/case-studies/jupyter-at-jsc/">Jupyter-JSC at unicore.eu</a></li>
                           </ul>
                         </div>
@@ -188,10 +188,27 @@
                   {% block login_widget -%}
                     <span id="login_widget">
                       {% if user -%}
+                        {% if hostname and user.admin -%}
+                            <p>Hostname: {{ hostname }}</p>
+                        {% endif -%}
                         {% if auth_state and auth_state.get("last_login", False) -%}
                           <p class="navbar-text">Last login: {{ auth_state.get("last_login") }} </p>
                         {% endif -%}
                         <p class="navbar-text">{{user.name}}</p>
+                        {% set vo_available = auth_state.get("vo_available", []) %}
+                        {% set vo_active = auth_state.get("vo_active", '' ) %}
+                        {% if vo_available|length > 1 -%}
+			<!-- <label for="vo_button" id="vo_button_label" class="text-center label_custom">Groups:</label> -->
+                          <label for="vo_button" id="vo_button_label" class="navbar-text">Group (<a href="/hub/groups">?</a>):</label>
+                          <div class="btn-group">
+                            <button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="vo_button" name="vo_button" value="{{vo_active}}">{{vo_active}} <span class="caret"></span></button>
+                            <ul class="dropdown-menu" name="vo_dropdown" id="vo_dropdown">
+                              {% for vo in vo_available -%}
+                                <li><a class="vo-dropdown" value="{{vo}}" id="vo_button_dd_{{vo}}">{{vo}}</a></li>
+                              {% endfor -%}
+                            </ul>
+                          </div>
+                        {% endif -%}
                         <a id="logout" role="button" class="navbar-btn btn-sm btn btn-default"> <i aria-hidden="true" class="fa fa-sign-out"></i> Logout</a>
                       {% endif -%}
                     </span>
@@ -224,7 +241,7 @@
   <div class="footer">
     <div class="footer-top-background">
       <div class="footer-top">
-        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="{{ static_url("images/footer/systems/jupyter.svg", include_version=False) }}"/><span class="" id="ampel-jupyter"></span></div><a href="https://jupyter-jsc-devel.fz-juelich.de">Jupyter-JSC</a></div>
+        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="{{ static_url("images/footer/systems/jupyter.svg", include_version=False) }}"/><span class="" id="ampel-jupyter"></span></div><a href="https://jupyter-jsc-backup.fz-juelich.de">Jupyter-JSC</a></div>
         <div id="ampel-juwels-img"><div class="ampel-div"><img src="{{ static_url("images/footer/systems/juwels.svg", include_version=False) }}"/><span class="" id="ampel-juwels"></span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
         <div id="ampel-jureca-img"><div class="ampel-div"><img src="{{ static_url("images/footer/systems/jureca.svg", include_version=False) }}"/><span class="" id="ampel-jureca"></span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
         <div id="ampel-jusuf-img"><div class="ampel-div"><img src="{{ static_url("images/footer/systems/jusuf.svg", include_version=False) }}"/><span class="" id="ampel-jusuf"></span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
