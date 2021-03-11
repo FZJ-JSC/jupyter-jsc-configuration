@@ -2625,6 +2625,33 @@ QUnit.test( "focusin on document & window", function( assert ) {
 	jQuery( document ).off( "focusout", increment );
 } );
 
+QUnit.test( "element removed during focusout (gh-4417)", function( assert ) {
+	assert.expect( 1 );
+
+	var button = jQuery( "<button>Click me</button>" );
+
+	button.appendTo( "#qunit-fixture" );
+
+	button.on( "click", function() {
+		button.trigger( "blur" );
+		assert.ok( true, "Removing the element didn't crash" );
+	} );
+
+	// Support: Chrome 86+
+	// In Chrome, if an element having a focusout handler is blurred by
+	// clicking outside of it, it invokes the handler synchronously. However,
+	// if the click happens programmatically, the invocation is asynchronous.
+	// As we have no way to simulate real user input in unit tests, simulate
+	// this behavior by calling `jQuery.cleanData` & removing the element using
+	// native APIs.
+	button[ 0 ].blur = function() {
+		jQuery.cleanData( [ this ] );
+		this.parentNode.removeChild( this );
+	};
+
+	button[ 0 ].click();
+} );
+
 testIframe(
 	"jQuery.ready promise",
 	"event/promiseReady.html",
@@ -3234,6 +3261,40 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 			done();
 		}, 50 );
 	}, 50 );
+} );
+
+QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) {
+	assert.expect( 2 );
+
+	var done = assert.async(),
+		select = jQuery( "<select><option selected='selected'>A</option></select>" ),
+		button = jQuery( "<button>Focus target</button>" );
+
+	jQuery( "#qunit-fixture" )
+		.append( select )
+		.append( button );
+
+	select.on( "focus", function() {
+		button.trigger( "focus" );
+	} );
+
+	jQuery( document ).on( "focusin.focusTests", function( ev ) {
+		// Support: IE 11+
+		// In IE focus is async so focusin on document is fired multiple times,
+		// for each of the elements. In other browsers it's fired just once, for
+		// the last one.
+		if ( ev.target === button[ 0 ] ) {
+			assert.ok( true, "focusin propagated to document from the button" );
+		}
+	} );
+
+	select.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.strictEqual( document.activeElement, button[ 0 ], "Focus redirect worked" );
+		jQuery( document ).off( ".focusTests" );
+		done();
+	} );
 } );
 
 // TODO replace with an adaptation of

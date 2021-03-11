@@ -1411,9 +1411,9 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	}
 	try {
 		xml = jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
-		assert.ok( false, "invalid xml not detected" );
+		assert.ok( false, "invalid XML not detected" );
 	} catch ( e ) {
-		assert.strictEqual( e.message, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
+		assert.ok( e.message.indexOf( "Invalid XML:" ) === 0, "invalid XML detected" );
 	}
 	try {
 		xml = jQuery.parseXML( "" );
@@ -1427,6 +1427,34 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	} catch ( e ) {
 		assert.ok( false, "empty input throws exception" );
 	}
+} );
+
+// Support: IE 11+, Edge 12 - 18 only
+// IE throws an error when parsing invalid XML instead of reporting the error
+// in a `parsererror` element, IE & Legacy Edge don't report errors in a parsererror
+// element; skip the test there.
+QUnit[
+	document.documentMode || /edge\//i.test( navigator.userAgent ) ?
+		"skip" :
+		"test"
+]( "jQuery.parseXML - error reporting", function( assert ) {
+	assert.expect( 2 );
+
+	var errorArg, lineMatch, line, columnMatch, column;
+
+	sinon.stub( jQuery, "error" );
+
+	jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
+	errorArg = jQuery.error.firstCall.args[ 0 ].toLowerCase();
+	console.log( "errorArg", errorArg );
+
+	lineMatch = errorArg.match( /line\s*(?:number)?\s*(\d+)/ );
+	line = lineMatch && lineMatch[ 1 ];
+	columnMatch = errorArg.match( /column\s*(\d+)/ );
+	column = columnMatch && columnMatch[ 1 ];
+
+	assert.strictEqual( line, "1", "reports error line" );
+	assert.strictEqual( column, "11", "reports error column" );
 } );
 
 testIframe(

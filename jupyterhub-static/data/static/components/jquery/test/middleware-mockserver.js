@@ -62,7 +62,7 @@ var mocks = {
 	script: function( req, resp ) {
 		if ( req.query.header === "ecma" ) {
 			resp.writeHead( 200, { "content-type": "application/ecmascript" } );
-		} else if ( req.query.header ) {
+		} else if ( "header" in req.query ) {
 			resp.writeHead( 200, { "content-type": "text/javascript" } );
 		} else {
 			resp.writeHead( 200, { "content-type": "text/html" } );
@@ -98,7 +98,7 @@ var mocks = {
 		} else if ( req.query.callback ) {
 			callback = Promise.resolve( req.query.callback );
 		} else if ( req.method === "GET" ) {
-			callback = Promise.resolve( req.url.match( /^.+\/([^\/?.]+)\?.+$/ )[ 1 ] );
+			callback = Promise.resolve( req.url.match( /^.+\/([^\/?]+)\?.+$/ )[ 1 ] );
 		} else {
 			callback = getBody( req ).then( function( body ) {
 				return body.trim().replace( "callback=", "" );
@@ -277,8 +277,7 @@ function MockserverMiddlewareFactory() {
 	 * @param {Function} next Continue request handling
 	 */
 	return function( req, resp, next ) {
-		var method = req.method,
-			parsed = url.parse( req.url, /* parseQuery */ true ),
+		var parsed = url.parse( req.url, /* parseQuery */ true ),
 			path = parsed.pathname.replace( /^\/base\//, "" ),
 			query = parsed.query,
 			subReq = Object.assign( Object.create( req ), {
