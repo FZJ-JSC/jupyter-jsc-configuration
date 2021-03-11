@@ -1,0 +1,3 @@
+no-pty,no-X11-forwarding,no-agent-forwarding,no-port-forwarding,command="/bin/echo Jupyter-JSC: node is reachable" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMHMZOplOxfvQoXY4rZpf/MPzBlDEGjxRtSN/3lyFfkk available
+no-pty,no-X11-forwarding,no-agent-forwarding,no-port-forwarding,command="/bin/bash /mnt/config/git/persistent/userlabs-mgr/ssh/manage_tunnel.sh -a $(/bin/echo $SSH_ORIGINAL_COMMAND | sha512sum | cut -d \" \" -f 1) -p 25490 < /dev/null > /dev/null 2>&1" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHWhvKk5V9+tVavOJJsQHXVlLGBTEW/DsWazCCTyK7x remote
+no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKpWivlA/puw71rARacztOgSBwNeD7MClKbwcMDzvXtY tunnel

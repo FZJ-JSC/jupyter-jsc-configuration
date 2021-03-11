@@ -1,0 +1,9 @@
+#!/bin/bash
+mount | grep "/mnt/JUDAC" > /dev/null
+EC=$?
+if [[ $EC -eq 0 ]]; then
+    fusermount -u /mnt/JUDAC 2>/dev/null
+    umount /mnt/JUDAC
+else
+    echo "JUDAC is currently not mounted"
+fi
