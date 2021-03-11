@@ -57,7 +57,7 @@ db_database = os.environ.get("JUPYTERHUB_DB_DATABASE")
 c.JupyterHub.db_url = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_database}'
 
 # c.JupyterHub.template_paths = ["/mnt/data/templates"]
-c.JupyterHub.data_files_path = "/mnt/config/data"
+c.JupyterHub.data_files_path = os.environ.get("DATA_FILES_PATH")
 c.JupyterHub.default_url = '/hub/home'
 c.JupyterHub.jinja_environment_options = {
     "extensions": [
@@ -99,8 +99,7 @@ c.BackendSpawner.options_form = functions.options_form
 
 c.JupyterHub.tornado_settings = {'slow_spawn_timeout': 0, 'version_hash': ''}
 
-
-c.JupyterHub.cookie_secret_file = "/mnt/bin/jupyterhub_cookie_secret"
+c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_PATH")
 
 
 c.JupyterHub.authenticator_class = unity.UnityOAuthenticator
