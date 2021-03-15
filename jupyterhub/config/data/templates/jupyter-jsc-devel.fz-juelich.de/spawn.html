@@ -247,7 +247,7 @@
             }
             onClickProjects(ls_project);
             if (ls_partition != null && ls_partition != "null") {
-              if (! $("#partitions_dropdown_ul").html().includes(ls_partition)) {
+              if (! $("#partitions_dropdown_ul").html().includes(">"+ls_partition+"<")) {
                 return;
               }
               onClickPartitions(ls_partition);
@@ -420,16 +420,26 @@
               project == {{ project | tojson }} ){
               $('#partitions_dropdown_label').html('Partition');
               $('#partitions_dropdown_ul').html("");
-              {% if 'LoginNode' in spawner_options_form.get('resources').get(system, {}).keys() -%}
+              {% set first_partition = {'foo':Ffalse} %}
+              {% if 'LoginNode' in spawner_options_form.get('resources').get(system, {}).keys() and 'LoginNode' not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
+                {% if first_partition.update({"foo": "LoginNode"}) %} {% endif %}
                 $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'LoginNode\')">LoginNode</a></li>');
               {% endif -%}
-              {% if 'LoginNodeVis' in spawner_options_form.get('resources').get(system, {}).keys() -%}
+              {% if 'LoginNodeVis' in spawner_options_form.get('resources').get(system, {}).keys() and 'LoginNodeVis' not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
+                {% if not first_partition.get("foo") -%}
+                  {% if first_partition.update({"foo": "LoginNodeVis"}) -%} {% endif -%}
+                {% endif -%}
                 $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'LoginNodeVis\')">LoginNodeVis</a></li>');
               {% endif -%}
               {% for partition in partitions | unique | sort -%}
-                $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'{{partition}}\')">{{partition}}</a></li>');
+                {% if partition not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
+                  {% if not first_partition.get("foo") -%}
+                    {% if first_partition.update({"foo": partition }) -%} {% endif -%}
+                  {% endif -%}
+                  $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'{{partition}}\')">{{partition}}</a></li>');
+                {% endif -%}
               {% endfor -%}
-              $('#partitions_dropdown_button').val("LoginNode").trigger("change");
+              $('#partitions_dropdown_button').val("{{ first_partition.get('foo') }}").trigger("change");
               $('#partitions_dropdown').show();
             }
           {% endfor -%} {# project -#}

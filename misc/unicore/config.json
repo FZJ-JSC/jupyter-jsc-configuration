@@ -26,7 +26,10 @@
                         "jureca09": "jrlogin09i"
                 },
                 "remote_port": 25490,
-		"vos": ["admins", "my_vo"]
+		"vos": ["admins", "my_vo"],
+		"vo_exclude_partition": {
+			"default": "LoginNode"
+		}
 	},
 	"JUWELS": {
 		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
@@ -41,6 +44,10 @@
 		"node_mapping": {
 			"juwels09": "jwlogin09.ib.juwels.fzj.de"
 		},
-                "remote_port": 25490
+                "remote_port": 25490,
+		"vo_exclude_partition": {
+			"default": ["LoginNodeVis", "batch", "devel"],
+			"my_vo": ["LoginNode", "LoginNodeVis", "booster", "batch", "devel", "develgpus"]
+		}
 	}
 }

@@ -15,6 +15,7 @@ if [[ ! -d $TMPDIR ]]; then
 fi
 
 
+
 # source /opt/apps/lmod/lmod/init/profile
 #export MODULEPATH=/p/software/hdfcloud/stages/2020/modules/all/Compiler/GCCcore/9.3.0:/p/software/hdfcloud/stages/2020/UI/Compilers:/p/software/hdfcloud/stages/2020/UI/Tools:/p/software/hdfcloud/stages/2020/UI
 #module load Jupyter/2020.2.5-Python-3.8.5
@@ -34,7 +35,7 @@ curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: $
 if [[ ! $? -eq 0 ]]; then
     echo "Could not notify JupyterHub. Send Cancel with official URL."
     # curl to jupyter-jsc.fz-juelich.de ....
-    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"error": "Could not reach JupyterLab."}' http://jupyterhub-service.jupyterjsc.svc.cluster.local:8001${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_CANCEL_URL}
+    # curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"error": "Could not reach JupyterLab."}' http://jupyterhub-service.jupyterjsc.svc.cluster.local:8001${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_CANCEL_URL}
     exit 0
 fi
 

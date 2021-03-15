@@ -75,8 +75,12 @@ class UnityOAuthenticator(GenericOAuthenticator):
         timestamp = int(time.time()) + int(os.environ.get("UNITY_REFRESH_THRESHOLD", "600")) 
         if force or timestamp >= int(auth_state.get('exp', timestamp)):
             try:
+                refresh_token_save = auth_state.get("refresh_token", None)
+                self.log.debug(f"Refresh {user.name} authentication. Rest time: {timestamp}")
+                if not refresh_token_save:
+                    self.log.debug(f"Auth state has no refresh token {auth_state}")
+                    return False
                 http_client = self.http_client()
-
                 params = {
                     "refresh_token": auth_state.get("refresh_token"),
                     "grant_type": "refresh_token",
@@ -102,6 +106,8 @@ class UnityOAuthenticator(GenericOAuthenticator):
                         )
                         return
 
+                    if not token_resp_json.get("refresh_token", None):
+                        token_resp_json["refresh_token"] = refresh_token_save
                     authentication = {
                         "auth_state": self._create_auth_state(token_resp_json, user_data_resp_json)
                     }
@@ -147,10 +153,7 @@ async def post_auth_hook(authenticator, handler, authentication):
 
 class BackendLogoutHandler(LogoutHandler):
     async def _shutdown_servers(self, user):
-        # If we want to stop servers at logout we will do this in the backend.
-        # Any stopped Jobs will notify JupyterHub via UNICORE/X notification
-        # endpoint. Therefore we ensure two things: Anything will be stopped
-        # by the Backend. JupyterHub get's informed.
+        self.log.debug("Shutdown Servers -- not")
         pass
 
     async def default_handle_logout(self):
@@ -187,10 +190,13 @@ class BackendLogoutHandler(LogoutHandler):
                         if stopall == "true":
                             ''' Stop all Services for this username '''
                             headers["username"] = user.name
+                        self.log.info(logout_all_devices)
+                        self.log.info(stopall)
+                        self.log.info(user.active)
+                        self.log.info(logout_all_devices and (stopall == "true" or not user.active))
                         if logout_all_devices and (stopall == "true" or not user.active):
                             ''' Only revoke refresh token if we logout from all devices and stop all services '''
                             headers['refreshtoken'] = auth_state["refresh_token"]
-                        
                         self.log.info(url)
                         self.log.info(headers)
                         with closing(requests.post(url, headers=headers, json={})) as r:
@@ -200,7 +206,7 @@ class BackendLogoutHandler(LogoutHandler):
                                 self.log.warning(r.text)
         
                     auth_state["access_token"] = ""
-                    auth_state["exp"] = "0"                    
+                    auth_state["exp"] = "0"
                     if logout_all_devices and (stopall == "true" or not user.active):
                         ''' Delete tokens '''
                         auth_state["refresh_token"] = ""

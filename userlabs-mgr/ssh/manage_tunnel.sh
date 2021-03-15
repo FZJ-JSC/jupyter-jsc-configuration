@@ -24,7 +24,7 @@ STOP="deb7ef7b249b1df1352525c37b8bbe3d1f6c8f36c6993e4dd6a7f87de38b8ac3dec37ee87d
 if [[ ${ACTION} == ${START} ]]; then
         PID=$(netstat -ltnp 2>/dev/null | tr -s ' ' | grep ":${PORT}" | cut -d' ' -f7 | cut -d'/' -f1)
         if [[ ! -n $PID ]]; then
-                ssh -p 2222 -i /mnt/config/ssh/jupyter-jsc-ed-25519 -oLogLevel=ERROR -oUserKnownHostsFile=/dev/null -oServerAliveInterval=60 -oServerAliveInterval=5 -oExitOnForwardFailure=yes -oStrictHostKeyChecking=no -L0.0.0.0:${PORT}:proxy-service.jupyterjsc.svc.cluster.local:8000 tunnel@${HOST} -f -N
+                ssh -p 2222 -i /home/userlab/.ssh/jupyter-jsc-ed-25519 -oLogLevel=ERROR -oUserKnownHostsFile=/dev/null -oServerAliveInterval=60 -oServerAliveInterval=5 -oExitOnForwardFailure=yes -oStrictHostKeyChecking=no -L0.0.0.0:${PORT}:proxy-service.jupyterjsc.svc.cluster.local:8000 tunnel@${HOST} -f -N
         fi
 elif [[ ${ACTION} == ${STOP} ]]; then
         PID=$(netstat -ltnp 2>/dev/null | tr -s ' ' | grep ":${PORT}" | cut -d' ' -f7 | cut -d'/' -f1)

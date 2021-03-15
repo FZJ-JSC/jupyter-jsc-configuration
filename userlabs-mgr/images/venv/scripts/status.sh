@@ -2,15 +2,14 @@
 ID=${1}
 
 NAMESPACE="userlabs"
-KUBE_CFG="--kubeconfig /home/userlab/.kube/config"
 
-POD=$(kubectl ${KUBE_CFG} -n ${NAMESPACE} get po -l app=jupyterlab-${ID} -o jsonpath='{.items[0].metadata.name}' 2> /dev/null)
+POD=$(kubectl -n ${NAMESPACE} get po -l app=jupyterlab-${ID} -o jsonpath='{.items[0].metadata.name}' 2> /dev/null)
 if [[ ! $? -eq 0 ]]; then
     echo "jupyterlab-${ID} does not exist"
     exit 1
 fi
 
-READY=$(kubectl ${KUBE_CFG} -n ${NAMESPACE} get po ${POD} -o jsonpath='{..status.conditions[?(@.type=="Ready")].status}')
+READY=$(kubectl -n ${NAMESPACE} get po ${POD} -o jsonpath='{..status.conditions[?(@.type=="Ready")].status}')
 echo "Status of Container in Pod: ${READY}"
 if [[ $READY == "True" ]]; then
     exit 0
@@ -42,7 +41,7 @@ while IFS='|' read -ra ADDR; do
         elif [[ $EVENT == *"pod has unbound immediate PersistentVolumeClaims"* ]]; then
             :
         elif [[ $EVENT == *"Back-off restarting failed container"* ]]; then
-            LOGS=$(kubectl ${KUBE_CFG} -n ${NAMESPACE} logs ${POD})
+            LOGS=$(kubectl -n ${NAMESPACE} logs ${POD})
             >&2 echo $LOGS
             exit 2
 	else
@@ -53,10 +52,10 @@ while IFS='|' read -ra ADDR; do
 done <<< "$EVENTS"
 
 # Check for restarting Pods
-RESTART_POD=$(kubectl ${KUBE_CFG} -n ${NAMESPACE} get po ${POD} -o jsonpath='{.status.containerStatuses[?(@.restartCount!=0)].restartCount}')
+RESTART_POD=$(kubectl -n ${NAMESPACE} get po ${POD} -o jsonpath='{.status.containerStatuses[?(@.restartCount!=0)].restartCount}')
 if [[ -n $RESTART_POD ]]; then
     echo "Restart Pod: $RESTART_POD"
-    LOGS=$(kubectl ${KUBE_CFG} -n ${NAMESPACE} logs ${POD})
+    LOGS=$(kubectl -n ${NAMESPACE} logs ${POD})
     >&2 echo $LOGS
     exit 2
 fi

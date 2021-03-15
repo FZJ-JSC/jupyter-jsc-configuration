@@ -45,7 +45,7 @@ import time
 c.ConfigurableHTTPProxy.pod_creation_time = int(time.time())
 
 c.JupyterHub.strict_session_ids = True
-c.JupyterHub.logout_on_all_devices = True
+c.JupyterHub.logout_on_all_devices = False
 c.JupyterHub.logout_on_all_devices_argname = "alldevices"
 
 

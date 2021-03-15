@@ -198,12 +198,19 @@ async def options_form(spawner):
         }
         for system in resources.keys()
     }
+    unicore_vo = {
+        system.upper(): {
+            "vos": unicore_config.get(system.upper(), {}).get("vos", []),
+            "vo_exclude_partition": unicore_config.get(system.upper(), {}).get("vo_exclude_partition", {})
+        } for system in resources.keys()
+    }
     return {
         "dropdown_lists": dropdown_lists,
         "reservations": reservations_list,
         "resources": resources_replaced,
         "hdfcloud": hdf_cloud,
         "maintenance": maintenance_list,
+        "unicore_vo": unicore_vo,
     }
 
 

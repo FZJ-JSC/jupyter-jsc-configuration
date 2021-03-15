@@ -1,0 +1,21 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: jupyterjsc
+  name: deny-from-other-namespaces
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except: [ 192.168.0.0/16 ]
+    - namespaceSelector: 
+        matchLabels:
+          allow_jupyterjsc: "true"
+    - namespaceSelector: 
+        matchLabels:
+          name: userlabs
+      podSelector: 
+        matchLabels:
+          app: userlabs-mgr

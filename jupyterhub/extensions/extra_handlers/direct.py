@@ -57,7 +57,9 @@ class DirectSpawnHandler(SpawnHandler):
                 try:
                     await self.spawn_single_user(user, server_name=server_name, options=options)
                 except web.HTTPError:
+                    self.log.exception("More Infos please")
                     del user.spawners[server_name]
+                    user.update_memory()
                     await self.spawn_single_user(user, server_name=server_name, options=options)
             except Exception as e:
                 self.log.exception(

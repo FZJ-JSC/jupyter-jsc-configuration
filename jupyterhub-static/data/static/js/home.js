@@ -48,6 +48,7 @@ require(["jquery", "moment", "jhapi", "utils"], function(
     //row.find(".stop-server").click(stopServer);
     row.find(".stop-server").click(cancelServer);
     row.find(".delete-server").click(deleteServer);
+    var na = row.find(".na_status").text();
 
     if (running) {
       row.find(".start-server").addClass("hidden");
@@ -59,10 +60,12 @@ require(["jquery", "moment", "jhapi", "utils"], function(
     } else {
       var row_start = row.find(".start-server");
       row_start.removeClass("hidden");
-      if ( row_start[0].text == "Start" ) {
-        row_start.attr("disabled", false);
-      } else {
+      if ( na == "1" ) {
         row_start.attr("disabled", true);
+        row_start.text("n/a")
+      } else {
+        row_start.attr("disabled", false);
+        row_start.text("Start")
       }
       row.find(".delete-server").removeClass("hidden");
       row.find(".stop-server").addClass("hidden");
@@ -222,7 +225,6 @@ require(["jquery", "moment", "jhapi", "utils"], function(
     if ( old_value != value ) {
       api.set_vo(value, {
         success: function() {
-          console.log("Juhu");
           $('#vo_button').prop("value", value);
           $('#vo_button').html(value + " <span class=\"caret\"></span>");
           location.reload();
@@ -232,8 +234,6 @@ require(["jquery", "moment", "jhapi", "utils"], function(
   }
 
   $(".vo-dropdown").click(onClickVO);
-
-  //$(".stop-server").click(stopServer);
   $(".stop-server").click(cancelServer);
   $(".delete-server").click(deleteServer);
 

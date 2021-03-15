@@ -5,7 +5,7 @@ Host *
 # HDF-Cloud Kubernetes
 Host available_hdfcloud
     User userlab
-    HostName manager-service-ssh.userlabs.svc.cluster.local
+    HostName userlabs-mgr-svc-ssh.userlabs.svc.cluster.local
     Port 22
     IdentityFile /home/tunnel/keys/available
     StrictHostKeyChecking no
@@ -16,7 +16,7 @@ Host available_hdfcloud
 
 Host remote_hdfcloud
     User userlab
-    HostName manager-service-ssh.userlabs.svc.cluster.local
+    HostName userlabs-mgr-svc-ssh.userlabs.svc.cluster.local
     Port 22
     IdentityFile /home/tunnel/keys/remote
     StrictHostKeyChecking no
@@ -27,7 +27,7 @@ Host remote_hdfcloud
 
 Host tunnel_hdfcloud
     User userlab
-    HostName manager-service-ssh.userlabs.svc.cluster.local
+    HostName userlabs-mgr-svc-ssh.userlabs.svc.cluster.local
     Port 22
     IdentityFile /home/tunnel/keys/tunnel
     StrictHostKeyChecking no

@@ -9,7 +9,6 @@
 
 {% block main %}
 
-<script src="{{static_url("js/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 <script>
 require(["pages/home", "home"]);
 $(document).ready(function() {
@@ -126,19 +125,19 @@ $(document).ready(function() {
                       {% set na = 1 -%}
 		    {% elif user_options.get("system_input") == "hdfcloud" and vo_active not in hdfcloud.get(user_options.get("display", {}).get("account", ""), {}).get("vos", []) -%}
                       {% set na = 1 -%}
-		    {% elif user_options.get("system_input") in ["JUWELS", "JURECA", "HDFML", "JUSUF", "DEEP"] and "vos" in unicore_config.get(user_options.get("system_input"), {}).keys() and vo_active not in unicore_config.get(user_options.get("system_input", {})).get("vos", []) -%}
+                    {% elif user_options.get("system_input") in ["JUWELS", "JURECA", "HDFML", "JUSUF", "DEEP"] and "vos" in unicore_config.get(user_options.get("system_input"), {}).keys() and vo_active not in unicore_config.get(user_options.get("system_input", {})).get("vos", []) or user_options.get("partition_input", "") in unicore_config.get(user_options.get("system_input"), {}).get("vo_exclude_partition", {}).get(vo_active, []) -%}
 		      {% set na = 1 -%}
                     {% else -%}
                       {% set na = 0 -%}
                     {% endif -%}
+		    <span class="na_status" hidden {% if na == 1 %} disabled {% endif %} >{{na}}</span>
                     {% if _spawner.ready -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
                     {% else -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
                     {% endif -%}
                     <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %}" {% if na == 1 %}disabled{% endif %} id="start-{{ spawner.name }}"
-                      href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}" onClick="enableRow(true);" onauxclick="enableRow(true);">{% if na == 1 %}n/a{% else %}Start{% endif %}</a>
-
+		       {% if na == 0 %} href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}" onClick='document.getElementById("start-{{ spawner.name }}").classList.add("hidden"); document.getElementById("open-pending-{{ spawner.name }}").classList.remove("hidden"); document.getElementById("delete-{{ spawner.name }}").classList.add("hidden"); document.getElementById("stop-{{ spawner.name }}").classList.remove("hidden");'{% endif %}  >{% if na == 1 %}n/a{% else %}Start{% endif %}</a>
                     <a role="button" class="delete-server btn btn-xs btn-danger{% if _spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
                     <a role="button" class="stop-server btn btn-xs btn-danger{% if not _spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
                   </td>
@@ -274,8 +273,5 @@ $(document).ready(function() {
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript">
-require(["pages/home", "home"]);
-</script>
 <script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
