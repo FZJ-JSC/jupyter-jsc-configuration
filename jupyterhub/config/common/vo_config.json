@@ -21,7 +21,7 @@
         },
         "my_vo":{
             "authenticators": [],
-            "usernames": ["t.kreuzer@fz-juelich.de"],
+            "usernames": ["at.kreuzer@fz-juelich.de"],
             "admin": false,
 	    "weight": 1,
             "exclusive": false
