@@ -218,10 +218,6 @@ table,th,td {
   justify-content: space-between;
 }
 
-.vo-dropdown {
-  cursor: default;
-}
-
 .button-container {
   margin: 0 2vh !important;
   display: flex;
