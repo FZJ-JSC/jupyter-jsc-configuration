@@ -7,3 +7,6 @@ no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allo
 
 # JUWELS
 no-pty,no-X11-forwarding,no-agent-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDxFLOzaPHCW2cNbupLtJLWt8fDBDR1xmEGjmZC+E4C
+
+# JUSUF
+restrict,port-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFAbzhys/0xjvpgWnVEN5s67Nta/zvJWQZYnu/jOvArB
