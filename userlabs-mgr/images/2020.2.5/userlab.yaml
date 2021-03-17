@@ -32,113 +32,118 @@ spec:
         user-jupyterlab: "true"
     spec:
       imagePullSecrets:
-      - name: regcred
+        - name: regcred
       containers:
-      - name: jupyterlab-_id_
-        image: jupyterjsc/easybuild-jovyan:0.4.8
-        imagePullPolicy: Always
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/bash", "-c", "/opt/apps/bin/bin/umount-judac; /opt/apps/bin/bin/umount-B2DROP;"]
-        securityContext:
-          privileged: true
-          capabilities:
-            add:
-              - SYS_ADMIN
-        command: ["/bin/bash", "/opt/apps/bin/start.sh"]
-        ports:
-        - containerPort: _port_
-        resources:
-          limits:
-            # memory: "_resource_limit_memory_"
-            # cpu: "_resource_limit_cpu_"
-            ephemeral-storage: "_resource_limit_storage_"
-        env:
-        - name: JUPYTERHUB_CANCEL_URL
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_CANCEL_URL
-        - name: JUPYTERHUB_API_URL
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_API_URL
-        - name: JUPYTERHUB_CLIENT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_CLIENT_ID
-        - name: JUPYTERHUB_USER
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_USER
-        - name: JUPYTERHUB_SERVICE_PREFIX
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_SERVICE_PREFIX
-        - name: JUPYTERHUB_BASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: JUPYTERHUB_BASE_URL
-        - name: SERVERNAMESHORT
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: SERVERNAMESHORT
-        - name: SERVICE_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: SERVICE_NAME
-        - name: REMOTE_NODE
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: REMOTE_NODE
-        - name: REMOTE_HUB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: REMOTE_HUB_PORT
-        - name: STARTUUIDCODE
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: STARTUUIDCODE
-        - name: PORT
-          valueFrom:
-            configMapKeyRef:
-              name: userlab-_id_-cm
-              key: PORT
-        - name: JUPYTERHUB_API_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: userlab-_id_-secret
-              key: JUPYTERHUB_API_TOKEN
-        volumeMounts:
-          - name: nfs-software
-            mountPath: "/p/software/hdfcloud/"
-          - name: nfs-userdata
-            mountPath: "/home/jovyan"
-          - name: nfs-jobs
-            mountPath: "/opt/apps/bin"
+        - name: jupyterlab-_id_
+          image: jupyterjsc/easybuild-jovyan:0.4.8
+          imagePullPolicy: Always
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  [
+                    "/bin/bash",
+                    "-c",
+                    "/opt/apps/bin/bin/umount-judac; /opt/apps/bin/bin/umount-B2DROP;",
+                  ]
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          command: ["/bin/bash", "/opt/apps/bin/start.sh"]
+          ports:
+            - containerPort: _port_
+          resources:
+            limits:
+              # memory: "_resource_limit_memory_"
+              # cpu: "_resource_limit_cpu_"
+              ephemeral-storage: "_resource_limit_storage_"
+          env:
+            - name: JUPYTERHUB_CANCEL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_CANCEL_URL
+            - name: JUPYTERHUB_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_API_URL
+            - name: JUPYTERHUB_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_CLIENT_ID
+            - name: JUPYTERHUB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_USER
+            - name: JUPYTERHUB_SERVICE_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_SERVICE_PREFIX
+            - name: JUPYTERHUB_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_BASE_URL
+            - name: SERVERNAMESHORT
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: SERVERNAMESHORT
+            - name: SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: SERVICE_NAME
+            - name: REMOTE_NODE
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: REMOTE_NODE
+            - name: REMOTE_HUB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: REMOTE_HUB_PORT
+            - name: STARTUUIDCODE
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: STARTUUIDCODE
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: PORT
+            - name: JUPYTERHUB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: userlab-_id_-secret
+                  key: JUPYTERHUB_API_TOKEN
+          volumeMounts:
+            - name: nfs-software
+              mountPath: "/p/software/hdfcloud/"
+            - name: nfs-userdata
+              mountPath: "/home/jovyan"
+            - name: nfs-jobs
+              mountPath: "/opt/apps/bin"
       securityContext:
         fsGroup: 100
       volumes:
-      - name: nfs-software
-        nfs:
-          path: _software_path_
-          server: _software_server_
-      - name: nfs-userdata
-        nfs:
-          path: _userdata_path_/_userid_
-          server: _userdata_server_
-      - name: nfs-jobs
-        nfs:
-          path: _jobs_path_/_id_/bin
-          server: _jobs_server_
+        - name: nfs-software
+          nfs:
+            path: _software_path_
+            server: _software_server_
+        - name: nfs-userdata
+          nfs:
+            path: _userdata_path_/_userid_
+            server: _userdata_server_
+        - name: nfs-jobs
+          nfs:
+            path: _jobs_path_/_id_/bin
+            server: _jobs_server_

@@ -1,124 +1,125 @@
 {
-	"reservation_systems": ["JURECA", "JUWELS"],
-        "refresh_required": [
-        	"Could not submit job: eu.unicore.security.AuthorisationException: There are no accessible targetsystem factories for: Name: CN=ANONYMOUS,O=UNKNOWN,OU=UNKNOWN"
-        ],
-	"error_mapping": {
-		"Staging in failed": "Could not upload necessary files to system."
-	},
-	"Registry": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/FZJ/rest/registries/default_registry",
-		"site_mapping": {
-			"JURECA": "FZJ_JURECA"
-		}
-	},
-	"JURECA": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JURECA/rest/core",
-		"strict_session_ids": true,
-		"LoginNode": ["jureca??.fz-juelich.de"],
-		"fuser": "ljupyter",
-		"host": "jureca.fz-juelich.de",
-		"project_kernel": [],
-		"project_symlink": [],
-                "nodes": ["jureca04"],
-                "node_mapping": {
-                        "jureca04": "jrlogin04i",
-                        "jureca09": "jrlogin09i"
-                },
-                "remote_port": 25490,
-		"vos": ["admins", "my_vo"],
-		"vo_exclude_partition": {
-			"default": "LoginNode"
-		}
-	},
-	"JUWELS": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
-		"strict_session_ids": true,
-		"LoginNode": ["juwels09.fz-juelich.de"],
-		"LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
-		"fuser": "ljupyter",
-		"host": "juwels.fz-juelich.de",
-		"project_kernel": ["training2020"],
-		"project_symlink": ["training2020"],
-		"nodes": ["juwels09"],
-		"node_mapping": {
-			"juwels09": "jwlogin09.ib.juwels.fzj.de"
-		},
-                "remote_port": 25490,
-		"vo_exclude_partition": {
-			"default": ["LoginNodeVis", "batch", "devel"],
-			"my_vo": ["LoginNode", "LoginNodeVis", "booster", "batch", "devel", "develgpus"]
-		}
-	},
-	"JUSUF": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUSUF/rest/core",
-		"strict_session_ids": true,
-		"LoginNode": ["jusuf?.fz-juelich.de"],
-		"fuser": "ljupyter",
-		"host": "jusuf.fz-juelich.de",
-		"project_kernel": [
-	        	"training2005",
-	        	"covid19dynstat"
-		],
-		"project_symlink": [
-	        	"training2005",
-	        	"training2019"
-		],
-                "nodes": ["jusuf01"],
-                "node_mapping": {
-                        "jusuf01": "jsfl01",
-                        "jusuf02": "jsfl02"
-                },
-                "remote_port": 25490,
-		"vos": ["admins"],
-		"vo_exclude_partition": {
-			"no_admins": "LoginNode"
-		}
-	},
-	"HDFML": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/HDFML/rest/core",
-		"strict_session_ids": true,
-		"LoginNode": ["hdfmll??.fz-juelich.de"],
-		"fuser": "ljupyter",
-		"host": "hdfml.fz-juelich.de",
-		"project_kernel": [],
-		"project_symlink": [],
-                "nodes": ["hdfml01"],
-                "node_mapping": {
-                        "hdfml01": "hdfmll01"
-                },
-                "remote_port": 25490,
-		"vos": ["admins"],
-		"vo_exclude_partition": {
-			"no_admins": "LoginNode"
-		}
-	},
-	"DEEP": {
-		"base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
-		"strict_session_ids": true,
-		"LoginNode": ["hdfmll??.fz-juelich.de"],
-		"fuser": "ljupyter",
-		"host": "hdfml.fz-juelich.de",
-		"project_kernel": ["training2012"],
-		"project_symlink": ["training2012"],
-                "nodes": ["hdfml01"],
-                "node_mapping": {
-                        "deep01": "deepv"
-                },
-		"partition_mapping": {
-			"booster": "dp-esb",
-			"cpu": "dp-cn",
-			"dam": "dp-dam"
-		},
-		"project_mapping": {
-			"cdeep": "deep",
-			"cjsc": "cjsc",
-			"eap_test": "eap_test"
-		},
-                "remote_port": 25490,
-		"vos": ["admins"],
-		"vo_exclude_partition": {
-			"no_admins": "LoginNode"
-		}
-	}
+  "reservation_systems": ["JURECA", "JUWELS"],
+  "refresh_required": [
+    "Could not submit job: eu.unicore.security.AuthorisationException: There are no accessible targetsystem factories for: Name: CN=ANONYMOUS,O=UNKNOWN,OU=UNKNOWN"
+  ],
+  "error_mapping": {
+    "Staging in failed": "Could not upload necessary files to system."
+  },
+  "Registry": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/FZJ/rest/registries/default_registry",
+    "site_mapping": {
+      "JURECA": "FZJ_JURECA"
+    }
+  },
+  "JURECA": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JURECA/rest/core",
+    "strict_session_ids": true,
+    "LoginNode": ["jureca??.fz-juelich.de"],
+    "fuser": "ljupyter",
+    "host": "jureca.fz-juelich.de",
+    "project_kernel": [],
+    "project_symlink": [],
+    "nodes": ["jureca04"],
+    "node_mapping": {
+      "jureca04": "jrlogin04i",
+      "jureca09": "jrlogin09i"
+    },
+    "remote_port": 25490,
+    "vos": ["admins", "my_vo"],
+    "vo_exclude_partition": {
+      "default": "LoginNode"
+    }
+  },
+  "JUWELS": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
+    "strict_session_ids": true,
+    "LoginNode": ["juwels09.fz-juelich.de"],
+    "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
+    "fuser": "ljupyter",
+    "host": "juwels.fz-juelich.de",
+    "project_kernel": ["training2020"],
+    "project_symlink": ["training2020"],
+    "nodes": ["juwels09"],
+    "node_mapping": {
+      "juwels09": "jwlogin09.ib.juwels.fzj.de"
+    },
+    "remote_port": 25490,
+    "vo_exclude_partition": {
+      "default": ["LoginNodeVis", "batch", "devel"],
+      "my_vo": [
+        "LoginNode",
+        "LoginNodeVis",
+        "booster",
+        "batch",
+        "devel",
+        "develgpus"
+      ]
+    }
+  },
+  "JUSUF": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUSUF/rest/core",
+    "strict_session_ids": true,
+    "LoginNode": ["jusuf?.fz-juelich.de"],
+    "fuser": "ljupyter",
+    "host": "jusuf.fz-juelich.de",
+    "project_kernel": ["training2005", "covid19dynstat"],
+    "project_symlink": ["training2005", "training2019"],
+    "nodes": ["jusuf01"],
+    "node_mapping": {
+      "jusuf01": "jsfl01",
+      "jusuf02": "jsfl02"
+    },
+    "remote_port": 25490,
+    "vos": ["admins"],
+    "vo_exclude_partition": {
+      "no_admins": "LoginNode"
+    }
+  },
+  "HDFML": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/HDFML/rest/core",
+    "strict_session_ids": true,
+    "LoginNode": ["hdfmll??.fz-juelich.de"],
+    "fuser": "ljupyter",
+    "host": "hdfml.fz-juelich.de",
+    "project_kernel": [],
+    "project_symlink": [],
+    "nodes": ["hdfml01"],
+    "node_mapping": {
+      "hdfml01": "hdfmll01"
+    },
+    "remote_port": 25490,
+    "vos": ["admins"],
+    "vo_exclude_partition": {
+      "no_admins": "LoginNode"
+    }
+  },
+  "DEEP": {
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
+    "strict_session_ids": true,
+    "LoginNode": ["hdfmll??.fz-juelich.de"],
+    "fuser": "ljupyter",
+    "host": "hdfml.fz-juelich.de",
+    "project_kernel": ["training2012"],
+    "project_symlink": ["training2012"],
+    "nodes": ["hdfml01"],
+    "node_mapping": {
+      "deep01": "deepv"
+    },
+    "partition_mapping": {
+      "booster": "dp-esb",
+      "cpu": "dp-cn",
+      "dam": "dp-dam"
+    },
+    "project_mapping": {
+      "cdeep": "deep",
+      "cjsc": "cjsc",
+      "eap_test": "eap_test"
+    },
+    "remote_port": 25490,
+    "vos": ["admins"],
+    "vo_exclude_partition": {
+      "no_admins": "LoginNode"
+    }
+  }
 }

@@ -40,4 +40,4 @@ if [[ ! $? -eq 0 ]]; then
 fi
 
 
-jupyterhub-singleuser --allow-root --config /opt/apps/bin/config.py 
+jupyterhub-singleuser --allow-root --config /opt/apps/bin/config.py

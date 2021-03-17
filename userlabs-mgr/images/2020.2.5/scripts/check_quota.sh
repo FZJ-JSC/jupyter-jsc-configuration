@@ -10,4 +10,3 @@ BYTES_USED=$(echo $USED | awk '/[0-9]$/{print $1;next};/[gG]$/{printf "%u\n", $1
 echo $USED
 echo $BYTES_USED
 #/bin/bash ./check_quota.sh ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ${JUPYTERHUB_USER} ${STORAGE_USERDATA} &
-

@@ -1,5 +1,5 @@
 Host *
-    ServerAliveInterval 60 
+    ServerAliveInterval 60
     ServerAliveCountMax 5
 
 # HDF-Cloud Kubernetes

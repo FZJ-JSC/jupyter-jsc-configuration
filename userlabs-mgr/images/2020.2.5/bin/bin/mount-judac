@@ -5,7 +5,7 @@ if [[ $EC -eq 0 ]];then
     echo "/mnt/JUDAC is already mounted"
 else
     CMD=$(python3 /opt/apps/bin/bin/.uftp.py)
-    $CMD /mnt/JUDAC 2>/dev/null 
+    $CMD /mnt/JUDAC 2>/dev/null
     EC=$?
     if [[ $EC -eq 0 ]]; then
         if [[ -L /home/jovyan/JUDAC && -d /home/jovyan/JUDAC ]]; then

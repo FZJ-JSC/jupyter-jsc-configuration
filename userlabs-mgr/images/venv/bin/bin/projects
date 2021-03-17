@@ -43,7 +43,7 @@ elif [[ ${ACTION_ONE} == "Create a new project" ]]; then
             	elif [ -d ${PROJECT_HOME}/${REPLY} ]; then
 		    	echo "The project already exists."
 	    	else
-        
+
 		    	EC=$(curl -o /dev/null -s -w "%{http_code}\n" -X "POST" -H "uuidcode: $UUID" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" ${PROJECT_API}/${REPLY} 2> /dev/null)
 		    	if [[ $EC -eq 200 ]]; then
 				mkdir -p ${PROJECT_HOME}/${REPLY}
@@ -68,7 +68,7 @@ elif [[ ${ACTION_ONE} == "Manage project" ]]; then
 	else
 		echo "You have ${#ARRAY[@]} projects. Which one do you want to manage?"
 		select PROJECT in "${ARRAY[@]}"
-	       	do 
+	       	do
 			if [ ${#PROJECT} -eq 0 ]; then
 				echo "Please choose a project."
 			else
@@ -148,7 +148,7 @@ elif [ "${ACTION_ONE}" == "Delete a project" ]; then
 	else
 		echo "You have ${#ARRAY[@]} projects. Which one do you want to manage?"
 		select PROJECT in "${ARRAY[@]}"
-	       	do 
+	       	do
 			if [ ${#PROJECT} -eq 0 ]; then
 				echo "Please choose a project."
 			else
@@ -179,7 +179,7 @@ fi
 elif [ "${PREACTION_ONE}" == "Projects shared with me" ]; then
         SHAREDACTIONS=("List shared projects" "Remove me from project")
 	select ACTION in "${SHAREDACTIONS[@]}"
-	do 
+	do
 		if [ ${#ACTION} -eq 0 ]; then
 			echo "Please choose a valid action."
 		else
@@ -200,7 +200,7 @@ elif [ "${PREACTION_ONE}" == "Projects shared with me" ]; then
                 OUTPUT=$(python3 -c 'import json,sys; d=json.loads(sys.argv[1]); print(" ".join(d));' "$TMP")
 		if [[ -n $OUTPUT ]]; then
 			select PROJECT in "${OUTPUT[@]}"
-		       	do 
+		       	do
 				if [ ${#PROJECT} -eq 0 ]; then
 					echo "Please choose a project."
 				else

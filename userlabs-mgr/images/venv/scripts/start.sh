@@ -66,7 +66,7 @@ fi
 # Create userhome directory/volume if not already existing
 LOCAL_USERHOMES_PATH="/mnt/userdata"
 if [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
-    mkdir ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} 
+    mkdir ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}
     cp ${LOCAL_USERHOMES_PATH}/skel/.profile ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/.
     cp ${LOCAL_USERHOMES_PATH}/skel/.bashrc ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/.
     cp ${LOCAL_USERHOMES_PATH}/skel/.bash_logout ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/.
@@ -92,7 +92,7 @@ else
         >&2 echo "Used storage: ${USED_HUMAN}. Soft limit: ${STORAGE_USERDATA_SOFT}. Hard limit: ${STORAGE_USERDATA_HARD}."
         exit 231
     elif [[ $USED_BYTES -gt $STORAGE_SOFT_BYTES ]]; then
-        if [[ -f ${LOCAL_USERHOMES_PATH}/skel/motd.d/softlimit ]]; then  
+        if [[ -f ${LOCAL_USERHOMES_PATH}/skel/motd.d/softlimit ]]; then
             if [[ ! -d ${JOB_PATH}/bin/motd.d ]]; then
                 mkdir -p ${JOB_PATH}/bin/motd.d
             fi
