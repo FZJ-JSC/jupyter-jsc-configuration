@@ -5,6 +5,6 @@
 	},
 	"VirtualEnv": {
 		"internal_name": "venv",
-		"vos": ["admins"]
+		"vos": ["default", "admins"]
 	}
 }
