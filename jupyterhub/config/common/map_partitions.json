@@ -14,8 +14,8 @@
   "jusuf_gpus": "gpus",
   "jusuf_develgpus": "develgpus",
   "hdfml": "batch",
-  "deep_dam": "dp-dam",
-  "deep_cpu": "dp-cn",
-  "deep_booster": "dp-esb",
+  "deep_dam": "dam",
+  "deep_cpu": "cpu",
+  "deep_booster": "booster",
   "deep_ml-gpu": "ml-gpu"
 }
