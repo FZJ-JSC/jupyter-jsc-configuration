@@ -1,31 +1,32 @@
 #header {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
 }
 
 .footer-bottom {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
   margin: 0 auto;
 }
 
 #body {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
 }
 
 .background-wrapper {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
   min-height: 445px;
   max-height: calc(100% - 113px - 153px);
 
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840));
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
   min-width: 1370px;
   max-width: 94%;
 
   margin: 0 auto;
-  background: url("/hub/static/images/pages/home/background.jpg") top center no-repeat;
+  background: url("/hub/static/images/pages/home/background.jpg") top center
+    no-repeat;
   background-size: contain;
   position: absolute;
 
@@ -69,7 +70,7 @@
   border-radius: 6px !important;
 }
 
-.tr-header{
+.tr-header {
   font-weight: 500 !important;
 }
 
@@ -78,12 +79,13 @@ table {
   margin-bottom: 0 !important;
 }
 
-
-table,th,td {
-  border-bottom:1px solid black !important;
-  border-right:1px solid black !important;
-  border-collapse:collapse;
-  padding:3px;
+table,
+th,
+td {
+  border-bottom: 1px solid black !important;
+  border-right: 1px solid black !important;
+  border-collapse: collapse;
+  padding: 3px;
   vertical-align: middle !important;
 }
 
@@ -119,8 +121,13 @@ table,th,td {
   display: block;
 }
 
-.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-  border-top: 1px solid black; 
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+  border-top: 1px solid black;
   border-bottom: 0px solid black !important;
 }
 
@@ -172,15 +179,16 @@ table,th,td {
 
 .table-div {
   max-height: calc(100% - 8vh - 90px);
-  min-width: calc(1024px * .94) !important;
+  min-width: calc(1024px * 0.94) !important;
 }
 
 .table-stripped {
   background-color: blue !important;
 }
 
-.thead-sticky , .tbody-scroll {
-  min-width: calc(1024px * .94) !important;
+.thead-sticky,
+.tbody-scroll {
+  min-width: calc(1024px * 0.94) !important;
   border-left: 1px solid black !important;
   display: block;
 }
@@ -226,7 +234,7 @@ table,th,td {
   background-color: #004176;
   border-radius: 10px;
   whitespace: no-wrap;
-  padding: .2em 3vh !important;
+  padding: 0.2em 3vh !important;
 }
 
 .button-container-text {
@@ -238,7 +246,7 @@ table,th,td {
 }
 
 .button-container-text:before {
-  content: '';
+  content: "";
   display: inline-block;
   height: 100%;
   vertical-align: middle;
@@ -248,7 +256,7 @@ table,th,td {
 .button-container:focus,
 .button-container:hover {
   background-color: #225f8d;
-  border-color:#1b4c70;
+  border-color: #1b4c70;
 }
 
 .button-container-text > span {
@@ -263,7 +271,10 @@ table,th,td {
   margin-left: -0.25em;
 }
 
-.btn-primary, .btn-danger, .btn-url, .btn-start {
+.btn-primary,
+.btn-danger,
+.btn-url,
+.btn-start {
   font-family: Arial, helvetica, sans-serif, "Droid Sans" !important;
 }
 .btn-primary {
@@ -277,4 +288,3 @@ table,th,td {
 #Dashboards-div {
   display: none;
 }
-

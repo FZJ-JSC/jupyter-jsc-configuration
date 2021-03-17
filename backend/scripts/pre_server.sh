@@ -7,4 +7,3 @@ DEPLOYMENT="tunneling"
 
 kubectl -n ${NAMESPACE} expose deployment ${DEPLOYMENT} --type=ClusterIP --name=tunneling-service-${ID} --port=${PORT} --target-port=${PORT} --protocol=TCP
 exit $?
-

@@ -1,14 +1,14 @@
-.footer{
+.footer {
   //border-top:1px solid black;
   //border-bottom:1px solid black;
-  position:relative;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items:stretch;
-  bottom:0;
-  width:100%;
-  min-width:1024px;
-  height:153px;
+  align-items: stretch;
+  bottom: 0;
+  width: 100%;
+  min-width: 1024px;
+  height: 153px;
   /* Height of the footer */
 }
 
@@ -22,7 +22,7 @@
 }
 
 .footer-top {
-  display:flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
   margin: 0 auto;
@@ -58,12 +58,12 @@
   display: inline-block;
 }
 
-.footer-top > div  {
+.footer-top > div {
   margin: 0 15px;
   white-space: nowrap;
 }
 
-.footer-top > span, 
+.footer-top > span,
 .footer-top > div > a {
   font-weight: bold;
   display: inline-block;
@@ -94,7 +94,6 @@
 .ampel-span-show {
   display: inline-block !important;
   padding: 2px 8px 0px 8px !important;
-  
 }
 
 .footer-bottom-background {
@@ -141,4 +140,3 @@
 .helmholtz-logo {
   height: 36px;
 }
-

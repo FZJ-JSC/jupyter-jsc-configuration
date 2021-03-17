@@ -32,10 +32,15 @@
   margin-right: 20px;
 }
 
-.navbar-nav > li > a:hover{
-  background: repeating-linear-gradient(to bottom, #FFFFFF, #FFFFFF 90.0%, #004671 90.1%, #004671 100%);
+.navbar-nav > li > a:hover {
+  background: repeating-linear-gradient(
+    to bottom,
+    #ffffff,
+    #ffffff 90%,
+    #004671 90.1%,
+    #004671 100%
+  );
 }
-
 
 .navbar-default .navbar-nav > li {
   margin: 0px 15px !important;
@@ -55,7 +60,8 @@
   color: #004176;
 }
 
-#logout, #login {
+#logout,
+#login {
   font-family: Arial, helvetica, sans-serif, "Droid Sans" !important;
 }
 #thenavbar > ul {

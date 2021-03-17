@@ -1,31 +1,32 @@
 #header {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
 }
 
 .footer-bottom {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
   margin: 0 auto;
 }
 
 #body {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
 }
 
 .background-wrapper {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
   min-height: 445px;
   max-height: calc(100% - 113px - 153px);
 
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840));
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
   min-width: 1024px;
   max-width: 94%;
 
   margin: 0 auto;
-  background: url("/hub/static/images/pages/2FA/background.jpg") top center no-repeat;
+  background: url("/hub/static/images/pages/2FA/background.jpg") top center
+    no-repeat;
   background-size: contain;
   position: absolute;
 
@@ -46,7 +47,6 @@
   font-family: "Weissenhof_Grotesk", Arial, Helvetica, sans-serif;
   padding: 4vh 4vh 0 4vh;
 }
-
 
 .content > h1 {
   text-align: left;
@@ -76,7 +76,7 @@
 }
 
 .button-container {
-  border: solid .3vh white !important;
+  border: solid 0.3vh white !important;
   border-radius: 6px !important;
 }
 
@@ -88,7 +88,7 @@
 }
 
 .header-row > .btn-group {
-  margin-right:0px;
+  margin-right: 0px;
 }
 
 .dropdown-menu {

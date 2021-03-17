@@ -1,31 +1,32 @@
 #header {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
 }
 
 .footer-bottom {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
   max-width: 94% !important;
   margin: 0 auto;
 }
 
 #body {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
 }
 
 .background-wrapper {
-  height: calc( 94vw * calc(840 / 1810));
+  height: calc(94vw * calc(840 / 1810));
   min-height: 445px;
   max-height: calc(100% - 113px - 153px);
 
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840));
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
   min-width: 1024px;
   max-width: 94%;
 
   margin: 0 auto;
-  background: url("/hub/static/images/pages/spawn/background.jpg") top center no-repeat;
+  background: url("/hub/static/images/pages/spawn/background.jpg") top center
+    no-repeat;
   background-size: contain;
   position: absolute;
 
@@ -44,7 +45,7 @@
 }
 
 .bottom-button:hover {
-  background-color:#225f8d !important;
+  background-color: #225f8d !important;
   border: solid 1px #225f8d !important;
   border-radius: 6px !important;
 }
@@ -56,7 +57,6 @@
   border-radius: 6px !important;
 }
 
-
 .col-sm-8 {
   width: 390px !important;
 }
@@ -64,10 +64,6 @@
 .col-sm-offset-2 {
   margin-left: 0 !important;
 }
-
-
-
-
 
 .pull-right {
   text-align: right !important;
@@ -97,12 +93,11 @@
   padding-left: 0px !important;
 }
 
-
-.content  h2{
+.content h2 {
   color: #004176;
 }
 
-.tr-header{
+.tr-header {
   font-weight: 500 !important;
 }
 
@@ -111,11 +106,12 @@ table {
   margin-bottom: 5px !important;
 }
 
-
-table,th,td {
-  border:1px solid black;
-  border-collapse:collapse;
-  padding:3px;
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 3px;
   vertical-align: middle !important;
 }
 
@@ -136,9 +132,54 @@ table,th,td {
   overflow: auto;
 }
 
-.material-switch > input[type="checkbox"] {display: none;} .material-switch > label { cursor: pointer; height: 0px; position: relative; width: 40px; } .material-switch > label::before { background: rgb(0, 0, 0); box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5); border-radius: 8px; content: ''; height: 16px; margin-top: -8px; margin-left:-40px; position:absolute; opacity: 0.3; transition: all 0.4s ease-in-out; width: 40px; } .material-switch > label::after { background: rgb(255, 255, 255); border-radius: 16px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); content: ''; height: 24px; left: -4px; margin-top: -8px; position: absolute; top: -4px; transition: all 0.3s ease-in-out; width: 24px; } .material-switch > input[type="checkbox"]:checked + label::before { background: inherit; opacity: 0.5; } .material-switch > input[type="checkbox"]:checked + label::after { background: inherit; left: 20px; }.tooltip-inner {max-width: 320px; /* If max-width does not work, try using width instead */ width: 320px; text-align:left;}
-
-
+.material-switch > input[type="checkbox"] {
+  display: none;
+}
+.material-switch > label {
+  cursor: pointer;
+  height: 0px;
+  position: relative;
+  width: 40px;
+}
+.material-switch > label::before {
+  background: rgb(0, 0, 0);
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  content: "";
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -40px;
+  position: absolute;
+  opacity: 0.3;
+  transition: all 0.4s ease-in-out;
+  width: 40px;
+}
+.material-switch > label::after {
+  background: rgb(255, 255, 255);
+  border-radius: 16px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  content: "";
+  height: 24px;
+  left: -4px;
+  margin-top: -8px;
+  position: absolute;
+  top: -4px;
+  transition: all 0.3s ease-in-out;
+  width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+  background: inherit;
+  opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+  background: inherit;
+  left: 20px;
+}
+.tooltip-inner {
+  max-width: 320px; /* If max-width does not work, try using width instead */
+  width: 320px;
+  text-align: left;
+}
 
 .custom-div > div > font,
 .custom-div > div > p > font {
@@ -147,26 +188,25 @@ table,th,td {
 }
 
 .custom-div {
-  float:left;
+  float: left;
   text-align: left;
-  margin-right: 6px;    
+  margin-right: 6px;
   min-width: 0%;
 }
 .dropdown_custom {
-  margin-bottom: 2px;    
-  min-width: 100%;    
+  margin-bottom: 2px;
+  min-width: 100%;
 }
 .button_custom {
   border-style: solid;
-  padding-top:3px;
-  margin-top:-4px;
+  padding-top: 3px;
+  margin-top: -4px;
   text-align: right;
   background: white;
   border-color: black;
   color: black;
   min-width: 166px;
 }
-
 
 .label_custom {
   margin-right: 6px;
@@ -183,7 +223,6 @@ table,th,td {
   min-width: 110px;
 }
 
-
 .resource_label_custom {
   margin-right: 6px;
   height: 34px;
@@ -194,9 +233,8 @@ table,th,td {
   text-align: right;
   min-width: 192px;
   border: solid 1px black;
-  border-radius: 6px;      
+  border-radius: 6px;
 }
-
 
 .input_custom {
   float: unset;
@@ -208,7 +246,7 @@ table,th,td {
   border-radius: 6px;
 }
 .checkbox_li_span_custom {
-  color: rgb(243, 117, 36); 
+  color: rgb(243, 117, 36);
 }
 .checkbox_div_custom {
   display: display;
@@ -218,7 +256,6 @@ table,th,td {
   color: black;
   border-style: none;
 }
-
 
 .checkbox_li_custom {
   float: left;
@@ -239,13 +276,13 @@ table,th,td {
   float: right;
 }
 .table_custom {
-  width: 100%; 
+  width: 100%;
   float: left;
   max-width: 369px;
   margin-bottom: 8px;
   display: block;
   overflow-x: auto;
-  white-space: nowrap;  
+  white-space: nowrap;
   border-style: solid;
   border-width: thin;
   color: black !important;
@@ -256,15 +293,15 @@ table,th,td {
 .table_th_custom {
   text-align: left;
   padding-left: 5em;
-  min-width: 464px;  
+  min-width: 464px;
 }
 .table_tdl_custom {
-  text-align: left;  
+  text-align: left;
   padding-left: 6px;
   padding-right: 1em;
 }
 .table_tdr_custom {
-  text-align: left;  
+  text-align: left;
   padding-left: 1em;
   padding-right: 1em;
   border-left: 2px solid black;
