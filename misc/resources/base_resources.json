@@ -340,5 +340,192 @@
                 "TEXT": "Runtime (min) [_min_, _max_]"
             }
         }
+    },
+    "JUSUF": {
+        "LoginNode": {},
+        "batch": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    144
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "86400"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        },
+        "develgpus": {
+            "GPUS": {
+                "DEFAULT": "_max_",
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    1
+                ],
+                "TEXT": "GPUs [_min_, _max_]"
+            },
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    2
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    60,
+                    7200
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        },
+        "gpus": {
+            "GPUS": {
+                "DEFAULT": "_max_",
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    1
+                ],
+                "TEXT": "GPUs [_min_, _max_]"
+            },
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    60
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "86400"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        }
+    },
+    "DEEP": {
+        "LoginNode": {},
+        "dp-cn": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    50
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "72000"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        },
+        "dp-dam": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    16
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "72000"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        },
+        "dp-esb": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    25
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "72000"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        },
+        "ml-gpu": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    3
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    "60",
+                    "72000"
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        }
+    },
+    "HDFML": {
+        "LoginNode": {},
+        "batch": {
+            "Nodes": {
+                "DEFAULT": 1,
+                "DIVISOR": 1,
+                "MINMAX": [
+                    1,
+                    15
+                ],
+                "TEXT": "Nodes [_min_, _max_]"
+            },
+            "Runtime": {
+                "DEFAULT": 30,
+                "DIVISOR": 60,
+                "MINMAX": [
+                    60,
+                    86400
+                ],
+                "TEXT": "Runtime (min) [_min_, _max_]"
+            }
+        }
     }
 }
