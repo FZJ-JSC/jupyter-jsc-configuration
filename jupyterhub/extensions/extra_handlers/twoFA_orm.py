@@ -1,6 +1,3 @@
-from jupyterhub.orm import Base
-
-from tornado.log import app_log
 from alembic.script import ScriptDirectory
 from sqlalchemy import Boolean
 from sqlalchemy import Column
@@ -28,18 +25,21 @@ from sqlalchemy.sql.expression import bindparam
 from sqlalchemy.types import LargeBinary
 from sqlalchemy.types import Text
 from sqlalchemy.types import TypeDecorator
+from tornado.log import app_log
+
+from jupyterhub.orm import Base
+
 
 class TwoFAORM(Base):
-    """Information for TwoFA code.
-    """
+    """Information for TwoFA code."""
 
-    __tablename__ = 'TwoFA'
+    __tablename__ = "TwoFA"
     id = Column(Integer, primary_key=True)
 
-    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
-    code = Column(Unicode(255), default='')
-    generated = Column(Unicode(255), default='')
-    expired = Column(Unicode(255), default='')
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    code = Column(Unicode(255), default="")
+    generated = Column(Unicode(255), default="")
+    expired = Column(Unicode(255), default="")
 
     def __repr__(self):
         return "<TwoFA for {}>".format(self.user_id)
@@ -52,9 +52,10 @@ class TwoFAORM(Base):
         return db.query(cls).filter(cls.user_id == user_id).first()
 
     def validate_token(cls, db, user_id, code):
-        """If token is valide return True, otherwise False
-        """
-        obj = db.query(cls).filter(cls.user_id == user_id).filter(cls.code == code).all()
+        """If token is valide return True, otherwise False"""
+        obj = (
+            db.query(cls).filter(cls.user_id == user_id).filter(cls.code == code).all()
+        )
         app_log.debug("Query result: {}".format(obj))
         if len(obj) > 1 or len(obj) == 0:
             return False

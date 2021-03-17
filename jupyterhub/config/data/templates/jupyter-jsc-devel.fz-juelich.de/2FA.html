@@ -25,7 +25,7 @@
       <div class="rest" style="height: unset !important">
         <div class="image-text-container">
           <div class="image-container">
-            <img src="{{ static_url("images/pages/2FA/img01.png", include_version=False) }}" title="2-factor-authentication"/> 
+            <img src="{{ static_url("images/pages/2FA/img01.png", include_version=False) }}" title="2-factor-authentication"/>
           </div>
           <div class="text-container">
             <h3>Preparation</h3>
@@ -57,8 +57,8 @@
           <div class="text-container">
             <h3>New two-step login</h3>
             <p>After you installed & initialized your <b>OTP-App</b> it will provide you (in our case every 30 seconds)
-              with an unique <b>One-Time Password</b> whenever you want to login to Jupyter-JSC.</p> 
-            <p>The 2FA-Login will be almost as simple as before</p> 
+              with an unique <b>One-Time Password</b> whenever you want to login to Jupyter-JSC.</p>
+            <p>The 2FA-Login will be almost as simple as before</p>
             <ul>
               <li><b>Enter your JSC-account password</b>
                 <p>Each time you log in, you will enter your JSC-account password as usual.</p>
@@ -163,6 +163,6 @@ require(["home"]);
   });
 </script>
 
-<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("js/pages/2FA.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"/>
+<script src="{{static_url("js/pages/2FA.js", include_version=False) }}" type="text/javascript" charset="utf-8"/>
 {% endblock %}

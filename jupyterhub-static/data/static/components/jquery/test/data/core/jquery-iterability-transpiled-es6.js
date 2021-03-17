@@ -1,14 +1,14 @@
 /* global startIframeTest */
 
-jQuery( function() {
+jQuery(function () {
 	"use strict";
 
-	var elem = jQuery( "<div></div><span></span><a></a>" );
+	var elem = jQuery("<div></div><span></span><a></a>");
 	var result = "";
 	var i;
-	for ( i of elem ) {
+	for (i of elem) {
 		result += i.nodeName;
 	}
 
-	startIframeTest( result );
-} );
+	startIframeTest(result);
+});

@@ -4,7 +4,6 @@
 	"extends": "../.eslintrc-browser.json",
 
 	"env": {
-
 		// In source the browser env is not enabled but unit tests rely on them
 		// too much and we don't run them in non-browser environments anyway.
 		"browser": true

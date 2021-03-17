@@ -1,13 +1,13 @@
-from jupyterhub.handlers.pages import SpawnHandler
-
-from jupyterhub.utils import url_path_join
-from jupyterhub.utils import maybe_future
-
 from tornado import web
+
+from jupyterhub.handlers.pages import SpawnHandler
+from jupyterhub.utils import maybe_future
+from jupyterhub.utils import url_path_join
+
 
 class DirectSpawnHandler(SpawnHandler):
     @web.authenticated
-    async def get(self, for_user=None, server_name=''):
+    async def get(self, for_user=None, server_name=""):
         """GET spawns with user-specified options"""
         user = current_user = self.current_user
         if for_user is not None and for_user != user.name:
@@ -22,10 +22,10 @@ class DirectSpawnHandler(SpawnHandler):
         spawner = user.spawners[server_name]
 
         if spawner.ready:
-            self.log.warning( "%s is already running" % (spawner._log_name) )
+            self.log.warning("%s is already running" % (spawner._log_name))
             # raise web.HTTPError(400, "%s is already running" % (spawner._log_name))
         elif spawner.pending:
-            self.log.warning( "%s is pending %s" % (spawner._log_name, spawner.pending) )
+            self.log.warning("%s is pending %s" % (spawner._log_name, spawner.pending))
             # raise web.HTTPError(
             #     400, "%s is pending %s" % (spawner._log_name, spawner.pending)
             # )
@@ -35,7 +35,14 @@ class DirectSpawnHandler(SpawnHandler):
             if not options:
                 options = {}
                 for _key, _value in self.request.query_arguments.items():
-                    if _key in ["service", "system", "account", "project", "partition", "reservation"]:
+                    if _key in [
+                        "service",
+                        "system",
+                        "account",
+                        "project",
+                        "partition",
+                        "reservation",
+                    ]:
                         key = f"{_key}_input"
                     elif _key in ["Runtime", "Nodes", "GPUS"]:
                         key = f"resource_{_key}"
@@ -53,21 +60,29 @@ class DirectSpawnHandler(SpawnHandler):
 
             try:
                 if not options:
-                    raise web.HTTPError(404, "Servername %s is unknown and required arguments were not passed. Please use at least the following arguments: [service, system, account, project, partition]" % (server_name) )
+                    raise web.HTTPError(
+                        404,
+                        "Servername %s is unknown and required arguments were not passed. Please use at least the following arguments: [service, system, account, project, partition]"
+                        % (server_name),
+                    )
                 try:
-                    await self.spawn_single_user(user, server_name=server_name, options=options)
+                    await self.spawn_single_user(
+                        user, server_name=server_name, options=options
+                    )
                 except web.HTTPError:
                     self.log.exception("More Infos please")
                     del user.spawners[server_name]
                     user.update_memory()
-                    await self.spawn_single_user(user, server_name=server_name, options=options)
+                    await self.spawn_single_user(
+                        user, server_name=server_name, options=options
+                    )
             except Exception as e:
-                self.log.exception(
-                    "Failed to spawn single-user server with form"
-                )
+                self.log.exception("Failed to spawn single-user server with form")
                 spawner_options_form = await user.spawner.get_options_form()
                 form = await self._render_form(
-                    for_user=user, spawner_options_form=spawner_options_form, message=str(e)
+                    for_user=user,
+                    spawner_options_form=spawner_options_form,
+                    message=str(e),
                 )
                 self.finish(form)
                 return

@@ -1,7 +1,6 @@
 {
-	"timedelta":
-	{
-		"unit": "hours",
-		"value": 2
-	}
+  "timedelta": {
+    "unit": "hours",
+    "value": 2
+  }
 }

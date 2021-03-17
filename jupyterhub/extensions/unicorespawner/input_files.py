@@ -1,9 +1,10 @@
 import json
 import os
-import requests
 import time
-
 from contextlib import closing
+
+import requests
+
 
 def get_reservations(log=None):
     reservations_path = os.environ.get("RESERVATIONS_PATH")
@@ -26,12 +27,17 @@ def get_reservations(log=None):
                         reservations = json.load(f)
                 else:
                     if log:
-                        log.error("Could not update reservations file: {} {}".format(r.status_code, r.text))
+                        log.error(
+                            "Could not update reservations file: {} {}".format(
+                                r.status_code, r.text
+                            )
+                        )
         except:
             if log:
                 log.exception("Could not update reservations file")
-        
+
     return reservations["value"]
+
 
 def get_resources(log=None):
     resources_path = os.environ.get("RESOURCES_PATH")
@@ -44,7 +50,7 @@ def get_resources(log=None):
         resources["refresh_call_at"] = new_call_time
         with open(resources_path, "w") as f:
             json.dump(resources, f, indent=4, sort_keys=True)
-        
+
         # Call Backend to update resources file
         url = os.environ.get("BACKEND_RESOURCES_URL")
         try:
@@ -54,10 +60,13 @@ def get_resources(log=None):
                         resources = json.load(f)
                 else:
                     if log:
-                        log.error("Could not update resources file: {} {}".format(r.status_code, r.text))
+                        log.error(
+                            "Could not update resources file: {} {}".format(
+                                r.status_code, r.text
+                            )
+                        )
         except:
             if log:
                 log.exception("Could not update resources file")
-        
-    return resources["value"]
 
+    return resources["value"]

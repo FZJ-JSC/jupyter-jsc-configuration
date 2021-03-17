@@ -1,16 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html id="documentElement" class="box">
 	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<meta name="description" content="horizontal values 2^N; vertical doubled">
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta
+			name="description"
+			content="horizontal values 2^N; vertical doubled"
+		/>
 		<title>Nonempty margin/border/padding/position</title>
 		<style type="text/css" media="screen">
 			/* work with convenient classes, units, and dimensions */
-			.static { position: static; }
-			.relative { position: relative; }
-			.absolute { position: absolute; }
-			.fixed { position: fixed; }
+			.static {
+				position: static;
+			}
+			.relative {
+				position: relative;
+			}
+			.absolute {
+				position: absolute;
+			}
+			.fixed {
+				position: fixed;
+			}
 			.box {
 				font-size: 4px;
 				border-style: solid;
@@ -19,26 +29,29 @@
 
 			/* start the exponential scales, reserving the first bit for scroll position */
 			.box {
-				border-width:    1em         0.5em;
-				top:             2em; left:    1em;
-				margin:          4em           2em;
-				padding:         8em           4em;
+				border-width: 1em 0.5em;
+				top: 2em;
+				left: 1em;
+				margin: 4em 2em;
+				padding: 8em 4em;
 			}
 			#documentElement {
-				margin:         16em           8em;
-				border-width:   32em          16em;
-				padding:        64em          32em;
+				margin: 16em 8em;
+				border-width: 32em 16em;
+				padding: 64em 32em;
 			}
 			#body {
-				margin:        128em          64em;
-				border-width:  256em         128em;
-				padding:       512em         256em;
+				margin: 128em 64em;
+				border-width: 256em 128em;
+				padding: 512em 256em;
 			}
 			#documentElement {
-				top:          1024em; left:  512em;
+				top: 1024em;
+				left: 512em;
 			}
 			#body {
-				top:          2048em; left: 1024em;
+				top: 2048em;
+				left: 1024em;
 			}
 
 			/* style for humans */
@@ -69,31 +82,39 @@
 		<script src="../../jquery.js"></script>
 		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery( function() {
-				window.scrollTo( 1, 2 );
-				setTimeout( startIframeTest, 13 );
-			} );
+			jQuery(function () {
+				window.scrollTo(1, 2);
+				setTimeout(startIframeTest, 13);
+			});
 		</script>
 	</head>
 	<body id="body" class="box">
 		<div id="relative" class="relative box">
-			<div id="relative-relative" class="relative box"><code
-				>relative &gt; relative</code></div>
-			<div id="relative-absolute" class="absolute box"><code
-				>relative &gt; absolute</code></div>
+			<div id="relative-relative" class="relative box">
+				<code>relative &gt; relative</code>
+			</div>
+			<div id="relative-absolute" class="absolute box">
+				<code>relative &gt; absolute</code>
+			</div>
 		</div>
 		<div id="absolute" class="absolute box">
-			<div id="absolute-relative" class="relative box"><code
-				>absolute &gt; relative</code></div>
-			<div id="absolute-absolute" class="absolute box"><code
-				>absolute &gt; absolute</code></div>
+			<div id="absolute-relative" class="relative box">
+				<code>absolute &gt; relative</code>
+			</div>
+			<div id="absolute-absolute" class="absolute box">
+				<code>absolute &gt; absolute</code>
+			</div>
 		</div>
 		<div id="fixed" class="fixed box">
-			<div id="fixed-relative" class="relative box"><code
-				>fixed &gt; relative</code></div>
-			<div id="fixed-absolute" class="absolute box"><code
-				>fixed &gt; absolute</code></div>
+			<div id="fixed-relative" class="relative box">
+				<code>fixed &gt; relative</code>
+			</div>
+			<div id="fixed-absolute" class="absolute box">
+				<code>fixed &gt; absolute</code>
+			</div>
 		</div>
-		<p id="positionTest" class="absolute">position:absolute with no top/left values</p>
+		<p id="positionTest" class="absolute">
+			position:absolute with no top/left values
+		</p>
 	</body>
 </html>

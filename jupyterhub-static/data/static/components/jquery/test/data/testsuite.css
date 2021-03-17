@@ -108,28 +108,56 @@ div#fx-tests div.noback {
 	display: none;
 }
 
-#nothiddendiv { font-size: 16px; }
-#nothiddendivchild.em { font-size: 2em; }
-#nothiddendivchild.prct { font-size: 150%; }
+#nothiddendiv {
+	font-size: 16px;
+}
+#nothiddendivchild.em {
+	font-size: 2em;
+}
+#nothiddendivchild.prct {
+	font-size: 150%;
+}
 
 /* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
-body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif) no-repeat -1000px 0; }
+body,
+div {
+	background: url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif)
+		no-repeat -1000px 0;
+}
 
 /* #10501 */
-section { background:#f0f; display:block; }
+section {
+	background: #f0f;
+	display: block;
+}
 
 /* #11971 */
-#foo { background: url(1x1.jpg) right bottom no-repeat; }
+#foo {
+	background: url(1x1.jpg) right bottom no-repeat;
+}
 
 /* #14824 */
-#span-14824 { display: block; }
+#span-14824 {
+	display: block;
+}
 
-#display { display: list-item !important; }
+#display {
+	display: list-item !important;
+}
 
-.block { display: block; }
-.inline { display: inline; }
-.list-item { display: list-item; }
-.hidden, .none { display: none; }
+.block {
+	display: block;
+}
+.inline {
+	display: inline;
+}
+.list-item {
+	display: list-item;
+}
+.hidden,
+.none {
+	display: none;
+}
 
 #div-gh-2836 {
 	position: relative;
@@ -143,6 +171,7 @@ section { background:#f0f; display:block; }
 	margin: 0;
 }
 
-.border-box, .border-box * {
+.border-box,
+.border-box * {
 	box-sizing: border-box;
 }

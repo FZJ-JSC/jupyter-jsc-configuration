@@ -1,12 +1,12 @@
-define( [
+define([
 	"../core",
 	"../var/documentElement",
-	"../selector" // jQuery.contains
-], function( jQuery, documentElement ) {
+	"../selector", // jQuery.contains
+], function (jQuery, documentElement) {
 	"use strict";
 
-	var isAttached = function( elem ) {
-			return jQuery.contains( elem.ownerDocument, elem );
+	var isAttached = function (elem) {
+			return jQuery.contains(elem.ownerDocument, elem);
 		},
 		composed = { composed: true };
 
@@ -15,12 +15,14 @@ define( [
 	// Support: iOS 10.0-10.2 only
 	// Early iOS 10 versions support `attachShadow` but not `getRootNode`,
 	// leading to errors. We need to check for `getRootNode`.
-	if ( documentElement.getRootNode ) {
-		isAttached = function( elem ) {
-			return jQuery.contains( elem.ownerDocument, elem ) ||
-				elem.getRootNode( composed ) === elem.ownerDocument;
+	if (documentElement.getRootNode) {
+		isAttached = function (elem) {
+			return (
+				jQuery.contains(elem.ownerDocument, elem) ||
+				elem.getRootNode(composed) === elem.ownerDocument
+			);
 		};
 	}
 
 	return isAttached;
-} );
+});

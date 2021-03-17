@@ -1,28 +1,24 @@
 "use strict";
 
-var fs = require( "fs" );
+var fs = require("fs");
 
-module.exports = function( Release ) {
-
+module.exports = function (Release) {
 	const distFiles = [
 		"dist/jquery.js",
 		"dist/jquery.min.js",
 		"dist/jquery.min.map",
 		"dist/jquery.slim.js",
 		"dist/jquery.slim.min.js",
-		"dist/jquery.slim.min.map"
+		"dist/jquery.slim.min.map",
 	];
-	const filesToCommit = [
-		...distFiles,
-		"src/core.js"
-	];
-	const cdn = require( "./release/cdn" );
-	const dist = require( "./release/dist" );
-	const ensureSizzle = require( "./release/ensure-sizzle" );
+	const filesToCommit = [...distFiles, "src/core.js"];
+	const cdn = require("./release/cdn");
+	const dist = require("./release/dist");
+	const ensureSizzle = require("./release/ensure-sizzle");
 
 	const npmTags = Release.npmTags;
 
-	Release.define( {
+	Release.define({
 		npmPublish: true,
 		issueTracker: "github",
 
@@ -30,18 +26,18 @@ module.exports = function( Release ) {
 		 * Ensure the repo is in a proper state before release
 		 * @param {Function} callback
 		 */
-		checkRepoState: function( callback ) {
-			ensureSizzle( Release, callback );
+		checkRepoState: function (callback) {
+			ensureSizzle(Release, callback);
 		},
 
 		/**
 		 * Set the version in the src folder for distributing AMD
 		 */
-		_setSrcVersion: function() {
+		_setSrcVersion: function () {
 			var corePath = __dirname + "/../src/core.js",
-				contents = fs.readFileSync( corePath, "utf8" );
-			contents = contents.replace( /@VERSION/g, Release.newVersion );
-			fs.writeFileSync( corePath, contents, "utf8" );
+				contents = fs.readFileSync(corePath, "utf8");
+			contents = contents.replace(/@VERSION/g, Release.newVersion);
+			fs.writeFileSync(corePath, contents, "utf8");
 		},
 
 		/**
@@ -50,16 +46,16 @@ module.exports = function( Release ) {
 		 * committed before creating the tag.
 		 * @param {Function} callback
 		 */
-		generateArtifacts: function( callback ) {
-			Release.exec( "npx grunt", "Grunt command failed" );
+		generateArtifacts: function (callback) {
+			Release.exec("npx grunt", "Grunt command failed");
 			Release.exec(
 				"npx grunt custom:slim --filename=jquery.slim.js && " +
 					"npx grunt remove_map_comment --filename=jquery.slim.js",
 				"Grunt custom failed"
 			);
-			cdn.makeReleaseCopies( Release );
+			cdn.makeReleaseCopies(Release);
 			Release._setSrcVersion();
-			callback( filesToCommit );
+			callback(filesToCommit);
 		},
 
 		/**
@@ -67,8 +63,7 @@ module.exports = function( Release ) {
 		 * It was changed to reuse npm publish code in jquery-release
 		 * for publishing the distribution repo instead
 		 */
-		npmTags: function() {
-
+		npmTags: function () {
 			// origRepo is not defined if dist was skipped
 			Release.dir.repo = Release.dir.origRepo || Release.dir.repo;
 			return npmTags();
@@ -78,17 +73,17 @@ module.exports = function( Release ) {
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
 		 */
-		dist: function( callback ) {
-			cdn.makeArchives( Release, function() {
-				dist( Release, distFiles, callback );
-			} );
-		}
-	} );
+		dist: function (callback) {
+			cdn.makeArchives(Release, function () {
+				dist(Release, distFiles, callback);
+			});
+		},
+	});
 };
 
 module.exports.dependencies = [
 	"archiver@5.2.0",
 	"shelljs@0.8.4",
 	"inquirer@8.0.0",
-	"chalk@4.1.0"
+	"chalk@4.1.0",
 ];

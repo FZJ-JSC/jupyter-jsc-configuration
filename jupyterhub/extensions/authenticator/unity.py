@@ -1,19 +1,19 @@
-import os
-import uuid
-
-
-from datetime import datetime
-from tornado.httpclient import HTTPClientError, HTTPRequest
-from oauthenticator.generic import GenericOAuthenticator
-import time
-from contextlib import closing
-import requests
 import json
+import os
 import re
-from subprocess import Popen, PIPE
+import time
+import uuid
+from contextlib import closing
+from datetime import datetime
+from subprocess import PIPE
+from subprocess import Popen
 
-
+import requests
+from oauthenticator.generic import GenericOAuthenticator
+from tornado.httpclient import HTTPClientError
+from tornado.httpclient import HTTPRequest
 from traitlets import Unicode
+
 from jupyterhub.handlers.login import LogoutHandler
 from jupyterhub.jupyterjsc.utils.vo import get_vos
 
@@ -23,10 +23,21 @@ def get_hpc_accounts_via_ssh(username, log=None):
     ssh_user = os.environ.get("GET_HPC_ACCOUNTS_SSH_USER")
     ssh_host = os.environ.get("GET_HPC_ACCOUNTS_SSH_HOST")
     if username.endswith("@fz-juelich.de"):
-        username = username[:-len("@fz-juelich.de")]
-    cmd = ["/usr/bin/ssh", "-oLogLevel=ERROR", "-oStrictHostKeyChecking=no", "-oUserKnownHostsFile=/dev/null", "-i", f"{ssh_key}", f"{ssh_user}@{ssh_host}", f",{username}"]
+        username = username[: -len("@fz-juelich.de")]
+    cmd = [
+        "/usr/bin/ssh",
+        "-oLogLevel=ERROR",
+        "-oStrictHostKeyChecking=no",
+        "-oUserKnownHostsFile=/dev/null",
+        "-i",
+        f"{ssh_key}",
+        f"{ssh_user}@{ssh_host}",
+        f",{username}",
+    ]
     p = Popen(cmd, stderr=PIPE, stdout=PIPE)
-    outb, errb = p.communicate(timeout=int(os.environ.get("GET_HPC_ACCOUNTS_SSH_TIMEOUT", "3")))
+    outb, errb = p.communicate(
+        timeout=int(os.environ.get("GET_HPC_ACCOUNTS_SSH_TIMEOUT", "3"))
+    )
     out = outb.decode("utf-8")
     # err = errb.decode("utf-8")
     return_code = p.returncode
@@ -38,13 +49,18 @@ def get_hpc_accounts_via_ssh(username, log=None):
                 "juwels": "juwels_devel",
                 "juwels_gpus": "juwels_develgpus",
                 "jusuf_gpus": "jusuf_develgpus",
-                "deep_cpu": "deep_ml-gpu"
+                "deep_cpu": "deep_ml-gpu",
             }
             to_add = []
             for entry in list_out:
                 partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
                 if partition in default_partitions.keys():
-                    to_add.append(entry.replace(f",{partition},", ",{},".format(default_partitions[partition])))
+                    to_add.append(
+                        entry.replace(
+                            f",{partition},",
+                            ",{},".format(default_partitions[partition]),
+                        )
+                    )
             list_out.extend(to_add)
     except:
         if log:
@@ -72,11 +88,15 @@ class UnityOAuthenticator(GenericOAuthenticator):
         tic = time.time()
         ret = False
         auth_state = await user.get_auth_state()
-        timestamp = int(time.time()) + int(os.environ.get("UNITY_REFRESH_THRESHOLD", "600")) 
-        if force or timestamp >= int(auth_state.get('exp', timestamp)):
+        timestamp = int(time.time()) + int(
+            os.environ.get("UNITY_REFRESH_THRESHOLD", "600")
+        )
+        if force or timestamp >= int(auth_state.get("exp", timestamp)):
             try:
                 refresh_token_save = auth_state.get("refresh_token", None)
-                self.log.debug(f"Refresh {user.name} authentication. Rest time: {timestamp}")
+                self.log.debug(
+                    f"Refresh {user.name} authentication. Rest time: {timestamp}"
+                )
                 if not refresh_token_save:
                     self.log.debug(f"Auth state has no refresh token {auth_state}")
                     return False
@@ -84,17 +104,21 @@ class UnityOAuthenticator(GenericOAuthenticator):
                 params = {
                     "refresh_token": auth_state.get("refresh_token"),
                     "grant_type": "refresh_token",
-                    "scope": ' '.join(self.scope)
+                    "scope": " ".join(self.scope),
                 }
- 
+
                 headers = self._get_headers()
                 try:
-                    token_resp_json = await self._get_token(http_client, headers, params)
+                    token_resp_json = await self._get_token(
+                        http_client, headers, params
+                    )
                 except HTTPClientError:
                     self.log.exception("Could not receive new access token.")
                     return False
 
-                user_data_resp_json = await self._get_user_data(http_client, token_resp_json)
+                user_data_resp_json = await self._get_user_data(
+                    http_client, token_resp_json
+                )
 
                 if callable(self.username_key):
                     name = self.username_key(user_data_resp_json)
@@ -102,24 +126,36 @@ class UnityOAuthenticator(GenericOAuthenticator):
                     name = user_data_resp_json.get(self.username_key)
                     if not name:
                         self.log.error(
-                            "OAuth user contains no key %s: %s", self.username_key, user_data_resp_json
+                            "OAuth user contains no key %s: %s",
+                            self.username_key,
+                            user_data_resp_json,
                         )
                         return
 
                     if not token_resp_json.get("refresh_token", None):
                         token_resp_json["refresh_token"] = refresh_token_save
                     authentication = {
-                        "auth_state": self._create_auth_state(token_resp_json, user_data_resp_json)
+                        "auth_state": self._create_auth_state(
+                            token_resp_json, user_data_resp_json
+                        )
                     }
                     ret = await self.run_post_auth_hook(handler, authentication)
             except:
-                self.log.exception("Refresh of user's {name} access token failed".format(name=user.name))
+                self.log.exception(
+                    "Refresh of user's {name} access token failed".format(
+                        name=user.name
+                    )
+                )
                 ret = False
         else:
-            self.log.debug("No refresh required. {} seconds left".format(int(auth_state.get('exp')) - tic))
+            self.log.debug(
+                "No refresh required. {} seconds left".format(
+                    int(auth_state.get("exp")) - tic
+                )
+            )
             ret = True
         toc = time.time()
-        self.log.debug("Used time to refresh auth: {}".format(toc-tic))
+        self.log.debug("Used time to refresh auth: {}".format(toc - tic))
         return ret
 
 
@@ -134,13 +170,17 @@ async def post_auth_hook(authenticator, handler, authentication):
     }
     req = HTTPRequest(url, method="GET", headers=headers)
     resp = await http_client.fetch(req)
-    resp_json = json.loads(resp.body.decode('utf8', 'replace'))
-    authentication["auth_state"]["exp"] = resp_json.get('exp')
-    authentication["auth_state"]["last_login"] = datetime.now().strftime("%H:%M:%S %Y-%m-%d")
+    resp_json = json.loads(resp.body.decode("utf8", "replace"))
+    authentication["auth_state"]["exp"] = resp_json.get("exp")
+    authentication["auth_state"]["last_login"] = datetime.now().strftime(
+        "%H:%M:%S %Y-%m-%d"
+    )
 
     username = authentication.get("name", "unknown")
     admin = authentication.get("admin", False)
-    vo_active, vo_available = get_vos(authentication["auth_state"], username, admin=admin)
+    vo_active, vo_available = get_vos(
+        authentication["auth_state"], username, admin=admin
+    )
     authentication["auth_state"]["vo_active"] = vo_active
     authentication["auth_state"]["vo_available"] = vo_available
 
@@ -162,7 +202,11 @@ class BackendLogoutHandler(LogoutHandler):
         backend_logout_url = os.environ.get("BACKEND_URL_LOGOUT", "")
         user = self.current_user
         if user:
-            self.log.info("uuidcode={uuidcode} - action=logout username={username}".format(uuidcode=uuidcode, username=user.name))
+            self.log.info(
+                "uuidcode={uuidcode} - action=logout username={username}".format(
+                    uuidcode=uuidcode, username=user.name
+                )
+            )
             logout_all_devices = (
                 str(
                     self.get_argument(
@@ -183,43 +227,54 @@ class BackendLogoutHandler(LogoutHandler):
                             url = f"{backend_logout_url}/{stopall}"
 
                         headers = {
-                                "uuidcode": uuidcode,
-                                "accesstoken": auth_state["access_token"],
-                            }
-                    
+                            "uuidcode": uuidcode,
+                            "accesstoken": auth_state["access_token"],
+                        }
+
                         if stopall == "true":
-                            ''' Stop all Services for this username '''
+                            """ Stop all Services for this username """
                             headers["username"] = user.name
                         self.log.info(logout_all_devices)
                         self.log.info(stopall)
                         self.log.info(user.active)
-                        self.log.info(logout_all_devices and (stopall == "true" or not user.active))
-                        if logout_all_devices and (stopall == "true" or not user.active):
-                            ''' Only revoke refresh token if we logout from all devices and stop all services '''
-                            headers['refreshtoken'] = auth_state["refresh_token"]
+                        self.log.info(
+                            logout_all_devices
+                            and (stopall == "true" or not user.active)
+                        )
+                        if logout_all_devices and (
+                            stopall == "true" or not user.active
+                        ):
+                            """ Only revoke refresh token if we logout from all devices and stop all services """
+                            headers["refreshtoken"] = auth_state["refresh_token"]
                         self.log.info(url)
                         self.log.info(headers)
                         with closing(requests.post(url, headers=headers, json={})) as r:
                             if r.status_code != 204:
-                                self.log.warning(f"uuidcode={uuidcode} - Could not logout user in backend")
+                                self.log.warning(
+                                    f"uuidcode={uuidcode} - Could not logout user in backend"
+                                )
                                 self.log.warning(r.status_code)
                                 self.log.warning(r.text)
-        
+
                     auth_state["access_token"] = ""
                     auth_state["exp"] = "0"
                     if logout_all_devices and (stopall == "true" or not user.active):
-                        ''' Delete tokens '''
+                        """ Delete tokens """
                         auth_state["refresh_token"] = ""
 
                     if self.app.strict_session_ids:
                         if logout_all_devices:
-                            ''' Delete all session_ids '''
-                            auth_state['session_ids'] = []    
+                            """ Delete all session_ids """
+                            auth_state["session_ids"] = []
                         else:
-                            ''' Delete current session_id '''
+                            """ Delete current session_id """
                             current_session_id = self.get_session_cookie()
-                            self.log.debug("uuidcode={uuidcode} - Remove session id {id}".format(uuidcode=uuidcode, id=current_session_id))
-                            if current_session_id in auth_state.get('session_ids', []):
-                                auth_state['session_ids'].remove(current_session_id)
+                            self.log.debug(
+                                "uuidcode={uuidcode} - Remove session id {id}".format(
+                                    uuidcode=uuidcode, id=current_session_id
+                                )
+                            )
+                            if current_session_id in auth_state.get("session_ids", []):
+                                auth_state["session_ids"].remove(current_session_id)
                     await user.save_auth_state(auth_state)
             self._backend_logout_cleanup(user.name)

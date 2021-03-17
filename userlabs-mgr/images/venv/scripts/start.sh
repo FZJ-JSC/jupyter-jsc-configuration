@@ -10,18 +10,6 @@ JOB_PATH=${JOBS_BASE_PATH}/${ID}
 NAMESPACE="userlabs"
 SERVICE_NAME="jupyterlab-${ID}-service"
 
-#JUPYTERHUB_API_TOKEN=189ee49aeee34c1f81284bfec249ffcd
-#JUPYTERHUB_API_URL=http://proxy-service.jupyterjsc.svc.cluster.local:8000/hub/api/
-#JUPYTERHUB_CLIENT_ID=jupyterhub-user-t.kreuzer%40fz-juelich.de-jupyterlab_2
-#JUPYTERHUB_USER=t.kreuzer@fz-juelich.de
-#JUPYTERHUB_USER_ID=1
-#JUPYTERHUB_SERVICE_PREFIX=/user/t.kreuzer@fz-juelich.de/jupyterlab_2/
-#JUPYTERHUB_BASE_URL=/
-#JUPYTERHUB_STATUS_URL=users/t.kreuzer@fz-juelich.de/servers/jupyterlab_2/status
-#JUPYTERHUB_CANCEL_URL=users/t.kreuzer@fz-juelich.de/servers/jupyterlab_2/cancel
-#SERVERNAMESHORT=jupyterlab_2
-
-
 cp -r ${BASE_CONFIG} ${JOB_PATH}
 
 # Load VO specific variables
@@ -107,30 +95,32 @@ fi
 ### TODO Create Projects stuff
 
 # Create Deployment for this Lab
-sed -i -e "s/_userid_/${JUPYTERHUB_USER_ID}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_id_/${ID}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_service-name_/${SERVICE_NAME}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_storage_userdata_/${STORAGE_USERDATA}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_port_/${PORT}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_resource_limit_memory_/${RESOURCE_LIMIT_MEMORY}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_resource_limit_cpu_/${RESOURCE_LIMIT_CPU}/g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s/_resource_limit_storage_/${RESOURCE_LIMIT_STORAGE}/g" ${JOB_PATH}/userlab.yaml
+sed -i -e "s/_userid_/${JUPYTERHUB_USER_ID}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_id_/${ID}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_id_/${ID}/g" ${JOB_PATH}/yaml/service.yaml
+sed -i -e "s/_service-name_/${SERVICE_NAME}/g" ${JOB_PATH}/yaml/service.yaml
+sed -i -e "s/_storage_userdata_/${STORAGE_USERDATA}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_port_/${PORT}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_port_/${PORT}/g" ${JOB_PATH}/yaml/service.yaml
+sed -i -e "s/_resource_limit_memory_/${RESOURCE_LIMIT_MEMORY}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_resource_limit_cpu_/${RESOURCE_LIMIT_CPU}/g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s/_resource_limit_storage_/${RESOURCE_LIMIT_STORAGE}/g" ${JOB_PATH}/yaml/userlab.yaml
 
 # Storage replacement
 SOFTWARE_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-software --template='{{.spec.volumeName}}')
 SOFTWARE_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-software-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_software_path_|/export/${SOFTWARE_PVC}|g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s|_software_server_|${SOFTWARE_SERVER}|g" ${JOB_PATH}/userlab.yaml
+sed -i -e "s|_software_path_|/export/${SOFTWARE_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s|_software_server_|${SOFTWARE_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
 
 USERDATA_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-userdata --template='{{.spec.volumeName}}')
 USERDATA_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-userdata-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_userdata_path_|/export/${USERDATA_PVC}|g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s|_userdata_server_|${USERDATA_SERVER}|g" ${JOB_PATH}/userlab.yaml
+sed -i -e "s|_userdata_path_|/export/${USERDATA_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s|_userdata_server_|${USERDATA_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
 
 M_JOBS_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-jobs --template='{{.spec.volumeName}}')
 M_JOBS_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-jobs-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_jobs_path_|/export/${M_JOBS_PVC}|g" ${JOB_PATH}/userlab.yaml
-sed -i -e "s|_jobs_server_|${M_JOBS_SERVER}|g" ${JOB_PATH}/userlab.yaml
+sed -i -e "s|_jobs_path_|/export/${M_JOBS_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
+sed -i -e "s|_jobs_server_|${M_JOBS_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
 
 sed -i -e "s/_servername_/${SERVERNAMESHORT}/g" ${JOB_PATH}/bin/config.py
 
@@ -138,7 +128,7 @@ kubectl -n ${NAMESPACE} get deployment userlab-${ID} &> /dev/null
 EC=$?
 if [[ $EC -eq 0 ]]; then
 	echo "Deployment with this ID already exists"
-	kubectl -n ${NAMESPACE} delete -f ${JOB_PATH}/userlab.yaml
+	kubectl -n ${NAMESPACE} delete -f ${JOB_PATH}/yaml/userlab.yaml
 fi
 echo "Create Deployment"
-kubectl -n ${NAMESPACE} apply -f ${JOB_PATH}/userlab.yaml &
+kubectl -n ${NAMESPACE} apply -f ${JOB_PATH}/yaml &

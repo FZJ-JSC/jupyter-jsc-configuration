@@ -6,9 +6,12 @@ QUnit.config.scrolltop = false;
 
 const FILEPATH = "/test/data/testinit-jsdom.js";
 const activeScript = document.currentScript;
-const parentUrl = activeScript && activeScript.src ?
-	activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
-	"../";
+const parentUrl =
+	activeScript && activeScript.src
+		? activeScript.src.replace(/[?#].*/, "") +
+		  FILEPATH.replace(/[^/]+/g, "..") +
+		  "/"
+		: "../";
 const supportjQuery = this.jQuery;
 
 // baseURL is intentionally set to "data/" instead of "".
@@ -19,7 +22,7 @@ const supportjQuery = this.jQuery;
 const baseURL = parentUrl + "test/data/";
 
 // Setup global variables before loading jQuery for testing .noConflict()
-supportjQuery.noConflict( true );
+supportjQuery.noConflict(true);
 window.originaljQuery = this.jQuery = undefined;
 window.original$ = this.$ = "replaced";
 
@@ -34,21 +37,26 @@ window.original$ = this.$ = "replaced";
  * @example url("mock.php?foo=bar")
  * @result "data/mock.php?foo=bar&10538358345554"
  */
-function url( value ) {
-	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +
-		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
+function url(value) {
+	return (
+		baseURL +
+		value +
+		(/\?/.test(value) ? "&" : "?") +
+		new Date().getTime() +
+		"" +
+		parseInt(Math.random() * 100000, 10)
+	);
 }
 
 // The file-loading part of testinit.js#loadTests is handled by
 // jsdom Karma config; here we just need to trigger relevant APIs.
-this.loadTests = function() {
-
+this.loadTests = function () {
 	// Delay the initialization until after all the files are loaded
 	// as in the JSDOM case we load them via Karma (see Gruntfile.js)
 	// instead of directly in testinit.js.
-	window.addEventListener( "load", function() {
+	window.addEventListener("load", function () {
 		window.__karma__.start();
 		jQuery.noConflict();
 		QUnit.start();
-	} );
+	});
 };

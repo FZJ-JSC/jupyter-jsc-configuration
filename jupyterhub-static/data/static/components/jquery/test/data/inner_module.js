@@ -1,1 +1,1 @@
-QUnit.assert.ok( true, "evaluated: inner module with src" );
+QUnit.assert.ok(true, "evaluated: inner module with src");

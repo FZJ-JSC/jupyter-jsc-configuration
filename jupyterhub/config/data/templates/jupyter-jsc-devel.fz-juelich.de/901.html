@@ -39,7 +39,7 @@
           const timer = setTimeout(() => {
             reject(new Error('TIMEOUT'))
           }, ms)
-      
+
           promise
             .then(value => {
               clearTimeout(timer)
