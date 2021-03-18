@@ -11,7 +11,7 @@ if [ -d ${JOBS_ARCHIVE_PATH} ]; then
     rm -rf ${JOBS_ARCHIVE_PATH}
 fi
 
-kubectl -n ${NAMESPACE} delete -f ${JOB_PATH}/userlab.yaml &
+kubectl -n ${NAMESPACE} delete -f ${JOB_PATH}/yaml &
 kubectl -n ${NAMESPACE} delete configmap userlab-${ID}-cm
 kubectl -n ${NAMESPACE} delete secret userlab-${ID}-secret
 
