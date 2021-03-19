@@ -10,18 +10,6 @@ JOB_PATH=${JOBS_BASE_PATH}/${ID}
 NAMESPACE="userlabs"
 SERVICE_NAME="jupyterlab-${ID}-service"
 
-#JUPYTERHUB_API_TOKEN=189ee49aeee34c1f81284bfec249ffcd
-#JUPYTERHUB_API_URL=http://proxy-service.jupyterjsc.svc.cluster.local:8000/hub/api/
-#JUPYTERHUB_CLIENT_ID=jupyterhub-user-t.kreuzer%40fz-juelich.de-jupyterlab_2
-#JUPYTERHUB_USER=t.kreuzer@fz-juelich.de
-#JUPYTERHUB_USER_ID=1
-#JUPYTERHUB_SERVICE_PREFIX=/user/t.kreuzer@fz-juelich.de/jupyterlab_2/
-#JUPYTERHUB_BASE_URL=/
-#JUPYTERHUB_STATUS_URL=users/t.kreuzer@fz-juelich.de/servers/jupyterlab_2/status
-#JUPYTERHUB_CANCEL_URL=users/t.kreuzer@fz-juelich.de/servers/jupyterlab_2/cancel
-#SERVERNAMESHORT=jupyterlab_2
-
-
 cp -r ${BASE_CONFIG} ${JOB_PATH}
 
 # Load VO specific variables
