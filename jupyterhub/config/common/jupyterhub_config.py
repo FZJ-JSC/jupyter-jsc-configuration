@@ -25,7 +25,7 @@ c.ConfigurableHTTPProxy.should_start = False
 proxy_url = os.environ.get("PROXY_URL")
 c.ConfigurableHTTPProxy.api_url = f"{proxy_url}"
 
-c.JupyterHub.statsd_host = "graphite.jupyterjsc.svc.cluster.local"
+# c.JupyterHub.statsd_host = "graphite.jupyterjsc.svc.cluster.local"
 
 c.ConfigurableHTTPProxy.extra_spawn_routes_servername = [
     "/hub/api/users/_user_/servers/_server_/progress",
