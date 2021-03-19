@@ -21,6 +21,8 @@ class SetupTunnelAPIHandler(APIHandler):
         )
         backend_tunnel_url = os.environ.get("BACKEND_URL_TUNNEL")
         headers = {"Authorization": self.request.headers.get("Authorization", "None")}
+        if os.environ.get("BACKEND_SECRET", None):
+            headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
         url = url_path_join(
             f"{backend_tunnel_url}/",
             f"{startuuidcode}/",

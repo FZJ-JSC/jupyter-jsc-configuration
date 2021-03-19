@@ -20,8 +20,11 @@ def get_reservations(log=None):
 
         # Call Backend to update reservations file
         url = os.environ.get("BACKEND_RESERVATIONS_URL")
+        headers = {}
+        if os.environ.get("BACKEND_SECRET", None):
+            headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
         try:
-            with closing(requests.get(url, headers={}, verify=False)) as r:
+            with closing(requests.get(url, headers=headers, verify=False)) as r:
                 if r.status_code == 200:
                     with open(reservations_path, "r") as f:
                         reservations = json.load(f)
@@ -53,8 +56,11 @@ def get_resources(log=None):
 
         # Call Backend to update resources file
         url = os.environ.get("BACKEND_RESOURCES_URL")
+        headers = {}
+        if os.environ.get("BACKEND_SECRET", None):
+            headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
         try:
-            with closing(requests.get(url, headers={}, verify=False)) as r:
+            with closing(requests.get(url, headers=headers, verify=False)) as r:
                 if r.status_code == 200:
                     with open(resources_path, "r") as f:
                         resources = json.load(f)

@@ -230,24 +230,17 @@ class BackendLogoutHandler(LogoutHandler):
                             "uuidcode": uuidcode,
                             "accesstoken": auth_state["access_token"],
                         }
+                        if os.environ.get("BACKEND_SECRET", None):
+                            headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
 
                         if stopall == "true":
                             """ Stop all Services for this username """
                             headers["username"] = user.name
-                        self.log.info(logout_all_devices)
-                        self.log.info(stopall)
-                        self.log.info(user.active)
-                        self.log.info(
-                            logout_all_devices
-                            and (stopall == "true" or not user.active)
-                        )
                         if logout_all_devices and (
                             stopall == "true" or not user.active
                         ):
                             """ Only revoke refresh token if we logout from all devices and stop all services """
                             headers["refreshtoken"] = auth_state["refresh_token"]
-                        self.log.info(url)
-                        self.log.info(headers)
                         with closing(requests.post(url, headers=headers, json={})) as r:
                             if r.status_code != 204:
                                 self.log.warning(
