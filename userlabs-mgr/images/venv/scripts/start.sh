@@ -15,7 +15,7 @@ cp -r ${BASE_CONFIG} ${JOB_PATH}
 # Load VO specific variables
 TMP=$(curl -X "GET" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/user 2>/dev/null)
 VO=$(python3 -c 'import json,sys; d = json.loads(sys.argv[1]); out = d.get("auth_state", {}).get("vo_active", ""); print(out);' "$TMP")
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 40, "failed": false, "message": "", "html_message": "Start with VO: '"$VO"'"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}/hub/api/${JUPYTERHUB_STATUS_URL} &> ${JOB_PATH}/curl1.txt
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 40, "failed": false, "message": "", "html_message": "Start with VO: '"$VO"'"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}/hub/api/${JUPYTERHUB_STATUS_URL}
 #if [[ ! -f ${BASE_CONFIG}/VOs/${VO}.env ]]; then
 #	echo "VO specific configuration for ${VO} does not exist. Use default one"
 #	export $(grep -v '^#' ${BASE_CONFIG}/VOs/default.env | xargs)
@@ -32,7 +32,7 @@ if [[ $EC -eq 0 ]]; then
 fi
 
 echo "Create ConfigMap"
-kubectl -n ${NAMESPACE} create configmap userlab-${ID}-cm --from-literal=JUPYTERHUB_CANCEL_URL=${JUPYTERHUB_CANCEL_URL} --from-literal=JUPYTERHUB_API_URL=${JUPYTERHUB_API_URL} --from-literal=JUPYTERHUB_CLIENT_ID=${JUPYTERHUB_CLIENT_ID} --from-literal=JUPYTERHUB_USER=${JUPYTERHUB_USER} --from-literal=JUPYTERHUB_SERVICE_PREFIX=${JUPYTERHUB_SERVICE_PREFIX} --from-literal=JUPYTERHUB_BASE_URL=${JUPYTERHUB_BASE_URL} --from-literal=PORT=${PORT} --from-literal=STARTUUIDCODE=${STARTUUIDCODE} --from-literal=SERVERNAMESHORT=${SERVERNAMESHORT} --from-literal=REMOTE_HUB_PORT=${REMOTE_HUB_PORT} --from-literal=REMOTE_NODE=${REMOTE_NODE} --from-literal=SERVICE_NAME=${SERVICE_NAME} &> ${JOB_PATH}/kubectl1.txt
+kubectl -n ${NAMESPACE} create configmap userlab-${ID}-cm --from-literal=JUPYTERHUB_CANCEL_URL=${JUPYTERHUB_CANCEL_URL} --from-literal=JUPYTERHUB_API_URL=${JUPYTERHUB_API_URL} --from-literal=JUPYTERHUB_CLIENT_ID=${JUPYTERHUB_CLIENT_ID} --from-literal=JUPYTERHUB_USER=${JUPYTERHUB_USER} --from-literal=JUPYTERHUB_SERVICE_PREFIX=${JUPYTERHUB_SERVICE_PREFIX} --from-literal=JUPYTERHUB_BASE_URL=${JUPYTERHUB_BASE_URL} --from-literal=PORT=${PORT} --from-literal=STARTUUIDCODE=${STARTUUIDCODE} --from-literal=SERVERNAMESHORT=${SERVERNAMESHORT} --from-literal=REMOTE_HUB_PORT=${REMOTE_HUB_PORT} --from-literal=REMOTE_NODE=${REMOTE_NODE} --from-literal=SERVICE_NAME=${SERVICE_NAME}
 if [[ ! $? -eq 0 ]]; then
     echo "Could not create ConfigMap. Exit Script"
     exit 1
