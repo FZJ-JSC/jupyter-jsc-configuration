@@ -18,6 +18,8 @@ spec:
     spec:
       imagePullSecrets:
         - name: regcred
+      nodeSelector:
+        node.kubernetes.io/instance-type: "m16.large-disk"
       containers:
         - name: jupyterlab-_id_
           image: jupyterjsc/easybuild-jovyan:0.4.8
@@ -37,6 +39,8 @@ spec:
               add:
                 - SYS_ADMIN
           command: ["/bin/bash", "/opt/apps/bin/start.sh"]
+          # command: ["/bin/sh", "-c", "--"]
+          # args: ["while true; do sleep 30; done;"]
           ports:
             - containerPort: _port_
           resources:
@@ -111,21 +115,22 @@ spec:
                   name: userlab-_id_-secret
                   key: JUPYTERHUB_API_TOKEN
           volumeMounts:
-            - name: nfs-software
-              mountPath: "/p/software/hdfcloud/"
+            - name: nfs-software-local
+              mountPath: "/p/software/hdfcloud"
+              readOnly: true
             - name: nfs-userdata
               mountPath: "/home/jovyan"
               subPath: "_userid_"
             - name: nfs-common
               mountPath: "/opt/apps/bin"
-              subPath: "jobs/_id_/bin"
+              subPath: "userlabs-mgr-jobs/_id_/bin"
       securityContext:
         fsGroup: 100
       volumes:
-        - name: nfs-software
-          nfs:
-            path: /
-            server: 10.100.0.104
+        - name: nfs-software-local
+          hostPath:
+            path: /p/software/hdfcloud
+            type: Directory
         - name: nfs-userdata
           nfs:
             path: /
