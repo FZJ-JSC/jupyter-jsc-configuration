@@ -115,20 +115,22 @@ spec:
               mountPath: "/p/software/hdfcloud/"
             - name: nfs-userdata
               mountPath: "/home/jovyan"
-            - name: nfs-jobs
+              subPath: "_userid_"
+            - name: nfs-common
               mountPath: "/opt/apps/bin"
+              subPath: "jobs/_id_/bin"
       securityContext:
         fsGroup: 100
       volumes:
         - name: nfs-software
           nfs:
-            path: _software_path_
-            server: _software_server_
+            path: /
+            server: 10.100.0.104
         - name: nfs-userdata
           nfs:
-            path: _userdata_path_/_userid_
-            server: _userdata_server_
-        - name: nfs-jobs
+            path: /
+            server: 10.100.0.105
+        - name: nfs-common
           nfs:
-            path: _jobs_path_/_id_/bin
-            server: _jobs_server_
+            path: /
+            server: 10.100.0.106
