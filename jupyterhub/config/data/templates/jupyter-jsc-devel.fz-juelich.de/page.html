@@ -241,13 +241,13 @@
   <div class="footer">
     <div class="footer-top-background">
       <div class="footer-top">
-        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="/hub/status-images/systems/jupyter.svg"/><span class="" id="ampel-jupyter"></span></div><a href="https://jupyter-jsc-devel.fz-juelich.de">Jupyter-JSC</a></div>
-        <div id="ampel-juwels-img"><div class="ampel-div"><img src="/hub/status-images/systems/juwels.svg"/><span class="" id="ampel-juwels"></span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
-        <div id="ampel-jureca-img"><div class="ampel-div"><img src="/hub/status-images/systems/jureca.svg"/><span class="" id="ampel-jureca"></span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
-        <div id="ampel-jusuf-img"><div class="ampel-div"><img src="/hub/status-images/systems/jusuf.svg"/><span class="" id="ampel-jusuf"></span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
-        <div id="ampel-deep-img"><div class="ampel-div"><img src="/hub/status-images/systems/deep.svg"/><span class="" id="ampel-deep"></span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></div>
-        <div id="ampel-hdfml-img"><div class="ampel-div"><img src="/hub/status-images/systems/hdfml.svg"/><span class="" id="ampel-hdfml"></span></div><a>HDFML</a></div>
-        <div id="ampel-hdfcloud-img"><div class="ampel-div"><img src="/hub/status-images/systems/hdfcloud.svg"/><span class="" id="ampel-hdfcloud">In maintenance: 07:00 2020-09-15 - 09:00 2020-09-16</span></div><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html">HDF-Cloud</a></div>
+        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="/hub/status-images/systems/jupyter.svg"/><span class="" id="ampel-jupyter">{{ messages.get("JUPYTER", "") }}</span></div><a href="https://jupyter-jsc-devel.fz-juelich.de">Jupyter-JSC</a></div>
+        <div id="ampel-juwels-img"><div class="ampel-div"><img src="/hub/status-images/systems/juwels.svg"/><span class="" id="ampel-juwels">{{ messages.get("JUWELS", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
+        <div id="ampel-jureca-img"><div class="ampel-div"><img src="/hub/status-images/systems/jureca.svg"/><span class="" id="ampel-jureca">{{ messages.get("JURECA", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
+        <div id="ampel-jusuf-img"><div class="ampel-div"><img src="/hub/status-images/systems/jusuf.svg"/><span class="" id="ampel-jusuf">{{ messages.get("JUSUF", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
+        <div id="ampel-deep-img"><div class="ampel-div"><img src="/hub/status-images/systems/deep.svg"/><span class="" id="ampel-deep">{{ messages.get("DEEP", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></div>
+        <div id="ampel-hdfml-img"><div class="ampel-div"><img src="/hub/status-images/systems/hdfml.svg"/><span class="" id="ampel-hdfml">{{ messages.get("HDFML", "") }}</span></div><a>HDFML</a></div>
+        <div id="ampel-hdfcloud-img"><div class="ampel-div"><img src="/hub/status-images/systems/hdfcloud.svg"/><span class="" id="ampel-hdfcloud">{{ messages.get("HDFCLOUD", "") }}</span></div><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html">HDF-Cloud</a></div>
       </div> <!-- #footer-top -->
     </div> <!-- #footer-top-background -->
     <div class="footer-bottom-background">
