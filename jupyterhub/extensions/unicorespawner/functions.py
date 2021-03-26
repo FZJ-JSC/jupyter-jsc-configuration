@@ -230,6 +230,24 @@ async def options_form(spawner):
     }
 
 
+def insert_display(ret):
+    ret["display"] = {}
+
+    if ret["system_input"] == "hdfcloud":
+        hdf_cloud = get_hdfcloud()
+        _display_image = ret["account_input"]
+        _image = hdf_cloud.get(_display_image, {}).get("internal_name", _display_image)
+        ret["account_input"] = _image
+        ret["display"]["system"] = "HDF-Cloud"
+        ret["display"]["account"] = _display_image
+        if _display_image == _image:
+            for key, value in hdf_cloud.items():
+                if type(value) == dict and value.get("internal_name", "") == _image:
+                    ret["display"]["account"] = key
+                    break
+    return ret
+
+
 async def options_from_form(formdata):
     resources = get_resources()
 
@@ -264,14 +282,13 @@ async def options_from_form(formdata):
         for key, value in formdata.items()
         if not skip_resources(key, value[0])
     }
-    ret["display"] = {}
 
-    if ret["system_input"] == "hdfcloud":
-        hdf_cloud = get_hdfcloud()
-        _display_image = ret["account_input"]
-        _image = hdf_cloud.get(_display_image, {}).get("internal_name", _display_image)
-        ret["account_input"] = _image
-        ret["display"]["system"] = "HDF-Cloud"
-        ret["display"]["account"] = _display_image
+    ret = insert_display(ret)
 
+    return ret
+
+
+def options_from_query(query_options):
+    ret = {key: value[0] for key, value in query_options.items() if key != "display"}
+    ret = insert_display(ret)
     return ret

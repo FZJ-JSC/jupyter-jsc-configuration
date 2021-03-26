@@ -1,5 +1,8 @@
+from urllib.parse import urlencode
+
 from tornado import web
 
+from jupyterhub import orm
 from jupyterhub.handlers.pages import SpawnHandler
 from jupyterhub.utils import maybe_future
 from jupyterhub.utils import url_path_join
@@ -20,78 +23,37 @@ class DirectSpawnHandler(SpawnHandler):
                 raise web.HTTPError(404, "No such user: %s" % for_user)
 
         spawner = user.spawners[server_name]
+        options = spawner.orm_spawner.user_options
+        if not options:
+            options = {}
+            for _key, _value in self.request.query_arguments.items():
+                if _key in [
+                    "service",
+                    "system",
+                    "account",
+                    "project",
+                    "partition",
+                    "reservation",
+                ]:
+                    key = f"{_key}_input"
+                elif _key in ["Runtime", "Nodes", "GPUS"]:
+                    key = f"resource_{_key}"
+                else:
+                    self.log.warning(f"Unknown argument key {_key}")
+                    continue
+                value = [v.decode("utf-8") for v in _value]
+                if value[0].lower() == "none":
+                    continue
+                options[key] = value
 
-        if spawner.ready:
-            self.log.warning("%s is already running" % (spawner._log_name))
-            # raise web.HTTPError(400, "%s is already running" % (spawner._log_name))
-        elif spawner.pending:
-            self.log.warning("%s is pending %s" % (spawner._log_name, spawner.pending))
-            # raise web.HTTPError(
-            #     400, "%s is pending %s" % (spawner._log_name, spawner.pending)
-            # )
-        else:
-            options = spawner.orm_spawner.user_options
-            self.log.info(options)
-            if not options:
-                options = {}
-                for _key, _value in self.request.query_arguments.items():
-                    if _key in [
-                        "service",
-                        "system",
-                        "account",
-                        "project",
-                        "partition",
-                        "reservation",
-                    ]:
-                        key = f"{_key}_input"
-                    elif _key in ["Runtime", "Nodes", "GPUS"]:
-                        key = f"resource_{_key}"
-                    else:
-                        self.log.warning(f"Unknown argument key {_key}")
-                        continue
-                    value = [v.decode("utf-8") for v in _value]
-                    if value[0].lower() == "none":
-                        continue
-                    options[key] = value
-
-            # Update vo to current one
-            auth_state = await user.get_auth_state()
-            options["vo_active_input"] = auth_state["vo_active"]
-
-            try:
-                if not options:
-                    raise web.HTTPError(
-                        404,
-                        "Servername %s is unknown and required arguments were not passed. Please use at least the following arguments: [service, system, account, project, partition]"
-                        % (server_name),
-                    )
-                try:
-                    await self.spawn_single_user(
-                        user, server_name=server_name, options=options
-                    )
-                except web.HTTPError:
-                    self.log.exception("Unexpected behaviour")
-                    del user.spawners[server_name]
-                    await user.async_update_memory()
-                    await self.spawn_single_user(
-                        user, server_name=server_name, options=options
-                    )
-            except Exception as e:
-                self.log.exception("Failed to spawn single-user server with form")
-                spawner_options_form = await user.spawner.get_options_form()
-                form = await self._render_form(
-                    for_user=user,
-                    spawner_options_form=spawner_options_form,
-                    message=str(e),
-                )
-                self.finish(form)
-                return
-            if current_user is user:
-                self.set_login_cookie(user)
-        next_url = self.get_next_url(
-            user,
-            default=url_path_join(
-                self.hub.base_url, "spawn-pending", user.escaped_name, server_name
-            ),
+        default = url_path_join(
+            self.hub.base_url, "spawn", user.escaped_name, server_name
         )
+
+        if options:
+            query_args = urlencode(options)
+            default = f"{default}?{query_args}"
+
+        next_url = self.get_next_url(user, default=default)
         self.redirect(next_url)
+        return
