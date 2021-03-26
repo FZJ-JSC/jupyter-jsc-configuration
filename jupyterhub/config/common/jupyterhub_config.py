@@ -98,6 +98,7 @@ c.BackendSpawner.first_progress = {
     "html_message": "Start Service",
 }
 
+c.BackendSpawner.options_from_query = functions.options_from_query
 c.BackendSpawner.options_from_form = functions.options_from_form
 c.BackendSpawner.options_form = functions.options_form
 
