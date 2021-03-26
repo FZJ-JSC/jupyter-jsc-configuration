@@ -59,6 +59,11 @@ spec:
                 configMapKeyRef:
                   name: userlab-_id_-cm
                   key: JUPYTERHUB_API_URL
+            - name: JUPYTERHUB_ACTIVITY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_ACTIVITY_URL
             - name: JUPYTERHUB_CLIENT_ID
               valueFrom:
                 configMapKeyRef:
