@@ -42,11 +42,11 @@ fi
 PREMOD=$(date)
 echo "PreModules: ${PREMOD}"
 if [[ -f ${HOME}/.jupyter/start_jupyter-jsc.sh ]]; then
-    source ${HOME}/.jupyter/start_jupyter-jsc.sh
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "Use customized modules from '"${HOME}/.jupyter/start_jupyter-jsc.sh"'."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    source ${HOME}/.jupyter/start_jupyter-jsc.sh
 else
+    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "Use Jupyter-JSC default modules (version 2020.2.6)."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
     module load Stages/2020 GCCcore/.9.3.0 JupyterCollection/2020.2.6
-    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "Use Jupyter-JSC default modules (version 2020.2.5)."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 fi
 
 POSTMOD=$(date)
