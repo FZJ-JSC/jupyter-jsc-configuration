@@ -9,6 +9,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
 
 from jupyterhub.apihandlers.base import APIHandler
+from jupyterhub.orm import APIToken
 from jupyterhub.orm import Spawner
 from jupyterhub.utils import url_path_join
 
@@ -19,8 +20,12 @@ class UNICORENotificationAPIHandler(APIHandler):
         cert_url = ""
         cert_path = ""
         cert = ""
+        unicore_systems = unicore_config.get("systems", [])
+        self.log.debug(f"UNICORE_systems: {unicore_systems}")
 
-        for isystem, infos in unicore_config.items():
+        for isystem in unicore_systems:
+            infos = unicore_config.get(isystem)
+            self.log.debug(f"{isystem}: {infos}")
             if type(infos) != dict:
                 continue
             if kernelurl.startswith(infos.get("base_url", "...")):
@@ -144,19 +149,21 @@ class UNICORENotificationAPIHandler(APIHandler):
                         self.set_status(200)
                         return
 
-                user_msg = err_msg
-                for err_message_key, err_message_mapped in unicore_config.get(
-                    "error_mapping", {}
-                ).items():
-                    if err_msg.startswith(err_message_key):
-                        user_msg = err_message_mapped
-                if user_msg == err_msg:
-                    self.log.error(f"No specific user msg for: {user_msg}")
-
-                cancelled = await user.spawners[server_name]._cancel(user_msg, err_msg)
+                spawner = user.spawners[server_name]
+                spawner_proxy_spec = spawner.proxy_spec
+                api_token_id = spawner.orm_spawner.api_token_id
+                error = "JupyterLab stopped"
+                detail_error = err_msg
+                cancelled = await spawner._cancel(error, detail_error)
                 if not cancelled:
                     await user.stop(server_name)
-
+                await self.app.proxy.remove_user_spawn(user.name, server_name)
+                await self.app.proxy.delete_route(spawner_proxy_spec)
+                api_token = APIToken.find_by_id(self.db, api_token_id)
+                if api_token:
+                    self.log.info(api_token)
+                    self.db.delete(api_token)
+                    self.db.commit()
                 self.set_status(202)
             except:
                 self.log.exception(

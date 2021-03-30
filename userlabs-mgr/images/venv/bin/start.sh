@@ -14,6 +14,7 @@ if [[ ! -d $TMPDIR ]]; then
     mkdir -p ${TMPDIR}
 fi
 
+export JUPYTERHUB_ACTIVITY_INTERVAL=20
 
 
 # source /opt/apps/lmod/lmod/init/profile

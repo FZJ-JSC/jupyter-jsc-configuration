@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import re
@@ -14,6 +15,7 @@ from tornado.httpclient import HTTPClientError
 from tornado.httpclient import HTTPRequest
 from traitlets import Unicode
 
+from jupyterhub import orm
 from jupyterhub.handlers.login import LogoutHandler
 from jupyterhub.jupyterjsc.utils.vo import get_vos
 
@@ -85,7 +87,6 @@ class UnityOAuthenticator(GenericOAuthenticator):
             return True
 
     async def refresh_user(self, user, handler, force=False):
-        tic = time.time()
         ret = False
         auth_state = await user.get_auth_state()
         timestamp = int(time.time()) + int(
@@ -93,6 +94,7 @@ class UnityOAuthenticator(GenericOAuthenticator):
         )
         if force or timestamp >= int(auth_state.get("exp", timestamp)):
             try:
+                refresh_timer = handler.statsd.timer("login.refresh").start()
                 refresh_token_save = auth_state.get("refresh_token", None)
                 self.log.debug(
                     f"Refresh {user.name} authentication. Rest time: {timestamp}"
@@ -140,6 +142,8 @@ class UnityOAuthenticator(GenericOAuthenticator):
                         )
                     }
                     ret = await self.run_post_auth_hook(handler, authentication)
+                refresh_timer.stop(send=True)
+                handler.statsd.timing("login.refresh.time", refresh_timer.ms)
             except:
                 self.log.exception(
                     "Refresh of user's {name} access token failed".format(
@@ -148,14 +152,7 @@ class UnityOAuthenticator(GenericOAuthenticator):
                 )
                 ret = False
         else:
-            self.log.debug(
-                "No refresh required. {} seconds left".format(
-                    int(auth_state.get("exp")) - tic
-                )
-            )
             ret = True
-        toc = time.time()
-        self.log.debug("Used time to refresh auth: {}".format(toc - tic))
         return ret
 
 
@@ -176,6 +173,22 @@ async def post_auth_hook(authenticator, handler, authentication):
         "%H:%M:%S %Y-%m-%d"
     )
 
+    used_authenticator = (
+        authentication["auth_state"]
+        .get("oauth_user", {})
+        .get("used_authenticator_attr", "unknown")
+    )
+    hpc_infos_via_unity = str(
+        len(
+            authentication["auth_state"]
+            .get("oauth_user", {})
+            .get("hpc_infos_attribute", [])
+        )
+        > 0
+    ).lower()
+    handler.statsd.incr(f"login.authenticator.{used_authenticator}")
+    handler.statsd.incr(f"login.hpc_infos_via_unity.{hpc_infos_via_unity}")
+
     username = authentication.get("name", "unknown")
     admin = authentication.get("admin", False)
     vo_active, vo_available = get_vos(
@@ -184,9 +197,10 @@ async def post_auth_hook(authenticator, handler, authentication):
     authentication["auth_state"]["vo_active"] = vo_active
     authentication["auth_state"]["vo_available"] = vo_available
 
-    hpc_list = get_hpc_accounts_via_ssh(username, authenticator.log)
-    if hpc_list:
-        authentication["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
+    if not hpc_infos_via_unity:
+        hpc_list = get_hpc_accounts_via_ssh(username, authenticator.log)
+        if hpc_list:
+            authentication["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
 
     return authentication
 
@@ -269,5 +283,15 @@ class BackendLogoutHandler(LogoutHandler):
                             )
                             if current_session_id in auth_state.get("session_ids", []):
                                 auth_state["session_ids"].remove(current_session_id)
+
+                    if stopall == "true":
+                        spawner_names = copy.deepcopy(list(user.spawners.keys()))
+                        for name in spawner_names:
+                            await self.proxy.delete_user(user, name)
+                            try:
+                                await user.stop(name)
+                            except:
+                                pass
+
                     await user.save_auth_state(auth_state)
             self._backend_logout_cleanup(user.name)

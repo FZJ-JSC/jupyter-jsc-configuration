@@ -4,13 +4,12 @@ import sys
 
 path = os.environ.get("JUPYTER_JSC_PATH")
 sys.path.insert(1, path)
-print(sys.path)
-# test 5
 
 c = get_config()
 c.JupyterHub.log_level = logging.DEBUG
 c.JupyterHub.log_format = "%(asctime)s,%(msecs).03d, Levelno=%(levelno)s, Level=%(levelname)s, Logger=%(name)s, File=%(filename)s, Line=%(lineno)d, %(message)s"
 
+c.JupyterHub.last_activity_interval = 60
 c.JupyterHub.hub_ip = "0.0.0.0"
 c.JupyterHub.hub_port = 8001
 c.JupyterHub.port = 8000
@@ -89,7 +88,7 @@ backend_spawner_ip = os.environ.get("BACKEND_SPAWNER_IP")
 c.BackendSpawner.backend_spawner_ip = backend_spawner_ip
 
 c.BackendSpawner.http_timeout = 43200
-c.BackendSpawner.poll_interval = 20
+c.BackendSpawner.poll_interval = 60
 c.BackendSpawner.cancel_progress_activation = 15
 c.BackendSpawner.first_progress = {
     "progress": 20,

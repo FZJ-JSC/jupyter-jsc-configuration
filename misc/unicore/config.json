@@ -1,4 +1,5 @@
 {
+  "systems": ["JURECA", "JUWELS", "JUSUF", "HDFML", "DEEP"],
   "reservation_systems": ["JURECA", "JUWELS"],
   "refresh_required": [
     "Could not submit job: eu.unicore.security.AuthorisationException: There are no accessible targetsystem factories for: Name: CN=ANONYMOUS,O=UNKNOWN,OU=UNKNOWN"

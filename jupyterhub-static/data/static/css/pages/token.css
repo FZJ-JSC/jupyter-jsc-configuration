@@ -1,0 +1,123 @@
+#header {
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
+  max-width: 94% !important;
+}
+
+.footer-bottom {
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
+  max-width: 94% !important;
+  margin: 0 auto;
+}
+
+#body {
+  height: calc(94vw * calc(840 / 1810));
+}
+
+.background-wrapper {
+  height: calc(94vw * calc(840 / 1810));
+  min-height: 445px;
+  max-height: calc(100% - 113px - 153px);
+
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
+  min-width: 1024px;
+  max-width: 94%;
+
+  margin: 0 auto;
+  background: url("/hub/static/images/pages/token/background.jpg") top center
+    no-repeat;
+  background-size: contain;
+  position: absolute;
+
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.content {
+  height: 100%;
+  width: 78%;
+
+  text-align: justify;
+  color: black;
+  font-family: "Weissenhof_Grotesk", Arial, Helvetica, sans-serif;
+  padding: 4vh 4vh 0 4vh;
+}
+
+.content > h1 {
+  text-align: left;
+  padding-left: 3%;
+}
+
+.content > h3 {
+  text-align: left;
+  padding-left: 3%;
+}
+
+.rest-container {
+  height: 81%;
+  overflow-x: visible;
+  overflow-y: auto;
+}
+
+.rest {
+  height: 100%;
+  padding: 0 2% 0 3%;
+  margin: 0;
+  text-align: justify;
+}
+
+.rest > ol > li {
+  margin: 10px 0;
+}
+
+.button-container {
+  border: solid 0.3vh white !important;
+  border-radius: 6px !important;
+}
+
+.header-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.header-row > .btn-group {
+  margin-right: 0px;
+}
+
+.dropdown-menu {
+  margin-left: -70px;
+}
+
+.placeholder {
+  opacity: 0;
+}
+
+.image-text-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.image-container {
+  margin-right: 55px;
+  text-align: center;
+  min-width: 200px;
+}
+
+.image-container > img {
+  margin-top: 20px;
+  width: 200px;
+}
+
+.jconfirm-box-container {
+  width: 41.666667% !important;
+  margin: auto !important;
+  float: none !important;
+}

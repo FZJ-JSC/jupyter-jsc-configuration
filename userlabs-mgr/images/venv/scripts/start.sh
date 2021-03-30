@@ -31,6 +31,7 @@ if [[ $EC -eq 0 ]]; then
 	kubectl -n ${NAMESPACE} delete configmap userlab-${ID}-cm
 fi
 
+JUPYTERHUB_ACTIVITY_URL=http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/users/${JUPYTERHUB_USER}/activity
 echo "Create ConfigMap"
 kubectl -n ${NAMESPACE} create configmap userlab-${ID}-cm --from-literal=JUPYTERHUB_ACTIVITY_URL=${JUPYTERHUB_ACTIVITY_URL} --from-literal=JUPYTERHUB_CANCEL_URL=${JUPYTERHUB_CANCEL_URL} --from-literal=JUPYTERHUB_API_URL=${JUPYTERHUB_API_URL} --from-literal=JUPYTERHUB_CLIENT_ID=${JUPYTERHUB_CLIENT_ID} --from-literal=JUPYTERHUB_USER=${JUPYTERHUB_USER} --from-literal=JUPYTERHUB_SERVICE_PREFIX=${JUPYTERHUB_SERVICE_PREFIX} --from-literal=JUPYTERHUB_BASE_URL=${JUPYTERHUB_BASE_URL} --from-literal=PORT=${PORT} --from-literal=STARTUUIDCODE=${STARTUUIDCODE} --from-literal=SERVERNAMESHORT=${SERVERNAMESHORT} --from-literal=REMOTE_HUB_PORT=${REMOTE_HUB_PORT} --from-literal=REMOTE_NODE=${REMOTE_NODE} --from-literal=SERVICE_NAME=${SERVICE_NAME}
 if [[ ! $? -eq 0 ]]; then

@@ -1,5 +1,9 @@
 {% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
 
+{% block stylesheet %}
+  <link rel="stylesheet" href="{{ static_url("css/pages/admin.css", include_version=False) }}" type="text/css"/>
+{% endblock %}
+
 {% macro th(label, key='', colspan=1) %}
 <th data-sort="{{key}}" colspan="{{colspan}}">{{label}}
   {% if key %}

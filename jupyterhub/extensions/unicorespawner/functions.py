@@ -86,7 +86,6 @@ async def options_form(spawner):
 
     user_hpc_list.extend(add_deep_ml_gpu_list)
 
-    spawner.log.info(user_hpc_list)
     systems = sorted(
         {
             group[1]

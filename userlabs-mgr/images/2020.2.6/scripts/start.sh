@@ -31,8 +31,9 @@ if [[ $EC -eq 0 ]]; then
 	kubectl -n ${NAMESPACE} delete configmap userlab-${ID}-cm
 fi
 
+JUPYTERHUB_ACTIVITY_URL=http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/users/${JUPYTERHUB_USER}/activity
 echo "Create ConfigMap"
-kubectl -n ${NAMESPACE} create configmap userlab-${ID}-cm --from-literal=JUPYTERHUB_CANCEL_URL=${JUPYTERHUB_CANCEL_URL} --from-literal=JUPYTERHUB_API_URL=${JUPYTERHUB_API_URL} --from-literal=JUPYTERHUB_CLIENT_ID=${JUPYTERHUB_CLIENT_ID} --from-literal=JUPYTERHUB_USER=${JUPYTERHUB_USER} --from-literal=JUPYTERHUB_SERVICE_PREFIX=${JUPYTERHUB_SERVICE_PREFIX} --from-literal=JUPYTERHUB_BASE_URL=${JUPYTERHUB_BASE_URL} --from-literal=PORT=${PORT} --from-literal=STARTUUIDCODE=${STARTUUIDCODE} --from-literal=SERVERNAMESHORT=${SERVERNAMESHORT} --from-literal=REMOTE_HUB_PORT=${REMOTE_HUB_PORT} --from-literal=REMOTE_NODE=${REMOTE_NODE} --from-literal=SERVICE_NAME=${SERVICE_NAME}
+kubectl -n ${NAMESPACE} create configmap userlab-${ID}-cm --from-literal=JUPYTERHUB_ACTIVITY_URL=${JUPYTERHUB_ACTIVITY_URL} --from-literal=JUPYTERHUB_CANCEL_URL=${JUPYTERHUB_CANCEL_URL} --from-literal=JUPYTERHUB_API_URL=${JUPYTERHUB_API_URL} --from-literal=JUPYTERHUB_CLIENT_ID=${JUPYTERHUB_CLIENT_ID} --from-literal=JUPYTERHUB_USER=${JUPYTERHUB_USER} --from-literal=JUPYTERHUB_SERVICE_PREFIX=${JUPYTERHUB_SERVICE_PREFIX} --from-literal=JUPYTERHUB_BASE_URL=${JUPYTERHUB_BASE_URL} --from-literal=PORT=${PORT} --from-literal=STARTUUIDCODE=${STARTUUIDCODE} --from-literal=SERVERNAMESHORT=${SERVERNAMESHORT} --from-literal=REMOTE_HUB_PORT=${REMOTE_HUB_PORT} --from-literal=REMOTE_NODE=${REMOTE_NODE} --from-literal=SERVICE_NAME=${SERVICE_NAME}
 if [[ ! $? -eq 0 ]]; then
     echo "Could not create ConfigMap. Exit Script"
     exit 1
@@ -107,21 +108,6 @@ sed -i -e "s/_resource_limit_cpu_/${RESOURCE_LIMIT_CPU}/g" ${JOB_PATH}/yaml/user
 sed -i -e "s/_resource_limit_storage_/${RESOURCE_LIMIT_STORAGE}/g" ${JOB_PATH}/yaml/userlab.yaml
 
 # Storage replacement
-SOFTWARE_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-software --template='{{.spec.volumeName}}')
-SOFTWARE_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-software-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_software_path_|/export/${SOFTWARE_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
-sed -i -e "s|_software_server_|${SOFTWARE_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
-
-USERDATA_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-userdata --template='{{.spec.volumeName}}')
-USERDATA_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-userdata-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_userdata_path_|/export/${USERDATA_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
-sed -i -e "s|_userdata_server_|${USERDATA_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
-
-M_JOBS_PVC=$(kubectl -n ${NAMESPACE} get pvc userlabs-jobs --template='{{.spec.volumeName}}')
-M_JOBS_SERVER=$(kubectl -n ${NAMESPACE} get svc nfs-userlabs-jobs-nfs-server-provisioner -o template={{.spec.clusterIP}})
-sed -i -e "s|_jobs_path_|/export/${M_JOBS_PVC}|g" ${JOB_PATH}/yaml/userlab.yaml
-sed -i -e "s|_jobs_server_|${M_JOBS_SERVER}|g" ${JOB_PATH}/yaml/userlab.yaml
-
 sed -i -e "s/_servername_/${SERVERNAMESHORT}/g" ${JOB_PATH}/bin/config.py
 
 kubectl -n ${NAMESPACE} get deployment userlab-${ID} &> /dev/null
