@@ -22,7 +22,7 @@ spec:
         node.kubernetes.io/instance-type: "m16.large-disk"
       containers:
         - name: jupyterlab-_id_
-          image: jupyterjsc/easybuild-jovyan:0.4.8
+          image: rancher-jsc.fz-juelich.de:5000/jupyterjsc/user-jupyterlabs:0.5.1
           imagePullPolicy: Always
           lifecycle:
             preStop:

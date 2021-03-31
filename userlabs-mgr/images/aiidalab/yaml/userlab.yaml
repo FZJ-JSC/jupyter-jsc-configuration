@@ -22,7 +22,7 @@ spec:
         node.kubernetes.io/instance-type: "m16.large-disk"
       containers:
         - name: jupyterlab-_id_
-          image: rancher-jsc.fz-juelich.de:5000/jupyterjsc/user-jupyterlabs:0.5.1
+          image: aiidalab/aiidalab-docker-stack:latest
           imagePullPolicy: Always
           lifecycle:
             preStop:
@@ -74,6 +74,26 @@ spec:
                 configMapKeyRef:
                   name: userlab-_id_-cm
                   key: JUPYTERHUB_USER
+            - name: SYSTEM_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: SYSTEM_USER
+            - name: NB_GID
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: NB_GID
+            - name: NB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: NB_USER
+            - name: NB_UID
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: NB_UID
             - name: JUPYTERHUB_SERVICE_PREFIX
               valueFrom:
                 configMapKeyRef:
@@ -120,11 +140,11 @@ spec:
                   name: userlab-_id_-secret
                   key: JUPYTERHUB_API_TOKEN
           volumeMounts:
-            - name: nfs-software
+            - name: nfs-software-local
               mountPath: "/p/software/hdfcloud"
               readOnly: true
             - name: nfs-userdata
-              mountPath: "/home/jovyan"
+              mountPath: "/home/aiida"
               subPath: "_userid_"
             - name: nfs-common
               mountPath: "/opt/apps/bin"
@@ -136,10 +156,6 @@ spec:
           hostPath:
             path: /p/software/hdfcloud
             type: Directory
-        - name: nfs-software
-          nfs:
-            path: /
-            server: 10.100.0.104
         - name: nfs-userdata
           nfs:
             path: /
