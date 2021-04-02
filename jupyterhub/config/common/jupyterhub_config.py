@@ -26,30 +26,9 @@ c.ConfigurableHTTPProxy.api_url = f"{proxy_url}"
 
 c.JupyterHub.statsd_host = "graphite.jupyterjsc.svc.cluster.local"
 
-c.ConfigurableHTTPProxy.extra_spawn_routes_servername = [
-    "/hub/api/users/_user_/servers/_server_/progress",
-    "/hub/api/users/_user_/servers/_server_/status",
-    "/hub/api/users/_user_/servers/_server_/cancel",
-    "/hub/api/users/_user_/servers/_server_/health",
-    "/hub/spawn-pending/_user_/_server_",
-    "/hub/spawn/_user_/_server_",
-    "/spawn/_user_/_server_",
-    "/hub/api/unicorenotification/_user_/_server_",
-    "/hub/api/tunneling/_user_/_server_",
-]
-
-my_pod_ip = os.environ.get("MY_POD_IP").replace(".", "-")
-c.ConfigurableHTTPProxy.extra_spawn_routes_target = (
-    f"http://{my_pod_ip}.jupyterjsc.pod.cluster.local:8001"
-)
-import time
-
-c.ConfigurableHTTPProxy.pod_creation_time = int(time.time())
-
 c.JupyterHub.strict_session_ids = True
 c.JupyterHub.logout_on_all_devices = False
 c.JupyterHub.logout_on_all_devices_argname = "alldevices"
-
 
 db_host = os.environ.get("JUPYTERHUB_DB_HOST")
 db_port = os.environ.get("JUPYTERHUB_DB_PORT")
