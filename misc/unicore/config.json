@@ -27,7 +27,7 @@
       "jureca09": "jrlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["admins", "my_vo"],
+    "vos": ["default", "admins", "my_vo"],
     "vo_exclude_partition": {
       "default": "LoginNode"
     }
