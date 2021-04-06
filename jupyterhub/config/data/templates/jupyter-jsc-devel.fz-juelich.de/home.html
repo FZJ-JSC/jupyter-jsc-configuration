@@ -125,7 +125,7 @@ $(document).ready(function() {
                       {% set na = 1 -%}
 		    {% elif user_options.get("system_input") == "hdfcloud" and vo_active not in hdfcloud.get(user_options.get("display", {}).get("account", ""), {}).get("vos", []) -%}
                       {% set na = 1 -%}
-                    {% elif user_options.get("system_input") in ["JUWELS", "JURECA", "HDFML", "JUSUF", "DEEP"] and "vos" in unicore_config.get(user_options.get("system_input"), {}).keys() and vo_active not in unicore_config.get(user_options.get("system_input", {})).get("vos", []) or user_options.get("partition_input", "") in unicore_config.get(user_options.get("system_input"), {}).get("vo_exclude_partition", {}).get(vo_active, []) -%}
+                    {% elif user_options.get("system_input") in ["JUWELS", "JURECA", "HDFML", "JUSUF", "DEEP"] and "vos" in unicore_config.get(user_options.get("system_input"), {}).keys() and vo_active not in unicore_config.get(user_options.get("system_input", {})).get("vos", []) or user_options.get("partition_input", "") in unicore_config.get(user_options.get("system_input"), {}).get("vo_exclude_partition", {}).get(vo_active, []) or user_options.get("partition_input", "") in unicore_config.get(user_options.get("system_input"), {}).get("disabled_partitions", []) -%}
 		      {% set na = 1 -%}
                     {% else -%}
                       {% set na = 0 -%}

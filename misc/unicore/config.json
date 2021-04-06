@@ -30,7 +30,8 @@
     "vos": ["default", "admins", "my_vo"],
     "vo_exclude_partition": {
       "vo": "partition"
-    }
+    },
+    "disabled_partitions": ["booster"]
   },
   "JUWELS": {
     "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
