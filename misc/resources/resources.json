@@ -15,10 +15,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        64,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [64, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "dp-dam": {
@@ -35,10 +35,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        64,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [64, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "dp-esb": {
@@ -55,10 +55,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        64,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [64, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "ml-gpu": {
@@ -75,10 +75,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        64,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [64, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             }
         },
@@ -98,10 +98,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             }
         },
@@ -121,10 +121,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "booster-devel": {
@@ -141,10 +141,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        21600
+                        10,
+                        360
                     ],
-                    "TEXT": "Runtime (min) [60, 21600]"
+                    "TEXT": "Runtime (min) [10, 360]"
                 }
             },
             "dc-cpu": {
@@ -161,10 +161,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "dc-cpu-bigmem": {
@@ -181,10 +181,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "dc-cpu-devel": {
@@ -201,10 +201,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        7200
+                        10,
+                        120
                     ],
-                    "TEXT": "Runtime (min) [60, 7200]"
+                    "TEXT": "Runtime (min) [10, 120]"
                 }
             },
             "dc-gpu": {
@@ -230,10 +230,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "dc-gpu-devel": {
@@ -259,10 +259,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        7200
+                        10,
+                        120
                     ],
-                    "TEXT": "Runtime (min) [60, 7200]"
+                    "TEXT": "Runtime (min) [10, 120]"
                 }
             }
         },
@@ -282,10 +282,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "develgpus": {
@@ -311,10 +311,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "gpus": {
@@ -340,10 +340,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             }
         },
@@ -365,10 +365,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "booster": {
@@ -394,10 +394,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "devel": {
@@ -414,10 +414,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        7200
+                        10,
+                        120
                     ],
-                    "TEXT": "Runtime (min) [60, 7200]"
+                    "TEXT": "Runtime (min) [10, 120]"
                 }
             },
             "develbooster": {
@@ -443,10 +443,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        7200
+                        10,
+                        120
                     ],
-                    "TEXT": "Runtime (min) [60, 7200]"
+                    "TEXT": "Runtime (min) [10, 120]"
                 }
             },
             "develgpus": {
@@ -472,10 +472,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        7200
+                        10,
+                        120
                     ],
-                    "TEXT": "Runtime (min) [60, 7200]"
+                    "TEXT": "Runtime (min) [10, 120]"
                 }
             },
             "gpus": {
@@ -501,10 +501,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             },
             "mem192": {
@@ -521,10 +521,10 @@
                     "DEFAULT": 30,
                     "DIVISOR": 60,
                     "MINMAX": [
-                        60,
-                        86400
+                        10,
+                        1440
                     ],
-                    "TEXT": "Runtime (min) [60, 86400]"
+                    "TEXT": "Runtime (min) [10, 1440]"
                 }
             }
         }
