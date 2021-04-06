@@ -107,7 +107,7 @@
         },
         "JURECA": {
             "LoginNode": {},
-            "booster": {
+            "inactive_booster": {
                 "Nodes": {
                     "DEFAULT": 1,
                     "DIVISOR": 1,
