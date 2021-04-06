@@ -17,6 +17,7 @@ from traitlets import Unicode
 
 from jupyterhub import orm
 from jupyterhub.handlers.login import LogoutHandler
+from jupyterhub.jupyterjsc.utils.partitions import get_default_partitions
 from jupyterhub.jupyterjsc.utils.vo import get_vos
 
 
@@ -47,23 +48,6 @@ def get_hpc_accounts_via_ssh(username, log=None):
     try:
         if return_code == 0 and out:
             list_out = out.split()
-            default_partitions = {
-                "juwels": "juwels_devel",
-                "juwels_gpus": "juwels_develgpus",
-                "jusuf_gpus": "jusuf_develgpus",
-                "deep_cpu": "deep_ml-gpu",
-            }
-            to_add = []
-            for entry in list_out:
-                partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
-                if partition in default_partitions.keys():
-                    to_add.append(
-                        entry.replace(
-                            f",{partition},",
-                            ",{},".format(default_partitions[partition]),
-                        )
-                    )
-            list_out.extend(to_add)
     except:
         if log:
             log.exception("Could not check for hpc_accounts")
@@ -201,6 +185,26 @@ async def post_auth_hook(authenticator, handler, authentication):
         hpc_list = get_hpc_accounts_via_ssh(username, authenticator.log)
         if hpc_list:
             authentication["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
+
+    default_partitions = get_default_partitions()
+    to_add = []
+    hpc_list = (
+        authentication.get("auth_state", {})
+        .get("oauth_user", {})
+        .get("hpc_infos_attribute", [])
+    )
+    for entry in hpc_list:
+        partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
+        if partition in default_partitions.keys():
+            to_add.append(
+                entry.replace(
+                    f",{partition},",
+                    ",{},".format(default_partitions[partition]),
+                )
+            )
+    hpc_list.extend(to_add)
+    if hpc_list:
+        authentication.get["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
 
     return authentication
 
