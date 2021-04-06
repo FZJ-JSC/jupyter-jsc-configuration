@@ -19,7 +19,9 @@ async def options_form(spawner):
 
     resources = get_resources()
     reservations_dict = get_reservations()
+    spawner.log.info(f"Reservations: {reservations_dict}")
     maintenance_list = get_maintenance_list()
+    spawner.log.info(f"Maintenance: {maintenance_list}")
     hdf_cloud = get_hdfcloud()
     unicore_config = get_unicore_config()
 
