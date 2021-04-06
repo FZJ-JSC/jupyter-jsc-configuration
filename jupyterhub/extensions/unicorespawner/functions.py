@@ -249,6 +249,12 @@ def insert_display(ret):
     return ret
 
 
+def runtime_update(key, value_list):
+    if key == "Runtime":
+        return int(value_list[0]) * 60
+    return value_list[0]
+
+
 async def options_from_form(formdata):
     resources = get_resources()
 
@@ -279,7 +285,7 @@ async def options_from_form(formdata):
         return False
 
     ret = {
-        key: value[0]
+        key: runtime_update(key, value)
         for key, value in formdata.items()
         if not skip_resources(key, value[0])
     }
@@ -290,6 +296,10 @@ async def options_from_form(formdata):
 
 
 def options_from_query(query_options):
-    ret = {key: value[0] for key, value in query_options.items() if key != "display"}
+    ret = {
+        key: runtime_update(key, value)
+        for key, value in query_options.items()
+        if key != "display"
+    }
     ret = insert_display(ret)
     return ret
