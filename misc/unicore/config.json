@@ -29,7 +29,7 @@
     "remote_port": 25490,
     "vos": ["default", "admins", "my_vo"],
     "vo_exclude_partition": {
-      "default": "LoginNode"
+      "vo": "partition"
     }
   },
   "JUWELS": {
@@ -47,7 +47,6 @@
     },
     "remote_port": 25490,
     "vo_exclude_partition": {
-      "default": ["LoginNodeVis", "batch", "devel"],
       "my_vo": [
         "LoginNode",
         "LoginNodeVis",
@@ -72,9 +71,9 @@
       "jusuf02": "jsfl02"
     },
     "remote_port": 25490,
-    "vos": ["admins"],
+    "vos": ["default", "admins"],
     "vo_exclude_partition": {
-      "no_admins": "LoginNode"
+      "vo": "LoginNode"
     }
   },
   "HDFML": {
@@ -90,7 +89,7 @@
       "hdfml01": "hdfmll01"
     },
     "remote_port": 25490,
-    "vos": ["admins"],
+    "vos": ["default", "admins"],
     "vo_exclude_partition": {
       "no_admins": "LoginNode"
     }
