@@ -204,7 +204,7 @@ async def post_auth_hook(authenticator, handler, authentication):
             )
     hpc_list.extend(to_add)
     if hpc_list:
-        authentication.get["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
+        authentication["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
 
     return authentication
 
