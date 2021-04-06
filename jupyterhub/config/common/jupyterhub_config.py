@@ -5,6 +5,7 @@ import sys
 path = os.environ.get("JUPYTER_JSC_PATH")
 sys.path.insert(1, path)
 
+
 c = get_config()
 c.JupyterHub.log_level = logging.DEBUG
 c.JupyterHub.log_format = "%(asctime)s,%(msecs).03d, Levelno=%(levelno)s, Level=%(levelname)s, Logger=%(name)s, File=%(filename)s, Line=%(lineno)d, %(message)s"
