@@ -13,16 +13,20 @@ if [[ -z ${JUPYTER_JSC_HOME} ]]; then
     export JUPYTER_JSC_HOME=${HOME}
 fi
 
-echo "Call JupyterHub"
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 75, "failed": false, "message": "", "html_message": "Job is running on '"${HOSTNAME}"'."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAME}/${JUPYTER_JSC_PORT} &> /dev/null
+echo $SYSTEMNAME
+HOSTNAMES=$(hostname -s)
+if [[ $HOSTNAMES == "hdfmll*" ]]; then
+    HOSTNAMEI=${HOSTNAME}
+else
+    HOSTNAMEI=${HOSTNAMES}i
+fi
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 75, "failed": false, "message": "", "html_message": "Job is running on '"${HOSTNAME}"'."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT} &> /dev/null
 if [[ $? -ne 0 ]]; then
     echo "Could not notify JupyterHub. Send cancel with public URL."
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"error": "Could not reach JupyterLab."}' https://jupyter-jsc.fz-juelich.de${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_CANCEL_URL}
 fi
 
-
 sed -i -e "s|_port_|${JUPYTER_JSC_PORT}|g" -e "s|_home_|${JUPYTER_JSC_HOME}|g" -e "s|_servername_|${JUPYTERHUB_SERVER_NAME}|g" -e "s|_username_|${JUPYTERHUB_USER}|g" -e "s|_remotenode_|${JUPYTER_JSC_REMOTENODE}|g" -e "s|_remoteport_|${JUPYTER_JSC_REMOTEPORT}|g" ${DIR}/.config.py
-
 
 # Quota Check:
 if [[ ! -f ${HOME}/.${JUPYTER_JSC_STARTUUID} ]]; then
@@ -46,7 +50,11 @@ if [[ -f ${HOME}/.jupyter/start_jupyter-jsc.sh ]]; then
     source ${HOME}/.jupyter/start_jupyter-jsc.sh
 else
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "Use Jupyter-JSC default modules (version 2020.2.6)."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
-    module load Stages/2020 GCCcore/.9.3.0 JupyterCollection/2020.2.6
+    module purge
+    module use $OTHERSTAGES
+    module load Stages/2020
+    module load GCCcore/.9.3.0
+    module load JupyterCollection/2020.2.6
 fi
 
 POSTMOD=$(date)

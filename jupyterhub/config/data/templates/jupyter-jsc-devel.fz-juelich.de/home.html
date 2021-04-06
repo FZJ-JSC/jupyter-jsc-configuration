@@ -109,14 +109,14 @@ $(document).ready(function() {
                   </td>
                   {# Resources #}
                   <td style="width:13%">
-                    {% if user_options.get("resource_nodes_input", None) %}
-                      Nodes: {{ user_options.get("resource_nodes_input") }}<br>
+                    {% if user_options.get("resource_Nodes", None) %}
+                      Nodes: {{ user_options.get("resource_Nodes") }}<br>
                     {% endif %}
-                    {% if user_options.get("resource_gpus_input", None) %}
-                      GPUs: {{ user_options.get("resource_gpus_input") }}<br>
+                    {% if user_options.get("resource_GPUS", None) %}
+                      GPUs: {{ user_options.get("resource_GPUS") }}<br>
                     {% endif %}
-                    {% if user_options.get("resource_runtime_input", None) %}
-                      Runtime: {{ user_options.get("resource_runtime_input") }}
+                    {% if user_options.get("resource_Runtime", None) %}
+                      Runtime: {{ user_options.get("resource_Runtime") }}
                     {% endif %}
                   </td>
                   {# action #}
