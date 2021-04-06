@@ -1,6 +1,4 @@
 {
-    "refresh_call_at": 1617283827,
-    "value": {
         "DEEP": {
             "LoginNode": {},
             "dp-cn": {
@@ -530,5 +528,4 @@
                 }
             }
         }
-    }
 }
