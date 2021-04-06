@@ -296,10 +296,6 @@ async def options_from_form(formdata):
 
 
 def options_from_query(query_options):
-    ret = {
-        key: runtime_update(key, value)
-        for key, value in query_options.items()
-        if key != "display"
-    }
+    ret = {key: value[0] for key, value in query_options.items() if key != "display"}
     ret = insert_display(ret)
     return ret
