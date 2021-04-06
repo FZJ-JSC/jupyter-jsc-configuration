@@ -3,6 +3,6 @@
     "juwels_gpus": "juwels_develgpus",
     "jusuf_gpus": "jusuf_develgpus",
     "deep_cpu": "deep_ml-gpu",
-    "jureca_dc-cpu": "jureca_dc-cpu-devel",
-    "jureca_dc-gpu": "jureca_dc-gpu-devel"
+    "jureca_cpu": "jureca_dc-cpu-devel",
+    "jureca_gpu": "jureca_dc-gpu-devel"
 }
