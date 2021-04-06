@@ -150,20 +150,11 @@ class UNICORENotificationAPIHandler(APIHandler):
                         return
 
                 spawner = user.spawners[server_name]
-                spawner_proxy_spec = spawner.proxy_spec
-                api_token_id = spawner.orm_spawner.api_token_id
                 error = "JupyterLab stopped"
                 detail_error = err_msg
                 cancelled = await spawner._cancel(error, detail_error)
                 if not cancelled:
                     await user.stop(server_name)
-                await self.app.proxy.remove_user_spawn(user.name, server_name)
-                await self.app.proxy.delete_route(spawner_proxy_spec)
-                api_token = APIToken.find_by_id(self.db, api_token_id)
-                if api_token:
-                    self.log.info(api_token)
-                    self.db.delete(api_token)
-                    self.db.commit()
                 self.set_status(202)
             except:
                 self.log.exception(

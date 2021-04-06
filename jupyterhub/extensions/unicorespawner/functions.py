@@ -17,8 +17,8 @@ async def options_form(spawner):
         "hpc_infos_attribute", []
     )
 
-    resources = get_resources(spawner.log)
-    reservations_dict = get_reservations(spawner.log)
+    resources = get_resources()
+    reservations_dict = get_reservations()
     maintenance_list = get_maintenance_list()
     hdf_cloud = get_hdfcloud()
     unicore_config = get_unicore_config()

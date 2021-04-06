@@ -56,7 +56,6 @@
 
       $( document ).ready(function() {
         checkStatus();
-        // checkHealth();
       });
 
       function checkStatus(){
@@ -69,43 +68,6 @@
             clearInterval(interv);
           }
         }
-      }
-
-      function checkHealth(){
-	{% if health_url -%}
-          intervHealth = setInterval(_checkHealth, {{health_progress_refresh_rate}});
-          var healthLocation = "";
-          var healthFailCount = 0;
-          function _checkHealth() {
-            var strHealth = document.getElementById("sr-progress").innerHTML;
-            var iHealth = parseInt(strHealth.substring(0, strHealth.length-1));
-            if ( iHealth >= 100 ) {
-              clearInterval(intervHealth);
-            }
-            resp = fetch("{{base_url}}api/{{health_url}}"
-            )
-            .then(function(response) {
-              all_good = true;
-              if (response.status == 204){
-                if ( healthLocation.length == 0 ){
-                  healthLocation = response.headers.get("Location");
-                } else if ( healthLocation != response.headers.get("Location")) {
-                  console.log(response.headers.get("Location"));
-                  all_good = false;
-                }
-              } else {
-                console.log(response);
-                all_good = false;
-              }
-              if ( ! all_good ){
-                healthFailCount++;
-                if ( healthFailCount >= 5 ){
-                  window.location.replace("{{base_url}}901/{{spawner.name}}");
-                }
-              }
-            });
-          }
-	{% endif -%}
       }
 
       evtSource.onmessage = function(e) {

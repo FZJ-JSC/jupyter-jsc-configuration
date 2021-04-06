@@ -111,7 +111,15 @@ c.UnityOAuthenticator.admin_users = set(os.environ.get("ADMIN_USERS").split(";")
 c.UnityOAuthenticator.post_auth_hook = unity.post_auth_hook
 
 
-from extra_handlers import setuptunnel, unicorenotification, twoFA, direct, projects, vo
+from extra_handlers import (
+    setuptunnel,
+    unicorenotification,
+    twoFA,
+    direct,
+    projects,
+    vo,
+    refresh_hpc_accounts,
+)
 
 c.JupyterHub.extra_handlers = [
     (
@@ -145,6 +153,7 @@ c.JupyterHub.extra_handlers = [
     (r"/api/projects/([^/]+)/([^/]+)", projects.ProjectsAPIHandler),
     (r"/api/projects/([^/]+)", projects.ProjectsAPIHandler),
     (r"/api/projects", projects.ProjectsAPIHandler),
+    (r"/api/refreshhpc/([^/]+)", refresh_hpc_accounts.HPCUpdateHandler),
     (r"/direct/([^/]+)/([^/]+)", direct.DirectSpawnHandler),
     (r"/groups", vo.VOHandler),
     (r"/2FA", twoFA.TwoFAHandler),

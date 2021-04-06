@@ -6,7 +6,14 @@ from contextlib import closing
 import requests
 
 
-def get_reservations(log=None):
+def get_reservations():
+    reservations_path = os.environ.get("RESERVATIONS_PATH")
+    with open(reservations_path, "r") as f:
+        reservations = json.load(f)
+    return reservations
+
+
+def get_reservations_old(log=None):
     reservations_path = os.environ.get("RESERVATIONS_PATH")
     with open(reservations_path, "r") as f:
         reservations = json.load(f)
@@ -42,7 +49,14 @@ def get_reservations(log=None):
     return reservations["value"]
 
 
-def get_resources(log=None):
+def get_resources():
+    resources_path = os.environ.get("RESOURCES_PATH")
+    with open(resources_path, "r") as f:
+        resources = json.load(f)
+    return resources
+
+
+def get_resources_old(log=None):
     resources_path = os.environ.get("RESOURCES_PATH")
     with open(resources_path, "r") as f:
         resources = json.load(f)
