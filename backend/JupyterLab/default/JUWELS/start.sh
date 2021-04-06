@@ -17,7 +17,7 @@ fi
 
 echo "Running on $HOSTNAME"
 HOSTNAMES=$(hostname -s)
-if [[ $HOSTNAMES == "jwlogin*" ]]; then
+if [[ $HOSTNAMES == "jwlogin*" || $HOSTNAMES == "jwvis*" ]]; then
     HOSTNAMEI=${HOSTNAME}
 else
     HOSTNAMEI=${HOSTNAMES}i
