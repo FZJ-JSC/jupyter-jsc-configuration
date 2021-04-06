@@ -250,7 +250,7 @@ def insert_display(ret):
 
 
 def runtime_update(key, value_list):
-    if key == "Runtime":
+    if key == "resource_Runtime":
         return int(value_list[0]) * 60
     return value_list[0]
 
