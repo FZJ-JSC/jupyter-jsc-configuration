@@ -1,5 +1,6 @@
 {
     "juwels": "juwels_devel",
+    "juwels_booster": "juwels_develbooster",
     "juwels_gpus": "juwels_develgpus",
     "jusuf_gpus": "jusuf_develgpus",
     "deep_cpu": "deep_ml-gpu",
