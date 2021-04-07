@@ -44,7 +44,7 @@
     "project_symlink": ["training2020"],
     "nodes": ["juwels09"],
     "node_mapping": {
-      "juwels09": "jwlogin09.ib.juwels.fzj.de"
+      "juwels09": "jwlogin09i"
     },
     "remote_port": 25490,
     "vo_exclude_partition": {

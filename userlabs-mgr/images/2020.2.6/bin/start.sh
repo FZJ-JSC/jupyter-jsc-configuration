@@ -21,8 +21,8 @@ export MODULEPATH=/p/software/hdfcloud/stages/2020/modules/all/Compiler/GCCcore/
 export OTHERSTAGES=/p/software/hdfcloud/otherstages
 module purge && module use $OTHERSTAGES && module load JupyterCollection/2020.2.6
 
-#/opt/apps/bin/bin/mount-judac
-#/opt/apps/bin/bin/automount-B2DROP
+/opt/apps/bin/bin/mount-judac
+/opt/apps/bin/bin/automount-B2DROP
 
 # Inform Jupyter-JSC about the hostname and port
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Start Service on '"$SERVICE_NAME:$PORT"'"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${SERVERNAMESHORT}/${STARTUUIDCODE}/${SERVICE_NAME}/${PORT} &> /dev/null

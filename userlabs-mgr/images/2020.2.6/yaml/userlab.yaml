@@ -43,11 +43,11 @@ spec:
           # args: ["while true; do sleep 30; done;"]
           ports:
             - containerPort: _port_
-          resources:
-            limits:
+          # resources:
+            # limits:
               # memory: "_resource_limit_memory_"
               # cpu: "_resource_limit_cpu_"
-              ephemeral-storage: "_resource_limit_storage_"
+              # ephemeral-storage: "_resource_limit_storage_"
           env:
             - name: JUPYTERHUB_CANCEL_URL
               valueFrom:
