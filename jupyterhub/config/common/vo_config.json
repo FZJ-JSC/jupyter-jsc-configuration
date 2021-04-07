@@ -1,17 +1,18 @@
 {
   "refresh_call_at": 0,
   "values": {
+    "my_vo": {
+      "authenticators": [],
+      "usernames": ["at.kreuzer@fz-juelich.de"],
+      "admin": false,
+      "weight": 1,
+      "exclusive": false
+    },
     "default": {
       "authenticators": ["ldap"],
       "usernames": [],
       "admin": false,
       "weight": 2
-    },
-    "HIFIS": {
-      "authenticators": ["hdfaai"],
-      "usernames": [],
-      "admin": false,
-      "weight": 4
     },
     "admins": {
       "authenticators": [],
@@ -19,11 +20,17 @@
       "admin": true,
       "weight": 3
     },
-    "my_vo": {
-      "authenticators": [],
-      "usernames": ["at.kreuzer@fz-juelich.de"],
+    "HIFIS": {
+      "authenticators": ["hdfaai"],
+      "usernames": [],
       "admin": false,
-      "weight": 1,
+      "weight": 4
+    },
+    "aiidalab": {
+      "authenticators": [],
+      "usernames": ["t.kreuzer@fz-juelich.de", "s.achilles@fz-juelich.de"],
+      "admin": false,
+      "weight": 5,
       "exclusive": false
     }
   }

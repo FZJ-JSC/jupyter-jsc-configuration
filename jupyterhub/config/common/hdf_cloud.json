@@ -1,4 +1,8 @@
 {
+  "AiidaLab": {
+    "internal_name": "aiidalab",
+    "vos": ["aiidalab"]
+  },
   "Jupyter-JSC 2020.2.6 - nfs": {
     "internal_name": "2020.2.6.2",
     "vos": ["admins"]
