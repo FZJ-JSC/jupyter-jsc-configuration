@@ -38,7 +38,7 @@
     "strict_session_ids": true,
     "LoginNode": ["juwels09.fz-juelich.de"],
     "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
-    "LoginNodeBooster": ["juwels23.fz-juelich.de", "juwels24.fz-juelich.de"],
+    "LoginBooster": ["juwels23.fz-juelich.de", "juwels24.fz-juelich.de"],
     "fuser": "ljupyter",
     "host": "juwels.fz-juelich.de",
     "project_kernel": ["training2020"],
@@ -53,7 +53,7 @@
       "workshop-210420": [
         "LoginNode",
         "LoginNodeVis",
-        "LoginNodeBooster",
+        "LoginBooster",
         "booster",
         "batch",
         "devel",

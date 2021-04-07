@@ -693,11 +693,11 @@ static_url("css/pages/spawn.css", include_version=False) }}" type="text/css"/>
               {% endif -%}
               $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'LoginNodeVis\')">LoginNodeVis</a></li>');
             {% endif -%}
-            {% if 'LoginNodeBooster' in spawner_options_form.get('resources').get(system, {}).keys() and 'LoginNodeBooster' not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
+            {% if 'LoginBooster' in spawner_options_form.get('resources').get(system, {}).keys() and 'LoginBooster' not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
               {% if not first_partition.get("foo") -%}
-                {% if first_partition.update({"foo": "LoginNodeBooster"}) -%} {% endif -%}
+                {% if first_partition.update({"foo": "LoginBooster"}) -%} {% endif -%}
               {% endif -%}
-              $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'LoginNodeBooster\')">LoginNodeBooster</a></li>');
+              $('#partitions_dropdown_ul').append('<li><a href="#" onclick="onClickPartitions(\'LoginBooster\')">LoginBooster</a></li>');
             {% endif -%}
             {% for partition in partitions | unique | sort -%}
               {% if partition not in spawner_options_form.get('unicore_vo', {}).get(system, {}).get('vo_exclude_partition', {}).get(auth_state.get("vo_active"), []) -%}
