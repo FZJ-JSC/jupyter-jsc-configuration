@@ -15,7 +15,7 @@ fi
 
 echo $SYSTEMNAME
 HOSTNAMES=$(hostname -s)
-if [[ $HOSTNAMES == "hdfmll*" ]]; then
+if [[ $HOSTNAMES == "hdfmll"* ]]; then
     HOSTNAMEI=${HOSTNAME}
 else
     HOSTNAMEI=${HOSTNAMES}i

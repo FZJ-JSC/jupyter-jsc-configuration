@@ -14,7 +14,7 @@ fi
 
 echo "Running on $HOSTNAME"
 HOSTNAMES=$(hostname -s)
-if [[ $HOSTNAMES == "jrlogin*" ]]; then
+if [[ $HOSTNAMES == "jrlogin"* ]]; then
     HOSTNAMEI=${HOSTNAME}
 else
     HOSTNAMEI=${HOSTNAMES}i

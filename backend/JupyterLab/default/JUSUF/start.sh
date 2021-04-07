@@ -16,7 +16,7 @@ fi
 echo $SYSTEMNAME
 echo "Running on $HOSTNAME"
 HOSTNAMES=$(hostname -s)
-if [[ $HOSTNAMES == "jsfl*" ]]; then
+if [[ $HOSTNAMES == "jsfl"* ]]; then
     HOSTNAMEI=${HOSTNAME}
 else
     HOSTNAMEI=${HOSTNAMES}i
