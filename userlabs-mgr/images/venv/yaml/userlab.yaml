@@ -23,7 +23,7 @@ spec:
       containers:
         - name: jupyterlab-_id_
           image: jupyterjsc/easybuild-jovyan:0.4.8
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
               exec:

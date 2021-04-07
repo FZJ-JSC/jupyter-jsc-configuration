@@ -22,8 +22,9 @@ spec:
         node.kubernetes.io/instance-type: "m16.large-disk"
       containers:
         - name: jupyterlab-_id_
-          image: aiidalab/aiidalab-docker-stack:latest
-          imagePullPolicy: Always
+          # tag find via https://github.com/aiidalab/aiidalab-docker-stack/tags
+          image: aiidalab/aiidalab-docker-stack:sha-418166b
+          imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
               exec:

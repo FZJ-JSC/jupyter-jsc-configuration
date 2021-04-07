@@ -25,6 +25,7 @@ elif [[ $HOSTNAMES == "jwvis*" ]]; then
 else
     HOSTNAMEI=${HOSTNAMES}i
 fi
+echo $HOSTNAMEI
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 75, "failed": false, "message": "", "html_message": "Job is running on '"${HOSTNAME}"'."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT} &> /dev/null
 if [[ $? -ne 0 ]]; then

@@ -23,7 +23,7 @@ spec:
       containers:
         - name: jupyterlab-_id_
           image: rancher-jsc.fz-juelich.de:5000/jupyterjsc/user-jupyterlabs:0.5.1
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
               exec:
