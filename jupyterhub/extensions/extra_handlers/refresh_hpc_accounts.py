@@ -23,7 +23,7 @@ def secret_authenticated(self):
 
 class HPCUpdateHandler(APIHandler):
     @secret_authenticated
-    async def get(self, username):
+    async def post(self, username):
         user = self.find_user(username)
         if user is None:
             self.set_status(404)
