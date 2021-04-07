@@ -1,8 +1,10 @@
 import os
+import re
 
 from tornado import web
 
 from jupyterhub.apihandlers.base import APIHandler
+from jupyterhub.jupyterjsc.utils.partitions import get_default_partitions
 from jupyterhub.utils import auth_decorator
 
 
@@ -29,14 +31,28 @@ class HPCUpdateHandler(APIHandler):
             self.set_status(404)
             return
         auth_state = await user.get_auth_state()
-        if auth_state and auth_state.get("oauth_user", {}).get(
-            "hpc_infos_attribute", []
+        if (
+            auth_state
+            and "hpc_infos_attribute" in auth_state.get("oauth_user", {}).keys()
         ):
             # User is logged in
             body = self.get_json_body()
+            default_partitions = get_default_partitions()
+            to_add = []
+            for entry in body:
+                partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
+                if partition in default_partitions.keys():
+                    to_add.append(
+                        entry.replace(
+                            f",{partition},",
+                            ",{},".format(default_partitions[partition]),
+                        )
+                    )
+            body.extend(to_add)
             if body:
                 auth_state["oauth_user"]["hpc_infos_attribute"] = body
             else:
                 auth_state["oauth_user"]["hpc_infos_attribute"] = []
+            await user.save_auth_state(auth_state)
         self.set_status(200)
         return
