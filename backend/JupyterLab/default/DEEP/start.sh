@@ -7,6 +7,9 @@ trap _term SIGTERM
 START=$(date)
 echo "Start: ${START}"
 
+export JUPYTERHUB_API_TOKEN=$(cat .jupyter.token)
+export JPY_API_TOKEN=$(cat .jupyter.token)
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Start Job in ${DIR}"
 if [[ -z ${JUPYTER_JSC_HOME} ]]; then

@@ -5,6 +5,9 @@ _term() {
 }
 trap _term SIGTERM
 
+export JUPYTERHUB_API_TOKEN=$(cat .jupyter.token)
+export JPY_API_TOKEN=$(cat .jupyter.token)
+
 echo $SYSTEMNAME
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"

@@ -116,7 +116,7 @@ $(document).ready(function() {
                       GPUs: {{ user_options.get("resource_GPUS") }}<br>
                     {% endif %}
                     {% if user_options.get("resource_Runtime", None) %}
-                      Runtime: {{ user_options.get("resource_Runtime") }}
+                      Runtime: {{ user_options.get("resource_Runtime")/60 }}
                     {% endif %}
                   </td>
                   {# action #}
