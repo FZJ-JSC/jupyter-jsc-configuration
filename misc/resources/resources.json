@@ -1,7 +1,7 @@
 {
     "DEEP": {
         "LoginNode": {},
-        "inactive-dp-cn": {
+        "dp-cn": {
             "Nodes": {
                 "DEFAULT": 1,
                 "DIVISOR": 1,
@@ -21,7 +21,7 @@
                 "TEXT": "Runtime (min) [10, 1440]"
             }
         },
-        "inactive-dp-dam": {
+        "dp-dam": {
             "Nodes": {
                 "DEFAULT": 1,
                 "DIVISOR": 1,
@@ -41,7 +41,7 @@
                 "TEXT": "Runtime (min) [10, 1440]"
             }
         },
-        "inactive-dp-esb": {
+        "dp-esb": {
             "Nodes": {
                 "DEFAULT": 1,
                 "DIVISOR": 1,
@@ -61,7 +61,7 @@
                 "TEXT": "Runtime (min) [10, 1440]"
             }
         },
-        "inactive-ml-gpu": {
+        "ml-gpu": {
             "Nodes": {
                 "DEFAULT": 1,
                 "DIVISOR": 1,
