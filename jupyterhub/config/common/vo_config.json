@@ -1,9 +1,9 @@
 {
   "refresh_call_at": 0,
   "values": {
-    "my_vo": {
+    "workshop-210420": {
       "authenticators": [],
-      "usernames": ["at.kreuzer@fz-juelich.de"],
+      "usernames": ["t.kreuzer@fz-juelich.de"],
       "admin": false,
       "weight": 1,
       "exclusive": false

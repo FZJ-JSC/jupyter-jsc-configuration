@@ -48,9 +48,9 @@
       "juwels09": "jwlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins", "prace-workshop"],
+    "vos": ["default", "admins", "workshop-210420"],
     "vo_exclude_partition": {
-      "prace-workshop": [
+      "workshop-210420": [
         "LoginNode",
         "LoginNodeVis",
         "LoginNodeBooster",
