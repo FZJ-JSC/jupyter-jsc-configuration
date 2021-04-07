@@ -27,7 +27,7 @@
       "jureca09": "jrlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins", "my_vo"],
+    "vos": ["default", "admins"],
     "vo_exclude_partition": {
       "vo": "partition"
     },
@@ -38,6 +38,7 @@
     "strict_session_ids": true,
     "LoginNode": ["juwels09.fz-juelich.de"],
     "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
+    "LoginNodeBooster": ["juwels23.fz-juelich.de", "juwels24.fz-juelich.de"],
     "fuser": "ljupyter",
     "host": "juwels.fz-juelich.de",
     "project_kernel": ["training2020"],
@@ -47,10 +48,12 @@
       "juwels09": "jwlogin09i"
     },
     "remote_port": 25490,
+    "vos": ["default", "admins", "prace-workshop"],
     "vo_exclude_partition": {
-      "my_vo": [
+      "prace-workshop": [
         "LoginNode",
         "LoginNodeVis",
+        "LoginNodeBooster",
         "booster",
         "batch",
         "devel",
@@ -118,7 +121,7 @@
       "eap_test": "eap_test"
     },
     "remote_port": 25490,
-    "vos": ["admins"],
+    "vos": ["default", "admins"],
     "vo_exclude_partition": {
       "no_admins": "LoginNode"
     }

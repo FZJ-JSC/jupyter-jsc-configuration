@@ -267,7 +267,7 @@ async def options_from_form(formdata):
             elif formdata.get("partition_input")[0] in [
                 "LoginNode",
                 "LoginNodeVis",
-                "LoginBooster",
+                "LoginNodeBooster",
             ]:
                 return True
             else:
