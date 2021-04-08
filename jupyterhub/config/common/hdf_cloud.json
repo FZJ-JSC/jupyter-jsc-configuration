@@ -9,7 +9,7 @@
   },
   "Jupyter-JSC 2020.2.6": {
     "internal_name": "2020.2.6",
-    "vos": ["default", "admins"]
+    "vos": ["default", "admins", "workshop-210420"]
   },
   "VirtualEnv": {
     "internal_name": "venv",
