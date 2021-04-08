@@ -3,7 +3,7 @@
   "values": {
     "workshop-210420": {
       "authenticators": [],
-      "usernames": ["t.kreuzer@fz-juelich.de"],
+      "usernames": ["t.kreuzer@fz-juelich.de", "j.goebbert@fz-juelich.de"],
       "admin": false,
       "weight": 1,
       "exclusive": false
@@ -28,7 +28,7 @@
     },
     "aiidalab": {
       "authenticators": [],
-      "usernames": ["t.kreuzer@fz-juelich.de", "s.achilles@fz-juelich.de"],
+      "usernames": ["t.kreuzer@fz-juelich.de", "s.achilles@fz-juelich.de", "j.goebbert@fz-juelich.de"],
       "admin": false,
       "weight": 5,
       "exclusive": false
