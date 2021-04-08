@@ -62,7 +62,7 @@
     }
   },
   "JUSUF": {
-    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUSUF2/rest/core",
+    "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUSUF/rest/core",
     "strict_session_ids": true,
     "LoginNode": ["jusuf?.fz-juelich.de"],
     "fuser": "ljupyter",
