@@ -43,11 +43,13 @@ spec:
           # args: ["while true; do sleep 30; done;"]
           ports:
             - containerPort: _port_
-          # resources:
-            # limits:
-              # memory: "_resource_limit_memory_"
+          resources:
+            limits:
+              memory: "_resource_limit_memory_"
               # cpu: "_resource_limit_cpu_"
               # ephemeral-storage: "_resource_limit_storage_"
+            guarantee:
+              memory: "_resource_limit_memory_"
           env:
             - name: JUPYTERHUB_CANCEL_URL
               valueFrom:
@@ -131,6 +133,7 @@ spec:
               subPath: "userlabs-mgr-jobs/_id_/bin"
       securityContext:
         fsGroup: 100
+      restartPolicy: Never
       volumes:
         - name: nfs-software-local
           hostPath:
