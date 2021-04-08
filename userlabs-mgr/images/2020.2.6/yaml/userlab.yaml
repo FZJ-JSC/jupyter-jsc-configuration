@@ -133,7 +133,6 @@ spec:
               subPath: "userlabs-mgr-jobs/_id_/bin"
       securityContext:
         fsGroup: 100
-      restartPolicy: Never
       volumes:
         - name: nfs-software-local
           hostPath:
