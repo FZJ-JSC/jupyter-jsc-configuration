@@ -48,7 +48,7 @@ spec:
               memory: "_resource_limit_memory_"
               # cpu: "_resource_limit_cpu_"
               # ephemeral-storage: "_resource_limit_storage_"
-            guarantee:
+            requests:
               memory: "_resource_limit_memory_"
           env:
             - name: JUPYTERHUB_CANCEL_URL
