@@ -67,6 +67,6 @@ fi
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 95, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 
 cd ${JUPYTER_JSC_HOME}
-jupyterhub-singleuser --config ${DIR}/.config.py &
+jupyterhub-singleuser --debug --config ${DIR}/.config.py &
 child=$!
 wait $child
