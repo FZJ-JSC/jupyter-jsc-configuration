@@ -14,6 +14,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 if [[ -z ${JUPYTER_JSC_HOME} ]]; then
     export JUPYTER_JSC_HOME=${HOME}
 fi
+if [[ ! -d ${HOME}/.cache/black/19.3b0 ]]; then
+    mkdir -p ${HOME}/.cache/black/19.3b0
+fi
 
 echo "Running on $HOSTNAME"
 HOSTNAMES=$(hostname -s)
@@ -24,6 +27,33 @@ else
 fi
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+
+export LC_ALL=en_US.UTF-8
+export JUPYTER_LOG_DIR=${DIR}
+export JUPYTER_STDOUT=${JUPYTER_LOG_DIR}/stderr
+export JUPYTER_JSC_PREBASH="y"
+if [ -e /etc/profile ]; then
+  source /etc/profile
+fi
+if [ -e ~/.bash_profile ]; then
+  source ~/.bash_profile
+fi
+if [ -e ~/.bashrc ]; then
+  source ~/.bashrc
+fi
+if [ -e /etc/bashrc ]; then
+  alias shopt=\"true or shopt\"
+  source /etc/bashrc
+  unalias shopt
+  # Turn on parallel history
+  shopt -s histappend
+  history -a
+  # Turn on checkwinsize
+  shopt -s checkwinsize
+fi
+unset JUPYTER_JSC_PREBASH
+PYTHONPATH=""
+
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT} &> /dev/null
 
 if [[ $? -ne 0 ]]; then
@@ -50,6 +80,12 @@ if [[ ! -f ${HOME}/.${JUPYTER_JSC_STARTUUID} ]]; then
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 75, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... disk quota in $HOME checked"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 fi
 
+if [[ -f ${HOME}/.jupyter/pre_jupyter-jsc.sh ]]; then
+    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 78, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... loading customized environment from $HOME/.jupyter/pre_jupyter-jsc.sh"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    cat ${HOME}/.jupyter/pre_jupyter-jsc.sh
+    source ${HOME}/.jupyter/pre_jupyter-jsc.sh
+fi
+
 
 if [[ -f ${HOME}/.jupyter/start_jupyter-jsc.sh ]]; then
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 80, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... loading customized environment from $HOME/.jupyter/start_jupyter-jsc.sh"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
@@ -63,10 +99,18 @@ else
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 80, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... modules loaded for JupyterCollection/2020.2.6"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 fi
 
-
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+if [[ ! $JUPYTER_JSC_HOME == $HOME ]]; then
+    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... use $JUPYTER_JSC_HOME as starting directory."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+fi
 
 cd ${JUPYTER_JSC_HOME}
-jupyterhub-singleuser --config ${DIR}/.config.py &
+if [[ -n $JUPYTERJSC_USER_CMD ]]; then
+    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab with custom command $JUPYTERJSC_USER_CMD ('"$JUPYTERJSC_USER_CMD"'). Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    echo $JUPYTERJSC_USER_CMD
+    timeout 30d $JUPYTERJSC_USER_CMD &
+else
+    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    timeout 30d jupyterhub-singleuser --debug --config ${DIR}/.config.py &
+fi
 child=$!
 wait $child

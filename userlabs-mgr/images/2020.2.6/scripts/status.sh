@@ -8,6 +8,8 @@ if [[ ! -d ${JOB_PATH}/logs ]]; then
     mkdir -p ${JOB_PATH}/logs
 fi
 
+echo "$(date) Get Status" >> ${JOB_PATH}/logs/status.log 2>&1
+
 POD=$(kubectl -n ${NAMESPACE} get po -l app=jupyterlab-${ID} -o jsonpath='{.items[0].metadata.name}' 2> /dev/null)
 if [[ ! $? -eq 0 ]]; then
     echo "jupyterlab-${ID} does not exist" >> ${JOB_PATH}/logs/status.log 2>&1

@@ -13,7 +13,7 @@ SERVICE_NAME="jupyterlab-${ID}-service"
 cp -r ${BASE_CONFIG} ${JOB_PATH}
 mkdir -p ${JOB_PATH}/logs
 
-echo "$(date) - Start" >> ${JOB_PATH}/logs/start.log 2>&1
+echo "$(date) Start" >> ${JOB_PATH}/logs/start.log 2>&1
 
 # Load VO specific variables
 TMP=$(curl -X "GET" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/user 2>/dev/null)

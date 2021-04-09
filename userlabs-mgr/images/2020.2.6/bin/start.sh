@@ -3,7 +3,11 @@
 unset ${!JUPYTERLAB@}
 unset ${!MANAGER@}
 unset ${!KUBERNETES@}
+
+cat $EBROOTJUPYTER/etc/jupyter/jupyter_notebook_config.py >> /opt/apps/bin/config.py
+
 unset ${!EB@}
+
 
 # module load stuff
 if [[ ! -d /home/jovyan/.cache/black/19.3b0 ]]; then
@@ -36,4 +40,4 @@ curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: $
 
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
-jupyterhub-singleuser --allow-root --config /opt/apps/bin/config.py
+jupyterhub-singleuser --debug --config /opt/apps/bin/config.py >> /opt/apps/bin/jupyterlab.log 2>&1

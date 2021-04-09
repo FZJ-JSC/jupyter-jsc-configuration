@@ -7,6 +7,8 @@ JOB_PATH=${JOBS_BASE_PATH}/${ID}
 if [[ ! -d ${JOB_PATH}/logs ]]; then
     mkdir -p ${JOB_PATH}/logs
 fi
+echo "$(date) Stop" >> ${JOB_PATH}/logs/status.log 2>&1
+
 
 JOBS_ARCHIVE_PATH="/mnt/jobs-archive/${ID}"
 if [ -d ${JOBS_ARCHIVE_PATH} ]; then
