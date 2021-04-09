@@ -51,6 +51,11 @@ spec:
             requests:
               memory: "_resource_limit_memory_"
           env:
+            - name: JUPYTERHUB_STATUS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: userlab-_id_-cm
+                  key: JUPYTERHUB_STATUS_URL
             - name: JUPYTERHUB_CANCEL_URL
               valueFrom:
                 configMapKeyRef:
