@@ -4,9 +4,7 @@ unset ${!JUPYTERLAB@}
 unset ${!MANAGER@}
 unset ${!KUBERNETES@}
 
-cat $EBROOTJUPYTER/etc/jupyter/jupyter_notebook_config.py >> /opt/apps/bin/config.py
-
-unset ${!EB@}
+cat /p/software/hdfcloud/stages/2020/software/Jupyter/2020.2.6-gcccoremkl-9.3.0-2020.2.254-Python-3.8.5/etc/jupyter/jupyter_notebook_config.py >> /opt/apps/bin/config.py
 
 
 # module load stuff
