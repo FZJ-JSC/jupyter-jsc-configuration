@@ -3,7 +3,21 @@
     "nodes": ["hdfcloud"],
     "node_mapping": {},
     "max_per_user": {
-      "JupyterLab": 5
+      "workshop-210420": {
+        "JupyterLab": 1
+      },
+      "default": {
+        "JupyterLab": 5
+      },
+      "HIFIS": {
+        "JupyterLab": 5
+      },
+      "admins": {
+        "JupyterLab": 5
+      },
+      "aiidalab": {
+        "JupyterLab": 1
+      }
     }
   }
 }
