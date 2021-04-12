@@ -574,7 +574,7 @@ static_url("css/pages/spawn.css", include_version=False) }}" type="text/css"/>
     localStorage.setItem("jupyterlab_partition", $("#partition_input").val());
     localStorage.setItem("jupyterlab_reservation", $("#reservation_input").val());
   }
-  function onClickReservations(value, inactive) {
+  function onClickReservations(value) {
     var old = $("reservation_input").val();
     if ( old == value ) {
       return;
@@ -738,49 +738,84 @@ static_url("css/pages/spawn.css", include_version=False) }}" type="text/css"/>
           if ( system == {{ system | tojson }} && account == {{ account | tojson }} &&
             project == {{ project | tojson }} && partition == {{ partition | tojson }} ){
             {% if "Nodes" in spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}) -%}
-              $('#resource_nodes_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("TEXT", "Nodes") | tojson }});
-              $('#resource_nodes_input').attr({
-                "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("MINMAX", [0, 1])[0] }},
-                "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("MINMAX", [0, 1])[1] }},
-                "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("DEFAULT", 0) }},
-              });
+              {% if "Nodes" in unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).keys() -%}
+                $('#resource_nodes_label').html("Nodes [{{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Nodes",[0,1])[0] }}, {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Nodes",[0,1])[1] }}]");
+                $('#resource_nodes_input').attr({
+                  "min": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Nodes",[0,1])[0] }},
+                  "max": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Nodes",[0,1])[1] }},
+                  "value": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Nodes",[0,1])[0] }},
+                });
+              {% else -%}
+                $('#resource_nodes_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("TEXT", "Nodes") | tojson }});
+                $('#resource_nodes_input').attr({
+                  "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("MINMAX", [0, 1])[0] }},
+                  "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("MINMAX", [0, 1])[1] }},
+                  "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Nodes", {}).get("DEFAULT", 0) }},
+                });
+              {% endif -%}
               $('#resource_nodes_div').show();
             {% endif -%}
             {% if "Runtime" in spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}) -%}
-              $('#resource_runtime_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("TEXT", "Runtime") | tojson }});
-              $('#resource_runtime_input').attr({
-                "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("MINMAX", [0, 1])[0] }},
-                "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("MINMAX", [0, 1])[1] }},
-                "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("DEFAULT", 0) }},
-              });
+              {% if "Runtime" in unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).keys() -%}
+                $('#resource_runtime_label').html("Runtime (min) [{{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Runtime",[0,1])[0] }}, {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Runtime",[0,1])[1] }}]");
+                $('#resource_runtime_input').attr({
+                  "min": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Runtime",[0,1])[0] }},
+                  "max": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Runtime",[0,1])[1] }},
+                  "value": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("Runtime",[0,1])[0] }},
+                });
+              {% else -%}
+                $('#resource_runtime_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("TEXT", "Runtime") | tojson }});
+                $('#resource_runtime_input').attr({
+                  "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("MINMAX", [0, 1])[0] }},
+                  "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("MINMAX", [0, 1])[1] }},
+                  "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("Runtime", {}).get("DEFAULT", 0) }},
+                });
+              {% endif -%}
               $('#resource_runtime_div').show();
             {% endif -%}
             {% if "GPUS" in spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}) -%}
-              $('#resource_gpus_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("TEXT", "GPUs") | tojson }});
-              $('#resource_gpus_input').attr({
-                "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("MINMAX", [0, 1])[0] }},
-                "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("MINMAX", [0, 1])[1] }},
-                "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("DEFAULT", 0) }},
-              });
+              {% if "GPUS" in unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).keys() -%}
+                $('#resource_gpus_label').html("GPUs [{{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("GPUS",[0,1])[0] }}, {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("GPUS",[0,1])[1] }}]");
+                $('#resource_gpus_input').attr({
+                  "min": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("GPUS",[0,1])[0] }},
+                  "max": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("GPUS",[0,1])[1] }},
+                  "value": {{ unicore_config.get(system, {}).get("vo_limit_resources", {}).get(auth_state.get("vo_active"), {}).get(partition, {}).get("GPUS",[0,1])[1] }},
+                });
+              {% else -%}
+                $('#resource_gpus_label').html( {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("TEXT", "GPUs") | tojson }});
+                $('#resource_gpus_input').attr({
+                  "min": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("MINMAX", [0, 1])[0] }},
+                  "max": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("MINMAX", [0, 1])[1] }},
+                  "value": {{ spawner_options_form.get('resources', {}).get(system, {}).get(partition, {}).get("GPUS", {}).get("DEFAULT", 0) }},
+                });
+              {% endif -%}
               $('#resource_gpus_div').show();
             {% endif -%}
             {% if reservations | length > 0 -%}
               $('#reservations_dropdown_label').html('Reservation');
               $('#reservations_dropdown_ul').html("");
-              $('#reservations_dropdown_ul').append('<li><a href="#" onclick="onClickReservations(\'None\')">None</a></li>');
+              {% if partition not in unicore_config.get(system, {}).get("vo_force_reservation", {}).get(auth_state.get("vo_active"), {}).keys() -%}
+                $('#reservations_dropdown_ul').append('<li><a href="#" onclick="onClickReservations(\'None\')">None</a></li>');
+              {% endif -%}
               {% for reservation in reservations | sort -%}
                 {# Check Reservation Info Dict for more information #}
                 {% for reservation_line in spawner_options_form.get('reservations', {}).get(system, []) -%}
                   {% if reservation == reservation_line[0] -%}
-                    {% if reservation_line[14] == "INACTIVE" -%}
-                      $('#reservations_dropdown_ul').append('<li><a href="#" style="text-decoration:line-through; color:red" onclick="onClickReservations(\'{{reservation}}\')">{{reservation}}</a></li>');
-                    {% else -%}
-                      $('#reservations_dropdown_ul').append('<li><a href="#" onclick="onClickReservations(\'{{reservation}}\')">{{reservation}}</a></li>');
+                    {% if partition not in unicore_config.get(system, {}).get("vo_force_reservation", {}).get(auth_state.get("vo_active"), {}).keys() or reservation in unicore_config.get(system, {}).get("vo_force_reservation", {}).get(auth_state.get("vo_active"), {}).get(partition, []) -%}
+                      {% if reservation_line[14] == "INACTIVE" -%}
+                        $('#reservations_dropdown_ul').append('<li><a href="#" style="text-decoration:line-through; color:red" onclick="onClickReservations(\'{{reservation}}\')">{{reservation}}</a></li>');
+                      {% else -%}
+                        $('#reservations_dropdown_ul').append('<li><a href="#" onclick="onClickReservations(\'{{reservation}}\')">{{reservation}}</a></li>');
+                      {% endif -%}
                     {% endif -%}
                   {% endif -%}
                 {% endfor -%}
               {% endfor -%}
-              $('#reservations_dropdown_button').val("None").trigger("change");
+              {% if partition in unicore_config.get(system, {}).get("vo_force_reservation", {}).get(auth_state.get("vo_active"), {}).keys() -%}
+                $('#reservations_dropdown_button').val("{{unicore_config.get(system, {}).get("vo_force_reservation", {}).get(auth_state.get("vo_active"), {}).get(partition, ["None"])[0]}}").trigger("change");
+              {% else -%}
+                $('#reservations_dropdown_button').val("None").trigger("change");
+              {% endif -%}
               $('#reservations_dropdown').show();
             {% else %}
               $('#reservations_dropdown').hide();
@@ -795,6 +830,7 @@ static_url("css/pages/spawn.css", include_version=False) }}" type="text/css"/>
   function onChangeReservations() {
     var system = $('#system_input').val();
     var reservation = $('#reservations_dropdown_button').val();
+    $('#reservation_input').val(reservation);
     {% for system, reservation_list in spawner_options_form.get("reservations", {}).items() -%}
       if ( system == {{ system | tojson }} ) {
         if (reservation == "None" || reservation == "" || reservation == "undefined" ){

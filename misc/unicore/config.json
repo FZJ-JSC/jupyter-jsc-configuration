@@ -31,6 +31,19 @@
     "vo_exclude_partition": {
       "vo": "partition"
     },
+    "vo_force_reservation": {
+      "vo": {
+        "partition": ["reservation1", "reservation2"]
+      }
+    },
+    "vo_limit_resources": {
+      "vo": {
+        "partition": {
+          "Nodes": [1,2],
+          "Runtime": [10, 30]
+	}
+      }
+    },
     "disabled_partitions": ["booster"]
   },
   "JUWELS": {
