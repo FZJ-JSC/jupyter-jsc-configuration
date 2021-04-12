@@ -1,6 +1,9 @@
 {
   "hdfcloud": {
     "nodes": ["hdfcloud"],
-    "node_mapping": {}
+    "node_mapping": {},
+    "max_per_user": {
+      "JupyterLab": 5
+    }
   }
 }
