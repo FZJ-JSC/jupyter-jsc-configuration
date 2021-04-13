@@ -215,8 +215,8 @@ async def options_form(spawner):
     unicore_vo = {
         system.upper(): {
             "vos": unicore_config.get(system.upper(), {}).get("vos", []),
-            "vo_exclude_partition": unicore_config.get(system.upper(), {}).get(
-                "vo_exclude_partition", {}
+            "vo_exclusive_partition": unicore_config.get(system.upper(), {}).get(
+                "vo_exclusive_partition", {}
             ),
         }
         for system in resources.keys()

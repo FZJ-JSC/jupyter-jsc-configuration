@@ -110,6 +110,25 @@ c.UnityOAuthenticator.scope = os.environ.get("SCOPE").split(";")
 c.UnityOAuthenticator.admin_users = set(os.environ.get("ADMIN_USERS").split(";"))
 c.UnityOAuthenticator.post_auth_hook = unity.post_auth_hook
 
+## We use JupyterHub-idle-culler ( https://pypi.org/project/jupyterhub-idle-culler/ ) to remove unused JupyterLabs
+c.JupyterHub.services = []
+if os.environ.get("IDLE_CULLER_ENABLED", "false").lower() in ["true", "1"]:
+    cull_cmd = [
+        "python3",
+        "-m",
+        "jupyterhub_idle_culler",
+        "--url=http://localhost:8001/hub/api",
+        "--timeout=86400",
+        "--cull-every=300",
+        "--concurrency=5",
+    ]
+    c.JupyterHub.services.append(
+        {
+            "name": "cull-idle",
+            "admin": True,
+            "command": cull_cmd,
+        }
+    )
 
 from extra_handlers import (
     setuptunnel,

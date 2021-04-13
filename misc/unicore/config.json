@@ -28,8 +28,8 @@
     },
     "remote_port": 25490,
     "vos": ["default", "admins"],
-    "vo_exclude_partition": {
-      "vo": "partition"
+    "vo_exclusive_partition": {
+      "vo": ["partition"]
     },
     "vo_force_reservation": {
       "vo": {
@@ -62,15 +62,9 @@
     },
     "remote_port": 25490,
     "vos": ["default", "admins", "workshop-210420"],
-    "vo_exclude_partition": {
+    "vo_exclusive_partition": {
       "workshop-210420": [
-        "LoginNode",
-        "LoginNodeVis",
-        "LoginBooster",
-        "booster",
-        "batch",
-        "devel",
-        "develgpus"
+        "gpus"
       ]
     }
   },
@@ -89,8 +83,8 @@
     },
     "remote_port": 25490,
     "vos": ["default", "admins"],
-    "vo_exclude_partition": {
-      "vo": "LoginNode"
+    "vo_exclusive_partition": {
+      "vo": ["LoginNode"]
     }
   },
   "HDFML": {
@@ -107,8 +101,8 @@
     },
     "remote_port": 25490,
     "vos": ["default", "admins"],
-    "vo_exclude_partition": {
-      "no_admins": "LoginNode"
+    "vo_exclusive_partition": {
+      "no_admins": ["LoginNode"]
     }
   },
   "DEEP": {
@@ -135,8 +129,8 @@
     },
     "remote_port": 25490,
     "vos": ["default", "admins"],
-    "vo_exclude_partition": {
-      "no_admins": "LoginNode"
+    "vo_exclusive_partition": {
+      "no_admins": ["LoginNode"]
     }
   }
 }
