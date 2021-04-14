@@ -24,7 +24,7 @@ c.ConfigurableHTTPProxy.should_start = False
 proxy_url = os.environ.get("PROXY_URL")
 c.ConfigurableHTTPProxy.api_url = f"{proxy_url}"
 
-c.JupyterHub.statsd_host = "graphite.jupyterjsc.svc.cluster.local"
+c.JupyterHub.statsd_host = "graphite"
 
 c.JupyterHub.strict_session_ids = True
 c.JupyterHub.logout_on_all_devices = False
