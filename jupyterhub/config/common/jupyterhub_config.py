@@ -95,7 +95,7 @@ c.UnityOAuthenticator.extra_authorize_params = dict(
     )
 )
 c.UnityOAuthenticator.extra_authorize_params_allowed_arguments = dict(
-    uy_select_authn=["jupyterhdfaaiAuthn.hbp", "jupyterldapAuthn.password"]
+    uy_select_authn=["jupyterhdfaaiAuthn.hdf", "jupyterldapAuthn.password"]
 )
 c.UnityOAuthenticator.enable_auth_state = True
 c.UnityOAuthenticator.client_id = os.environ.get("CLIENT_ID")
