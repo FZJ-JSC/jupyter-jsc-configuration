@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 
 c = get_config()
 c.JupyterHub.log_level = logging.DEBUG
@@ -8,8 +7,6 @@ c.JupyterHub.log_format = "%(asctime)s,%(msecs).03d, Levelno=%(levelno)s, Level=
 
 # c.JupyterHub.last_activity_interval = 60
 c.JupyterHub.hub_ip = "0.0.0.0"
-c.JupyterHub.hub_port = 8001
-c.JupyterHub.port = 8000
 
 hcip = os.environ.get("JUPYTERHUB_CONNECT_IP")
 c.JupyterHub.hub_connect_ip = f"{hcip}"
