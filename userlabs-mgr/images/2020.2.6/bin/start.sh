@@ -33,7 +33,9 @@ export OTHERSTAGES=/p/software/hdfcloud/otherstages
 module purge && module use $OTHERSTAGES && module load JupyterCollection/2020.2.6
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... modules loaded for JupyterCollection/2020.2.6"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
-#/opt/apps/bin/bin/mount-judac
+if [[ -f /opt/apps/bin/bin/mount-judac-ro ]]; then
+    /opt/apps/bin/bin/mount-judac-ro
+fi
 #/opt/apps/bin/bin/automount-B2DROP
 
 
