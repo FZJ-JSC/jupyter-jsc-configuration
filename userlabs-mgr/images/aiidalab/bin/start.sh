@@ -20,4 +20,6 @@ if [[ ! $? -eq 0 ]]; then
     exit 0
 fi
 
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting AiidaLab. Waiting for an answer. This may take a few seconds."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
+
 /sbin/my_my_init

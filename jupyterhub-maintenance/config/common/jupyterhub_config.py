@@ -14,14 +14,3 @@ c.JupyterHub.hub_connect_ip = f"{hcip}"
 # c.JupyterHub.template_paths = ["/mnt/data/templates"]
 c.JupyterHub.data_files_path = os.environ.get("DATA_FILES_PATH")
 c.JupyterHub.default_url = "/hub/home"
-c.JupyterHub.jinja_environment_options = {
-    "extensions": [
-        "jinja2.ext.do",
-        "jinja2.ext.loopcontrols",
-        "jinja2_ansible_filters.AnsibleCoreFiltersExtension",
-    ]
-}
-
-import uuid
-
-c.JupyterHub.cookie_secret_file = "{}".format(uuid.uuid4().hex)
