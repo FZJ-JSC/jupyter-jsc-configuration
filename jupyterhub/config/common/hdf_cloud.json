@@ -3,13 +3,9 @@
     "internal_name": "aiidalab",
     "vos": ["aiidalab"]
   },
-  "Jupyter-JSC 2020.2.6 - nfs": {
-    "internal_name": "2020.2.6.2",
-    "vos": ["admins"]
-  },
   "Jupyter-JSC 2020.2.6": {
     "internal_name": "2020.2.6",
-    "vos": ["default", "admins", "workshop-210420"]
+    "vos": ["default", "HIFIS", "admins", "workshop-210420"]
   },
   "VirtualEnv": {
     "internal_name": "venv",

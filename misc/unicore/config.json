@@ -1,6 +1,6 @@
 {
   "systems": ["JURECA", "JUWELS", "JUSUF", "HDFML", "DEEP"],
-  "reservation_systems": ["JURECA", "JUWELS"],
+  "reservation_systems": ["JURECA", "JUWELS", "JUSUF"],
   "refresh_required": [
     "Could not submit job: eu.unicore.security.AuthorisationException: There are no accessible targetsystem factories for: Name: CN=ANONYMOUS,O=UNKNOWN,OU=UNKNOWN"
   ],
@@ -27,7 +27,7 @@
       "jureca09": "jrlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins"],
+    "vos": ["default", "HIFIS", "admins"],
     "vo_exclusive_partition": {
       "vo": ["partition"]
     },
@@ -61,7 +61,7 @@
       "juwels09": "jwlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins", "workshop-210420"],
+    "vos": ["default", "HIFIS", "admins", "workshop-210420"],
     "vo_exclusive_partition": {
       "workshop-210420": [
         "gpus"
@@ -82,7 +82,7 @@
       "jusuf02": "jsfl02"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins"],
+    "vos": ["default", "HIFIS", "admins"],
     "vo_exclusive_partition": {
       "vo": ["LoginNode"]
     }
@@ -100,7 +100,7 @@
       "hdfml01": "hdfmll01"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins"],
+    "vos": ["default", "HIFIS", "admins"],
     "vo_exclusive_partition": {
       "no_admins": ["LoginNode"]
     }
@@ -128,7 +128,7 @@
       "eap_test": "eap_test"
     },
     "remote_port": 25490,
-    "vos": ["default", "admins"],
+    "vos": ["default", "HIFIS", "admins"],
     "vo_exclusive_partition": {
       "no_admins": ["LoginNode"]
     }
