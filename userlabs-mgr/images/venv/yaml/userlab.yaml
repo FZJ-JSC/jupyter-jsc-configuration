@@ -139,8 +139,8 @@ spec:
         - name: nfs-userdata
           nfs:
             path: /
-            server: 10.100.0.105
+            server: 10.101.0.105
         - name: nfs-common
           nfs:
             path: /
-            server: 10.100.0.106
+            server: 10.101.0.106

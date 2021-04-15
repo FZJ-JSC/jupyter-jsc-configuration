@@ -18,7 +18,7 @@ echo "$(date) Start" >> ${JOB_PATH}/logs/start.log 2>&1
 # Load VO specific variables
 TMP=$(curl -X "GET" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" http://${REMOTE_NODE}:${REMOTE_HUB_PORT}/hub/api/user 2>/dev/null)
 VO=$(python3 -c 'import json,sys; d = json.loads(sys.argv[1]); out = d.get("auth_state", {}).get("vo_active", ""); print(out);' "$TMP")
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 40, "failed": false, "message": "", "html_message": "Start with VO: '"$VO"'"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}/hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 30, "failed": false, "message": "", "html_message": "Request submitted to HDF-Cloud."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}/hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
 if [[ ! -f ${BASE_CONFIG}/VOs/${VO}.env ]]; then
 	echo "VO specific configuration for ${VO} does not exist. Use default one" >> ${JOB_PATH}/logs/start.log 2>&1
 	export $(grep -v '^#' ${BASE_CONFIG}/VOs/default.env | xargs)
@@ -89,6 +89,17 @@ else
     if [[ $USED_BYTES -gt $STORAGE_HARD_BYTES ]]; then
         >&2 echo "Used storage: ${USED_HUMAN}. Soft limit: ${STORAGE_USERDATA_SOFT}. Hard limit: ${STORAGE_USERDATA_HARD}."
         exit 231
+    elif [[ $USED_BYTES -gt $STORAGE_SOFT_BYTES ]]; then
+        if [[ -f ${LOCAL_USERHOMES_PATH}/skel/motd.d/softlimit ]]; then
+            if [[ ! -d ${JOB_PATH}/bin/motd.d ]]; then
+                mkdir -p ${JOB_PATH}/bin/motd.d >> ${JOB_PATH}/logs/start.log 2>&1
+            fi
+            cp ${LOCAL_USERHOMES_PATH}/skel/motd.d/softlimit ${JOB_PATH}/bin/motd.d/softlimit >> ${JOB_PATH}/logs/start.log 2>&1
+            sed -i -e "s/_used_human_/${USED_HUMAN}/g" -e "s/_softlimit_/${STORAGE_USERDATA_SOFT}/g" -e "s/_hardlimit_/${STORAGE_USERDATA_HARD}/g" ${JOB_PATH}/bin/motd.d/softlimit >> ${JOB_PATH}/logs/start.log 2>&1
+        fi
+        curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... disk quota checked. ('"${USED_HUMAN}"'/'"${STORAGE_USERDATA_SOFT}"'). If you reach '"${STORAGE_USERDATA_HARD}"' you cannot start a JupyterLab anymore."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
+    else
+        curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... disk quota checked. ('"${USED_HUMAN}"'/'"${STORAGE_USERDATA_SOFT}"')"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
     fi
 fi
 ### TODO Create Projects stuff
@@ -104,6 +115,8 @@ sed -i -e "s/_port_/${PORT}/g" ${JOB_PATH}/yaml/service.yaml >> ${JOB_PATH}/logs
 sed -i -e "s/_resource_limit_memory_/${RESOURCE_LIMIT_MEMORY}/g" ${JOB_PATH}/yaml/userlab.yaml >> ${JOB_PATH}/logs/start.log 2>&1
 sed -i -e "s/_resource_limit_cpu_/${RESOURCE_LIMIT_CPU}/g" ${JOB_PATH}/yaml/userlab.yaml >> ${JOB_PATH}/logs/start.log 2>&1
 sed -i -e "s/_resource_limit_storage_/${RESOURCE_LIMIT_STORAGE}/g" ${JOB_PATH}/yaml/userlab.yaml >> ${JOB_PATH}/logs/start.log 2>&1
+
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 70, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... request-specific configuration generated."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
 
 kubectl -n ${NAMESPACE} get deployment userlab-${ID} &> /dev/null
 EC=$?

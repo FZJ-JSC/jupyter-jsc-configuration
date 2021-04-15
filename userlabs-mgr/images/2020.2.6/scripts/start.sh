@@ -83,7 +83,7 @@ if [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
     # cp -r ${LOCAL_USERHOMES_PATH}/skel/motd.d/mount-b2drop ${JOB_PATH}/bin/motd.d/mount-b2drop >> ${JOB_PATH}/logs/start.log 2>&1
     if [[ -d ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_} ]]; then
         echo "Move old files to new path" >> ${JOB_PATH}/logs/start.log 2>&1
-        curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 68, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... copy files from previous HDF-Cloud implementation to new one."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
+        curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 68, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... copy files from previous HDF-Cloud implementation."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
         mkdir -p ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files >> ${JOB_PATH}/logs/start.log 2>&1
         if [[ -d ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/work ]]; then
             mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/work ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_implementation/. >> ${JOB_PATH}/logs/start.log 2>&1
