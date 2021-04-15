@@ -22,7 +22,7 @@ spec:
         node.kubernetes.io/instance-type: "m16.large-disk"
       containers:
         - name: jupyterlab-_id_
-          image: rancher-jsc.fz-juelich.de:5000/jupyterjsc/user-jupyterlabs:0.6
+          image: rancher-jsc.fz-juelich.de:5000/jupyterjsc/user-jupyterlabs:0.6.1
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
