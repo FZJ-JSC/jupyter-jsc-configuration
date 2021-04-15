@@ -38,4 +38,4 @@ curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: $
 
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
-timeout 30d jupyterhub-singleuser --debug --config /opt/apps/bin/config.py >> /opt/apps/bin/jupyterlab.log 2>&1
+jupyterhub-singleuser --debug --config /opt/apps/bin/config.py >> /opt/apps/bin/jupyterlab.log 2>&1

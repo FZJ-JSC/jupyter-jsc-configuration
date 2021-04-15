@@ -196,12 +196,13 @@ async def post_auth_hook(authenticator, handler, authentication):
     for entry in hpc_list:
         partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
         if partition in default_partitions.keys():
-            to_add.append(
-                entry.replace(
-                    f",{partition},",
-                    ",{},".format(default_partitions[partition]),
+            for value in default_partitions[partition]:
+                to_add.append(
+                    entry.replace(
+                        f",{partition},",
+                        ",{},".format(value),
+                    )
                 )
-            )
     hpc_list.extend(to_add)
     if hpc_list:
         authentication["auth_state"]["oauth_user"]["hpc_infos_attribute"] = hpc_list
