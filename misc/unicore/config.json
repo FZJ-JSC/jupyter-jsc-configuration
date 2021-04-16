@@ -123,9 +123,6 @@
       "dam": "dp-dam"
     },
     "project_mapping": {
-      "cdeep": "deep",
-      "cjsc": "cjsc",
-      "eap_test": "eap_test"
     },
     "remote_port": 25490,
     "vos": ["default", "HIFIS", "admins"],
