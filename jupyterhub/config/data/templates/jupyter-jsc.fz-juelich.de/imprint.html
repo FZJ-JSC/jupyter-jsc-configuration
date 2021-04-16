@@ -9,10 +9,9 @@
 
 {% block main %}
 
-<div class="background-wrapper">
-  <div class="content">
-<h1>Legal Notice</h1>
-    <div class="rest-container">
+<div class="content">
+  <h1>Legal Notice</h1>
+  <div class="rest-container">
     <div class="rest ">
 <h2>Forschungszentrum Jülich GmbH</h2>
 
@@ -74,7 +73,6 @@ Email address: <a class="RichTextIntLink" href="mailto:info@fz-juelich.de" title
 <div>Last updated:&nbsp;31 Mar 2020</div>
 
     </div>
-    </div>
   </div>
 </div>
 
@@ -82,14 +80,4 @@ Email address: <a class="RichTextIntLink" href="mailto:info@fz-juelich.de" title
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript">
-require(["home"]);
-var input = document.getElementById("labname");
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault();
-   document.getElementById("labbutton").click();
-  }
-});
-</script>
 {% endblock %}

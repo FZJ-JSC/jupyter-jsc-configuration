@@ -9,11 +9,10 @@
 
 {% block main %}
 
-<div class="background-wrapper">
-  <div class="content">
-    <h1 class="">Terms of Service</h1>
-    <h3 class="">User Declaration</h3>
-    <div class="rest-container">
+<div class="content">
+  <h1 class="">Terms of Service</h1>
+  <h3 class="">User Declaration</h3>
+  <div class="rest-container">
     <div class="rest ">
     <p>By registering as a user you declare that you have read, understood and will abide by the following conditions of use:</p>
     <ol>
@@ -54,7 +53,6 @@
     <p>Version: 1.0</p>
     <p>Date: 04.09.2018</p>
     </div>
-    </div>
   </div>
 </div>
 
@@ -62,14 +60,4 @@
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript">
-require(["home"]);
-var input = document.getElementById("labname");
-input.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault();
-   document.getElementById("labbutton").click();
-  }
-});
-</script>
 {% endblock %}
