@@ -138,6 +138,7 @@ from extra_handlers import (
     projects,
     vo,
     refresh_hpc_accounts,
+    sites,
 )
 
 c.JupyterHub.extra_handlers = [
@@ -175,6 +176,9 @@ c.JupyterHub.extra_handlers = [
     (r"/api/refreshhpc/([^/]+)", refresh_hpc_accounts.HPCUpdateHandler),
     (r"/direct/([^/]+)/([^/]+)", direct.DirectSpawnHandler),
     (r"/groups", vo.VOHandler),
+    (r"/terms", sites.ToSHandler),
+    (r"/imprint", sites.ImprintHandler),
+    (r"/privacy", sites.DPSHandler),
     (r"/2FA", twoFA.TwoFAHandler),
     (r"/2FA/([^/]+)", twoFA.TwoFACodeHandler),
     (r"/signout", unity.BackendLogoutHandler),
