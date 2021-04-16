@@ -146,7 +146,7 @@ spec:
               readOnly: true
             - name: nfs-userdata
               mountPath: "/home/aiida"
-              subPath: "_userid_"
+              subPath: "aiida/_userid_"
             - name: nfs-common
               mountPath: "/opt/apps/bin"
               subPath: "userlabs-mgr-jobs/_id_/bin"
