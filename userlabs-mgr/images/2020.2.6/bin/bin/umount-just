@@ -3,7 +3,6 @@ mount | grep "/mnt/JUST_HOMEs_readonly" > /dev/null
 EC=$?
 if [[ $EC -eq 0 ]]; then
     fusermount -u /mnt/JUST_HOMEs_readonly 2>/dev/null
-    umount /mnt/JUST_HOMEs_readonly
 else
     echo "JUST_HOMEs_readonly is currently not mounted"
 fi

@@ -4,7 +4,7 @@ EC=$?
 if [[ $EC -eq 0 ]];then
     echo "/mnt/JUST_HOMEs_readonly is already mounted"
 else
-    CMD=$(python3 /opt/apps/bin/bin/.uftp_ro.py)
+    CMD=$(python3 /opt/apps/bin/bin/.uftp.py)
     EC=$?
     if [[ $EC -eq 0 ]]; then
         $CMD /mnt/JUST_HOMEs_readonly 2>/dev/null
