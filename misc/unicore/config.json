@@ -22,29 +22,29 @@
     "project_kernel": [],
     "project_symlink": [],
     "nodes": ["jureca04"],
+    "disabled_partitions": ["booster"],
     "node_mapping": {
       "jureca04": "jrlogin04i",
       "jureca09": "jrlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "HIFIS", "admins"],
+    "vos": ["default", "HIFIS", "admins", "workshop-210420"],
     "vo_exclusive_partition": {
-      "vo": ["partition"]
+      "workshop-210420": ["batch"]
     },
     "vo_force_reservation": {
-      "vo": {
-        "partition": ["reservation1", "reservation2"]
+      "workshop-210420": {
+        "partition": ["prace-jupyter-2021-04-21"]
       }
     },
     "vo_limit_resources": {
-      "vo": {
-        "partition": {
-          "Nodes": [1,2],
-          "Runtime": [10, 30]
+      "workshop-210420": {
+        "batch": {
+          "Nodes": [1,1],
+          "Runtime": [10, 300]
 	}
       }
-    },
-    "disabled_partitions": ["booster"]
+    }
   },
   "JUWELS": {
     "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
@@ -64,8 +64,22 @@
     "vos": ["default", "HIFIS", "admins", "workshop-210420"],
     "vo_exclusive_partition": {
       "workshop-210420": [
-        "gpus"
+        "booster"
       ]
+    },
+    "vo_force_reservation": {
+      "workshop-210420": {
+        "booster": ["prace-jupyter-2021-04-22"]
+      }
+    },
+    "vo_limit_resources": {
+      "workshop-210420": {
+        "gpus": {
+          "Nodes": [1,1],
+          "Runtime": [10, 300],
+          "GPUS": [4,4]
+	}
+      }
     }
   },
   "JUSUF": {
