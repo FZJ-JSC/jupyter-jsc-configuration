@@ -51,6 +51,8 @@ class DirectSpawnHandler(SpawnHandler):
         )
 
         if options:
+            auth_state = await user.get_auth_state()
+            options["vo_active_input"] = auth_state.get("vo_active", "default")
             query_args = urlencode(options)
             default = f"{default}?{query_args}"
 
