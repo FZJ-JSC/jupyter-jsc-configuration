@@ -23,7 +23,7 @@ HOSTNAMES=$(hostname -s)
 if [[ $HOSTNAMES == "deepv"* ]]; then
     HOSTNAMEI=${HOSTNAME}
 else
-    HOSTNAMEI=${HOSTNAMES}i
+    HOSTNAMEI=${HOSTNAMES}
 fi
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
