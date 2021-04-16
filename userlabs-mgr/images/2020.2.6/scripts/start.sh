@@ -60,8 +60,7 @@ fi
 # Create userhome directory/volume if not already existing
 LOCAL_USERHOMES_PATH="/mnt/userdata"
 OLD_USERHOMES_PATH="/mnt/userdata/old"
-# /mnt/userdata/old/t.kreuzer_at_fz-juelich.de/work
-# /mnt/userdata/old/t.kreuzer_at_fz-juelich.de/Projects
+OLD_USERHOMES_MOVED_PATH="/mnt/userdata/old_moved"
 
 if [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... create persistent home directory for '"${JUPYTERHUB_USER}"'"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
@@ -95,6 +94,7 @@ if [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
             fi
         fi
         chown -R 1094:100 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_implementation >> ${JOB_PATH}/logs/start.log 2>&1
+        mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_} ${OLD_USERHOMES_MOVED_PATH}/${JUPYTERHUB_USER/@/_at_} >> ${JOB_PATH}/logs/start.log 2>&1
     fi
 else
     # Check Quota of UserData
