@@ -33,11 +33,10 @@ export OTHERSTAGES=/p/software/hdfcloud/otherstages
 module purge && module use $OTHERSTAGES && module load JupyterCollection/2020.2.6
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... modules loaded for JupyterCollection/2020.2.6"}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
-if [[ -f /opt/apps/bin/bin/mount-judac-ro ]]; then
-    /opt/apps/bin/bin/mount-judac-ro
-fi
-#/opt/apps/bin/bin/automount-B2DROP
+/opt/apps/bin/bin/mount-just-home
+/opt/apps/bin/bin/automount-B2DROP
 
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}
 jupyterhub-singleuser --debug --config /opt/apps/bin/config.py >> /opt/apps/bin/jupyterlab.log 2>&1
+#while true; do sleep 30; done;

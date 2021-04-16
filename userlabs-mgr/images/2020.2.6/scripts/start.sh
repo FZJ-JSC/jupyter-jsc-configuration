@@ -85,15 +85,18 @@ if [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
         curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 68, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... copy files from previous HDF-Cloud implementation."}' http://${REMOTE_NODE}:${REMOTE_HUB_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
         mkdir -p ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files >> ${JOB_PATH}/logs/start.log 2>&1
         if [[ -d ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/work ]]; then
-            mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/work ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_implementation/. >> ${JOB_PATH}/logs/start.log 2>&1
+            mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/work ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files/. >> ${JOB_PATH}/logs/start.log 2>&1
         fi
         if [[ -d ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/Projects/MyProjects ]]; then
             OLD_PROJECTS=$(ls -l ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/Projects/MyProjects | wc -l)
             if [[ $OLD_PROJECTS -gt 1 ]]; then
-                mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/Projects/MyProjects ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_implementation/. >> ${JOB_PATH}/logs/start.log 2>&1
+                mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_}/Projects/MyProjects ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files/. >> ${JOB_PATH}/logs/start.log 2>&1
             fi
         fi
-        chown -R 1094:100 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_implementation >> ${JOB_PATH}/logs/start.log 2>&1
+        chown -R 1094:100 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files >> ${JOB_PATH}/logs/start.log 2>&1
+        if [[ -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files/work/.davfs2 ]]; then
+            mv ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/previous_files/work/.davfs2 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/.davfs2 >> ${JOB_PATH}/logs/start.log 2>&1
+        fi
         mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_} ${OLD_USERHOMES_MOVED_PATH}/${JUPYTERHUB_USER/@/_at_} >> ${JOB_PATH}/logs/start.log 2>&1
     fi
 else

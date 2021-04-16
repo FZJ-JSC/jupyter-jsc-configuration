@@ -20,16 +20,7 @@ def get_access_token():
                     r.status_code, r.content.decode("utf-8")
                 )
             )
-    # No HPC accounts -> no access token in this script
-    if (
-        "auth_state" in resp.keys()
-        and "oauth_user" in resp["auth_state"].keys()
-        and "hpc_infos_attribute" in resp["auth_state"]["oauth_user"]
-        and len(resp["auth_state"]["oauth_user"]["hpc_infos_attribute"]) > 0
-    ):
-        return resp["auth_state"]["access_token"]
-    else:
-        return None
+    return resp["auth_state"]["access_token"]
 
 
 def get_mount_command(access_token):
@@ -48,12 +39,10 @@ def get_mount_command(access_token):
     uftp_pwd = _reply["secret"]
     uftp_host = _reply["serverHost"]
     uftp_port = _reply["serverPort"]
-    return f"curlftpfs -s -o ro,uid=1094,gid=100,ftp_method=singlecwd,enable_epsv,user=anonymous:{uftp_pwd} {uftp_host}:{uftp_port}"
+    return f"curlftpfs -s -o uid=1094,gid=100,ftp_method=singlecwd,enable_epsv,user=anonymous:{uftp_pwd} {uftp_host}:{uftp_port}"
 
 
 if __name__ == "__main__":
     access_token = get_access_token()
-    if not access_token:
-        exit(1)
     mount_cmd = get_mount_command(access_token)
     print(mount_cmd)
