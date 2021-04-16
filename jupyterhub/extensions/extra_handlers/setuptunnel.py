@@ -20,7 +20,10 @@ class SetupTunnelAPIHandler(APIHandler):
             f"uuidcode={startuuidcode} - Service {servername} started on {hostname}:{port2}"
         )
         backend_tunnel_url = os.environ.get("BACKEND_URL_TUNNEL")
-        headers = {"Authorization": self.request.headers.get("Authorization", "None")}
+        headers = {
+            "Authorization": self.request.headers.get("Authorization", "None"),
+            "uuidcode": startuuidcode,
+        }
         if os.environ.get("BACKEND_SECRET", None):
             headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
         url = url_path_join(
