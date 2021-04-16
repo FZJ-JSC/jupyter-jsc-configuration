@@ -28,23 +28,7 @@
       "jureca09": "jrlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "HIFIS", "admins", "workshop-210420"],
-    "vo_exclusive_partition": {
-      "workshop-210420": ["batch"]
-    },
-    "vo_force_reservation": {
-      "workshop-210420": {
-        "partition": ["prace-jupyter-2021-04-21"]
-      }
-    },
-    "vo_limit_resources": {
-      "workshop-210420": {
-        "batch": {
-          "Nodes": [1,1],
-          "Runtime": [10, 300]
-	}
-      }
-    }
+    "vos": ["default", "HIFIS", "admins"]
   },
   "JUWELS": {
     "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
@@ -96,9 +80,22 @@
       "jusuf02": "jsfl02"
     },
     "remote_port": 25490,
-    "vos": ["default", "HIFIS", "admins"],
+    "vos": ["default", "HIFIS", "admins", "workshop-210420"],
     "vo_exclusive_partition": {
-      "vo": ["LoginNode"]
+      "workshop-210420": ["batch"]
+    },
+    "vo_force_reservation": {
+      "workshop-210420": {
+        "partition": ["prace-jupyter-2021-04-21"]
+      }
+    },
+    "vo_limit_resources": {
+      "workshop-210420": {
+        "batch": {
+          "Nodes": [1,1],
+          "Runtime": [10, 300]
+	}
+      }
     }
   },
   "HDFML": {
