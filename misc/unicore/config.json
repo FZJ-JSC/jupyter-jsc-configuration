@@ -86,7 +86,7 @@
     },
     "vo_force_reservation": {
       "workshop-210420": {
-        "partition": ["prace-jupyter-2021-04-21"]
+        "batch": ["prace-jupyter-2021-04-21"]
       }
     },
     "vo_limit_resources": {
