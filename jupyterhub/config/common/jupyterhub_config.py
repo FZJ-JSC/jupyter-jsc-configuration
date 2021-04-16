@@ -140,6 +140,7 @@ from extra_handlers import (
     refresh_hpc_accounts,
     sites,
 )
+from jupyterhub.handlers import pages
 
 c.JupyterHub.extra_handlers = [
     (
@@ -182,4 +183,5 @@ c.JupyterHub.extra_handlers = [
     (r"/2FA", twoFA.TwoFAHandler),
     (r"/2FA/([^/]+)", twoFA.TwoFACodeHandler),
     (r"/signout", unity.BackendLogoutHandler),
+    (r"/start", pages.HomeHandler),
 ]
