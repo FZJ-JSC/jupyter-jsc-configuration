@@ -194,7 +194,13 @@ async def post_auth_hook(authenticator, handler, authentication):
         .get("hpc_infos_attribute", [])
     )
     for entry in hpc_list:
-        partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
+        try:
+            partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
+        except:
+            authenticator.log(
+                f"----- {username} - Failed to check for defaults partitions: {entry} ---- {hpc_list}"
+            )
+            continue
         if partition in default_partitions.keys():
             for value in default_partitions[partition]:
                 to_add.append(

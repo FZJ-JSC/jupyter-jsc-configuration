@@ -1,3 +1,4 @@
+import ast
 import os
 import re
 
@@ -37,17 +38,20 @@ class HPCUpdateHandler(APIHandler):
         ):
             # User is logged in
             body = self.get_json_body()
+            if type(body) == str:
+                body = ast.literal_eval(body)
             default_partitions = get_default_partitions()
             to_add = []
             for entry in body:
                 partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
                 if partition in default_partitions.keys():
-                    to_add.append(
-                        entry.replace(
-                            f",{partition},",
-                            ",{},".format(default_partitions[partition]),
+                    for value in default_partitions[partition]:
+                        to_add.append(
+                            entry.replace(
+                                f",{partition},",
+                                ",{},".format(value),
+                            )
                         )
-                    )
             body.extend(to_add)
             if body:
                 auth_state["oauth_user"]["hpc_infos_attribute"] = body

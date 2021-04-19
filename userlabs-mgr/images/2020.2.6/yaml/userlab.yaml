@@ -143,6 +143,10 @@ spec:
           hostPath:
             path: /p/software/hdfcloud
             type: Directory
+        #- name: nfs-software
+        #  nfs:
+        #    path: /
+        #    server: 10.101.0.104
         - name: nfs-userdata
           nfs:
             path: /
