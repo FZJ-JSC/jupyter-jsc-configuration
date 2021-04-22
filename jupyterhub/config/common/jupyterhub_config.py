@@ -18,13 +18,13 @@ hcip = os.environ.get("JUPYTERHUB_CONNECT_IP")
 c.JupyterHub.hub_connect_ip = f"{hcip}"
 
 c.JupyterHub.shutdown_on_logout = True
-c.JupyterHub.init_spawners_timeout = 1
+c.JupyterHub.init_spawners_timeout = 100
 c.JupyterHub.cleanup_proxy = False
 c.ConfigurableHTTPProxy.should_start = False
 proxy_url = os.environ.get("PROXY_URL")
 c.ConfigurableHTTPProxy.api_url = f"{proxy_url}"
 
-c.JupyterHub.statsd_host = "graphite"
+c.JupyterHub.statsd_host = "graphite210419"
 
 c.JupyterHub.strict_session_ids = True
 c.JupyterHub.logout_on_all_devices = False
@@ -67,8 +67,8 @@ backend_spawner_ip = os.environ.get("BACKEND_SPAWNER_IP")
 c.BackendSpawner.backend_spawner_ip = backend_spawner_ip
 
 c.BackendSpawner.http_timeout = 43200
-c.BackendSpawner.poll_interval = 60
-c.BackendSpawner.cancel_progress_activation = 45
+c.BackendSpawner.poll_interval = 0
+c.BackendSpawner.cancel_progress_activation = 25
 
 c.BackendSpawner.options_from_query = functions.options_from_query
 c.BackendSpawner.options_from_form = functions.options_from_form

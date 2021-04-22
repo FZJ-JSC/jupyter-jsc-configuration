@@ -45,9 +45,10 @@
       "juwels09": "jwlogin09i"
     },
     "remote_port": 25490,
-    "vos": ["default", "HIFIS", "admins", "workshop-210420"],
+    "vos": ["default", "HIFIS", "admins", "workshop-210420", "debug"],
     "vo_exclusive_partition": {
       "workshop-210420": [
+	"LoginNode",
         "booster"
       ]
     },
@@ -58,7 +59,7 @@
     },
     "vo_limit_resources": {
       "workshop-210420": {
-        "gpus": {
+        "booster": {
           "Nodes": [1,1],
           "Runtime": [10, 300],
           "GPUS": [4,4]
@@ -82,7 +83,7 @@
     "remote_port": 25490,
     "vos": ["default", "HIFIS", "admins", "workshop-210420"],
     "vo_exclusive_partition": {
-      "workshop-210420": ["batch"]
+      "workshop-210420": ["LoginNode", "batch"]
     },
     "vo_force_reservation": {
       "workshop-210420": {

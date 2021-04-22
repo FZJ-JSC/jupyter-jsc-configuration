@@ -193,11 +193,15 @@ async def post_auth_hook(authenticator, handler, authentication):
         .get("oauth_user", {})
         .get("hpc_infos_attribute", [])
     )
+    if type(hpc_list) == str:
+        hpc_list = [hpc_list]
+    elif type(hpc_list) == list and len(hpc_list) > 0 and len(hpc_list[0]) == 1:
+        hpc_list = ["".join(hpc_list)]
     for entry in hpc_list:
         try:
             partition = re.search("[^,]+,([^,]+),[^,]+,[^,]+", entry).groups()[0]
         except:
-            authenticator.log(
+            authenticator.log.info(
                 f"----- {username} - Failed to check for defaults partitions: {entry} ---- {hpc_list}"
             )
             continue

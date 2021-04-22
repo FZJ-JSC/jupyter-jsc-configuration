@@ -234,7 +234,7 @@ async def options_form(spawner):
 def insert_display(ret):
     ret["display"] = {}
 
-    if ret["system_input"] == "hdfcloud":
+    if "system_input" in ret and ret["system_input"] == "hdfcloud":
         hdf_cloud = get_hdfcloud()
         _display_image = ret["account_input"]
         _image = hdf_cloud.get(_display_image, {}).get("internal_name", _display_image)
