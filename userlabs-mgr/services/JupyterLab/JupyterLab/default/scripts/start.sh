@@ -81,7 +81,9 @@ if [[ -d ${OLD_ID_USERHOMES_PATH}/${JUPYTERHUB_USER} && ! -d ${LOCAL_USERHOMES_P
     echo "$(date) Found old HOME from user. Move ${OLD_ID_USERHOMES_PATH}/${JUPYTERHUB_USER} to ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}" >> ${JOB_PATH}/logs/start.log 2>&1
     mv ${OLD_ID_USERHOMES_PATH}/${JUPYTERHUB_USER} ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} >> ${JOB_PATH}/logs/start.log 2>&1
     echo "$(date) Found old HOME from user. Move ${OLD_ID_USERHOMES_PATH}/${JUPYTERHUB_USER} to ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} done" >> ${JOB_PATH}/logs/start.log 2>&1
+    chown -R 1094:100 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} >> ${JOB_PATH}/logs/start.log 2>&1
 elif [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
+    echo "$(date) Create HOME for user." >> ${JOB_PATH}/logs/start.log 2>&1
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... create persistent home directory for '"${JUPYTERHUB_USER}"'"}' http://${REMOTE_NODE}:${REMOTE_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL} >> ${JOB_PATH}/logs/start.log 2>&1
     mkdir ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} >> ${JOB_PATH}/logs/start.log 2>&1
     cp ${LOCAL_USERHOMES_PATH}/skel/.profile ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID}/. >> ${JOB_PATH}/logs/start.log 2>&1
@@ -118,11 +120,14 @@ elif [[ ! -d ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} ]]; then
         fi
         mv ${OLD_USERHOMES_PATH}/${JUPYTERHUB_USER/@/_at_} ${OLD_USERHOMES_MOVED_PATH}/${JUPYTERHUB_USER/@/_at_} >> ${JOB_PATH}/logs/start.log 2>&1
     fi
+    chown -R 1094:100 ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} >> ${JOB_PATH}/logs/start.log 2>&1
 else
+    echo "$(date) Found current HOME for user. May check quota" >> ${JOB_PATH}/logs/start.log 2>&1
     if [[ -f ${LOCAL_USERHOMES_PATH}/.${JUPYTERHUB_USER_ID}.quota.bytes ]]; then
         # Check Quota of UserData
         USED_HUMAN=$(cat ${LOCAL_USERHOMES_PATH}/.${JUPYTERHUB_USER_ID}.quota.human)
         USED_BYTES=$(cat ${LOCAL_USERHOMES_PATH}/.${JUPYTERHUB_USER_ID}.quota.bytes)
+        echo "$(date) Found current quota. Value: ${USED_HUMAN}" >> ${JOB_PATH}/logs/start.log 2>&1
         #USED_HUMAN=$(du -hs ${LOCAL_USERHOMES_PATH}/${JUPYTERHUB_USER_ID} 2> /dev/null | cut -f1)
         #USED_BYTES=$(echo ${USED_HUMAN} | numfmt --from=iec)
         STORAGE_SOFT_BYTES=$(echo $STORAGE_USERDATA_SOFT | numfmt --from=iec)

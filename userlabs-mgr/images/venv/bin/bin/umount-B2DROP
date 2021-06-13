@@ -1,8 +1,0 @@
-#!/bin/bash
-mount | grep "/mnt/B2DROP" > /dev/null
-EC=$?
-if [[ $EC -eq 0 ]]; then
-  umount /mnt/B2DROP
-else
-  echo "B2DROP is currently not mounted"
-fi
