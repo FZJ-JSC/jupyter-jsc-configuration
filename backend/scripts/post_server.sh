@@ -2,7 +2,7 @@
 
 ID=${1}
 
-NAMESPACE="jupyterjsc"
+NAMESPACE="integration-jupyterjsc"
 
-kubectl -n ${NAMESPACE} delete service tunneling-service-${ID}
+kubectl -n ${NAMESPACE} delete service ${ID}
 exit $?

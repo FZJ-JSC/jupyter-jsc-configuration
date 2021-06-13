@@ -4,7 +4,7 @@
 {% endif %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="{{ static_url("css/pages/2FA.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/pages/2FA.css", include_version=False) }}" type="text/css"/>
 {% endblock %}
 
 
@@ -163,6 +163,6 @@ require(["home"]);
   });
 </script>
 
-<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("js/pages/2FA.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/pages/2FA.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

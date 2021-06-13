@@ -4,7 +4,7 @@
 {% endif %}
 
 {% block stylesheet -%}
-  <link rel="stylesheet" href="{{ static_url("css/pages/login.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/pages/login.css", include_version=False) }}" type="text/css"/>
 {% endblock -%}
 
 {% block main %}
@@ -148,5 +148,5 @@ $(window).resize(function() {
 });
 </script>
 
-<script src="{{static_url("js/pages/login.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/pages/login.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

@@ -11,20 +11,21 @@ c.JupyterHub.log_format = "%(asctime)s,%(msecs).03d, Levelno=%(levelno)s, Level=
 
 c.JupyterHub.last_activity_interval = 60
 c.JupyterHub.hub_ip = "0.0.0.0"
-c.JupyterHub.hub_port = 8001
-c.JupyterHub.port = 8000
+c.JupyterHub.hub_port = 8000
 
-hcip = os.environ.get("JUPYTERHUB_CONNECT_IP")
-c.JupyterHub.hub_connect_ip = f"{hcip}"
+#hcip = os.environ.get("JUPYTERHUB_CONNECT_IP")
+c.JupyterHub.hub_connect_ip = "jupyterhub-service.jupyterjsc.svc.cluster.local"
+#c.JupyterHub.hub_connect_ip = f"{hcip}"
 
 c.JupyterHub.shutdown_on_logout = True
-c.JupyterHub.init_spawners_timeout = 100
+c.JupyterHub.init_spawners_timeout = 2
 c.JupyterHub.cleanup_proxy = False
 c.ConfigurableHTTPProxy.should_start = False
 proxy_url = os.environ.get("PROXY_URL")
 c.ConfigurableHTTPProxy.api_url = f"{proxy_url}"
 
-c.JupyterHub.statsd_host = "graphite210419"
+# c.JupyterHub.statsd_host = "graphite210419"
+c.JupyterHub.statsd_host = "graphite"
 
 c.JupyterHub.strict_session_ids = True
 c.JupyterHub.logout_on_all_devices = False
@@ -57,17 +58,13 @@ from jupyterhub.spawner import BackendSpawner
 c.JupyterHub.allow_named_servers = True
 c.JupyterHub.spawner_class = BackendSpawner
 
-backend_url_port = os.environ.get("BACKEND_URL_PORT")
-c.BackendSpawner.request_port_url = backend_url_port
-
 backend_url_job = os.environ.get("BACKEND_URL_JOB")
 c.BackendSpawner.backend_url = backend_url_job
-
-backend_spawner_ip = os.environ.get("BACKEND_SPAWNER_IP")
-c.BackendSpawner.backend_spawner_ip = backend_spawner_ip
+c.BackendSpawner.tunneling_ip = "tunneling-0.tunneling"
 
 c.BackendSpawner.http_timeout = 43200
-c.BackendSpawner.poll_interval = 0
+c.BackendSpawner.poll_interval = 20
+c.BackendSpawner.poll_interval_random_max = 20
 c.BackendSpawner.cancel_progress_activation = 25
 
 c.BackendSpawner.options_from_query = functions.options_from_query
@@ -81,16 +78,12 @@ c.JupyterHub.cookie_secret_file = os.environ.get("COOKIE_SECRET_PATH")
 
 
 c.JupyterHub.authenticator_class = unity.UnityOAuthenticator
-c.UnityOAuthenticator.extra_authorize_params = dict(
-    (x, y)
-    for x, y in (
-        element.split("=")
-        for element in os.environ.get("EXTRA_AUTHORIZE_PARAMS").split(",")
-    )
-)
-c.UnityOAuthenticator.extra_authorize_params_allowed_arguments = dict(
-    uy_select_authn=["jupyterhdfaaiAuthn.hdf", "jupyterldapAuthn.password"]
-)
+#c.UnityOAuthenticator.extra_authorize_params = {
+#    "uy_select_authn": "jupyterldapAuthn.password"
+#}
+c.UnityOAuthenticator.extra_params_allowed_runtime = {
+    "uy_select_authn": ["jupyterhdfaaiAuthn.hdf", "jupyterldapAuthn.password", "jupyterhdfaaiAuthn.hbp"]
+}
 c.UnityOAuthenticator.enable_auth_state = True
 c.UnityOAuthenticator.client_id = os.environ.get("CLIENT_ID")
 c.UnityOAuthenticator.client_secret = os.environ.get("CLIENT_SECRET")
@@ -111,7 +104,7 @@ if os.environ.get("IDLE_CULLER_ENABLED", "false").lower() in ["true", "1"]:
         "python3",
         "-m",
         "jupyterhub_idle_culler",
-        "--url=http://localhost:8001/hub/api",
+        "--url=http://localhost:8000/hub/api",
         "--timeout=86400",
         "--cull-every=300",
         "--concurrency=5",

@@ -1,0 +1,118 @@
+{
+    "UNICORE": {
+        "JUWELS": {
+            "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
+            "interactive_partitions": ["LoginNode", "LoginBooster"],
+	    "LoginNode": ["juwels0?.fz-juelich.de"],
+	    "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
+	    "LoginBooster": ["juwels2?.fz-juelich.de"],
+	    "strict_session_ids": true,
+	    "nodes": ["juwels07"],
+	    "node_mapping": {
+                "juwels07": "jwlogin07i"
+	    },
+	    "project_kernel": ["training2114"],
+	    "project_symlink": ["training"],
+	    "remote_hub_port": 25490,
+	    "fuser": "ljupyter",
+	    "host": "juwels.fz-juelich.de",
+	    "check_reservations": "true"
+        },
+        "JURECA": {
+            "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JURECA/rest/core",
+            "interactive_partitions": ["LoginNode"],
+	    "LoginNode": ["jureca??.fz-juelich.de"],
+	    "strict_session_ids": true,
+	    "nodes": ["jureca01","jureca02", "jureca03", "jureca04", "jureca05", "jureca06", "jureca07", "jureca08", "jureca09", "jureca10", "jureca11", "jureca12"],
+	    "node_mapping": {
+                "jureca01": "jrlogin01i",
+                "jureca02": "jrlogin02i",
+                "jureca03": "jrlogin03i",
+                "jureca04": "jrlogin04i",
+                "jureca05": "jrlogin05i",
+                "jureca06": "jrlogin06i",
+                "jureca07": "jrlogin07i",
+                "jureca08": "jrlogin08i",
+                "jureca09": "jrlogin09i",
+                "jureca10": "jrlogin10i",
+                "jureca11": "jrlogin11i",
+                "jureca12": "jrlogin12i"
+	    },
+	    "project_kernel": ["training"],
+	    "project_symlink": ["training"],
+	    "remote_hub_port": 25490,
+	    "fuser": "ljupyter",
+	    "host": "jureca.fz-juelich.de",
+	    "check_reservations": "true"
+        },
+        "JUSUF": {
+            "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUSUF/rest/core",
+            "interactive_partitions": ["LoginNode"],
+	    "LoginNode": ["jusuf?.fz-juelich.de"],
+	    "strict_session_ids": true,
+	    "project_kernel": ["training2114", "covid19dynstat"],
+	    "project_symlink": ["training"],
+	    "nodes": ["jusuf01"],
+	    "node_mapping": {
+                "jusuf01": "jsfl01",
+                "jusuf02": "jsfl02"
+	    },
+	    "remote_hub_port": 25490,
+	    "fuser": "ljupyter",
+	    "host": "jusuf.fz-juelich.de",
+	    "check_reservations": "true"
+        },
+        "DEEP": {
+            "base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
+            "interactive_partitions": ["LoginNode"],
+	    "LoginNode": ["deep.fz-juelich.de"],
+	    "strict_session_ids": true,
+	    "project_kernel": ["training2012"],
+	    "project_symlink": ["training2012"],
+	    "nodes": ["deep01"],
+	    "node_mapping": {
+                "deep01": "deepv"
+	    },
+            "partition_mapping": {
+              "booster": "dp-esb",
+              "cpu": "dp-cn",
+              "dam": "dp-dam"
+            },
+            "project_mapping": {
+            },
+	    "remote_hub_port": 25490,
+	    "check_reservations": "true",
+	    "fuser": "ljupyter",
+	    "host": "deep.fz-juelich.de"
+        },
+        "HDFML": {
+            "base_url": "https://zam2125.zam.kfa-juelich.de:9112/HDFML/rest/core",
+            "interactive_partitions": ["LoginNode"],
+	    "LoginNode": ["hdfmll??.fz-juelich.de"],
+	    "strict_session_ids": true,
+	    "project_kernel": [],
+	    "project_symlink": [],
+	    "nodes": ["hdfml01"],
+	    "node_mapping": {
+                "hdfml01": "hdfmll01"
+	    },
+            "partition_mapping": {
+            },
+            "project_mapping": {
+            },
+	    "remote_hub_port": 25490,
+	    "check_reservations": "true",
+	    "fuser": "ljupyter",
+	    "host": "hdfml.fz-juelich.de"
+        }
+    },
+    "K8s": {
+        "HDF-Cloud": {
+            "base_url": "http://userlabs-mgr.userlabs.svc:8080/api/userlab",
+            "certificate_inactive": "blabla:8080",
+	    "tunnel_node": "hdfcloud"
+        },
+        "JUSUF-Cloud": {
+        }
+    }
+}

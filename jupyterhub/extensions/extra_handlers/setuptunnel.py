@@ -3,6 +3,7 @@ from contextlib import closing
 
 import requests
 from tornado import web
+from tornado.httpclient import HTTPRequest, HTTPClientError
 
 from jupyterhub.apihandlers.base import APIHandler
 from jupyterhub.utils import token_authenticated
@@ -22,33 +23,36 @@ class SetupTunnelAPIHandler(APIHandler):
         backend_tunnel_url = os.environ.get("BACKEND_URL_TUNNEL")
         headers = {
             "Authorization": self.request.headers.get("Authorization", "None"),
+            "startuuidcode": startuuidcode,
             "uuidcode": startuuidcode,
+            "servername": servername,
+            "hostname": hostname,
+            "port2": port2,
         }
         if os.environ.get("BACKEND_SECRET", None):
             headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
-        url = url_path_join(
-            f"{backend_tunnel_url}/",
-            f"{startuuidcode}/",
-            f"{servername}/",
-            f"{hostname}/",
-            f"{port2}",
+        self.log.info(f"Call {backend_tunnel_url} with - {headers}")
+        req = HTTPRequest(
+            backend_tunnel_url,
+            method="POST",
+            body="{}",
+            headers=headers,
+            connect_timeout=2,
+            request_timeout=2,
         )
-        self.log.info(f"Call {url} with\n{headers}")
-        with closing(requests.post(url, headers=headers, verify=False)) as r:
-            if r.status_code != 200:
-                self.log.error(
-                    f"uuidcode={startuuidcode} - Backend Tunneling returned unexpected status_code: {r.status_code}."
-                )
-                spawner = user.spawners[servername_short]
-                await spawner._cancel(
-                    f"Could not build up Tunnel between Jupyter-JSC and {servername_short}"
-                )
-        data = self.get_json_body()
-        if data:
-            self.log.info(data)
-            percent = int(data["progress"])
+        try:
+            resp = await user.authenticator.fetch(req)
+        except HTTPClientError as e:
+            self.log.warning("uuidcode={} - {}".format(uuidcode, e))
             spawner = user.spawners[servername_short]
-            spawner.progress_dic[percent] = data
-            spawner.progress_number = percent
+            await spawner._cancel(
+                f"Could not build up Tunnel between Jupyter-JSC and {servername_short}"
+            )
+        else:
+            if resp:
+                percent = int(resp["progress"])
+                spawner = user.spawners[servername_short]
+                spawner.progress_dic[percent] = resp
+                spawner.progress_number = percent
         self.set_header("Content-Type", "text/plain")
         self.set_status(202)

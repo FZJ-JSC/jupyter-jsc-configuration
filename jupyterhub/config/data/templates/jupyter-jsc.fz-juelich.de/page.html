@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="{{ static_url("css/base.css", include_version=False) }}" type="text/css"/>
     <link rel="stylesheet" href="{{ static_url("css/header.css", include_version=False) }}" type="text/css"/>
     <link rel="stylesheet" href="{{ static_url("css/footer.css", include_version=False) }}" type="text/css"/>
-    <link rel="icon" href="{{ static_url("images/favicon.svg") }}" type="jpg/png"/>
+    <link rel="icon" href="{{ static_url("images/favicon.svg", include_version=False) }}" type="jpg/png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"/>
     {% block stylesheet %}
     {% endblock %}
@@ -234,16 +234,21 @@
       {% endblock %}
     </div> <!-- #background-wrapper -->
   </div> <!-- #body -->
+{%- macro random_int(len) -%}
+  {%- for _ in range(len) -%}
+    {{ range(10) | random }}
+  {%- endfor -%}
+{%- endmacro -%}
   <div class="footer">
     <div class="footer-top-background">
       <div class="footer-top">
-        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUPYTER.svg"/><span class="" id="ampel-jupyter">{{ messages.get("JUPYTER", "") }}</span></div><a href="https://jupyter-jsc.fz-juelich.de">Jupyter-JSC</a></div>
-        <div id="ampel-juwels-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUWELS.svg"/><span class="" id="ampel-juwels">{{ messages.get("JUWELS", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
-        <div id="ampel-jureca-img"><div class="ampel-div"><img src="/hub/status-images/systems/JURECA.svg"/><span class="" id="ampel-jureca">{{ messages.get("JURECA", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
-        <div id="ampel-jusuf-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUSUF.svg"/><span class="" id="ampel-jusuf">{{ messages.get("JUSUF", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
-        <div id="ampel-deep-img"><div class="ampel-div"><img src="/hub/status-images/systems/DEEP.svg"/><span class="" id="ampel-deep">{{ messages.get("DEEP", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></div>
-        <div id="ampel-hdfml-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFML.svg"/><span class="" id="ampel-hdfml">{{ messages.get("HDFML", "") }}</span></div><a>HDFML</a></div>
-        <div id="ampel-hdfcloud-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFCLOUD.svg"/><span class="" id="ampel-hdfcloud">{{ messages.get("HDFCLOUD", "") }}</span></div><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html">HDF-Cloud</a></div>
+        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUPYTER.svg?v={{ random_int(10) }}"/><span class="" id="ampel-jupyter">{{ messages.get("JUPYTER", "") }}</span></div><a href="https://jupyter-jsc.fz-juelich.de">Jupyter-JSC</a></div>
+        <div id="ampel-juwels-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUWELS.svg?v={{ random_int(10) }}"/><span class="" id="ampel-juwels">{{ messages.get("JUWELS", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
+        <div id="ampel-jureca-img"><div class="ampel-div"><img src="/hub/status-images/systems/JURECA.svg?v={{ random_int(10) }}"/><span class="" id="ampel-jureca">{{ messages.get("JURECA", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
+        <div id="ampel-jusuf-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUSUF.svg?v={{ random_int(10) }}"/><span class="" id="ampel-jusuf">{{ messages.get("JUSUF", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
+        <div id="ampel-deep-img"><div class="ampel-div"><img src="/hub/status-images/systems/DEEP.svg?v={{ random_int(10) }}"/><span class="" id="ampel-deep">{{ messages.get("DEEP", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></div>
+        <div id="ampel-hdfml-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFML.svg?v={{ random_int(10) }}"/><span class="" id="ampel-hdfml">{{ messages.get("HDFML", "") }}</span></div><a>HDFML</a></div>
+        <div id="ampel-hdfcloud-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFCLOUD.svg?v={{ random_int(10) }}"/><span class="" id="ampel-hdfcloud">{{ messages.get("HDFCLOUD", "") }}</span></div><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html">HDF-Cloud</a></div>
       </div> <!-- #footer-top -->
     </div> <!-- #footer-top-background -->
     <div class="footer-bottom-background">

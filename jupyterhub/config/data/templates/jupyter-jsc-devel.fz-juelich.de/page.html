@@ -37,11 +37,11 @@
     <meta property="og:url" content="https://jupyter-jsc-devel.fz-juelich.de/">
 
 
-    <link rel="stylesheet" href="{{ static_url("css/style.min.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("css/base.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("css/header.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("css/footer.css", include_version=False) }}" type="text/css"/>
-    <link rel="icon" href="{{ static_url("images/favicon.svg") }}" type="jpg/png"/>
+    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/style.min.css", include_version=False) }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/base.css", include_version=False) }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/header.css", include_version=False) }}" type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/footer.css", include_version=False) }}" type="text/css"/>
+    <link rel="icon" href="{{ static_url("images/favicon.svg", include_version=False) }}" type="jpg/png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"/>
     {% block stylesheet %}
     {% endblock %}
@@ -49,7 +49,7 @@
     <script src="{{static_url("components/requirejs/require.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/jquery/dist/jquery.min.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("js/jquery.textfit.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+    <script src="{{static_url("jupyter-jsc-devel/js/jquery.textfit.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     {% endblock %}
     <script>
@@ -269,9 +269,9 @@
 {% endcall %}
 
 
-<script src="{{static_url("js/header.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("js/footer.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("js/logout.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/header.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/footer.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url("jupyter-jsc-devel/js/logout.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% block script %}
 {% endblock %}
 

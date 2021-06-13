@@ -26,8 +26,8 @@
 
 {% block script %}
   {{ super() }}
-  <script type="text/javascript" src="{{ static_url("js/pages/spawn_pending.js", include_version=False) }}"></script>
-  <script type="text/javascript" src="{{ static_url("js/home.js", include_version=False) }}"></script>
+  <script type="text/javascript" src="{{ static_url("jupyter-jsc-devel/js/pages/spawn_pending.js", include_version=False) }}"></script>
+  <script type="text/javascript" src="{{ static_url("jupyter-jsc-devel/js/home.js", include_version=False) }}"></script>
   <script type="text/javascript">
     require(["jquery", "home", "jhapi"], function ($) {
       $( document ).ready(function() {

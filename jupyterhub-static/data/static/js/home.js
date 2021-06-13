@@ -161,7 +161,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
       }
     }
     if (b) {
-      window.location.href = "../spawn/" + user + "/" + serverName;
+      window.location.href = "../spawn/" + user + "/" + serverName + "?service=Dashboard";
     }
   });
 

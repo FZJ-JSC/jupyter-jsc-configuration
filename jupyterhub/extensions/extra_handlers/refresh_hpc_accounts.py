@@ -42,7 +42,7 @@ class HPCUpdateHandler(APIHandler):
                 body = ast.literal_eval(body)
             # test if it's just one string
             if len(body) > 0 and len(body[0]) == 1:
-                body = ["".join(body)]
+                body = [''.join(body)]
             default_partitions = get_default_partitions()
             to_add = []
             for entry in body:

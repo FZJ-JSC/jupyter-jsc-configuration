@@ -12,20 +12,17 @@ from jupyterhub.apihandlers.base import APIHandler
 from jupyterhub.orm import APIToken
 from jupyterhub.orm import Spawner
 from jupyterhub.utils import url_path_join
+from jupyterhub.jupyterjsc.utils.systems import get_systems
 
 
 class UNICORENotificationAPIHandler(APIHandler):
-    def verify_unicore(self, uuidcode, kernelurl, auth, unicore_config):
+    def verify_unicore(self, uuidcode, kernelurl, auth):
         system = ""
         cert_url = ""
         cert_path = ""
         cert = ""
-        unicore_systems = unicore_config.get("systems", [])
-        self.log.debug(f"UNICORE_systems: {unicore_systems}")
 
-        for isystem in unicore_systems:
-            infos = unicore_config.get(isystem)
-            self.log.debug(f"{isystem}: {infos}")
+        for isystem, infos in get_systems().get("UNICORE", {}).items():
             if type(infos) != dict:
                 continue
             if kernelurl.startswith(infos.get("base_url", "...")):
@@ -75,14 +72,8 @@ class UNICORENotificationAPIHandler(APIHandler):
             self.flush()
             return
 
-        unicore_config_path = os.environ.get("UNICORE_CONFIG_PATH", None)
-        if not unicore_config_path:
-            raise Exception("Please define environment variable UNICORE_CONFIG_PATH")
-        with open(unicore_config_path, "r") as f:
-            unicore_config = json.load(f)
-
         try:
-            self.verify_unicore(uuidcode, kernelurl, auth, unicore_config)
+            self.verify_unicore(uuidcode, kernelurl, auth)
         except:
             self.log.exception(
                 "uuidcode={} - Could not verify token {} with public key for UNICORE/X".format(

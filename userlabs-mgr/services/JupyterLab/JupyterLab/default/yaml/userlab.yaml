@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: userlabs
+  name: jupyterlab-_id_
+  labels:
+    app: jupyterlab-_id_
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyterlab-_id_
+  template:
+    metadata:
+      labels:
+        app: jupyterlab-_id_
+        user-jupyterlab: "true"
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        userlabs: "true"
+      tolerations:
+        - key: "jupyter-jsc/userlabs"
+          value: "true"
+          effect: "NoSchedule"
+      containers:
+        - name: jupyterlab-_id_
+          image: jupyterjsc/user-jupyterlab:1.0.0
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  [
+                    "/bin/bash",
+                    "-c",
+                    "/opt/apps/bin/bin/umount-judac; /opt/apps/bin/bin/umount-B2DROP;",
+                  ]
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - CAP_SYS_ADMIN
+          command: ["/bin/bash", "/opt/apps/bin/pre_start.sh"]
+          # command: ["/bin/sh", "-c", "--"]
+          # args: ["while true; do sleep 30; done;"]
+          ports:
+            - containerPort: _port_
+          resources:
+            limits:
+              memory: "_resource_limit_memory_"
+              # cpu: "_resource_limit_cpu_"
+              # ephemeral-storage: "_resource_limit_storage_"
+            requests:
+                    memory: "_resource_requests_memory_"
+          env:
+            - name: JUPYTERHUB_STATUS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_STATUS_URL
+            - name: JUPYTERHUB_CANCEL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_CANCEL_URL
+            - name: JUPYTERHUB_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_API_URL
+            - name: JUPYTERHUB_ACTIVITY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_ACTIVITY_URL
+            - name: JUPYTERHUB_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_CLIENT_ID
+            - name: JUPYTERHUB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_USER
+            - name: JUPYTERHUB_SERVICE_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_SERVICE_PREFIX
+            - name: JUPYTERHUB_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_BASE_URL
+            - name: SERVERNAMESHORT
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: SERVERNAMESHORT
+            - name: SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: SERVICE_NAME
+            - name: REMOTE_NODE
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: REMOTE_NODE
+            - name: REMOTE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: REMOTE_PORT
+            - name: STARTUUIDCODE
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: STARTUUIDCODE
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: PORT
+            - name: JUPYTERHUB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jupyterlab-_id_-secret
+                  key: JUPYTERHUB_API_TOKEN
+          volumeMounts:
+            - name: nfs-software-local
+              mountPath: "/p/software/hdfcloud"
+              readOnly: true
+            - name: nfs-userdata
+              mountPath: "/home/jovyan"
+            - name: nfs-bin
+              mountPath: "/opt/apps/bin"
+      securityContext:
+        fsGroup: 100
+      volumes:
+        - name: nfs-software-local
+          hostPath:
+            path: /p/software/hdfcloud
+            # type: Directory # type Directory is not working :( https://github.com/kubernetes/kubernetes/issues/83125
+        #- name: nfs-software
+        #  nfs:
+        #    path: /mnt/userlabs-software
+        #    server: 10.0.40.227
+        - name: nfs-userdata
+          nfs:
+            path: /mnt/userlabs-data/userdata/jupyterlab/_userid_
+            server: 10.0.40.227
+        - name: nfs-bin
+          nfs:
+            path: /nfs/jupyter-jsc-old/common/userlabs-jobs/_id_/bin
+            server: 10.0.40.227

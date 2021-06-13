@@ -1,0 +1,16 @@
+{
+    "Vuetify-Demo": {
+        "vos": ["default"],
+        "systems": ["JURECA", "JUWELS"],
+        "restrictions": {
+            "JURECA": ["LoginNode", "LoginNodeVis"]
+        }
+    },
+    "Vuetify-Demo-2": {
+        "vos": ["default"],
+        "systems": ["JURECA", "JUWELS"],
+        "restrictions": {
+            "JURECA": ["LoginNode", "LoginNodeVis"]
+        }
+    }
+}

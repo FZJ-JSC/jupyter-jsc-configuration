@@ -1,0 +1,16 @@
+{
+  "hdf": {
+    "AiidaLab": {
+        "internal_name": "aiidalab",
+        "vos": ["aiidalab"]
+    },
+    "Jupyter-JSC 2020.2.6": {
+        "internal_name": "2020.2.6",
+        "vos": ["default", "HIFIS", "admins", "workshop-210420"]
+    },
+    "VirtualEnv": {
+        "internal_name": "venv",
+        "vos": ["admins"]
+    }
+  }
+}

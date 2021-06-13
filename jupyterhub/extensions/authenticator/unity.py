@@ -9,7 +9,6 @@ from datetime import datetime
 from subprocess import PIPE
 from subprocess import Popen
 
-import requests
 from oauthenticator.generic import GenericOAuthenticator
 from tornado.httpclient import HTTPClientError
 from tornado.httpclient import HTTPRequest
@@ -86,7 +85,6 @@ class UnityOAuthenticator(GenericOAuthenticator):
                 if not refresh_token_save:
                     self.log.debug(f"Auth state has no refresh token {auth_state}")
                     return False
-                http_client = self.http_client()
                 params = {
                     "refresh_token": auth_state.get("refresh_token"),
                     "grant_type": "refresh_token",
@@ -96,14 +94,14 @@ class UnityOAuthenticator(GenericOAuthenticator):
                 headers = self._get_headers()
                 try:
                     token_resp_json = await self._get_token(
-                        http_client, headers, params
+                        headers, params
                     )
                 except HTTPClientError:
                     self.log.exception("Could not receive new access token.")
                     return False
 
                 user_data_resp_json = await self._get_user_data(
-                    http_client, token_resp_json
+                    token_resp_json
                 )
 
                 if callable(self.username_key):
@@ -141,18 +139,20 @@ class UnityOAuthenticator(GenericOAuthenticator):
 
 
 async def post_auth_hook(authenticator, handler, authentication):
-    http_client = authenticator.http_client()
     access_token = authentication["auth_state"]["access_token"]
-    url = os.environ.get("TOKENINFO_URL")
+    tokeninfo_url = os.environ.get("TOKENINFO_URL")
     headers = {
         "Accept": "application/json",
         "User-Agent": "JupyterHub",
         "Authorization": f"Bearer {access_token}",
     }
-    req = HTTPRequest(url, method="GET", headers=headers)
-    resp = await http_client.fetch(req)
-    resp_json = json.loads(resp.body.decode("utf8", "replace"))
-    authentication["auth_state"]["exp"] = resp_json.get("exp")
+    req = HTTPRequest(tokeninfo_url, method="GET", headers=headers)
+    try:
+        resp = await authenticator.fetch(req)
+    except HTTPClientError as e:
+        authenticator.log.warning("Could not request user information - {}".format(e))
+        raise Exception(e)
+    authentication["auth_state"]["exp"] = resp.get("exp")
     authentication["auth_state"]["last_login"] = datetime.now().strftime(
         "%H:%M:%S %Y-%m-%d"
     )
@@ -250,14 +250,10 @@ class BackendLogoutHandler(LogoutHandler):
                 auth_state = await user.get_auth_state()
                 if auth_state:
                     if backend_logout_url:
-                        if backend_logout_url[-1] == "/":
-                            url = f"{backend_logout_url}{stopall}"
-                        else:
-                            url = f"{backend_logout_url}/{stopall}"
-
                         headers = {
                             "uuidcode": uuidcode,
                             "accesstoken": auth_state["access_token"],
+                            "stopall": stopall,
                         }
                         if os.environ.get("BACKEND_SECRET", None):
                             headers["Backendsecret"] = os.environ.get("BACKEND_SECRET")
@@ -270,13 +266,18 @@ class BackendLogoutHandler(LogoutHandler):
                         ):
                             """ Only revoke refresh token if we logout from all devices and stop all services """
                             headers["refreshtoken"] = auth_state["refresh_token"]
-                        with closing(requests.post(url, headers=headers, json={})) as r:
-                            if r.status_code != 204:
-                                self.log.warning(
-                                    f"uuidcode={uuidcode} - Could not logout user in backend"
-                                )
-                                self.log.warning(r.status_code)
-                                self.log.warning(r.text)
+                        req = HTTPRequest(
+                            backend_logout_url,
+                            method="POST",
+                            body="{}",
+                            headers=headers,
+                            connect_timeout=2,
+                            request_timeout=2,
+                        )
+                        try:
+                            resp = await user.authenticator.fetch(req)
+                        except HTTPClientError as e:
+                            self.log.warning("uuidcode={} - {}".format(uuidcode, e))
 
                     auth_state["access_token"] = ""
                     auth_state["exp"] = "0"

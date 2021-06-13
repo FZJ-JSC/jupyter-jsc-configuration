@@ -1,2 +1,0 @@
-#!/bin/bash
-echo "PreStart"

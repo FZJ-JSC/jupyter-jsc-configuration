@@ -1,0 +1,58 @@
+{
+    "Dashboard":
+    {
+        "options_depth": 1,
+        "options_names": ["Dashboard"],
+        "options": {
+            "Vuetify-Demo": {
+                "vo_mapping": {
+                    "HIFIS": "default",
+                    "admins": "default",
+                    "debug": "default",
+                    "devel": "default",
+                    "workshop-210420": "default"
+                },
+                "allowed_lists": {
+                    "systems": ["JUSUF", "JUWELS"],
+                    "accounts_inactive": [],
+                    "projects_inactive": [],
+                    "partitions": ["LoginNode", "booster"],
+                    "reservations_inactive": ["prace-gpu-2021-04-29"]
+                }
+            },
+            "Vuetify-Demo-2": {
+            }
+        }
+    },
+    "JupyterLab":
+    {
+        "options_depth": 1,
+        "options_names": ["Version"],
+        "options": {
+            "JupyterLab": {
+                "vo_mapping": {
+                    "HIFIS": "default",
+                    "admins": "default",
+                    "debug": "default",
+                    "devel": "default",
+                    "workshop-210420": "default"
+                },
+                "allowed_lists": {
+                    "systems": ["JURECA", "JUWELS", "JUSUF", "DEEP", "HDFML", "HDF-Cloud"]
+                }
+            },
+            "JupyterLab-2.7": {
+                "vo_mapping": {
+                    "HIFIS": "default",
+                    "admins": "default",
+                    "debug": "default",
+                    "devel": "default",
+                    "workshop-210420": "default"
+                },
+                "allowed_lists": {
+                    "systems": ["JURECA", "JUWELS", "JUSUF", "HDF-Cloud"]
+                }
+            }
+        }
+    }
+}

@@ -2,8 +2,8 @@
 
 
 {% block stylesheet -%}
-  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending.css", include_version=False) }}" type="text/css"/>
-  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending_bar.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/pages/spawn_pending.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/pages/spawn_pending_bar.css", include_version=False) }}" type="text/css"/>
 {% endblock -%}
 
 
@@ -39,7 +39,7 @@
 
 {% block script -%}
   {{ super() }}
-  <script type="text/javascript" src="{{ static_url("js/pages/spawn_pending.js", include_version=False) }}"></script>
+  <script type="text/javascript" src="{{ static_url("jupyter-jsc-devel/js/pages/spawn_pending.js", include_version=False) }}"></script>
 
   <script type="text/javascript">
     require(["jquery", "home", "jhapi"], function ($) {
