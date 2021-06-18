@@ -78,13 +78,13 @@
   },
   "aiidalab": {
     "authenticators": [],
-    "usernames": ["t.kreuzer@fz-juelich.de", "no_s.achilles@fz-juelich.de", "no_j.goebbert@fz-juelich.de"],
+    "usernames": ["t.kreuzer@fz-juelich.de", "s.achilles@fz-juelich.de", "e.di.napoli@fz-juelich.de", "no_j.goebbert@fz-juelich.de"],
     "admin": false,
     "weight": 5,
     "exclusive": false,
     "Services": {
         "JupyterLab": {
-            "JupyterLab": {}
+            "AiidaLab": {}
 	}
     },
     "description": "<h4>This group gives you access to the AiidaLab Image on the HDF-Cloud.</h4>"

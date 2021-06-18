@@ -37,6 +37,9 @@ while IFS='|' read -ra ADDR; do
             :
         elif [[ $EVENT == *"Successfully pulled image"* ]]; then
             :
+        elif [[ $EVENT == *"nodes are available"* ]]; then
+            >&2 echo "No nodes available."
+            exit 2
         elif [[ $EVENT == *"Pulling image"* ]]; then
             :
         elif [[ $EVENT == *"Successfully assigned"* ]]; then
@@ -50,9 +53,7 @@ while IFS='|' read -ra ADDR; do
         elif [[ $EVENT == *"pod has unbound immediate PersistentVolumeClaims"* ]]; then
             :
         elif [[ $EVENT == *"Back-off restarting failed container"* ]]; then
-            LOGS=$(kubectl -n ${NAMESPACE} logs ${POD})
-            >&2 echo $LOGS
-            exit 2
+            :
 	else
 	    echo "Unknown Event:" >> ${JOB_PATH}/logs/status.log 2>&1
             echo $EVENT >> ${JOB_PATH}/logs/status.log 2>&1

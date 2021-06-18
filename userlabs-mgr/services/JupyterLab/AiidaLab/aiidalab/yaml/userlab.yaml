@@ -19,10 +19,13 @@ spec:
       imagePullSecrets:
         - name: regcred
       nodeSelector:
-        node.kubernetes.io/instance-type: "m16.large-disk"
+        userlabs: "true"
+      tolerations:
+        - key: "jupyter-jsc/userlabs"
+          value: "true"
+          effect: "NoSchedule"
       containers:
         - name: jupyterlab-_id_
-          # tag find via https://github.com/aiidalab/aiidalab-docker-stack/tags
           image: aiidalab/aiidalab-docker-stack:sha-418166b
           imagePullPolicy: IfNotPresent
           lifecycle:
@@ -38,7 +41,7 @@ spec:
             privileged: true
             capabilities:
               add:
-                - SYS_ADMIN
+                - CAP_SYS_ADMIN
           command: ["/bin/bash", "/opt/apps/bin/start.sh"]
           # command: ["/bin/sh", "-c", "--"]
           # args: ["while true; do sleep 30; done;"]
@@ -46,122 +49,120 @@ spec:
             - containerPort: _port_
           resources:
             limits:
-              # memory: "_resource_limit_memory_"
+              memory: "_resource_limit_memory_"
               # cpu: "_resource_limit_cpu_"
-              ephemeral-storage: "_resource_limit_storage_"
+              # ephemeral-storage: "_resource_limit_storage_"
+            requests:
+                    memory: "_resource_requests_memory_"
           env:
-            - name: JUPYTERHUB_CANCEL_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: JUPYTERHUB_CANCEL_URL
-            - name: JUPYTERHUB_API_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: JUPYTERHUB_API_URL
-            - name: JUPYTERHUB_ACTIVITY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: JUPYTERHUB_ACTIVITY_URL
-            - name: JUPYTERHUB_CLIENT_ID
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: JUPYTERHUB_CLIENT_ID
-            - name: JUPYTERHUB_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: JUPYTERHUB_USER
             - name: SYSTEM_USER
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: SYSTEM_USER
-            - name: NB_GID
-              valueFrom:
-                configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: NB_GID
             - name: NB_USER
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: NB_USER
             - name: NB_UID
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: NB_UID
+            - name: NB_GID
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: NB_GID
+            - name: JUPYTERHUB_STATUS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_STATUS_URL
+            - name: JUPYTERHUB_CANCEL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_CANCEL_URL
+            - name: JUPYTERHUB_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_API_URL
+            - name: JUPYTERHUB_ACTIVITY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_ACTIVITY_URL
+            - name: JUPYTERHUB_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_CLIENT_ID
+            - name: JUPYTERHUB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: jupyterlab-_id_-cm
+                  key: JUPYTERHUB_USER
             - name: JUPYTERHUB_SERVICE_PREFIX
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: JUPYTERHUB_SERVICE_PREFIX
             - name: JUPYTERHUB_BASE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: JUPYTERHUB_BASE_URL
             - name: SERVERNAMESHORT
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: SERVERNAMESHORT
             - name: SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: SERVICE_NAME
             - name: REMOTE_NODE
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: REMOTE_NODE
-            - name: REMOTE_HUB_PORT
+            - name: REMOTE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
-                  key: REMOTE_HUB_PORT
+                  name: jupyterlab-_id_-cm
+                  key: REMOTE_PORT
             - name: STARTUUIDCODE
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: STARTUUIDCODE
             - name: PORT
               valueFrom:
                 configMapKeyRef:
-                  name: userlab-_id_-cm
+                  name: jupyterlab-_id_-cm
                   key: PORT
             - name: JUPYTERHUB_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: userlab-_id_-secret
+                  name: jupyterlab-_id_-secret
                   key: JUPYTERHUB_API_TOKEN
           volumeMounts:
-            - name: nfs-software-local
-              mountPath: "/p/software/hdfcloud"
-              readOnly: true
             - name: nfs-userdata
               mountPath: "/home/aiida"
-              subPath: "aiida/_userid_"
-            - name: nfs-common
+            - name: nfs-bin
               mountPath: "/opt/apps/bin"
-              subPath: "userlabs-mgr-jobs/_id_/bin"
       securityContext:
         fsGroup: 100
       volumes:
-        - name: nfs-software-local
-          hostPath:
-            path: /p/software/hdfcloud
-            type: Directory
         - name: nfs-userdata
           nfs:
-            path: /
-            server: 10.101.0.105
-        - name: nfs-common
+            path: /mnt/userlabs-data/userdata/jupyterlab/_userid_
+            server: 10.0.40.227
+        - name: nfs-bin
           nfs:
-            path: /
-            server: 10.101.0.106
+            path: /nfs/jupyter-jsc-old/common/userlabs-jobs/_id_/bin
+            server: 10.0.40.227

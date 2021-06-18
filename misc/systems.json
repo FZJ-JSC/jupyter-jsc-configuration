@@ -7,9 +7,17 @@
 	    "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
 	    "LoginBooster": ["juwels2?.fz-juelich.de"],
 	    "strict_session_ids": true,
-	    "nodes": ["juwels07"],
+	    "nodes": ["juwels01", "juwels02", "juwels03", "juwels04", "juwels05", "juwels06", "juwels07", "juwels08", "juwels09"],
 	    "node_mapping": {
-                "juwels07": "jwlogin07i"
+                "juwels01": "jwlogin01i",
+                "juwels02": "jwlogin02i",
+                "juwels03": "jwlogin03i",
+                "juwels04": "jwlogin04i",
+                "juwels05": "jwlogin05i",
+                "juwels06": "jwlogin06i",
+                "juwels07": "jwlogin07i",
+                "juwels08": "jwlogin08i",
+                "juwels09": "jwlogin09i"
 	    },
 	    "project_kernel": ["training2114"],
 	    "project_symlink": ["training"],
@@ -109,7 +117,7 @@
     "K8s": {
         "HDF-Cloud": {
             "base_url": "http://userlabs-mgr.userlabs.svc:8080/api/userlab",
-            "certificate_inactive": "blabla:8080",
+            "certificate_inactive": "...",
 	    "tunnel_node": "hdfcloud"
         },
         "JUSUF-Cloud": {

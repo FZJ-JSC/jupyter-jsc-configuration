@@ -35,12 +35,18 @@
                     "admins": "default",
                     "debug": "default",
                     "devel": "default",
+                    "aiidalab": "default",
                     "workshop-210420": "default"
                 },
                 "allowed_lists": {
                     "systems": ["JURECA", "JUWELS", "JUSUF", "DEEP", "HDFML", "HDF-Cloud"]
                 }
             },
+	    "AiidaLab": {
+                "allowed_lists": {
+                    "systems": ["HDF-Cloud"]
+                }
+	    },
             "JupyterLab-2.7": {
                 "vo_mapping": {
                     "HIFIS": "default",
