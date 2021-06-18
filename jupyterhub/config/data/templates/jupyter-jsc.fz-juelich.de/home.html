@@ -141,9 +141,15 @@ $(document).ready(function() {
                   </td>
                   {# action #}
                   <td style="width:13%">
+                    {% if user.name == "debug_t.kreuzer@fz-juelich.de" -%}
+                    {% endif -%}
                     {% if system in maintenance_list -%}
                       {% set na = 1 -%}
+                    {% elif option1 not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).keys() -%}
+                      {% set na = 1 -%}
                     {% elif "systems" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and system not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("systems", []) -%}
+                      {% set na = 1 -%}
+                    {% elif system not in services_config.get(service, {}).get("options", {}).get(option1, {}).get("allowed_lists", {}).get("systems", [])  -%}
                       {% set na = 1 -%}
                     {% elif "accounts" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and account not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("accounts", []) -%}
                       {% set na = 1 -%}
