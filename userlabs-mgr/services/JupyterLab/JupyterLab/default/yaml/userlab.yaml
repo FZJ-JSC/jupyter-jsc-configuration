@@ -53,7 +53,7 @@ spec:
               # cpu: "_resource_limit_cpu_"
               # ephemeral-storage: "_resource_limit_storage_"
             requests:
-                    memory: "_resource_requests_memory_"
+              memory: "_resource_requests_memory_"
           env:
             - name: JUPYTERHUB_STATUS_URL
               valueFrom:
@@ -155,5 +155,5 @@ spec:
             server: 10.0.40.227
         - name: nfs-bin
           nfs:
-            path: /nfs/jupyter-jsc-old/common/userlabs-jobs/_id_/bin
+            path: /nfs/jupyter-jsc-live/common/userlabs-jobs/_id_/bin
             server: 10.0.40.227

@@ -43,7 +43,7 @@ class SetupTunnelAPIHandler(APIHandler):
         try:
             resp = await user.authenticator.fetch(req)
         except HTTPClientError as e:
-            self.log.warning("uuidcode={} - {}".format(uuidcode, e))
+            self.log.warning("uuidcode={} - {}".format(startuuidcode, e))
             spawner = user.spawners[servername_short]
             await spawner._cancel(
                 f"Could not build up Tunnel between Jupyter-JSC and {servername_short}"

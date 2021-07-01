@@ -43,8 +43,8 @@ spec:
               add:
                 - CAP_SYS_ADMIN
           command: ["/bin/bash", "/opt/apps/bin/start.sh"]
-          # command: ["/bin/sh", "-c", "--"]
-          # args: ["while true; do sleep 30; done;"]
+          #command: ["/bin/sh", "-c", "--"]
+          #args: ["while true; do sleep 30; done;"]
           ports:
             - containerPort: _port_
           resources:
@@ -53,7 +53,7 @@ spec:
               # cpu: "_resource_limit_cpu_"
               # ephemeral-storage: "_resource_limit_storage_"
             requests:
-                    memory: "_resource_requests_memory_"
+              memory: "_resource_requests_memory_"
           env:
             - name: SYSTEM_USER
               valueFrom:
@@ -160,9 +160,9 @@ spec:
       volumes:
         - name: nfs-userdata
           nfs:
-            path: /mnt/userlabs-data/userdata/jupyterlab/_userid_
+            path: /mnt/userlabs-data/userdata/aiidalab/_userid_
             server: 10.0.40.227
         - name: nfs-bin
           nfs:
-            path: /nfs/jupyter-jsc-old/common/userlabs-jobs/_id_/bin
+            path: /nfs/jupyter-jsc-live/common/userlabs-jobs/_id_/bin
             server: 10.0.40.227

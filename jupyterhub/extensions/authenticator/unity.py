@@ -1,5 +1,6 @@
 import copy
 import json
+import logging
 import os
 import re
 import time
@@ -222,7 +223,6 @@ async def post_auth_hook(authenticator, handler, authentication):
 
 class BackendLogoutHandler(LogoutHandler):
     async def _shutdown_servers(self, user):
-        self.log.debug("Shutdown Servers -- not")
         pass
 
     async def default_handle_logout(self):
@@ -231,11 +231,6 @@ class BackendLogoutHandler(LogoutHandler):
         backend_logout_url = os.environ.get("BACKEND_URL_LOGOUT", "")
         user = self.current_user
         if user:
-            self.log.info(
-                "uuidcode={uuidcode} - action=logout username={username}".format(
-                    uuidcode=uuidcode, username=user.name
-                )
-            )
             logout_all_devices = (
                 str(
                     self.get_argument(
@@ -246,9 +241,22 @@ class BackendLogoutHandler(LogoutHandler):
                 ).lower()
                 == "true"
             )
+            self.log.info(
+                "User logout", extra={
+                    "uuidcode": uuidcode,
+                    "action": "logout",
+                    "user": user.name,
+                    "stopall": stopall,
+                    "all_devices": logout_all_devices,
+                }
+            )
             if user.authenticator.enable_auth_state:
                 auth_state = await user.get_auth_state()
                 if auth_state:
+                    if os.environ.get("LOGGING_METRICS_ENABLED", "false").lower() in ["true", "1"]:
+                        metrics_logger = logging.getLogger("Metrics")
+                        metrics_logger.info("action=logout;userid={userid};authenticator={authenticator};stopall={stopall};all_devices={logout_all_devices}".format(userid=user.id, authenticator=auth_state.get('oauth_user', {}).get('used_authenticator_attr','unknown'), stopall=stopall, logout_all_devices=logout_all_devices))
+
                     if backend_logout_url:
                         headers = {
                             "uuidcode": uuidcode,
@@ -277,7 +285,12 @@ class BackendLogoutHandler(LogoutHandler):
                         try:
                             resp = await user.authenticator.fetch(req)
                         except HTTPClientError as e:
-                            self.log.warning("uuidcode={} - {}".format(uuidcode, e))
+                            self.log.warning("{}".format(e),
+                                extra={
+                                    "uuidcode": uuidcode,
+                                    "url": backend_logout_url,
+                                }
+                            )
 
                     auth_state["access_token"] = ""
                     auth_state["exp"] = "0"
@@ -292,10 +305,11 @@ class BackendLogoutHandler(LogoutHandler):
                         else:
                             """ Delete current session_id """
                             current_session_id = self.get_session_cookie()
-                            self.log.debug(
-                                "uuidcode={uuidcode} - Remove session id {id}".format(
-                                    uuidcode=uuidcode, id=current_session_id
-                                )
+                            self.log.debug("Remove session id",
+                                extra={
+                                    "uuidcode": uuidcode,
+                                    "session-id": current_session_id,
+                                }
                             )
                             if current_session_id in auth_state.get("session_ids", []):
                                 auth_state["session_ids"].remove(current_session_id)

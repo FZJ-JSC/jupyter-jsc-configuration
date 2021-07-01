@@ -2,17 +2,6 @@
 ID=${1}
 PORT=${2}
 
-#JUPYTERHUB_API_TOKEN="655a92d0216f423da9d6bfcf54b76cae"
-#JUPYTERHUB_API_URL="http://jupyterhub-service:8000/hub/api/"
-#JUPYTERHUB_CLIENT_ID="jupyterhub-user-t.kreuzer%40fz-juelich.de-jupyterlab_7"
-#JUPYTERHUB_USER="t.kreuzer@fz-juelich.de"
-#JUPYTERHUB_USER_ID="1"
-#JUPYTERHUB_SERVICE_PREFIX="/user/t.kreuzer@fz-juelich.de/jupyterlab_7/"
-#JUPYTERHUB_BASE_URL="/"
-#JUPYTERHUB_STATUS_URL="users/t.kreuzer@fz-juelich.de/servers/jupyterlab_7/status"
-#JUPYTERHUB_CANCEL_URL="users/t.kreuzer@fz-juelich.de/servers/jupyterlab_7/cancel"
-#SERVERNAMESHORT="jupyterlab_7"
-
 # Get current directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 BASE_CONFIG=$(dirname ${DIR})
@@ -24,8 +13,8 @@ SERVICE_NAME="jupyterlab-${ID}-service"
 CONFIGMAP_NAME="jupyterlab-${ID}-cm"
 SECRET_NAME="jupyterlab-${ID}-secret"
 
-REMOTE_NODE="jupyterhub-service.jupyterjsc.svc"
-REMOTE_PORT="8000"
+REMOTE_NODE="proxy-public.jupyterjsc.svc"
+REMOTE_PORT="80"
 
 cp -rp ${BASE_CONFIG} ${JOB_PATH}
 mkdir -p ${JOB_PATH}/logs

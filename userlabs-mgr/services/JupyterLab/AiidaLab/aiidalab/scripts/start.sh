@@ -16,8 +16,8 @@ SERVICE_NAME="jupyterlab-${ID}-service"
 CONFIGMAP_NAME="jupyterlab-${ID}-cm"
 SECRET_NAME="jupyterlab-${ID}-secret"
 
-REMOTE_NODE="jupyterhub-service.jupyterjsc.svc"
-REMOTE_PORT="8000"
+REMOTE_NODE="proxy-public.jupyterjsc.svc"
+REMOTE_PORT="80"
 
 cp -rp ${BASE_CONFIG} ${JOB_PATH}
 mkdir -p ${JOB_PATH}/logs
@@ -45,7 +45,7 @@ JUPYTERHUB_API_URL=http://${REMOTE_NODE}:${REMOTE_PORT}/hub/api
 JUPYTERHUB_ACTIVITY_URL=${JUPYTERHUB_API_URL}/users/${JUPYTERHUB_USER}/activity
 
 NB_USER=aiida
-NB_UID=1094
+NB_UID=1000
 NB_GID=100
 SYSTEM_USER=aiida
 

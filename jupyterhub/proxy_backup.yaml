@@ -1,0 +1,1114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "35"
+    field.cattle.io/publicEndpoints: '[{"addresses":["10.0.40.104"],"port":30800,"protocol":"TCP","serviceName":"jupyterjsc:jupyterhub-service","allNodes":true},{"addresses":["10.0.40.104"],"port":30801,"protocol":"TCP","serviceName":"jupyterjsc:jupyterhub-service","allNodes":true}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"jupyterhub"},"name":"jupyterhub","namespace":"jupyterjsc"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"jupyterhub"}},"template":{"metadata":{"labels":{"app":"jupyterhub","logging":"true"}},"spec":{"containers":[{"env":[{"name":"RESOURCES_PATH","valueFrom":{"configMapKeyRef":{"key":"resources_path","name":"jupyterhub-cm"}}},{"name":"COOKIE_SECRET_PATH","valueFrom":{"configMapKeyRef":{"key":"cookie_secret_path","name":"jupyterhub-cm"}}},{"name":"DATA_FILES_PATH","valueFrom":{"configMapKeyRef":{"key":"data_files_path","name":"jupyterhub-cm"}}},{"name":"DEFAULT_PARTITIONS_PATH","valueFrom":{"configMapKeyRef":{"key":"default_partitions_path","name":"jupyterhub-cm"}}},{"name":"MAINTENANCE_MESSAGES_PATH","valueFrom":{"configMapKeyRef":{"key":"maintenance_messages_path","name":"jupyterhub-cm"}}},{"name":"MAINTENANCE_MESSAGES_SYSTEMS","valueFrom":{"configMapKeyRef":{"key":"maintenance_messages_systems","name":"jupyterhub-cm"}}},{"name":"RESERVATIONS_PATH","valueFrom":{"configMapKeyRef":{"key":"reservations_path","name":"jupyterhub-cm"}}},{"name":"MAINTENANCE_PATH","valueFrom":{"configMapKeyRef":{"key":"maintenance_path","name":"jupyterhub-cm"}}},{"name":"MAP_SYSTEMS_PATH","valueFrom":{"configMapKeyRef":{"key":"map_systems","name":"jupyterhub-cm"}}},{"name":"MAP_PARTITIONS_PATH","valueFrom":{"configMapKeyRef":{"key":"map_partitions","name":"jupyterhub-cm"}}},{"name":"GET_HPC_ACCOUNTS_SSH_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"get_hpc_accounts_ssh_timeout","name":"jupyterhub-cm"}}},{"name":"GET_HPC_ACCOUNTS_SSH_KEY","valueFrom":{"configMapKeyRef":{"key":"get_hpc_accounts_ssh_key","name":"jupyterhub-cm"}}},{"name":"GET_HPC_ACCOUNTS_SSH_USER","valueFrom":{"configMapKeyRef":{"key":"get_hpc_accounts_ssh_user","name":"jupyterhub-cm"}}},{"name":"GET_HPC_ACCOUNTS_SSH_HOST","valueFrom":{"configMapKeyRef":{"key":"get_hpc_accounts_ssh_host","name":"jupyterhub-cm"}}},{"name":"TWOFA_SSH_KEY","valueFrom":{"configMapKeyRef":{"key":"twofa_ssh_key","name":"jupyterhub-cm"}}},{"name":"TWOFA_SSH_USER","valueFrom":{"configMapKeyRef":{"key":"twofa_ssh_user","name":"jupyterhub-cm"}}},{"name":"TWOFA_SSH_HOST","valueFrom":{"configMapKeyRef":{"key":"twofa_ssh_host","name":"jupyterhub-cm"}}},{"name":"TWOFA_REMOVE_SSH_KEY","valueFrom":{"configMapKeyRef":{"key":"twofa_remove_ssh_key","name":"jupyterhub-cm"}}},{"name":"TWOFA_REMOVE_SSH_USER","valueFrom":{"configMapKeyRef":{"key":"twofa_remove_ssh_user","name":"jupyterhub-cm"}}},{"name":"TWOFA_REMOVE_SSH_HOST","valueFrom":{"configMapKeyRef":{"key":"twofa_remove_ssh_host","name":"jupyterhub-cm"}}},{"name":"BACKEND_URL_LOGOUT","valueFrom":{"configMapKeyRef":{"key":"backend_url_logout","name":"jupyterhub-cm"}}},{"name":"BACKEND_URL_JOB","valueFrom":{"configMapKeyRef":{"key":"backend_url_job","name":"jupyterhub-cm"}}},{"name":"BACKEND_URL_TUNNEL","valueFrom":{"configMapKeyRef":{"key":"backend_url_tunnel","name":"jupyterhub-cm"}}},{"name":"PROXY_URL","valueFrom":{"configMapKeyRef":{"key":"proxy_url","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_CONNECT_IP","valueFrom":{"configMapKeyRef":{"key":"hub_connect_ip","name":"jupyterhub-cm"}}},{"name":"BACKEND_SPAWNER_IP","valueFrom":{"configMapKeyRef":{"key":"backend_spawner_ip","name":"jupyterhub-cm"}}},{"name":"AUTHORIZE_URL","valueFrom":{"configMapKeyRef":{"key":"authorize_url","name":"jupyterhub-cm"}}},{"name":"CALLBACK_URL","valueFrom":{"configMapKeyRef":{"key":"callback_url","name":"jupyterhub-cm"}}},{"name":"SCOPE","valueFrom":{"configMapKeyRef":{"key":"scope","name":"jupyterhub-cm"}}},{"name":"TOKENINFO_URL","valueFrom":{"configMapKeyRef":{"key":"tokeninfo_url","name":"jupyterhub-cm"}}},{"name":"TOKEN_URL","valueFrom":{"configMapKeyRef":{"key":"token_url","name":"jupyterhub-cm"}}},{"name":"USERDATA_URL","valueFrom":{"configMapKeyRef":{"key":"userdata_url","name":"jupyterhub-cm"}}},{"name":"JUPYTER_JSC_PATH","valueFrom":{"configMapKeyRef":{"key":"jupyter_jsc_path","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_CONFIG_PATH","valueFrom":{"configMapKeyRef":{"key":"jupyterhub_config_path","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_LOG_BASE_PATH","valueFrom":{"configMapKeyRef":{"key":"jupyterhub_log_base_path","name":"jupyterhub-cm"}}},{"name":"VO_CONFIG_PATH","valueFrom":{"configMapKeyRef":{"key":"vo_config_path","name":"jupyterhub-cm"}}},{"name":"SERVICES_PATH","valueFrom":{"configMapKeyRef":{"key":"services_path","name":"jupyterhub-cm"}}},{"name":"SYSTEMS_PATH","valueFrom":{"configMapKeyRef":{"key":"systems_path","name":"jupyterhub-cm"}}},{"name":"SEND2FA_CONFIG_PATH","valueFrom":{"configMapKeyRef":{"key":"send2fa_config_path","name":"jupyterhub-cm"}}},{"name":"AUTH_SECRET","valueFrom":{"secretKeyRef":{"key":"auth_secret","name":"jupyterhub-secret"}}},{"name":"CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"client_id","name":"jupyterhub-secret"}}},{"name":"CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"client_secret","name":"jupyterhub-secret"}}},{"name":"EXTRA_AUTHORIZE_PARAMS","valueFrom":{"configMapKeyRef":{"key":"extra_authorize_params","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_CRYPT_KEY","valueFrom":{"secretKeyRef":{"key":"crypt_key","name":"jupyterhub-secret"}}},{"name":"IDLE_CULLER_ENABLED","valueFrom":{"configMapKeyRef":{"key":"idle_culler_enabled","name":"jupyterhub-cm"}}},{"name":"ADMIN_USERS","valueFrom":{"configMapKeyRef":{"key":"admin_users","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_DB_USER","valueFrom":{"configMapKeyRef":{"key":"sql_user","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_DB_PORT","valueFrom":{"configMapKeyRef":{"key":"sql_port","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_DB_HOST","valueFrom":{"configMapKeyRef":{"key":"sql_host","name":"jupyterhub-cm"}}},{"name":"JUPYTERHUB_DB_PASSWD","valueFrom":{"secretKeyRef":{"key":"sql_passwd","name":"jupyterhub-secret"}}},{"name":"JUPYTERHUB_DB_DATABASE","valueFrom":{"configMapKeyRef":{"key":"sql_database","name":"jupyterhub-cm"}}},{"name":"BACKEND_SECRET","valueFrom":{"secretKeyRef":{"key":"backend_secret","name":"jupyterhub-secret"}}},{"name":"CONFIGPROXY_AUTH_TOKEN","valueFrom":{"secretKeyRef":{"key":"configproxy_auth_token","name":"proxy-secret"}}}],"image":"jupyterjsc/jupyterhub:1.3.0.0","imagePullPolicy":"IfNotPresent","name":"jupyterhub","ports":[{"containerPort":80}],"volumeMounts":[{"mountPath":"/mnt/config","name":"config"},{"mountPath":"/mnt/logs","name":"logs"},{"mountPath":"/mnt/common","name":"common"},{"mountPath":"/srv/keys","name":"jupyterhub-keys"},{"mountPath":"/srv/jupyterhub","name":"nfs-devel"}]}],"imagePullSecrets":[{"name":"regcred"}],"initContainers":[{"command":["sh","-c","cp /mnt/ssh_keys/activate-2fa/ssh-privatekey /srv/keys/activate-2fa \u0026\u0026 cp /mnt/ssh_keys/activate-2fa/ssh-publickey /srv/keys/activate-2fa.pub \u0026\u0026 cp /mnt/ssh_keys/remove-2fa/ssh-privatekey /srv/keys/remove-2fa \u0026\u0026 cp /mnt/ssh_keys/remove-2fa/ssh-publickey /srv/keys/remove-2fa.pub \u0026\u0026 cp /mnt/ssh_keys/get-hpc-accounts/ssh-privatekey /srv/keys/get-hpc-accounts \u0026\u0026 cp /mnt/ssh_keys/get-hpc-accounts/ssh-publickey /srv/keys/get-hpc-accounts.pub \u0026\u0026 chown -R 1091:100 /srv/keys \u0026\u0026 chmod 700 /srv/keys \u0026\u0026 chmod 400 /srv/keys/* \u0026\u0026 mkdir -p /mnt/config/jupyterhub \u0026\u0026 chown -R 1091:100 /mnt/config/jupyterhub \u0026\u0026 chown -R 1091:100 /mnt/logs"],"image":"alpine:3.13","name":"set-key-ownership","volumeMounts":[{"mountPath":"/srv/keys","name":"jupyterhub-keys"},{"mountPath":"/mnt/ssh_keys/activate-2fa","name":"activate-2fa"},{"mountPath":"/mnt/ssh_keys/remove-2fa","name":"remove-2fa"},{"mountPath":"/mnt/ssh_keys/get-hpc-accounts","name":"get-hpc-accounts"},{"mountPath":"/mnt/config","name":"config"},{"mountPath":"/mnt/logs","name":"logs"}]}],"securityContext":{"runAsUser":0},"volumes":[{"name":"jupyterhub-keys","persistentVolumeClaim":{"claimName":"jupyterhub-keys"}},{"name":"config","nfs":{"path":"/nfs/jupyter-jsc-old/config","server":"10.0.40.227"}},{"name":"logs","nfs":{"path":"/nfs/jupyter-jsc-old/logs/jupyterhub","server":"10.0.40.227"}},{"name":"common","nfs":{"path":"/nfs/jupyter-jsc-old/common","server":"10.0.40.227"}},{"name":"nfs-devel","nfs":{"path":"/nfs/jupyter-jsc-old/devel/jupyterhub","server":"10.0.40.227"}},{"name":"activate-2fa","secret":{"defaultMode":420,"secretName":"activate-2fa"}},{"name":"remove-2fa","secret":{"defaultMode":420,"secretName":"remove-2fa"}},{"name":"get-hpc-accounts","secret":{"defaultMode":420,"secretName":"get-hpc-accounts"}}]}}}}
+  creationTimestamp: "2021-06-08T07:32:38Z"
+  generation: 38
+  labels:
+    app: jupyterhub
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:template:
+          f:metadata:
+            f:annotations:
+              .: {}
+              f:kubectl.kubernetes.io/restartedAt: {}
+    manager: kubectl-rollout
+    operation: Update
+    time: "2021-06-08T09:33:41Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:progressDeadlineSeconds: {}
+        f:replicas: {}
+        f:revisionHistoryLimit: {}
+        f:selector: {}
+        f:strategy:
+          f:rollingUpdate:
+            .: {}
+            f:maxSurge: {}
+            f:maxUnavailable: {}
+          f:type: {}
+        f:template:
+          f:metadata:
+            f:labels:
+              .: {}
+              f:app: {}
+              f:logging: {}
+          f:spec:
+            f:containers:
+              k:{"name":"jupyterhub"}:
+                .: {}
+                f:env:
+                  .: {}
+                  k:{"name":"ADMIN_USERS"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"AUTH_SECRET"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"AUTHORIZE_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"BACKEND_SECRET"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"BACKEND_SPAWNER_IP"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"BACKEND_URL_JOB"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"BACKEND_URL_LOGOUT"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"BACKEND_URL_TUNNEL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"CALLBACK_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"CLIENT_ID"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"CLIENT_SECRET"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"CONFIGPROXY_AUTH_TOKEN"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"COOKIE_SECRET_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"DATA_FILES_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"DEFAULT_PARTITIONS_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"EXTRA_AUTHORIZE_PARAMS"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"GET_HPC_ACCOUNTS_SSH_HOST"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"GET_HPC_ACCOUNTS_SSH_KEY"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"GET_HPC_ACCOUNTS_SSH_TIMEOUT"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"GET_HPC_ACCOUNTS_SSH_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"IDLE_CULLER_ENABLED"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTER_JSC_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_CONFIG_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_CONNECT_IP"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_CRYPT_KEY"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_DB_DATABASE"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_DB_HOST"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_DB_PASSWD"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:secretKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_DB_PORT"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_DB_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"JUPYTERHUB_LOG_BASE_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MAINTENANCE_MESSAGES_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MAINTENANCE_MESSAGES_SYSTEMS"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MAINTENANCE_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MAP_PARTITIONS_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"MAP_SYSTEMS_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"PROXY_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"RESERVATIONS_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"RESOURCES_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"SCOPE"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"SEND2FA_CONFIG_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"SERVICES_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"SYSTEMS_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TOKEN_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TOKENINFO_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_REMOVE_SSH_HOST"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_REMOVE_SSH_KEY"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_REMOVE_SSH_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_SSH_HOST"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_SSH_KEY"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"TWOFA_SSH_USER"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"USERDATA_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                  k:{"name":"VO_CONFIG_PATH"}:
+                    .: {}
+                    f:name: {}
+                    f:valueFrom:
+                      .: {}
+                      f:configMapKeyRef:
+                        .: {}
+                        f:key: {}
+                        f:name: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:ports:
+                  .: {}
+                  k:{"containerPort":80,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:protocol: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/mnt/common"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/config"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/logs"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/srv/jupyterhub"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/srv/keys"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:dnsPolicy: {}
+            f:imagePullSecrets:
+              .: {}
+              k:{"name":"regcred"}:
+                .: {}
+                f:name: {}
+            f:initContainers:
+              .: {}
+              k:{"name":"set-key-ownership"}:
+                .: {}
+                f:command: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/mnt/config"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/logs"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/ssh_keys/activate-2fa"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/ssh_keys/get-hpc-accounts"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/mnt/ssh_keys/remove-2fa"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/srv/keys"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext:
+              .: {}
+              f:runAsUser: {}
+            f:terminationGracePeriodSeconds: {}
+            f:volumes:
+              .: {}
+              k:{"name":"activate-2fa"}:
+                .: {}
+                f:name: {}
+                f:secret:
+                  .: {}
+                  f:defaultMode: {}
+                  f:secretName: {}
+              k:{"name":"common"}:
+                .: {}
+                f:name: {}
+                f:nfs:
+                  .: {}
+                  f:path: {}
+                  f:server: {}
+              k:{"name":"config"}:
+                .: {}
+                f:name: {}
+                f:nfs:
+                  .: {}
+                  f:path: {}
+                  f:server: {}
+              k:{"name":"get-hpc-accounts"}:
+                .: {}
+                f:name: {}
+                f:secret:
+                  .: {}
+                  f:defaultMode: {}
+                  f:secretName: {}
+              k:{"name":"jupyterhub-keys"}:
+                .: {}
+                f:name: {}
+                f:persistentVolumeClaim:
+                  .: {}
+                  f:claimName: {}
+              k:{"name":"logs"}:
+                .: {}
+                f:name: {}
+                f:nfs:
+                  .: {}
+                  f:path: {}
+                  f:server: {}
+              k:{"name":"nfs-devel"}:
+                .: {}
+                f:name: {}
+                f:nfs:
+                  .: {}
+                  f:path: {}
+                  f:server: {}
+              k:{"name":"remove-2fa"}:
+                .: {}
+                f:name: {}
+                f:secret:
+                  .: {}
+                  f:defaultMode: {}
+                  f:secretName: {}
+    manager: kubectl-client-side-apply
+    operation: Update
+    time: "2021-06-08T10:05:42Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:field.cattle.io/publicEndpoints: {}
+    manager: rancher
+    operation: Update
+    time: "2021-06-08T12:42:35Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:deployment.kubernetes.io/revision: {}
+      f:status:
+        f:conditions:
+          .: {}
+          k:{"type":"Available"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Progressing"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:observedGeneration: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2021-06-25T05:16:30Z"
+  name: jupyterhub
+  namespace: jupyterjsc
+  resourceVersion: "11116927"
+  uid: 99955ee3-d9c8-40fc-b4d4-b853fefa01cf
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: jupyterhub
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2021-06-25T07:00:03+02:00"
+      creationTimestamp: null
+      labels:
+        app: jupyterhub
+        logging: "true"
+    spec:
+      containers:
+      - env:
+        - name: RESOURCES_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: resources_path
+              name: jupyterhub-cm
+        - name: COOKIE_SECRET_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: cookie_secret_path
+              name: jupyterhub-cm
+        - name: DATA_FILES_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: data_files_path
+              name: jupyterhub-cm
+        - name: DEFAULT_PARTITIONS_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: default_partitions_path
+              name: jupyterhub-cm
+        - name: MAINTENANCE_MESSAGES_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: maintenance_messages_path
+              name: jupyterhub-cm
+        - name: MAINTENANCE_MESSAGES_SYSTEMS
+          valueFrom:
+            configMapKeyRef:
+              key: maintenance_messages_systems
+              name: jupyterhub-cm
+        - name: RESERVATIONS_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: reservations_path
+              name: jupyterhub-cm
+        - name: MAINTENANCE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: maintenance_path
+              name: jupyterhub-cm
+        - name: MAP_SYSTEMS_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: map_systems
+              name: jupyterhub-cm
+        - name: MAP_PARTITIONS_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: map_partitions
+              name: jupyterhub-cm
+        - name: GET_HPC_ACCOUNTS_SSH_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: get_hpc_accounts_ssh_timeout
+              name: jupyterhub-cm
+        - name: GET_HPC_ACCOUNTS_SSH_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: get_hpc_accounts_ssh_key
+              name: jupyterhub-cm
+        - name: GET_HPC_ACCOUNTS_SSH_USER
+          valueFrom:
+            configMapKeyRef:
+              key: get_hpc_accounts_ssh_user
+              name: jupyterhub-cm
+        - name: GET_HPC_ACCOUNTS_SSH_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: get_hpc_accounts_ssh_host
+              name: jupyterhub-cm
+        - name: TWOFA_SSH_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_ssh_key
+              name: jupyterhub-cm
+        - name: TWOFA_SSH_USER
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_ssh_user
+              name: jupyterhub-cm
+        - name: TWOFA_SSH_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_ssh_host
+              name: jupyterhub-cm
+        - name: TWOFA_REMOVE_SSH_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_remove_ssh_key
+              name: jupyterhub-cm
+        - name: TWOFA_REMOVE_SSH_USER
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_remove_ssh_user
+              name: jupyterhub-cm
+        - name: TWOFA_REMOVE_SSH_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: twofa_remove_ssh_host
+              name: jupyterhub-cm
+        - name: BACKEND_URL_LOGOUT
+          valueFrom:
+            configMapKeyRef:
+              key: backend_url_logout
+              name: jupyterhub-cm
+        - name: BACKEND_URL_JOB
+          valueFrom:
+            configMapKeyRef:
+              key: backend_url_job
+              name: jupyterhub-cm
+        - name: BACKEND_URL_TUNNEL
+          valueFrom:
+            configMapKeyRef:
+              key: backend_url_tunnel
+              name: jupyterhub-cm
+        - name: PROXY_URL
+          valueFrom:
+            configMapKeyRef:
+              key: proxy_url
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_CONNECT_IP
+          valueFrom:
+            configMapKeyRef:
+              key: hub_connect_ip
+              name: jupyterhub-cm
+        - name: BACKEND_SPAWNER_IP
+          valueFrom:
+            configMapKeyRef:
+              key: backend_spawner_ip
+              name: jupyterhub-cm
+        - name: AUTHORIZE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: authorize_url
+              name: jupyterhub-cm
+        - name: CALLBACK_URL
+          valueFrom:
+            configMapKeyRef:
+              key: callback_url
+              name: jupyterhub-cm
+        - name: SCOPE
+          valueFrom:
+            configMapKeyRef:
+              key: scope
+              name: jupyterhub-cm
+        - name: TOKENINFO_URL
+          valueFrom:
+            configMapKeyRef:
+              key: tokeninfo_url
+              name: jupyterhub-cm
+        - name: TOKEN_URL
+          valueFrom:
+            configMapKeyRef:
+              key: token_url
+              name: jupyterhub-cm
+        - name: USERDATA_URL
+          valueFrom:
+            configMapKeyRef:
+              key: userdata_url
+              name: jupyterhub-cm
+        - name: JUPYTER_JSC_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: jupyter_jsc_path
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_CONFIG_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: jupyterhub_config_path
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_LOG_BASE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: jupyterhub_log_base_path
+              name: jupyterhub-cm
+        - name: VO_CONFIG_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: vo_config_path
+              name: jupyterhub-cm
+        - name: SERVICES_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: services_path
+              name: jupyterhub-cm
+        - name: SYSTEMS_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: systems_path
+              name: jupyterhub-cm
+        - name: SEND2FA_CONFIG_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: send2fa_config_path
+              name: jupyterhub-cm
+        - name: AUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: auth_secret
+              name: jupyterhub-secret
+        - name: CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: client_id
+              name: jupyterhub-secret
+        - name: CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: client_secret
+              name: jupyterhub-secret
+        - name: EXTRA_AUTHORIZE_PARAMS
+          valueFrom:
+            configMapKeyRef:
+              key: extra_authorize_params
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_CRYPT_KEY
+          valueFrom:
+            secretKeyRef:
+              key: crypt_key
+              name: jupyterhub-secret
+        - name: IDLE_CULLER_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: idle_culler_enabled
+              name: jupyterhub-cm
+        - name: ADMIN_USERS
+          valueFrom:
+            configMapKeyRef:
+              key: admin_users
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: sql_user
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: sql_port
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: sql_host
+              name: jupyterhub-cm
+        - name: JUPYTERHUB_DB_PASSWD
+          valueFrom:
+            secretKeyRef:
+              key: sql_passwd
+              name: jupyterhub-secret
+        - name: JUPYTERHUB_DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: sql_database
+              name: jupyterhub-cm
+        - name: BACKEND_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: backend_secret
+              name: jupyterhub-secret
+        - name: CONFIGPROXY_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: configproxy_auth_token
+              name: proxy-secret
+        image: jupyterjsc/jupyterhub:1.3.0.0
+        imagePullPolicy: IfNotPresent
+        name: jupyterhub
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /mnt/config
+          name: config
+        - mountPath: /mnt/logs
+          name: logs
+        - mountPath: /mnt/common
+          name: common
+        - mountPath: /srv/keys
+          name: jupyterhub-keys
+        - mountPath: /srv/jupyterhub
+          name: nfs-devel
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: regcred
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - cp /mnt/ssh_keys/activate-2fa/ssh-privatekey /srv/keys/activate-2fa && cp
+          /mnt/ssh_keys/activate-2fa/ssh-publickey /srv/keys/activate-2fa.pub && cp
+          /mnt/ssh_keys/remove-2fa/ssh-privatekey /srv/keys/remove-2fa && cp /mnt/ssh_keys/remove-2fa/ssh-publickey
+          /srv/keys/remove-2fa.pub && cp /mnt/ssh_keys/get-hpc-accounts/ssh-privatekey
+          /srv/keys/get-hpc-accounts && cp /mnt/ssh_keys/get-hpc-accounts/ssh-publickey
+          /srv/keys/get-hpc-accounts.pub && chown -R 1091:100 /srv/keys && chmod 700
+          /srv/keys && chmod 400 /srv/keys/* && mkdir -p /mnt/config/jupyterhub &&
+          chown -R 1091:100 /mnt/config/jupyterhub && chown -R 1091:100 /mnt/logs
+        image: alpine:3.13
+        imagePullPolicy: IfNotPresent
+        name: set-key-ownership
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /srv/keys
+          name: jupyterhub-keys
+        - mountPath: /mnt/ssh_keys/activate-2fa
+          name: activate-2fa
+        - mountPath: /mnt/ssh_keys/remove-2fa
+          name: remove-2fa
+        - mountPath: /mnt/ssh_keys/get-hpc-accounts
+          name: get-hpc-accounts
+        - mountPath: /mnt/config
+          name: config
+        - mountPath: /mnt/logs
+          name: logs
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsUser: 0
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: jupyterhub-keys
+        persistentVolumeClaim:
+          claimName: jupyterhub-keys
+      - name: config
+        nfs:
+          path: /nfs/jupyter-jsc-old/config
+          server: 10.0.40.227
+      - name: logs
+        nfs:
+          path: /nfs/jupyter-jsc-old/logs/jupyterhub
+          server: 10.0.40.227
+      - name: common
+        nfs:
+          path: /nfs/jupyter-jsc-old/common
+          server: 10.0.40.227
+      - name: nfs-devel
+        nfs:
+          path: /nfs/jupyter-jsc-old/devel/jupyterhub
+          server: 10.0.40.227
+      - name: activate-2fa
+        secret:
+          defaultMode: 420
+          secretName: activate-2fa
+      - name: remove-2fa
+        secret:
+          defaultMode: 420
+          secretName: remove-2fa
+      - name: get-hpc-accounts
+        secret:
+          defaultMode: 420
+          secretName: get-hpc-accounts
+status:
+  conditions:
+  - lastTransitionTime: "2021-06-08T09:23:02Z"
+    lastUpdateTime: "2021-06-25T05:00:10Z"
+    message: ReplicaSet "jupyterhub-79d6cdc45f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2021-06-25T05:16:30Z"
+    lastUpdateTime: "2021-06-25T05:16:30Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 38

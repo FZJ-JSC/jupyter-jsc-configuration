@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import os
 import subprocess
 import time
@@ -53,6 +54,9 @@ class TwoFAAPIHandler(APIHandler):
                 uuidcode, user.name
             )
         )
+        if os.environ.get("LOGGING_METRICS_ENABLED", "false").lower() in ["true", "1"]:
+            metrics_logger = logging.getLogger("Metrics")
+            metrics_logger.info("action=request2fa;userid={userid}".format(userid=user.id))
         send2fa_config_path = os.environ.get("SEND2FA_CONFIG_PATH", None)
         if not send2fa_config_path:
             self.log.error("Please define $SEND2FA_CONFIG_PATH environment variable.")
@@ -117,10 +121,13 @@ class TwoFAAPIHandler(APIHandler):
             try:
                 uuidcode = uuid.uuid4().hex
                 self.log.info(
-                    "uuidcode={} - action=delete2faopt - Remove User from 2FA optional group: {}".format(
+                    "uuidcode={} - action=delete2fa - Remove User from 2FA optional group: {}".format(
                         uuidcode, user.name
                     )
                 )
+                if os.environ.get("LOGGING_METRICS_ENABLED", "false").lower() in ["true", "1"]:
+                    metrics_logger = logging.getLogger("Metrics")
+                    metrics_logger.info("action=delete2fa;userid={userid}".format(userid=user.id))
 
                 self.log.debug(
                     "uuidcode={} - Delete user from group via ssh to Unity VM".format(
@@ -158,8 +165,11 @@ class TwoFACodeHandler(BaseHandler):
         uuidcode = uuid.uuid4().hex
         user = self.current_user
         self.log.info(
-            "uuidcode={} - action=activate2facode - user={}".format(uuidcode, user.name)
+            "uuidcode={} - action=activate2fa - user={}".format(uuidcode, user.name)
         )
+        if os.environ.get("LOGGING_METRICS_ENABLED", "false").lower() in ["true", "1"]:
+            metrics_logger = logging.getLogger("Metrics")
+            metrics_logger.info("action=activate2fa;userid={userid}".format(userid=user.id))
         result = TwoFAORM.validate_token(TwoFAORM, self.db, user.id, code)
         if result:
             self.db.delete(result)

@@ -31,7 +31,8 @@ else
 fi
 
 # JupyterHub will create a ssh tunnel between JupyterHub and this node to communicate
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+echo "Tunneling: curl -X \"POST\" -H \"Authorization: token ${JUPYTERHUB_API_TOKEN}\" -H \"uuidcode: ${JUPYTER_JSC_STARTUUID}\" -H \"Content-Type: application/json\" --data '{\"progress\": 60, \"failed\": false, \"message\": \"\", \"html_message\": \"Preparing environment on '\"${HOSTNAMES}\"' ...\"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL}"
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL}
 
 # Set some default environment variables
 export LC_ALL=en_US.UTF-8
@@ -43,7 +44,8 @@ unset TMP_PORT
 [[ -x /bin/python3 ]] && TMP_PORT=$(/bin/python3 -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
 if [[ -n "$TMP_PORT" ]]; then JUPYTER_JSC_PORT=${TMP_PORT}; else echo "Could not request a free port -> taking a random one"; fi
 
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT} &> /dev/null
+echo "curl -X \"POST\" -H \"Authorization: token ${JUPYTERHUB_API_TOKEN}\" -H \"uuidcode: ${JUPYTER_JSC_STARTUUID}\" -H \"Content-Type: application/json\" --data '{\"progress\": 65, \"failed\": false, \"message\": \"\", \"html_message\": \"&nbsp;&nbsp;... port-forwarding established\"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT}"
+curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT}
 
 # If we cannot send updates to JupyterHub something went wrong. Let's try to cancel the script here.
 if [[ $? -ne 0 ]]; then

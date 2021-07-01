@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from tornado import web
@@ -20,14 +21,13 @@ class VOHandler(BaseHandler):
         auth_state["vo_active"] = vo_active
         auth_state["vo_available"] = vo_available
         await user.save_auth_state(auth_state)
-        vo_details_file = os.environ.get("VO_DETAILS_CONFIG_PATH")
+        vo_details_file = os.environ.get("VO_CONFIG_PATH")
         with open(vo_details_file, "r") as f:
             vo_details_config = json.load(f)
         vo_details = {}
         for vo_name in auth_state.get("vo_available", []):
             vo_details[vo_name] = (
-                vo_details_config.get("values", {})
-                .get(vo_name, {})
+                vo_details_config.get(vo_name, {})
                 .get("description", "No description available")
             )
         vo_active = auth_state.get("vo_active", "")

@@ -27,7 +27,7 @@ if [[ ! -d $TMPDIR ]]; then
     mkdir -p ${TMPDIR}
 fi
 
-echo "Inform JupyterHub about hostname (${SERVICE_NAME}) and port (${PORT})."
+echo "Inform JupyterHub about hostname (${SERVICE_NAME}) and port (${PORT}). http://${REMOTE_NODE}:${REMOTE_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_STATUS_URL}"
 # Inform Jupyter-JSC about the hostname and port
 
 curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"progress": 79, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established."}' http://${REMOTE_NODE}:${REMOTE_PORT}${JUPYTERHUB_BASE_URL}hub/api/tunneling/${JUPYTERHUB_USER}/${SERVERNAMESHORT}/${STARTUUIDCODE}/${SERVICE_NAME}/${PORT} &> /dev/null
