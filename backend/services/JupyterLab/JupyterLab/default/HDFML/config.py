@@ -1,3 +1,6 @@
+import os
+os.umask(0o022)
+
 c = get_config()
 c.NotebookApp.ip = "0.0.0.0"
 c.NotebookApp.notebook_dir = "_home_"
