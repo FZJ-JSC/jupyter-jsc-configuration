@@ -1,152 +1,118 @@
 {% extends "jupyter-jsc.fz-juelich.de/page.html" %}
 {% if announcement_login %}
-  {% set announcement = announcement_login %}
+{% set announcement = announcement_login %}
 {% endif %}
 
 {% block stylesheet -%}
-  <link rel="stylesheet" href="{{ static_url("css/pages/login.css", include_version=False) }}" type="text/css"/>
+<link rel="stylesheet" href='{{ static_url("css/pages/login.css", include_version=False) }}'
+  type="text/css" />
 {% endblock -%}
 
+{% macro carousel_item(title, href, title_text, text, active="") %}
+<div class="carousel-item align-self-center {{active}}">
+  <h3>
+    <a target="_blank" href="{{href}}" title="{{title}}">
+      <div class="text-small">
+        <ul type="square">
+          <li class="text-dark "><small>{{ title.upper() }}</small></li>
+        </ul>
+      </div>
+      {{ title_text }}
+    </a>
+  </h3>
+  <p> {{ text }} <a target="_blank" href="{{href}}">Read more.</a> </p>
+</div>
+{% endmacro %}
+
 {% block main %}
+<div id="login-page" class="row no-gutters justify-content-between">
+  <div class="col col-12 col-md-7 col-lg-8 d-flex">
+    <div id="login-carousel" class="carousel slide align-self-center d-flex">
+      <!-- data-ride="carousel"> -->
+      <ol class="carousel-indicators">
+        <li data-target="#login-carousel" data-slide-to="0" class="active"></li>
+        <li data-target="#login-carousel" data-slide-to="1"></li>
+        <li data-target="#login-carousel" data-slide-to="2"></li>
+        <li data-target="#login-carousel" data-slide-to="3"></li>
+      </ol>
+      <div class="carousel-inner d-flex">
+        {{ carousel_item("Jupyter", "https://jupyter.org", "Supercomputing in Your Browser",
+        "We are pleased to bring \"Supercomputing in your browser\". Jupyter-JSC is designed to provide the rich high
+        performance computing (HPC) ecosystem to the world's most popular software: web browsers. JupyterLab is a
+        web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is
+        flexible to support a wide range of workflows in data science, scientific computing, and machine learning.",
+        "active") }}
 
-<div class="content-box">
-  <div class="prev-div">
-    <button class="prev" title="previous page" onclick="plusDivs(-1)"></button>
-  </div>
-  <!--
-  <div class="content-box-sub">
-    <h3 class="" id="header-zero">
-      <a target="_blank" href="https://jupyter-jsc.fz-juelich.de" title="Jupyter-jsc">
-        <div class="small-line"><small><ul type="square"><li>Jupyter-JSC</li></ul></small></div>
-        <span style="color:red">Jupyter-JSC migrating</span>
-      </a>
-    </h3>
-    <p class="" id="text-zero" style="color:darkorange">We're moving Jupyter-JSC to another host. This should be done within the next minutes. Please visit this site again in a few minutes.</p>
-  </div>
-  -->
-  <div class="content-box-sub">
-    <h3 class="" id="header-one">
-      <a target="_blank" href="https://jupyter.org" title="JupyterLab">
-        <div class="small-line"><small><ul type="square"><li>Jupyter</li></ul></small></div>
-        Supercomputing in Your Browser
-      </a>
-    </h3>
-    <p class="" id="text-one" >We are pleased to bring "Supercomputing in your browser". Jupyter-JSC is designed to provide the rich high performance computing (HPC) ecosystem to the world's most popular software: web browsers. JupyterLab is a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible to support a wide range of workflows in data science, scientific computing, and machine learning.
-      <a target="_blank" href="https://jupyter.org">Read more.</a>
-    </p>
-  </div>
-  <div class="content-box-sub">
-    <h3 class="" id="header-two">
-      <a target="_blank" href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html" title="Jupyter Notebooks">
-        <div class="small-line"><small><ul type="square"><li>Jupyter Notebooks</li></ul></small></div>
-        Share your Workflows
-      </a>
-    </h3>
-    <p id="text-two" >We are pleased to bring "Supercomputing in your browser". Jupyter-JSC allows you to create and share documents that contain live code, equations, visualizations and explanatory text. Uses include: data cleaning and transformation, numerical simulation, statistical modeling, machine learning and much more.
-      <a target="_blank" href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">Read more.</a>
-    </p>
-  </div>
-  <div class="content-box-sub">
-    <h3 class="" id="header-three">
-      <a target="_blank" href="https://jupyterlab.readthedocs.io" title="JupyterLab">
-        <div class="small-line"><small><ul type="square"><li>JupyterLab</li></ul></small></div>
-        Next-Generation Notebook Interface
-      </a>
-    </h3>
-    <p id="text-three">We are pleased to bring "Supercomputing in your browser". Jupyter-JSC gives access to JupyterLab, a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible: configure and arrange the user interface to support a wide range of workflows in data science, scientific computing, and machine learning. JupyterLab is extensible and modular: write plugins that add new components and integrate with existing ones.
-      <a target="_blank" href="https://jupyterlab.readthedocs.io">Read more.</a>
-    </p>
-  </div>
-  <div class="content-box-sub">
-    <h3 class="" id="header-four">
-      <a target="_blank" href="https://jupyterhub.readthedocs.io" title="JupyterHub">
-        <div class="small-line"><small><ul type="square"><li>JupyterHub</li></ul></small></div>
-        Serving Jupyter Notebooks for Multiple Users
-      </a>
-    </h3>
-    <p id="text-four">We are pleased to bring "Supercomputing in Your browser". Jupyter-JSC is a JupyterHub to serve Jupyter notebooks for multiple users. It can be used in classes of students, a corporate data science group or scientific research group. It is a multi-user hub that spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server.
-      <a target="_blank" href="https://jupyterhub.readthedocs.io">Read more.</a>
-    </p>
-  </div>
-  <div class="circles">
-    <ul>
-      <li>
-        <button class="circle-button" onclick="totalDivs(1)" >
-      </li>
-      <li>
-        <button class="circle-button" onclick="totalDivs(2)" >
-      </li>
-      <li>
-        <button class="circle-button" onclick="totalDivs(3)" >
-      </li>
-      <li>
-        <button class="circle-button" onclick="totalDivs(4)" >
-      </li>
-    <!--
-      <li>
-        <button class="circle-button" onclick="totalDivs(5)" >
-      </li>
-    -->
-    </ul>
-  </div>
-  <div class="next-div">
-    <button class="next" title="next page" onclick="plusDivs(1)"></button>
-  </div>
-</div>
-<div class="login-content">
-  <div class="login-content-top">
-    <h1 class="resize-text">Jupyter-JSC</h1>
-    <h2 class="resize-text">Supercomputing in Your Browser</h2>
-    <div class="login-content-top-p-div">
-      <p class="resize-text" >Jupyter-JSC starts and provides access to your Jupyter Notebook servers running on JSC compute resources. These can be JUWELS, JURECA, JUSUF, HDFML or DEEP's login or compute nodes or even the HDF cloud - depending on the computing resources available to you.<br><br>Please use your JSC account to log in or register if you have not already done so. It's also possible to log in via Helmholtz AAI.</p>
-    </div>
-  </div>
-  <div class="login-content-bottom">
-    <div class="no-border-div">
-      <div class="login">
-        <!-- <a class="button-container btn btn-custom btn-lg" href="/hub/oauth_login"> -->
-        <a id="login" class="button-container btn btn-custom btn-lg">
-          <div class="resize-text-button-login button-container-text">
-            <span>Login</span>
-          </div>
-        </a>
+        {{ carousel_item("Jupyter Notebooks", "https://jupyter-notebook.readthedocs.io/en/stable/notebook.html",
+        "Share your Workflows", "We are pleased to bring \"Supercomputing in your browser\". Jupyter-JSC allows you to
+        create and share documents that contain live code, equations, visualizations and explanatory text. Uses include:
+        data cleaning and transformation, numerical simulation, statistical modeling, machine learning and much more.")
+        }}
+
+        {{ carousel_item("JupyterLab", "https://jupyterlab.readthedocs.io", "Next-Generation Notebook Interface",
+        "We are pleased to bring \"Supercomputing in your browser\". Jupyter-JSC gives access to JupyterLab,
+        a web-based interactive development environment for Jupyter notebooks, code, and data. JupyterLab is flexible:
+        configure and arrange the user interface to support a wide range of workflows in data science, scientific
+        computing, and machine learning. JupyterLab is extensible and modular: write plugins that add new components and
+        integrate with existing ones.") }}
+
+        {{ carousel_item("JupyterHub", "https://jupyterhub.readthedocs.io", "Serving Jupyter Notebooks for Multiple
+        Users", "We are pleased to bring \"Supercomputing in your browser\". Jupyter-JSC is a JupyterHub to serve
+        Jupyter notebooks for multiple users. It can be used in classes of students, a corporate data science group or
+        scientific research group. It is a multi-user hub that spawns, manages, and proxies multiple instances of the
+        single-user Jupyter notebook server.") }}
       </div>
+      <a class="carousel-control-prev" href="#login-carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#login-carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
     </div>
-    <div class="white-line">
+  </div>
+
+  <div id="login-content" class="col col-12 col-md-5 col-lg-4 d-flex flex-column justify-content-between text-light">
+    <div id="login-content-top">
+      <h3 class="font-weight-bold">Jupyter-JSC</h3>
+      <h4 class="font-weight-bold">Supercomputing in Your Browser</h4>
+      <p>
+        Jupyter-JSC starts and provides access to your Jupyter Notebook servers running on JSC
+        compute resources. These can be JUWELS, JURECA, JUSUF, HDFML or DEEP's login or compute nodes or even the HDF
+        cloud - depending on the computing resources available to you.
+        <br><br>
+        Please use your JSC account to log in or
+        register if you have not already done so. It's also possible to log in via Helmholtz AAI.
+      </p>
     </div>
-    <img src="{{static_url("images/pages/login/User.svg", include_version=False) }}"/>
-    <div class="white-line">
-    </div>
-    <div class="border-div">
-      <div class="register">
-        <a class="button-container btn btn-custom btn-lg" href="https://judoor.fz-juelich.de">
-          <div class="resize-text-button button-container-text">
-            <span>Register</span>
-          </div>
-        </a>
-      </div>
+
+    <div id="login-content-bottom" class="d-flex align-items-center">
+      <a id="btn-login" class="btn btn-block" role="button">
+        <span class="align-middle">Login</span></a>
+      <div class="white-line"></div>
+      <img src='{{static_url("images/pages/login/User.svg", include_version=False) }}' />
+      <div class="white-line"></div>
+      <a id="btn-register" class="btn btn-block" role="button" href="https://judoor.fz-juelich.de">Register</a>
     </div>
   </div>
 </div>
-
 {% endblock %}
 
 {% block script %}
 {{ super() }}
 <script>
-require(["pages/login"]);
-if (window.location.protocol === "http:") {
-  // unhide http warning
-  var warning = document.getElementById('insecure-login-warning');
-  warning.className = warning.className.replace(/\bhidden\b/, '');
-}
-$(document).ready(function() {
-  ready();
-});
-$(window).resize(function() {
-  resize();
-});
+  // require(["pages/login"]);
+  if (window.location.protocol === "http:") {
+    // unhide http warning
+    var warning = document.getElementById('insecure-login-warning');
+    warning.className = warning.className.replace(/\bhidden\b/, '');
+  }
+  $("#btn-login").click(function () {
+    var url = window.location.search;
+    if (!$("#login").is("[disabled=disabled]")) {
+      window.location.href = "/hub/oauth_login" + url;
+    }
+  });
 </script>
-
-<script src="{{static_url("js/pages/login.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

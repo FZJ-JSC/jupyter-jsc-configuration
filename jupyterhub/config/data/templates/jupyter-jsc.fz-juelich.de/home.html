@@ -1,361 +1,229 @@
 {% extends "jupyter-jsc.fz-juelich.de/page.html" %}
 {% if announcement_home %}
-  {% set announcement = announcement_home %}
+{% set announcement = announcement_home %}
 {% endif %}
 
 {% block stylesheet -%}
-  <link rel="stylesheet" href="{{ static_url("css/pages/home.css", include_version=False) }}" type="text/css"/>
+<link rel="stylesheet" href='{{ static_url("css/pages/home.css", include_version=False) }}'
+  type="text/css" />
 {% endblock %}
+
+{% macro table(named_spawners, vo_available, vo_active, name) %}
+<div class="table-responsive">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th colspan="8" class="py-2" style="border-top: none;">
+          <div class="d-flex ">
+            <input id="labname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20"
+              placeholder="Name your {{name}}" title="Allowed characters: a-z, 0-9 and _" />
+            <a id="labbutton" role="button"
+              class="new-server-btn{% if name=='Dashboard' %}-dashboard{% endif %} btn btn-rounded btn-primary ml-3"
+              style="line-height: 1.2em;">
+              <span class="align-middle">Add new {{name}}</span>
+            </a>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">{{ services_config.get("JupyterLab", {}).get("options_names", ["Type"])[0] }}</th>
+        <th scope="col">System</th>
+        <th scope="col">Account</th>
+        <th scope="col">Project</th>
+        <th scope="col">Partition</th>
+        <th scope="col">Details</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for _spawner in named_spawners %}
+      {% set spawner = _spawner.orm_spawner %}
+      {% set user_options = spawner.user_options %}
+      {% if user_options -%}
+      {% set service = user_options.get("service_input") -%}
+      {% set option1 = user_options.get("options_input", "JupyterLab") -%}
+      {% set system = user_options.get("system_input", None) -%}
+      {% set account = user_options.get("account_input", None) -%}
+      {% set project = user_options.get("project_input", None) -%}
+      {% set partition = user_options.get("partition_input", None) -%}
+      {% set reservation = user_options.get("reservation_input", None) -%}
+      {% set nodes = user_options.get("resource_Nodes", None) -%}
+      {% set runtime = user_options.get("resource_Runtime", None) -%}
+      {% set gpus = user_options.get("resource_GPUS", None) -%}
+      {% if service == name -%}
+      <tr data-server-name="{{ spawner.name }}">
+        <td>
+          <a class="server-link{% if not spawner.active %} d-none{% endif %}"
+            href="{{ user.server_url(spawner.name) }}">
+            {{ spawner.name }}
+          </a>
+          <a class="server-link-nourl{% if spawner.active %} d-none{% endif %}"
+            style="color:inherit; text-decoration:inherit">
+            {{ spawner.name }}
+          </a>
+        </td>
+        {# type #}
+        <td> {{ option1 }} </td>
+        {# system #}
+        <td> {% if system -%} {{ system }} {% endif -%} </td>
+        {# account #}
+        <td> {% if account -%} {{ account }} {% endif -%} </td>
+        {# project #}
+        <td> {% if project -%} {{ project }} {% endif -%} </td>
+        {# partition#}
+        <td> {% if partition -%} {{ partition }} {% endif -%} </td>
+        {# Details #}
+        <td>
+          {% if user_options.get("resource_Nodes", None) or user_options.get("resource_GPUS", None) or
+          user_options.get("resource_Runtime", None) or user_options.get("reservation_input", None) -%}
+          <details>
+            {% if user_options.get("resource_Nodes", None) %}
+            Nodes: {{ user_options.get("resource_Nodes") }}<br>
+            {% endif %}
+            {% if user_options.get("resource_GPUS", None) %}
+            GPUs: {{ user_options.get("resource_GPUS") }}<br>
+            {% endif %}
+            {% if user_options.get("resource_Runtime", None) %}
+            Runtime: {{ "%.0f"|format(user_options.get("resource_Runtime") | int / 60) }}
+            {% endif %}
+            {% if user_options.get("reservation_input", None) %}
+            Reservation: {{ user_options.get("reservation_input") }}
+            {% endif %}
+          </details>
+          {% endif %}
+        </td>
+        {# action #}
+        <td>
+          {% if system in maintenance_list -%}
+          {% set na = 1 -%}
+          {% elif "systems" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+          {}).get("replace_allowed_lists", {}).keys() and system not in vo_config.get(vo_active,
+          {}).get("Services",
+          {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("systems", []) -%}
+          {% set na = 1 -%}
+          {% elif "accounts" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+          {}).get("replace_allowed_lists", {}).keys() and account not in vo_config.get(vo_active,
+          {}).get("Services",
+          {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("accounts", []) -%}
+          {% set na = 1 -%}
+          {% elif "projects" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+          {}).get("replace_allowed_lists", {}).keys() and project not in vo_config.get(vo_active,
+          {}).get("Services",
+          {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("projects", []) -%}
+          {% set na = 1 -%}
+          {% elif "partitions" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+          {}).get("replace_allowed_lists", {}).keys() and partition not in vo_config.get(vo_active,
+          {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists",
+          {}).get("partitions",
+          []) -%}
+          {% set na = 1 -%}
+          {% elif "reservations" in vo_config.get(vo_active, {}).get("Services", {}).get(service,
+          {}).get(option1,
+          {}).get("replace_allowed_lists", {}).keys() and reservation not in vo_config.get(vo_active,
+          {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists",
+          {}).get("reservations", []) -%}
+          {% set na = 1 -%}
+          {% elif "Runtime" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+          {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( runtime | int / 60
+          ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+            {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][0] or (
+            runtime | int / 60 )>
+            vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+            {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][1]
+            )
+            -%}
+            {% set na = 1 -%}
+            {% elif "Nodes" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+            {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( nodes | int ) <
+              vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+              {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][0] or (
+              nodes | int / 60 )>
+              vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+              {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][1]
+              )
+              -%}
+              {% set na = 1 -%}
+              {% elif "GPUS" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+              {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( gpus | int ) <
+                vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+                {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1], 0])[0][0] or (
+                gpus | int / 60 )>
+                vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1,
+                {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1],
+                0])[0][1] )
+                -%}
+                {% set na = 1 -%}
+                {% else -%}
+                {% set na = 0 -%}
+                {% endif -%}
+                <span class="na_status" hidden {% if na==1 %} disabled {% endif %}>{{na}}</span>
+                {% if _spawner.ready -%}
+                <a role="button"
+                  class="url-server btn btn-rounded btn-sm btn-success{% if not _spawner.active %} d-none{% endif %}"
+                  id="open-pending-{{ spawner.name }}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
+                {% else -%}
+                <a role="button"
+                  class="url-server btn btn-rounded success btn-sm btn-success{% if not _spawner.active %} d-none{% endif %}"
+                  id="open-pending-{{ spawner.name }}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
+                {% endif -%}
+                <a role="button" class="start-server btn btn-rounded btn-sm btn-primary{% if _spawner.active %} d-none{% endif %}{%
+                              if na==1 %} disabled{% endif %}" id="start-{{ spawner.name }}" {% if na==0 %}
+                  href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}"
+                  onClick='document.getElementById("start-{{ spawner.name }}").classList.add("d-none"); document.getElementById("open-pending-{{ spawner.name }}").classList.remove("d-none"); document.getElementById("delete-{{ spawner.name }}").classList.add("d-none"); document.getElementById("stop-{{ spawner.name }}").classList.remove("d-none");'
+                  {% endif %}>{% if na == 1 %}n/a{% else %}Start{% endif %}
+                </a>
+                <a role="button"
+                  class="delete-server btn btn-rounded btn-sm btn-danger{% if _spawner.active %} d-none{% endif %}"
+                  id="delete-{{ spawner.name }}">delete</a>
+                <a role="button"
+                  class="stop-server btn btn-rounded btn-sm btn-danger{% if not _spawner.active %} d-none{% endif %}"
+                  id="stop-{{ spawner.name }}">stop</a>
+        </td>
+      </tr>
+      {% endif -%}
+      {% endif -%}
+      {% endfor -%}
+    </tbody>
+  </table>
+</div>
+{% endmacro %}
+
 
 {% block main %}
-
-<script>
-require(["pages/home", "home"]);
-$(document).ready(function() {
-  ready()
-});
-</script>
-
-
-<div class="content" id="JupyterLabs-div">
+<div id="start-page" class="px-4">
   {% if allow_named_servers %}
+  <div>
     <h2>
       Configurations
     </h2>
-    <p>
-      Please give each of your configurations a name. <br>
-      This way you can run multiple instances at the same time.
-    </p>
-    {% set named_spawners = user.all_spawners(include_default=False)|list %}
-    {% set vo_available = auth_state.get("vo_available", []) %}
-    {% set vo_active = auth_state.get("vo_active", '' ) %}
-    <div class="table-div">
-      <div class="table-tabs">
-        <div class="tab active tab_JupyterLab_div" onclick="onClickTableTab('JupyterLab')">
-          <a id="firstdd_JupyterLab">JupyterLab</a>
-        </div>
-        <div class="tab tab_Dashboard_div" onclick="onClickTableTab('Dashboard')" style="display: None">
-          <a id="firstdd_Dashboard">Dashboard</a>
-        </div>
-      </div>
-      <table class="server-table table table-striped">
-        <thead class="thead-sticky">
-          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
-            <td colspan="8" class="no-right-border no-top-border" style="width: 100%">
-              <div  class="table-top-row-parent">
-                <div  class="table-top-row">
-		  <div style="display: flex">
-                    <input id="labname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your JupyterLab" title="Allowed characters: a-z, 0-9 and _"/>
-                    <a id="labbutton" class="new-server-btn button-container btn btn-j4j ">
-                      <div class="resize-text-button button-container-text">
-                        <span>Add new JupyterLab</span>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr class="home-server-row tr-header">
-            <th style="width:17%">Name</th>
-	    <th style="width:11%">{{ services_config.get("JupyterLab", {}).get("options_names", ["Type"])[0] }}</th>
-            <th style="width:12%">System</th>
-            <th style="width:11%">Account</th>
-            <th style="width:11%">Project</th>
-            <th style="width:11%">Partition</th>
-            <th style="width:14%">Details</th>
-            <th style="width:13%">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="tbody-scroll">
-          {% for _spawner in named_spawners %}
-            {% set spawner = _spawner.orm_spawner %}
-            {% set user_options = spawner.user_options %}
-            {% if user_options -%}
-              {% set service = user_options.get("service_input") -%}
-              {% set option1 = user_options.get("options_input", "JupyterLab") -%}
-              {% set system = user_options.get("system_input", None) -%}
-              {% set account = user_options.get("account_input", None) -%}
-              {% set project = user_options.get("project_input", None) -%}
-              {% set partition = user_options.get("partition_input", None) -%}
-              {% set reservation = user_options.get("reservation_input", None) -%}
-              {% set nodes = user_options.get("resource_Nodes", None) -%}
-              {% set runtime = user_options.get("resource_Runtime", None) -%}
-              {% set gpus = user_options.get("resource_GPUS", None) -%}
-              {% if service == "JupyterLab" -%}
-                <tr class="home-server-row" data-server-name="{{ spawner.name }}">
-                  <td style="width:17%">
-                    <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
-                      {{ spawner.name }}
-                    </a>
-                    <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
-                      {{ spawner.name }}
-                    </a>
-                  </td>
-                  {# type #}
-                  <td style="width:11%">
-                    {{ option1 }}
-                  </td>
-                  {# system #}
-                  <td style="width:12%">
-                    {% if system -%}
-                      {{ system }}
-                    {% endif -%}
-                  </td>
-                  {# account #}
-                  <td style="width:11%">
-                    {% if account -%}
-                      {{ account }}
-                    {% endif -%}
-                  </td>
-                  {# project #}
-                  <td style="width:11%">
-                    {% if project -%}
-                      {{ project }}
-                    {% endif -%}
-                  </td>
-                  {# partition#}
-                  <td style="width:11%">
-                    {% if partition -%}
-                      {{ partition }}
-                    {% endif -%}
-                  </td>
-                  {# Details #}
-                  <td style="width:14%">
-                    {% if user_options.get("resource_Nodes", None) or user_options.get("resource_GPUS", None) or user_options.get("resource_Runtime", None) or  user_options.get("reservation_input", None) -%}
-                    <details>
-                      {% if user_options.get("resource_Nodes", None) %}
-                        Nodes: {{ user_options.get("resource_Nodes") }}<br>
-                      {% endif %}
-                      {% if user_options.get("resource_GPUS", None) %}
-                        GPUs: {{ user_options.get("resource_GPUS") }}<br>
-                      {% endif %}
-                      {% if user_options.get("resource_Runtime", None) %}
-                        Runtime: {{ "%.0f"|format(user_options.get("resource_Runtime") | int / 60) }}
-                      {% endif %}
-                      {% if user_options.get("reservation_input", None) %}
-                        Reservation: {{ user_options.get("reservation_input") }}
-                      {% endif %}
-                    </details>
-                    {% endif %}
-                  </td>
-                  {# action #}
-                  <td style="width:13%">
-                    {% if system in maintenance_list -%}
-                      {% set na = 1 -%}
-                    {% elif "systems" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and system not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("systems", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "accounts" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and account not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("accounts", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "projects" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and project not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("projects", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "partitions" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and partition not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("partitions", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "reservations" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and reservation not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("reservations", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "Runtime" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( runtime | int / 60 ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][0] or ( runtime | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% elif "Nodes" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( nodes | int ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][0] or ( nodes | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% elif "GPUS" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( gpus | int ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1], 0])[0][0] or ( gpus | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% else -%}
-                      {% set na = 0 -%}
-                    {% endif -%}
-		    <span class="na_status" hidden {% if na == 1 %} disabled {% endif %} >{{na}}</span>
-                    {% if _spawner.ready -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
-                    {% else -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
-                    {% endif -%}
-                    <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %}" {% if na == 1 %}disabled{% endif %} id="start-{{ spawner.name }}"
-                      {% if na == 0 %} href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}" onClick='document.getElementById("start-{{ spawner.name }}").classList.add("hidden"); document.getElementById("open-pending-{{ spawner.name }}").classList.remove("hidden"); document.getElementById("delete-{{ spawner.name }}").classList.add("hidden"); document.getElementById("stop-{{ spawner.name }}").classList.remove("hidden");'{% endif %}  >{% if na == 1 %}n/a{% else %}Start{% endif %}
-                    </a>
-                    <a role="button" class="delete-server btn btn-xs btn-danger{% if _spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
-                    <a role="button" class="stop-server btn btn-xs btn-danger{% if not _spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
-                  </td>
-                </tr>
-              {% endif -%}
-            {% endif -%}
-          {% endfor -%}
-        </tbody>
-      </table>
+    <p> Please give each of your configurations a name.<br>
+      This way you can run multiple instances at the same time.<br>
+      Supported characters are a-z, 0-9 and ' _'. </p>
+  </div>
+  {% set named_spawners = user.all_spawners(include_default=False) | list %}
+  {% set vo_available = auth_state.get("vo_available", []) %}
+  {% set vo_active = auth_state.get("vo_active", '' ) %}
+  <ul class="nav nav-tabs" id="table-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="jupyterlab-tab" data-toggle="tab" href="#jupyterlabs" role="tab"
+        aria-controls="home" aria-selected="true">JupyterLab</a>
+    </li>
+    <li class="nav-item d-none">
+      <a class="nav-link" id="dashboard-tab" data-toggle="tab" href="#dashboards" role="tab" aria-controls="profile"
+        aria-selected="false">Dashboard</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="table-content">
+    <div class="tab-pane fade show active" id="jupyterlabs" role="tabpanel" aria-labelledby="jupyterlab-tab">
+      {{ table(named_spawners, vo_available, vo_active, "JupyterLab") }}
     </div>
+
+    <div class="tab-pane fade" id="dashboards" role="tabpanel" aria-labelledby="dashboard-tab">
+      {{ table(named_spawners, vo_available, vo_active, "Dashboard") }}
+    </div>
+
+  </div>
   {% endif -%}
 </div>
-
-<div class="content" id="Dashboards-div">
-  {% if allow_named_servers %}
-    <h2>
-      Configurations
-    </h2>
-    <p>
-      Please give each of your configurations a name.<br>
-      This way you can run multiple instances at the same time.<br>
-      Supported characters are a-z, 0-9 and '_'.
-    </p>
-    {% set named_spawners = user.all_spawners(include_default=False)|list %}
-    {% set vo_available = auth_state.get("vo_available", []) %}
-    {% set vo_active = auth_state.get("vo_active", '' ) %}
-    <div class="table-div">
-      <div class="table-tabs">
-        <div class="tab tab_JupyterLab_div" onclick="onClickTableTab('JupyterLab')">
-          <a id="firstdd_JupyterLab">JupyterLab</a>
-        </div>
-        <div class="tab active tab_Dashboard_div" onclick="onClickTableTab('Dashboard')">
-          <a id="firstdd_Dashboard">Dashboard</a>
-        </div>
-      </div>
-      <table class="server-table table table-striped">
-        <thead class="thead-sticky">
-          <tr class="home-server-row add-server-row" style="border-top: solid 0.15em">
-            <td colspan="8" class="no-right-border no-top-border" style="width: 100%">
-              <div  class="table-top-row-parent">
-                <div  class="table-top-row">
-		  <div style="display: flex">
-                    <input id="dashboardname" class="new-server-name" pattern="[a-z_0-9]*" maxlength="20" placeholder="Name your Dashboard" title="Allowed characters: a-z, 0-9 and _"/>
-                    <a id="dashboardbutton" class="new-server-btn-dashboard button-container btn btn-j4j ">
-                      <div class="resize-text-button button-container-text">
-                        <span>Add new Dashboard</span>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr class="home-server-row tr-header">
-            <th style="width:17%">Name</th>
-	    <th style="width:11%">{{ services_config.get("Dashboard", {}).get("options_names", ["Type"])[0] }}</th>
-            <th style="width:12%">System</th>
-            <th style="width:11%">Account</th>
-            <th style="width:11%">Project</th>
-            <th style="width:11%">Partition</th>
-            <th style="width:14%">Details</th>
-            <th style="width:13%">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="tbody-scroll">
-          {% for _spawner in named_spawners %}
-            {% set spawner = _spawner.orm_spawner %}
-            {% set user_options = spawner.user_options %}
-            {% if user_options -%}
-              {% set service = user_options.get("service_input") -%}
-              {% set option1 = user_options.get("options_input", "Dashboard") -%}
-              {% set system = user_options.get("system_input", None) -%}
-              {% set account = user_options.get("account_input", None) -%}
-              {% set project = user_options.get("project_input", None) -%}
-              {% set partition = user_options.get("partition_input", None) -%}
-              {% set reservation = user_options.get("reservation_input", None) -%}
-              {% set nodes = user_options.get("resource_Nodes", None) -%}
-              {% set runtime = user_options.get("resource_Runtime", None) -%}
-              {% set gpus = user_options.get("resource_GPUS", None) -%}
-              {% if service == "Dashboard" -%}
-                <tr class="home-server-row" data-server-name="{{ spawner.name }}">
-                  <td style="width:17%">
-                    <a class="server-link{% if not spawner.active %} hidden{% endif %}" href="{{ user.server_url(spawner.name) }}">
-                      {{ spawner.name }}
-                    </a>
-                    <a class="server-link-nourl{% if spawner.active %} hidden{% endif %}" style="color:inherit; text-decoration:inherit">
-                      {{ spawner.name }}
-                    </a>
-                  </td>
-                  {# type #}
-                  <td style="width:11%">
-                    {{ option1 }}
-                  </td>
-                  {# system #}
-                  <td style="width:12%">
-                    {% if system -%}
-                      {{ system }}
-                    {% endif -%}
-                  </td>
-                  {# account #}
-                  <td style="width:11%">
-                    {% if account -%}
-                      {{ account }}
-                    {% endif -%}
-                  </td>
-                  {# project #}
-                  <td style="width:11%">
-                    {% if project -%}
-                      {{ project }}
-                    {% endif -%}
-                  </td>
-                  {# partition#}
-                  <td style="width:11%">
-                    {% if partition -%}
-                      {{ partition }}
-                    {% endif -%}
-                  </td>
-                  {# Details #}
-                  <td style="width:14%">
-                    {% if user_options.get("resource_Nodes", None) or user_options.get("resource_GPUS", None) or user_options.get("resource_Runtime", None) or  user_options.get("reservation_input", None) -%}
-                    <details>
-                      {% if user_options.get("resource_Nodes", None) %}
-                        Nodes: {{ user_options.get("resource_Nodes") }}<br>
-                      {% endif %}
-                      {% if user_options.get("resource_GPUS", None) %}
-                        GPUs: {{ user_options.get("resource_GPUS") }}<br>
-                      {% endif %}
-                      {% if user_options.get("resource_Runtime", None) %}
-                        Runtime: {{ "%.0f"|format(user_options.get("resource_Runtime") | int / 60) }}
-                      {% endif %}
-                      {% if user_options.get("reservation_input", None) %}
-                        Reservation: {{ user_options.get("reservation_input") }}
-                      {% endif %}
-                    </details>
-                    {% endif %}
-                  </td>
-                  {# action #}
-                  <td style="width:13%">
-                    {% if system in maintenance_list -%}
-                      {% set na = 1 -%}
-                    {% elif "systems" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and system not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("systems", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "accounts" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and account not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("accounts", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "projects" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and project not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("projects", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "partitions" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and partition not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("partitions", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "reservations" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).keys() and reservation not in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_allowed_lists", {}).get("reservations", []) -%}
-                      {% set na = 1 -%}
-                    {% elif "Runtime" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( runtime | int / 60 ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][0] or ( runtime | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Runtime", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% elif "Nodes" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( nodes | int ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][0] or ( nodes | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("Nodes", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% elif "GPUS" in vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).keys() and ( ( gpus | int ) < vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1], 0])[0][0] or ( gpus | int / 60 ) > vo_config.get(vo_active, {}).get("Services", {}).get(service, {}).get(option1, {}).get("replace_resources", {}).get(system, {}).get(partition, {}).get("GPUS", [[0,1], 0])[0][1] ) -%}
-                      {% set na = 1 -%}
-                    {% else -%}
-                      {% set na = 0 -%}
-                    {% endif -%}
-		    <span class="na_status" hidden {% if na == 1 %} disabled {% endif %} >{{na}}</span>
-                    {% if _spawner.ready -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/user/{{user.name}}/{{spawner.name}}">open</a>
-                    {% else -%}
-                      <a role="button" class="url-server btn btn-xs btn-url{% if not _spawner.active %} hidden{% endif %}" id="open-pending-{{ spawner.name }}" href="/hub/spawn-pending/{{user.name}}/{{spawner.name}}">open</a>
-                    {% endif -%}
-                    <a role="button" class="start-server btn btn-xs btn-start{% if _spawner.active %} hidden{% endif %}" {% if na == 1 %}disabled{% endif %} id="start-{{ spawner.name }}"
-                      {% if na == 0 %} href="{{ base_url }}direct/{{ user.name }}/{{ spawner.name }}" onClick='document.getElementById("start-{{ spawner.name }}").classList.add("hidden"); document.getElementById("open-pending-{{ spawner.name }}").classList.remove("hidden"); document.getElementById("delete-{{ spawner.name }}").classList.add("hidden"); document.getElementById("stop-{{ spawner.name }}").classList.remove("hidden");'{% endif %}  >{% if na == 1 %}n/a{% else %}Start{% endif %}
-                    </a>
-                    <a role="button" class="delete-server btn btn-xs btn-danger{% if _spawner.active %} hidden{% endif %}" id="delete-{{ spawner.name }}">delete</a>
-                    <a role="button" class="stop-server btn btn-xs btn-danger{% if not _spawner.active %} hidden{% endif %}" id="stop-{{ spawner.name }}">stop</a>
-                  </td>
-                </tr>
-              {% endif -%}
-            {% endif -%}
-          {% endfor -%}
-        </tbody>
-      </table>
-    </div>
-  {% endif -%}
-</div> <!-- #Dashboards-div-->
-
-
 {% endblock main %}
-
-{% block script %}
-{{ super() }}
-<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-{% endblock %}

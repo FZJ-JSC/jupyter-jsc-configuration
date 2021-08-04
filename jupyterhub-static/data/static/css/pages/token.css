@@ -1,43 +1,28 @@
-#header {
-  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
-  min-width: calc(1024px * 0.94) !important;
-  max-width: 94% !important;
-}
-
-.footer-bottom {
-  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
-  min-width: calc(1024px * 0.94) !important;
-  max-width: 94% !important;
-  margin: 0 auto;
-}
-
-#body {
-  height: calc(94vw * calc(840 / 1810));
-}
-
-.background-wrapper {
-  height: calc(94vw * calc(840 / 1810));
-  min-height: 445px;
-  max-height: calc(100% - 113px - 153px);
-
-  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
-  min-width: 1024px;
-  max-width: 94%;
-
-  margin: 0 auto;
-  background: url("/hub/static/images/pages/token/background.jpg") top center
+#token-page {
+  background: url("/hub/static/images/pages/token/background.jpg") center center
     no-repeat;
-  background-size: contain;
-  position: absolute;
-
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  background-size: cover;
+  height: 100%;
+  padding: 4vh 0 0 0;
 }
 
+#request-token-form,
+#token-area {
+  width: 50%;
+}
+
+.lead {
+  margin-bottom: 20px;
+  /* font-size: 16px; */
+  font-size: 1.5rem;
+  font-weight: 300;
+  /* line-height: 1.4; */
+}
+
+.revoke-token-btn {
+  border: solid 1px white;
+}
+/* 
 .content {
   height: 100%;
   width: 78%;
@@ -120,4 +105,4 @@
   width: 41.666667% !important;
   margin: auto !important;
   float: none !important;
-}
+} */

@@ -89,17 +89,14 @@
 {% block script %}
 {{ super() }}
 <script type="text/javascript">
-  require(["home"]);
-</script>
-<script type="text/javascript">
   window.jhdata_code = {
     {% if code is defined %}
-  code: true,
+    code: true,
     code_success: "{{ code_success }}".toLowerCase() == "true",
-      code_header: "{{ code_header}}",
-        code_text: "{{ code_text }}",
-          {% else %}
-  code: false,
+    code_header: "{{ code_header}}",
+    code_text: "{{ code_text }}",
+    {% else %}
+    code: false,
     {% endif %}
   }
 

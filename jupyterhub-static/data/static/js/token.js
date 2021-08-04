@@ -34,10 +34,7 @@ require(["jquery", "jhapi", "moment"], function ($, JHAPI, moment) {
   });
 
   function get_token_row(element) {
-    while (!element.hasClass("token-row")) {
-      element = element.parent();
-    }
-    return element;
+    return element.parents("tr");
   }
 
   $(".revoke-token-btn").click(function () {

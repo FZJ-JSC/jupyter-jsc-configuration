@@ -1,45 +1,39 @@
 {% extends "jupyter-jsc.fz-juelich.de/page.html" %}
 
-
 {% block stylesheet -%}
-  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending.css", include_version=False) }}" type="text/css"/>
-  <link rel="stylesheet" href="{{ static_url("css/pages/spawn_pending_bar.css", include_version=False) }}" type="text/css"/>
+  <link rel="stylesheet" href='{{ static_url("css/pages/spawn_pending.css", include_version=False) }}' type="text/css"/>
+  <link rel="stylesheet" href='{{ static_url("css/pages/spawn_pending_bar.css", include_version=False) }}' type="text/css"/>
 {% endblock -%}
 
 
-
-
 {% block main -%}
-
-  <div class="content">
-    <div class="progress_row">
-      <div class="progress_div">
-        <div class="custom_progress">
-          <span class="custom_progress-left">
-            <span class="custom_progress-bar" id="pbleft"></span>
-          </span>
-          <span class="custom_progress-right">
-            <span class="custom_progress-bar" id="pbright"></span>
-          </span>
-          <div class="custom_progress-value" id="sr-progress"></div>
-        </div>
-        <a id="cancel" role="button" class="btn btn-lg btn-danger" disabled>Cancel</a>
-      </div>
-      <div class="text_div">
-        <p>Your server is starting up.</p>
-        <p>You will be redirected automatically when it's ready for you.</p>
-        <p id="progress-message">Submitting Job to UNICORE.</p>
-        <div id="progress-log">
-        </div>
-      </div>
+<div id="spawn-pending-page" class="row justify-content-center px-md-0 px-lg-4">
+  <div class="progress-div">
+    <div class="custom_progress">
+      <span class="custom_progress-left">
+        <span class="custom_progress-bar" id="pbleft"></span>
+      </span>
+      <span class="custom_progress-right">
+        <span class="custom_progress-bar" id="pbright"></span>
+      </span>
+      <div class="custom_progress-value" id="sr-progress"></div>
     </div>
+    <a id="cancel" role="button" class="btn btn-lg btn-danger" disabled>Cancel</a>
   </div>
 
+  <div class="text-div">
+    <p>Your server is starting up.<br><br>
+    You will be redirected automatically when it's ready for you.</p>
+    <p id="progress-message">Submitting Job to UNICORE.</p>
+    <div id="progress-log">
+    </div>
+  </div>
+</div>
 {% endblock -%}
 
 {% block script -%}
   {{ super() }}
-  <script type="text/javascript" src="{{ static_url("js/pages/spawn_pending.js", include_version=False) }}"></script>
+  <script type="text/javascript" src='{{ static_url("js/pages/spawn_pending.js", include_version=False) }}'></script>
 
   <script type="text/javascript">
     require(["jquery", "home", "jhapi"], function ($) {
