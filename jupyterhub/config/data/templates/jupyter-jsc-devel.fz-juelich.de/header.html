@@ -97,7 +97,11 @@
                 </div>
                 <select id="vo-select" class="custom-select" style="border-radius: 0.2em !important">
                   {% for vo in vo_available -%}
+                  {% if vo == vo_active %}
+                  <option selected>{{vo}}</option>
+                  {% else %}
                   <option>{{vo}}</option>
+                  {% endif %}
                   {% endfor -%}
                 </select>
                 <a id="logout" role="button" class="btn btn-sm btn-default ml-1">

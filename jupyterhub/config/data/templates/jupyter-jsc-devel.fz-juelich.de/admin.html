@@ -23,7 +23,7 @@
 {% block main -%}
 <div id="admin-page" class="px-4">
 
-  <ul class="nav nav-tabs" id="admin-tabs" role="tablist">
+  <ul class="nav nav-pills" id="admin-tabs" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="logging-tab" data-toggle="tab" href="#logging" role="tab"
         aria-controls="home" aria-selected="true">Logging</a>
@@ -34,52 +34,64 @@
     </li>
   </ul>
   <div class="tab-content" id="table-content">
-    <div id="logging" class="tab-pane fade show active p-4" role="tabpanel" aria-labelledby="logging-tab">
-      <h4>JupyterHub</h4>
-      <div class="row">
-        <div class="col-4">
-          <div class="list-group" id="jhub-tab" role="tablist">
-            <a class="list-group-item list-group-item-action active" id="jhub-stream-list" data-toggle="list" href="#jhub-stream" role="tab" aria-controls="home">Stream</a>
-            <a class="list-group-item list-group-item-action" id="jhub-file-list" data-toggle="list" href="#jhub-file" role="tab" aria-controls="profile">File</a>
-            <a class="list-group-item list-group-item-action" id="jhub-mail-list" data-toggle="list" href="#jhub-mail" role="tab" aria-controls="messages">Mail</a>
-            <a class="list-group-item list-group-item-action" id="jhub-syslog-list" data-toggle="list" href="#jhub-syslog" role="tab" aria-controls="settings">SysLog</a>
-          </div>
-        </div>
-        
-        {% macro loglevel_select(log) %}
-        <div class="form-group">
-          <label for="{{log | lower }}-select">{{ log }} LogLevel</label>
-          <select class="form-control" id="{{log | lower}}-select">
-            <option>NotSet</option>
-            <option>Trace</option>
-            <option>Debug</option>
-            <option>Info</option>
-            <option>Warning</option>
-            <option>Error</option>
-            <option>Critical</option>
-          </select>
-        </div>
-        {% endmacro %}
+    <div id="logging" class="tab-pane fade show active py-4" role="tabpanel" aria-labelledby="logging-tab">        
+      {% macro loglevel_select(log, system) %}
+      <div class="form-group">
+        <label for="{{system}}-{{log|lower}}-select">{{ log }} LogLevel</label>
+        <select class="form-control" id="{{system}}-{{log|lower}}-select">
+          <option value="NOTSET">NotSet</option>
+          <option value="TRACE">Trace</option>
+          <option value="DEBUG">Debug</option>
+          <option value="INFO">Info</option>
+          <option value="WARNING">Warning</option>
+          <option value="ERROR">Error</option>
+          <option value="CRITICAL">Critical</option>
+        </select>
+      </div>
+      <button id="{{system}}-{{log|lower}}-post" class="btn btn-rounded btn-primary">Submit</button>
+      <small id="{{system}}-{{log|lower}}-msg"></small>
+      {% endmacro %}
 
-        <div class="col-8">
-          <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="jhub-stream" role="tabpanel" aria-labelledby="jhub-stream-list">
-              {{ loglevel_select("Stream") }}  
+      {% macro loglevel_interface(title, system) %}
+      <div class="card bg-light border-dark mb-4">
+        <div class="card-body">
+          <h4 class="card-title">{{ title }}</h4>
+          <div class="row">
+            <div class="col-4">
+              <div class="list-group" id="{{system}}-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="{{system}}-stream-list" data-toggle="list" href="#{{system}}-stream" role="tab" aria-controls="home">Stream</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-file-list" data-toggle="list" href="#{{system}}-file" role="tab" aria-controls="profile">File</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-mail-list" data-toggle="list" href="#{{system}}-mail" role="tab" aria-controls="messages">Mail</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-syslog-list" data-toggle="list" href="#{{system}}-syslog" role="tab" aria-controls="settings">SysLog</a>
+              </div>
             </div>
-            <div class="tab-pane fade" id="jhub-file" role="tabpanel" aria-labelledby="jhub-file-list">
-              {{ loglevel_select("File") }}  
-            </div>
-            <div class="tab-pane fade" id="jhub-mail" role="tabpanel" aria-labelledby="jhub-mail-list">
-              {{ loglevel_select("Mail") }}  
-            </div>
-            <div class="tab-pane fade" id="jhub-syslog" role="tabpanel" aria-labelledby="jhub-syslog-list">
-              {{ loglevel_select("SysLog") }}  
+
+            <div class="col-8">
+              <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="{{system}}-stream" role="tabpanel" aria-labelledby="{{system}}-stream-list">
+                  {{ loglevel_select("Stream", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-file" role="tabpanel" aria-labelledby="{{system}}-file-list">
+                  {{ loglevel_select("File", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-mail" role="tabpanel" aria-labelledby="{{system}}-mail-list">
+                  {{ loglevel_select("Mail", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-syslog" role="tabpanel" aria-labelledby="{{system}}-syslog-list">
+                  {{ loglevel_select("SysLog", system) }}  
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {% endmacro %}
 
-
+      {{ loglevel_interface("JupyterHub", "jhub") }}
+      {{ loglevel_interface("Backend", "backend") }}
+      {{ loglevel_interface("Tunnel", "tunneling") }}
+      {{ loglevel_interface("Userlabs Manager", "userlabs-mgr") }}
+      {{ loglevel_interface("JUSUF Cloud Userlabs Manager", "jusuf-cloud") }}
     </div>
 
     <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
@@ -253,13 +265,11 @@ You can choose to leave the proxy and/or single-user servers running by unchecki
 
   $(document).ready(function () {
     let args = window.location.search;
-
     $(".set-href").each(function (index, item) {
       if (args.includes("page")) {
         item.href = args.replace(/page=[0-9]*/, "page=" + item.innerHTML);
       }
     });
-
     {% set pages = pagination.total_pages %}
     if (args.includes("page=")) {
       let page_arg = args.match(/page=-*[0-9]*/)[0];
@@ -270,14 +280,11 @@ You can choose to leave the proxy and/or single-user servers running by unchecki
       if (page >= {{ pages }}) {
         $(".set-disable").last().addClass("disabled");
       }
-
       let previous_page = page > {{ pages }} ? {{ pages }} : (page-1);
       let next_page = page < {{ pages }} ? 1 : (page-1);
       $(".set-disable>a").first().attr('href', args.replace(/page=-*[0-9]*/, "page=" + previous_page));
       $(".set-disable>a").last().attr('href', args.replace(/page=-*[0-9]*/, "page=" + next_page));
-    } 
-    
-    else {
+    } else {
       $(".set-disable").first().addClass("disabled");
       if ({{ pages }} == 1) {
         $(".set-disable").last().addClass("disabled");

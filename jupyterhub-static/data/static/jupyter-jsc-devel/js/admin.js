@@ -10,6 +10,55 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 ) {
   "use strict";
 
+  // Set and post log levels
+  ["jhub", "backend", "tunneling", "userlabs-mgr", "jusuf-cloud"].forEach(function (system) {
+    if (system == "jhub") {
+      var api_url = "api/loglevel";
+    } else {
+      var api_url = "api/" + system + "/loglevel";
+    }
+
+    $(document).ready(function () {
+      // Set log levels      
+      $.get(api_url, function (loglevels) {
+        // console.log(system, loglevels);
+        $("#" + system + "-stream-select").val(loglevels["stream"])
+        $("#" + system + "-file-select").val(loglevels["file"])
+        $("#" + system + "-mail-select").val(loglevels["mail"])
+        $("#" + system + "-syslog-select").val(loglevels["syslog"])
+      });
+    });
+
+    ["stream", "file", "mail", "syslog"].forEach(function (handler) {
+      $("#" + system + "-" + handler + "-post").click(function () {
+        $(this).attr("disabled", true);
+        let level = $("#" + system + "-" + handler + "-select").val();
+        $.post(api_url + "/" + handler + "/" + level)
+          .always(function (data) {
+            if (data.status == 200) {
+              $("#" + system + "-" + handler + "-msg").text("Successfully updated the loglevel to " + level);
+              $("#" + system + "-" + handler + "-post").removeClass("btn-primary");
+              $("#" + system + "-" + handler + "-post").addClass("btn-success");
+            
+            } else {
+              $("#" + system + "-" + handler + "-msg").text("Error: " + data.status + " " + data.statusText);
+              $("#" + system + "-" + handler + "-post").removeClass("btn-primary");
+              $("#" + system + "-" + handler + "-post").addClass("btn-danger");
+            }
+          })
+      })
+    
+      $("#" + system + "-" + handler + "-select").change(function () {
+        $("#" + system + "-" + handler + "-post").attr("disabled", false);
+        $("#" + system + "-" + handler + "-post").addClass("btn-primary");
+        $("#" + system + "-" + handler + "-post").removeClass("btn-success");
+        $("#" + system + "-" + handler + "-post").removeClass("btn-danger");
+        $("#" + system + "-" + handler + "-msg").text("");
+      })
+    })
+  })
+
+  // User Lab table code
   var base_url = window.jhdata.base_url;
   var prefix = window.jhdata.prefix;
   var admin_access = window.jhdata.admin_access;
