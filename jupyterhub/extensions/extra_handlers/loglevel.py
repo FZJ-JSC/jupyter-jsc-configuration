@@ -3,7 +3,7 @@ import json
 import os
 
 from tornado import web
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import HTTPRequest, HTTPClientError
 
 from jupyterhub.apihandlers.base import APIHandler
 
@@ -66,7 +66,6 @@ class LogLevelAPIHandler(APIHandler):
         self.set_status(200)
         self.finish()
 
-
     @web.authenticated
     async def get(self):
         user = self.current_user
@@ -102,12 +101,11 @@ class BaseLogLevelAPIHandler(APIHandler):
             connect_timeout=2,
             request_timeout=2
         )
-
-        http_client = AsyncHTTPClient()
-        response = await http_client.fetch(req)
-
-        self.set_status(response.code)
-        self.finish()
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+        except HTTPClientError as e:
+            self.set_status(e.code)
 
     @web.authenticated
     async def get(self):
@@ -125,14 +123,122 @@ class BaseLogLevelAPIHandler(APIHandler):
                 connect_timeout=2,
                 request_timeout=2
             )
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+            return self.write(resp)
+        except HTTPClientError as e:
+            self.set_status(e.code)
 
-        http_client = AsyncHTTPClient()
-        response = await http_client.fetch(req)
-        return self.write(response.body)
+
+class BaseLoggerAPIHandler(APIHandler):
+    @web.authenticated
+    async def get(self, handler):
+        user = self.current_user
+        if not user.admin:
+            self.set_status(403)
+            return
+
+        if os.environ.get("BACKEND_SECRET", None):
+            headers = {"Backendsecret": os.environ.get("BACKEND_SECRET")}
+        req = HTTPRequest(
+                self.logging_url + f"/{handler}",
+                method="GET",
+                headers=headers,
+                connect_timeout=10,
+                request_timeout=10
+            )
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+            return self.write(resp)
+        except HTTPClientError as e:
+            self.set_status(e.code)
+
+    @web.authenticated
+    async def patch(self, handler, loglevel):
+        user = self.current_user
+        if not user.admin:
+            self.set_status(403)
+            return
+
+        if os.environ.get("BACKEND_SECRET", None):
+            headers = {"Backendsecret": os.environ.get("BACKEND_SECRET")}
+        req = HTTPRequest(
+                self.logging_url + f"/{handler}/{loglevel}",
+                method="PATCH",
+                headers=headers,
+                body="{}",
+                connect_timeout=10,
+                request_timeout=10
+            )
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+        except HTTPClientError as e:
+            self.set_status(e.code)
+    
+    @web.authenticated
+    async def post(self, handler, loglevel, formatter, *argv):
+        user = self.current_user
+        if not user.admin:
+            self.set_status(403)
+            return
+
+        if os.environ.get("BACKEND_SECRET", None):
+            headers = {"Backendsecret": os.environ.get("BACKEND_SECRET")}
+        
+        if handler == "stream":
+            url = self.logging_url + f"/{handler}/{loglevel}/{formatter}"
+        elif handler == "file":
+            url = self.logging_url + f"/{handler}/{loglevel}/{formatter}/{argv[0]}"
+        elif handler == "mail":
+            url = self.logging_url + f"/{handler}/{loglevel}/{formatter}/{argv[0]}/{argv[1]}/{argv[2]}/{argv[3]}"
+        elif handler == "syslog":
+            url = self.logging_url + f"/{handler}/{loglevel}/{formatter}/{argv[0]}/{argv[1]}/{argv[2]}/{argv[3]}/{argv[4]}/{argv[5]}"
+
+        req = HTTPRequest(
+                url,
+                method="POST",
+                headers=headers,
+                body="{}",
+                connect_timeout=10,
+                request_timeout=10
+            )
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+        except HTTPClientError as e:
+            self.set_status(e.code)
+
+    @web.authenticated
+    async def delete(self, handler):
+        user = self.current_user
+        if not user.admin:
+            self.set_status(403)
+            return
+
+        if os.environ.get("BACKEND_SECRET", None):
+            headers = {"Backendsecret": os.environ.get("BACKEND_SECRET")}
+        req = HTTPRequest(
+                self.logging_url + f"/{handler}",
+                method="DELETE",
+                headers=headers,
+                connect_timeout=10,
+                request_timeout=10
+            )
+        try:
+            resp = await user.authenticator.fetch(req)
+            self.set_status(200)
+        except HTTPClientError as e:
+            self.set_status(e.code)
 
 
 class BackendLogLevelAPIHandler(BaseLogLevelAPIHandler):
-    logging_url = os.environ.get("BACKEND_URL_LOGGING")
+    logging_url = os.environ.get("BACKEND_URL_LOGLEVEL")
+
+class BackendLoggerAPIHandler(BaseLoggerAPIHandler):
+    logging_url = os.environ.get("BACKEND_URL_LOGGER")
 
 class TunnelingLogLevelAPIHandler(BaseLogLevelAPIHandler):
     logging_url = os.environ.get("TUNNELING_URL_LOGGING")

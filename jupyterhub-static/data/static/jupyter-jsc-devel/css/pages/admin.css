@@ -30,6 +30,10 @@ color: #225f8d;
   background-color: #004176;
 }
 
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #004176;
+  border-color: #225f8d;
+}
 
 /* 
 .table-striped > tbody > tr:nth-of-type(2n+1):hover {
