@@ -34,24 +34,89 @@
     </li>
   </ul>
   <div class="tab-content" id="table-content">
-    <div id="logging" class="tab-pane fade show active py-4" role="tabpanel" aria-labelledby="logging-tab">        
-      {% macro loglevel_select(log, system) %}
-      <div class="form-group">
-        <label for="{{system}}-{{log|lower}}-select">{{ log }} LogLevel</label>
-        <select class="form-control" id="{{system}}-{{log|lower}}-select">
-          <option value="NOTSET">NotSet</option>
-          <option value="TRACE">Trace</option>
-          <option value="DEBUG">Debug</option>
-          <option value="INFO">Info</option>
-          <option value="WARNING">Warning</option>
-          <option value="ERROR">Error</option>
-          <option value="CRITICAL">Critical</option>
-        </select>
+    <div id="logging" class="tab-pane fade show active py-4" role="tabpanel" aria-labelledby="logging-tab"> 
+
+      {% macro request_buttons(log, system) %}
+      <div class="mb-2">
+        <button id="{{system}}-{{log|lower}}-create" type="button" class="btn btn-rounded btn-success">Create</button>
+        <button id="{{system}}-{{log|lower}}-patch" type="button" class="btn btn-rounded btn-primary">Patch</button>
+        <button id="{{system}}-{{log|lower}}-delete" type="button" class="btn btn-rounded btn-danger">Delete</button>
+        <div id="{{system}}-{{log|lower}}-alert" class="alert alert-secondary mt-2" role="alert">Output area</div>
       </div>
-      <button id="{{system}}-{{log|lower}}-post" class="btn btn-rounded btn-primary">Submit</button>
-      <small id="{{system}}-{{log|lower}}-msg"></small>
       {% endmacro %}
 
+      {% macro select(log, system, id="loglevel", text="LogLevel") %}
+      <label for="{{system}}-{{log|lower}}-{{id}}">{{ text }}</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-{{id}}">
+        <option value="NOTSET">NotSet</option>
+        <option value="TRACE">Trace</option>
+        <option value="DEBUG">Debug</option>
+        <option value="INFO">Info</option>
+        <option value="WARNING">Warning</option>
+        <option value="ERROR">Error</option>
+        <option value="CRITICAL">Critical</option>
+        <option value="DEACTIVATE">Deactivate</option>
+      </select>
+      {% endmacro %}
+
+      {% macro formatter(log, system) %}
+      <label for="{{system}}-{{log|lower}}-formatter">Formatter</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-formatter">
+        <option value="json">JSON</option>
+        <option value="simple">Simple</option>
+      </select>
+      {% endmacro %}
+
+      {% macro input(log, system, id, text, type="text") %}
+      <label for="{{system}}-{{log|lower}}-{{id}}">{{ text }}</label>
+      <input type={{type}} class="form-control mb-2" id="{{system}}-{{log|lower}}-{{id}}">
+      {% endmacro %}
+
+      {% macro stream_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {% endmacro %}
+
+      {% macro file_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "logfile", "Log File") }}
+      {% endmacro %}
+
+      {% macro mail_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "receiver", "Receiver (if multiple, ; separated)") }}
+      {{ input(log, system, "host", "Host") }}
+      {{ input(log, system, "from", "From") }}
+      {{ input(log, system, "subject", "Subject") }}
+      {% endmacro %}
+
+      {% macro syslog_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "host", "Host") }}
+      {{ input(log, system, "port", "Port", type="number") }}
+      <label for="{{system}}-{{log|lower}}-protocol">{{ log }} Protocol</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-protocol">
+        <option value="udp">UDP</option>
+        <option value="tcp">TCP</option>
+      </select>
+      <hr/>
+      <div class="custom-control custom-switch mb-2">
+        <input class="custom-control-input" type="checkbox"  id="{{system}}-{{log|lower}}-memory">
+        <label class="custom-control-label" for="{{system}}-{{log|lower}}-memory">
+          Enable SysLog memory 
+        </label>
+      </div>
+      {{ input(log, system, "memory-capacity", "Memory Capacity", type="number") }}
+      {{ select(log, system, "memory-flushlevel", "Memory FlushLevel") }}
+      {% endmacro %}
+      
       {% macro loglevel_interface(title, system) %}
       <div class="card bg-light border-dark mb-4">
         <div class="card-body">
@@ -69,16 +134,16 @@
             <div class="col-8">
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="{{system}}-stream" role="tabpanel" aria-labelledby="{{system}}-stream-list">
-                  {{ loglevel_select("Stream", system) }}  
+                  {{ stream_logger("Stream", system) }}  
                 </div>
                 <div class="tab-pane fade" id="{{system}}-file" role="tabpanel" aria-labelledby="{{system}}-file-list">
-                  {{ loglevel_select("File", system) }}  
+                  {{ file_logger("File", system) }}  
                 </div>
                 <div class="tab-pane fade" id="{{system}}-mail" role="tabpanel" aria-labelledby="{{system}}-mail-list">
-                  {{ loglevel_select("Mail", system) }}  
+                  {{ mail_logger("Mail", system) }}  
                 </div>
                 <div class="tab-pane fade" id="{{system}}-syslog" role="tabpanel" aria-labelledby="{{system}}-syslog-list">
-                  {{ loglevel_select("SysLog", system) }}  
+                  {{ syslog_logger("SysLog", system) }}  
                 </div>
               </div>
             </div>
