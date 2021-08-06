@@ -32,7 +32,7 @@
             "JupyterLab": {
                 "vo_mapping": {
                     "HIFIS": "default",
-                    "admins": "default",
+                    "admins": "admins",
                     "debug": "default",
                     "devel": "default",
                     "aiidalab": "default",
@@ -57,6 +57,14 @@
                 },
                 "allowed_lists": {
                     "systems": ["JURECA", "JUWELS", "JUSUF", "HDF-Cloud"]
+                }
+            },
+            "JupyterLab-3.0": {
+                "vo_mapping": {
+                    "myriam-devel": "myriam-devel"
+                },
+                "allowed_lists": {
+                    "systems": ["JURECA"]
                 }
             }
         }

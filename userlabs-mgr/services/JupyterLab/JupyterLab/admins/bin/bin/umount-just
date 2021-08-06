@@ -1,0 +1,32 @@
+#!/bin/bash
+mount | grep "/mnt/JUST_HOMEs_readonly" > /dev/null
+EC=$?
+if [[ $EC -eq 0 ]]; then
+    fusermount -u /mnt/JUST_HOMEs_readonly 2>/dev/null
+else
+    echo "JUST_HOMEs_readonly is currently not mounted"
+fi
+#mount | grep "/mnt/JUST_HOMEs" > /dev/null
+#EC=$?
+#if [[ $EC -eq 0 ]]; then
+#    fusermount -u /mnt/JUST_HOMEs 2>/dev/null
+#    umount /mnt/JUST_HOMEs
+#else
+#    echo "JUST_HOMEs is currently not mounted"
+#fi
+#mount | grep "/mnt/JUST_PROJECTs_readonly" > /dev/null
+#EC=$?
+#if [[ $EC -eq 0 ]]; then
+#    fusermount -u /mnt/JUST_PROJECTs_readonly 2>/dev/null
+#    umount /mnt/JUST_PROJECTs_readonly
+#else
+#    echo "JUST_PROJECTs_readonly is currently not mounted"
+#fi
+#mount | grep "/mnt/JUST_PROJECTs" > /dev/null
+#EC=$?
+#if [[ $EC -eq 0 ]]; then
+#    fusermount -u /mnt/JUST_PROJECTs 2>/dev/null
+#    umount /mnt/JUST_PROJECTs
+#else
+#    echo "JUST_PROJECTs is currently not mounted"
+#fi

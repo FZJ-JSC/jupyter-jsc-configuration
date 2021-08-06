@@ -1,4 +1,6 @@
 #!/bin/bash
+
+cp /home/ubuntu/.kube/config_jupyter-jsc /home/ubuntu/.kube/config 
 # Get Postgres password
 export POSTGRES_PASSWORD=$(kubectl get secret --namespace database jupyter-jsc-old-psql-postgresql-ha-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
 export ID=$(uuidgen)

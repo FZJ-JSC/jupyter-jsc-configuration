@@ -100,5 +100,17 @@
             "JupyterLab": {}
 	}
     }
+  },
+  "myriam-devel": {
+    "authenticators": [],
+    "usernames": ["m.czekala@fz-juelich.de", "a.grosch@fz-juelich.de", "t.kreuzer@fz-juelich.de"],
+    "admin": false,
+    "weight": 76,
+    "exclusive": false,
+    "Services": {
+        "JupyterLab": {
+            "JupyterLab-3.0": {}
+	}
+    }
   }
 }

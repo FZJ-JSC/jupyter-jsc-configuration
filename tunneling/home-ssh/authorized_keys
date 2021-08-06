@@ -1,3 +1,6 @@
+# JUSUF-Cloud
+restrict,port-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHWBilBRsOSwX2bXAeYHVPq0p1Qb/IIGu0ld1eFesftL
+
 # HDFCloud
 restrict,port-forwarding,command="/bin/echo No commands allowed" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0JYsXtR7Kx7pBX6LLIIZ2UtoLCaPhGxWbM3jGnhjix
 

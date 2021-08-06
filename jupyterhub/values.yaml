@@ -48,7 +48,6 @@ hub:
       from jupyterhub.spawner import BackendSpawner
       from extra_logs.extra_handlers import create_extra_handlers
 
-      # c.JupyterHub.statsd_host = "graphite"
       c.JupyterHub.log_level = 10
       c.JupyterHub.extra_log_handlers = create_extra_handlers()
 
@@ -77,9 +76,9 @@ hub:
       }
       c.UnityOAuthenticator.enable_auth_state = True
       c.UnityOAuthenticator.client_id = "jupyter-jsc.fz-juelich.de"
-      c.UnityOAuthenticator.oauth_callback_url = "https://jupyter-jsc.fz-juelich.de/hub/oauth_callback"
+      #c.UnityOAuthenticator.oauth_callback_url = "https://jupyter-jsc.fz-juelich.de/hub/oauth_callback"
       #c.UnityOAuthenticator.oauth_callback_url = "https://jupyter-jsc-devel.fz-juelich.de/hub/oauth_callback"
-      #c.UnityOAuthenticator.oauth_callback_url = "https://_host_/hub/oauth_callback"
+      c.UnityOAuthenticator.oauth_callback_url = "https://_host_/hub/oauth_callback"
       c.UnityOAuthenticator.authorize_url = "https://unity-jsc.fz-juelich.de/jupyter-oauth2-as/oauth2-authz"
       c.UnityOAuthenticator.token_url = "https://unity-jsc.fz-juelich.de/jupyter-oauth2/token"
       c.UnityOAuthenticator.tokeninfo_url = "https://unity-jsc.fz-juelich.de/jupyter-oauth2/tokeninfo"
@@ -150,7 +149,7 @@ hub:
   - name: LOGGING_STREAM_ENABLED
     value: "true"
   - name: LOGGING_STREAM_LOGLEVEL
-    value: DEBUG
+    value: ERROR
   - name: LOGGING_METRICS_ENABLED
     value: "true"
   - name: LOGGING_FILE_ENABLED
@@ -313,7 +312,7 @@ hub:
       secretName: get-hpc-accounts
   image:
     name: jupyterjsc/jupyterhub
-    tag: 1.3.0.15
+    tag: 1.3.0.17
   initContainers:
   - command:
     - sh
