@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% macro input(name, value) %}
-<input id="{{name}}" name="{{name}}" autocomplete="off" value="{{value}}" style="display: None" />
+<input id="{{name}}" name="{{name}}" autocomplete="off" value="{{value}}" style="display: none;" />
 {% endmacro %}
 
 {% macro dropdown(id, function_name) %}
@@ -35,6 +35,23 @@
 </div>
 {% endmacro %}
 
+{% macro checkbox_div(id, text, callback) %}
+<div id="{{id}}_checkbox_div" class="card border-dark rounded-0 mb-2" style="display: none;">
+  <div class="card-text text-right my-2 mr-4">
+    <span class="align-middle"> {{ text }} </span>
+    <img class="mr-2" id="{{id}}-checkbox-qm"
+      src="https://jupyter-jsc.fz-juelich.de/hub/static/images/qm.png" data-original-title="" title=""
+      height="20" />
+
+    <div class="material-switch pull-right">
+      <input id="{{id}}_checkbox_input" name="{{id}}_checkbox_input" onclick="{{callback}}()"
+        class="form-control" type="checkbox" />
+      <label for="{{id}}_checkbox_input" class="label-primary mb-1"></label>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
 {% macro resource_div(id, name, label, min, max, value) %}
 <div id="resource_{{id}}_div" style="display: none">
   <label id="resource_{{id}}_label" class="custom-label resource" for="resource_{{id}}_input">
@@ -52,9 +69,11 @@
 </tr>
 {% endmacro %}
 
+
 {% block main %}
-<div id="spawn-d1-page" class="row justify-content-around px-md-0 px-lg-4">
-  <div id="spawn-options" class="col col-auto">
+<!-- <div id="spawn-d1-page" class="row justify-content-around px-md-0 px-lg-4"> -->
+<div id="spawn-d1-page" class="row px-md-0 px-lg-4">
+  <div id="spawn-options" class="col col-auto offset-1 col-xl-3" style="min-width: 350px;">
     {% block heading %}
     <h1 id="optionsheader"></h1>
     {% endblock %}
@@ -75,6 +94,7 @@
           {{ input("project_input", "undefined") }}
           {{ input("partition_input", "undefined") }}
           {{ input("reservation_input", "undefined") }}
+          {{ input("modules_input", "") }}
         </div>
 
         {% if ( spawner_options_form.get('dropdown_lists', {}).get('options', {}).keys() | length > 0) -%}
@@ -89,20 +109,8 @@
         {{ resource_div("runtime", "Runtime", "Runtime (min) [1, 1440]", 1, 1440, 30) }}
         {{ resource_div("gpus", "GPUS", "GPUs [1, 4]", 1, 4, 4) }}
 
-        <div id="reservations_checkbox_div" class="card border-dark rounded-0 mb-2" style="display: none;">
-          <div class="card-text text-right my-2 mr-4">
-            <span class="align-middle">Show reservation info</span>
-            <img class="mr-2" id="reservations-checkbox-qm"
-              src="https://jupyter-jsc.fz-juelich.de/hub/static/images/qm.png" data-original-title="" title=""
-              height="20" />
-
-            <div class="material-switch pull-right">
-              <input id="reservations_checkbox_input" name="reservations_checkbox_input" onclick="reservationCB()"
-                class="form-control" type="checkbox" />
-              <label for="reservations_checkbox_input" class="label-primary mb-1"></label>
-            </div>
-          </div>
-        </div>
+        {# {{ checkbox_div("modules", "Configure modules", "modulesCB") }} #}
+        {{ checkbox_div("reservations", "Show reservation info", "reservationCB") }}
   
         <input type="submit" value="Start" class="btn btn-rounded btn-primary form-control" />
 
@@ -116,37 +124,53 @@
     </form>
   </div>
 
-  <div id="reservation-infos" class="col col-auto">
-    <h1 style="visibility: hidden">Server Options</h1>
-    <div id="reservation_info_empty_div" style="display: none; overflow-x: auto">
-      <table class="bg-white">
-        <tr>
-          <th colspan="2" class="custom-th" style="color: red"> Please choose a reservation </th>
-        </tr>
-      </table>
+  <div id="extra-infos" class="col col-auto offset-1 offset-xl-0 col-xl-6 row no-gutters justify-content-between">
+    <div id="module-options" class="col col-12 col-xl-auto" style="display: none;">
+      <h1>Module Configuration</h1>
+      <div id="module-options-div">
+        {# {% macro form_check(id, label, disabled="false")%}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="{{id}}" 
+            {% if disabled == "true" %} disabled {% endif %}>
+          <label class="form-check-label" for="{{id}}">{{ label }}</label>
+        </div>
+        {% endmacro %} #}
+      </div>
     </div>
-    <div id="reservation_info_div" style="display: none; overflow-x: auto">
-      <table class="bg-white">
-        <tr>
-          <th colspan="2" class="custom-th" id="reservation_table_name"> Reservation: Name </th>
-        </tr>
-        {{ tr("state", "State", "INACTIVE") }}
-        {{ tr("users", "Users") }}
-        {{ tr("accounts", "Accounts") }}
-        {{ tr("partition", "PartitionName") }}
-        {{ tr("start", "StartTime") }}
-        {{ tr("end", "EndTime") }}
-        {{ tr("duration", "Duration") }}
-        {{ tr("nodescnt", "NodeCnt") }}
-        {{ tr("nodes", "Nodes") }}
-        {{ tr("corecnt", "CoreCnt") }}
-        {{ tr("tres", "TRES") }}
-        {{ tr("features", "Features") }}
-        {{ tr("flags", "Flags") }}
-        {{ tr("licenses", "Licenses") }}
-        {{ tr("burstbuffer", "BurstBuffer") }}
-        {{ tr("watts", "Watts") }}
-      </table>
+
+    <div id="reservation-infos" class="col col-12 col-xl-auto">
+      <div id="reservation_info_empty_div" style="display: none; overflow-x: auto">
+        <h1>Reservation Infos</h1>
+        <table class="bg-white">
+          <tr>
+            <th colspan="2" class="custom-th" style="color: red"> Please choose a reservation </th>
+          </tr>
+        </table>
+      </div>
+      <div id="reservation_info_div" style="display: none; overflow-x: auto">
+        <h1>Reservation Infos</h1>
+        <table class="bg-white">
+          <tr>
+            <th colspan="2" class="custom-th" id="reservation_table_name"> Reservation: Name </th>
+          </tr>
+          {{ tr("state", "State", "INACTIVE") }}
+          {{ tr("users", "Users") }}
+          {{ tr("accounts", "Accounts") }}
+          {{ tr("partition", "PartitionName") }}
+          {{ tr("start", "StartTime") }}
+          {{ tr("end", "EndTime") }}
+          {{ tr("duration", "Duration") }}
+          {{ tr("nodescnt", "NodeCnt") }}
+          {{ tr("nodes", "Nodes") }}
+          {{ tr("corecnt", "CoreCnt") }}
+          {{ tr("tres", "TRES") }}
+          {{ tr("features", "Features") }}
+          {{ tr("flags", "Flags") }}
+          {{ tr("licenses", "Licenses") }}
+          {{ tr("burstbuffer", "BurstBuffer") }}
+          {{ tr("watts", "Watts") }}
+        </table>
+      </div>
     </div>
   </div>
 
@@ -182,10 +206,15 @@
   function _hide_divs() {
     var divs = ["resource_nodes", "resource_runtime", "resource_gpus", "reservations_checkbox",
       "reservation_info_empty", "reservation_info"];
-    divs.forEach(function (item, index) {
+    divs.forEach(function (item) {
       $("#" + item + "_div").hide();
     });
-    $('#reservations_checkbox_input').prop("checked", false);
+    $("#reservations_checkbox_input").prop("checked", false);
+    // $("#modules_checkbox_input").prop("checked", false);
+    // var module_checkboxes = ["nvdashboard"]
+    // module_checkboxes.forEach(function(item) {
+    //   $("#" + item).prop("checked", false);
+    // })
   }
 
   function _hide_and_reset(ids) {
@@ -193,8 +222,10 @@
       if (item == "option1") {
         $("#options1_input").val("undefined");
       } else $("#" + item + "_input").val("undefined");
+      $("#modules_input").val(""); // always reset modules input
       $("#" + item + "s_dropdown").hide();
     });
+
     _hide_divs();
   }
 
@@ -220,8 +251,9 @@
               $('#systems_dropdown_button').val("{{ first_element.get("foo") }}").trigger("change");
               $('#systems_dropdown').show();
           }
-      {% endfor -%} {# option1 -#}
+      {% endfor -%}
   }
+
   function onChangeSystems() {
     var option1 = $('#options1_input').val();
     var system = $('#systems_dropdown_button').val();
@@ -251,6 +283,45 @@
         {% endif -%}
       {% endfor -%}
     {% endfor -%}
+
+    if ( option1 == "JupyterLab-3.1" ) {
+      $("#module-options-div").html(""); // empty the div
+      var modules = {{ modules.get("UNICORE", {}) | safe }};
+      if (!$.isEmptyObject(modules[system])) {
+        $.each(modules[system], function(key, value) {
+          let input = '<div class="form-check">';
+          if (value["disabled"] == "true") input += '<input class="form-check-input" type="checkbox" value="" id="' + value["name"] + '" disabled>';
+          else input += '<input class="form-check-input" type="checkbox" value="" id="' + value["name"] + '">';
+          input += '<label class="form-check-label" for="' + value["name"] + '">' + key + '</label>';
+          input += "</div>";
+          $("#module-options-div").append(input);
+          if (value["checked"] == "true") $("#" + value["name"]).prop("checked", true);
+        })
+        
+        $("#module-options-div>.form-check").each( function() { 
+            $(this).change( function() {
+              let input = $(this).children().first();
+              let label = $(this).children().last().text();
+              let old_val = $('#modules_input').val();
+
+              if ( input.prop("checked") ) {
+                var new_val =  old_val + label + ";";
+              } else {
+                if ( old_val.includes(label) ) {
+                  var new_val = old_val.replace(label + ";", "");
+                }
+              }
+              $('#modules_input').val(new_val);
+            }) 
+          })
+          $("#module-options").show();
+      } else {
+        $("#module-options").hide();
+      }
+    } else {
+      $("#module-options").hide();
+      $("#module-options-div").html("");
+    }
   }
 
   function onChangeAccounts() {
@@ -471,6 +542,7 @@
     }
     $('#reservations_checkbox_div').show();
   }
+
   function reservationCB() {
     var reservation = $('#reservations_dropdown_button').val();
     if ( $('#reservations_checkbox_input').is(":checked") ) {
@@ -486,5 +558,13 @@
       $('#reservation_info_empty_div').hide();
     }
   }
+
+  // function modulesCB() {
+  //   if ( $('#modules_checkbox_input').is(":checked") ) {
+  //     $('#module-options').show();
+  //   } else {
+  //     $('#module-options').hide();
+  //   }
+  // }
 </script>
 {% endblock script %}

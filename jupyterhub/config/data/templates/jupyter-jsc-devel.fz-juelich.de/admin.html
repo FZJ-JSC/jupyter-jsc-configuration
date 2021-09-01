@@ -1,7 +1,7 @@
 {% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
 
 {% block stylesheet %}
-<link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/pages/admin.css", include_version=False) }}'
+<link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/pages/admin.css", include_version=False) }}?v=210812'
   type="text/css" />
 {% endblock %}
 
@@ -45,17 +45,24 @@
       </div>
       {% endmacro %}
 
+      {% macro current_status(log, system, enabled) %}
+      <div class="mb-2">
+        <button id="{{system}}-{{log|lower}}-enabled" disabled class="disabled btn btn-rounded btn-primary">Receive status <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></button>
+        <button id="{{system}}-{{log|lower}}-tests" class="disabled btn btn-rounded btn-primary hidden">Send test logs</button>
+      </div>
+      {% endmacro %}
+
       {% macro select(log, system, id="loglevel", text="LogLevel") %}
       <label for="{{system}}-{{log|lower}}-{{id}}">{{ text }}</label>
       <select class="form-control mb-2" id="{{system}}-{{log|lower}}-{{id}}">
-        <option value="NOTSET">NotSet</option>
-        <option value="TRACE">Trace</option>
-        <option value="DEBUG">Debug</option>
-        <option value="INFO">Info</option>
-        <option value="WARNING">Warning</option>
-        <option value="ERROR">Error</option>
-        <option value="CRITICAL">Critical</option>
-        <option value="DEACTIVATE">Deactivate</option>
+        <option value="0">NotSet</option>
+        <option value="5">Trace</option>
+        <option value="10">Debug</option>
+        <option value="20">Info</option>
+        <option value="30">Warning</option>
+        <option value="40">Error</option>
+        <option value="50">Critical</option>
+        <option value="60">Deactivate</option>
       </select>
       {% endmacro %}
 
@@ -74,19 +81,23 @@
 
       {% macro stream_logger(log, system) %}
       {{ request_buttons(log, system) }}
+      {{ current_status(log, system) }}
       {{ select(log, system) }}
       {{ formatter(log, system) }}
       {% endmacro %}
 
       {% macro file_logger(log, system) %}
       {{ request_buttons(log, system) }}
+      {{ current_status(log, system) }}
       {{ select(log, system) }}
       {{ formatter(log, system) }}
-      {{ input(log, system, "logfile", "Log File") }}
+      {{ input(log, system, "filename", "Log File") }}
+      {{ input(log, system, "backupcount", "BackupCount", type="number") }}
       {% endmacro %}
 
       {% macro mail_logger(log, system) %}
       {{ request_buttons(log, system) }}
+      {{ current_status(log, system) }}
       {{ select(log, system) }}
       {{ formatter(log, system) }}
       {{ input(log, system, "receiver", "Receiver (if multiple, ; separated)") }}
@@ -97,15 +108,17 @@
 
       {% macro syslog_logger(log, system) %}
       {{ request_buttons(log, system) }}
+      {{ current_status(log, system) }}
       {{ select(log, system) }}
       {{ formatter(log, system) }}
       {{ input(log, system, "host", "Host") }}
       {{ input(log, system, "port", "Port", type="number") }}
-      <label for="{{system}}-{{log|lower}}-protocol">{{ log }} Protocol</label>
-      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-protocol">
-        <option value="udp">UDP</option>
-        <option value="tcp">TCP</option>
+      <label for="{{system}}-{{log|lower}}-socktype">{{ log }} Protocol</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-socktype">
+        <option value="ext://socket.SOCK_DGRAM">UDP</option>
+        <option value="ext://socket.SOCK_STREAM">TCP</option>
       </select>
+      {# 
       <hr/>
       <div class="custom-control custom-switch mb-2">
         <input class="custom-control-input" type="checkbox"  id="{{system}}-{{log|lower}}-memory">
@@ -114,7 +127,7 @@
         </label>
       </div>
       {{ input(log, system, "memory-capacity", "Memory Capacity", type="number") }}
-      {{ select(log, system, "memory-flushlevel", "Memory FlushLevel") }}
+      {{ select(log, system, "memory-flushlevel", "Memory FlushLevel") }} #}
       {% endmacro %}
       
       {% macro loglevel_interface(title, system) %}
@@ -155,7 +168,7 @@
       {{ loglevel_interface("JupyterHub", "jhub") }}
       {{ loglevel_interface("Backend", "backend") }}
       {{ loglevel_interface("Tunnel", "tunneling") }}
-      {{ loglevel_interface("Userlabs Manager", "userlabs-mgr") }}
+      <!-- {{ loglevel_interface("Userlabs Manager", "userlabs-mgr") }} -->
       {{ loglevel_interface("JUSUF Cloud Userlabs Manager", "jusuf-cloud") }}
     </div>
 

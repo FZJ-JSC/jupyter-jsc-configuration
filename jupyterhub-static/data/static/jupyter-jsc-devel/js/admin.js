@@ -12,22 +12,15 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 
   // Logging functionalities
   // ["jhub", "backend", "tunneling", "userlabs-mgr", "jusuf-cloud"]
-  ["jhub", "backend", "tunneling", "userlabs-mgr", "jusuf-cloud"].forEach(function (system) {
-    if (system == "jhub") {
-      var logger_url = "api/logger";
-    } else {
-      var logger_url = "api/" + system + "/logger";
-    }
-
+  ["jhub", "backend", "tunneling", "jusuf-cloud"].forEach(function (system) {
+    var logger_url = "api/logger/" + system;
+    
     $(document).ready(function () {
       // Set inputs according to values from backend
       ["stream", "file", "mail", "syslog"].forEach(function (handler) {
         $.get(logger_url + "/" + handler, function (log_info) {
-          // console.log(handler, log_info);
+          console.log(system, handler, log_info);
           let enabled = $.parseJSON(log_info["enabled"]);
-          $("#" + system + "-" + handler + "-create").prop("disabled", enabled);
-          $("#" + system + "-" + handler + "-patch").prop("disabled", !enabled);
-          $("#" + system + "-" + handler + "-delete").prop("disabled", !enabled);
 
           toggle_log_infos(system, handler, enabled);
         
@@ -35,22 +28,31 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
           $("#" + system + "-" + handler + "-formatter").val(log_info["formatter"]);
           switch (handler) {
             case "file":
-              $("#" + system + "-" + handler + "-logfile").val(log_info["logfile"]);
+              $("#" + system + "-" + handler + "-filename").val(log_info["filename"] || "/mnt/logs/file.log");
+              $("#" + system + "-" + handler + "-backupcount").val(log_info["backupCount"] || 7 );
               break;
             case "mail":
-              $("#" + system + "-" + handler + "-receiver").val(log_info["receiver"]);
-              $("#" + system + "-" + handler + "-host").val(log_info["host"]);
-              $("#" + system + "-" + handler + "-from").val(log_info["from"]);
-              $("#" + system + "-" + handler + "-subject").val(log_info["subject"]);
+              let toaddrs = log_info["toaddrs"] || [];
+              $("#" + system + "-" + handler + "-receiver").val(toaddrs.join(";"));
+              $("#" + system + "-" + handler + "-host").val(log_info["mailhost"] || "mail.fz-juelich.de");
+              $("#" + system + "-" + handler + "-from").val(log_info["fromaddr"] || "logs@fz-juelich.de");
+              $("#" + system + "-" + handler + "-subject").val(log_info["subject"] || "Log Notification");
               break;
             case "syslog":
-              $("#" + system + "-" + handler + "-host").val(log_info["host"]);
-              $("#" + system + "-" + handler + "-port").val(log_info["port"]);
-              $("#" + system + "-" + handler + "-protocol").val(log_info["protocol"]);
-              let enabled = $.parseJSON(log_info["memory_enabled"]);
-              $("#" + system + "-" + handler + "-memory").prop("checked", enabled);
-              $("#" + system + "-" + handler + "-memory-capacity").val(log_info["memory_capacity"]);
-              $("#" + system + "-" + handler + "-memory-flushlevel").val(log_info["memory_flushlevel"]);
+              if ( "address" in log_info ) {
+                var host = log_info["address"][0] || "127.0.0.1";
+                var port = log_info["address"][1] || 514;
+              } else {
+                var host = "127.0.0.1";
+                var port = 514;
+              }              
+              $("#" + system + "-" + handler + "-host").val(host);
+              $("#" + system + "-" + handler + "-port").val(port);
+              $("#" + system + "-" + handler + "-socktype").val(log_info["socktype"]);
+              //let enabled = $.parseJSON(log_info["memory_enabled"]);
+              //$("#" + system + "-" + handler + "-memory").prop("checked", enabled);
+              //$("#" + system + "-" + handler + "-memory-capacity").val(log_info["memory_capacity"]);
+              //$("#" + system + "-" + handler + "-memory-flushlevel").val(log_info["memory_flushlevel"]);
               break;
           }
         })
@@ -61,70 +63,55 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
       var handler_url = logger_url + "/" + handler;
       // POST
       $("#" + system + "-" + handler + "-create").click(function () {
+        let data = collect_data(system, handler);
         $(this).prop("disabled", true);
-        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        let loglevel = $("#" + system + "-" + handler + "-loglevel").val();
-        let formatter = $("#" + system + "-" + handler + "-formatter").val();
-        let post_url = handler_url + "/" + loglevel + "/" + formatter;
-        switch (handler) {
-          case "file":
-            var filename = $("#" + system + "-" + handler + "-logfile").val();
-            filename = encodeURIComponent(encodeURIComponent(filename));
-            post_url += "/" + filename;
-            break;
-          case "mail":
-            var receiver = $("#" + system + "-" + handler + "-receiver").val();
-            var host = $("#" + system + "-" + handler + "-host").val();
-            var from = $("#" + system + "-" + handler + "-from").val();
-            var subject = $("#" + system + "-" + handler + "-subject").val();
-            post_url += "/" + receiver + "/" + host + "/" + from + "/" + subject;
-            break;
-          case "syslog":
-            var host = $("#" + system + "-" + handler + "-host").val();
-            var port = $("#" + system + "-" + handler + "-port").val();
-            var protocol = $("#" + system + "-" + handler + "-protocol").val();
-            var memory = $("#" + system + "-" + handler + "-memory").prop("checked");
-            var memory_capacity = $("#" + system + "-" + handler + "-memory-capacity").val();
-            var memory_flushlevel = $("#" + system + "-" + handler + "-memory-flushlevel").val();
-            post_url += "/" + host + "/" + port + "/" + protocol + "/" + memory + "/" + memory_capacity + "/" + memory_flushlevel;
-            break;
-        }
-        $.post(post_url).always(function (response) {
-          if (response.status == 200) {
-            $("#" + system + "-" + handler + "-alert").text("Successfully created a new " + handler + " handler");
-            reset_alert(system, handler);
-            $("#" + system + "-" + handler + "-alert").addClass("alert-success");
-            $("#" + system + "-" + handler + "-create").prop("disabled", true);
-            $("#" + system + "-" + handler + "-patch").prop("disabled", false);
-            $("#" + system + "-" + handler + "-delete").prop("disabled", false);
-            toggle_log_infos(system, handler, true);
-          } else {
-            set_error_alert(system, handler, response);
-            $("#" + system + "-" + handler + "-create").prop("disabled", false);
-          }
-          $("#" + system + "-" + handler + "-create").html("Create");
-        })
-      });
-      // PATCH
-      $("#" + system + "-" + handler + "-patch").click(function () {
-        $(this).prop("disabled", true);
-        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        let loglevel = $("#" + system + "-" + handler + "-loglevel").val();
-        let patch_url = handler_url + "/" + loglevel;
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
         $.ajax({
-          url: patch_url,
-          type: 'PATCH',
+          url: handler_url,
+          type: 'POST',
+          contentType: "application/json",
+          cache: false,
+          dataType: "json",
+          data: JSON.stringify(data)
         })
           .always(function (response) {
             if (response.status == 200) {
-              $("#" + system + "-" + handler + "-alert").text("Successfully updated the loglevel to " + loglevel);
+              $("#" + system + "-" + handler + "-alert").text("Successfully created " + handler);
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+              toggle_log_infos(system, handler, true);
+            } else {
+              set_error_alert(system, handler, response);
+              toggle_log_infos(system, handler, false);
+            }
+            $("#" + system + "-" + handler + "-create").html("Create");
+          });
+      });
+      // PATCH
+      $("#" + system + "-" + handler + "-patch").click(function () {
+        let data = collect_data(system, handler);
+        $(this).prop<("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+          url: handler_url,
+          type: 'PATCH',
+          contentType: "application/json",
+          cache: false,
+          dataType: "json",
+          data: JSON.stringify(data)
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully updated " + handler);
               reset_alert(system, handler);
               $("#" + system + "-" + handler + "-alert").addClass("alert-success");
             } else {
               set_error_alert(system, handler, response);
             }
-            $("#" + system + "-" + handler + "-patch").prop("disabled", false);
+            $(this).prop("disabled", false);
             $("#" + system + "-" + handler + "-patch").html("Patch");
+            toggle_log_infos(system, handler, true);
           });
       });
       // DELETE
@@ -137,30 +124,128 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
         })
           .always(function (response) {
             if (response.status == 200) {
-              $("#" + system + "-" + handler + "-alert").text("Successfully deleted " + handler + " handler");
+              $("#" + system + "-" + handler + "-alert").text("Successfully deleted " + handler);
               reset_alert(system, handler);
               $("#" + system + "-" + handler + "-alert").addClass("alert-success");
-              $("#" + system + "-" + handler + "-create").prop("disabled", false);
-              $("#" + system + "-" + handler + "-patch").prop("disabled", true);
-              $("#" + system + "-" + handler + "-delete").prop("disabled", true);
               toggle_log_infos(system, handler, false);
             } else {
               set_error_alert(system, handler, response);
-              $("#" + system + "-" + handler + "-delete").prop("disabled", false);
+              toggle_log_infos(system, handler, false);
             }
             $("#" + system + "-" + handler + "-delete").html("Delete");
           });
       });
+      // LogTests
+      $("#" + system + "-" + handler + "-tests").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+          url: logger_url + "/test",
+          type: 'GET',
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Test logs sent");
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+            } else {
+              set_error_alert(system, handler, response);
+            }
+            $("#" + system + "-" + handler + "-tests").prop("disabled", false);
+            $("#" + system + "-" + handler + "-tests").removeClass("disabled");
+            $("#" + system + "-" + handler + "-tests").html("Send test logs");
+          });
+      });
+
+      // Update enabled "button" if anything's changed
+      ["loglevel", "formatter", "filename", "backupcount", "receiver", "host", "from", "subject", "port", "socktype"].forEach(function (inputelement) {
+        // only change if handler is enabled and not already changed
+        $("#" + system + "-" + handler + "-" + inputelement).change(function () {
+          if ( $("#" + system + "-" + handler + "-enabled").hasClass("btn-success") ) {
+            $("#" + system + "-" + handler + "-enabled").text("Values changed");
+            $("#" + system + "-" + handler + "-enabled").removeClass("btn-success");
+            $("#" + system + "-" + handler + "-enabled").addClass("btn-primary");
+            $("#" + system + "-" + handler + "-tests").addClass("disabled");
+            $("#" + system + "-" + handler + "-tests").prop("disabled", true);
+          }
+        });
+      });
     })
 
-    function toggle_log_infos(system, handler, enabled) {
-      let children = $("#" + system + "-" + handler).children();
-      if (enabled) {
-        children.prop("disabled", true);
-        $("#" + system + "-" + handler  + "-loglevel").prop("disabled", false);
-      } else {
-        children.prop("disabled", false);
+    function collect_data(system, handler) {
+      let data = {};
+      switch(handler) {
+        case "stream":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+          };
+          break;
+        case "file":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "filename": $("#" + system + "-" + handler + "-filename").val(),
+            "backupCount": parseInt($("#" + system + "-" + handler + "-backupcount").val()),
+          };
+          break;
+        case "mail":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "toaddrs": $("#" + system + "-" + handler + "-receiver").val().split(";"),
+            "mailhost": $("#" + system + "-" + handler + "-host").val(),
+            "fromaddr": $("#" + system + "-" + handler + "-from").val(),
+            "subject": $("#" + system + "-" + handler + "-subject").val(),
+          };
+          break;
+        case "syslog":
+          let host = $("#" + system + "-" + handler + "-host").val();
+          let port = parseInt($("#" + system + "-" + handler + "-port").val());
+          let address = [host, port];
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "address": address,
+            "socktype": $("#" + system + "-" + handler + "-socktype").val(),
+          };
+          break;
+        default:
+          data = {};
       }
+      return data
+    }
+
+    function toggle_log_infos(system, handler, enabled) {
+      if (enabled) {
+        $("#" + system + "-" + handler + "-create").addClass("disabled");
+        $("#" + system + "-" + handler + "-create").prop("disabled", true);
+        $("#" + system + "-" + handler + "-patch").removeClass("disabled");
+        $("#" + system + "-" + handler + "-patch").prop("disabled", false);
+        $("#" + system + "-" + handler + "-delete").removeClass("disabled");
+        $("#" + system + "-" + handler + "-delete").prop("disabled", false);
+
+        $("#" + system + "-" + handler + "-enabled").removeClass("btn-danger");
+        $("#" + system + "-" + handler + "-enabled").addClass("btn-success");
+        $("#" + system + "-" + handler + "-enabled").text("Enabled");
+      } else {
+        $("#" + system + "-" + handler + "-create").removeClass("disabled");
+        $("#" + system + "-" + handler + "-create").prop("disabled", false);
+        $("#" + system + "-" + handler + "-patch").addClass("disabled");
+        $("#" + system + "-" + handler + "-patch").prop("disabled", true);
+        $("#" + system + "-" + handler + "-delete").addClass("disabled");
+        $("#" + system + "-" + handler + "-delete").prop("disabled", true);
+
+        $("#" + system + "-" + handler + "-enabled").addClass("btn-danger");
+        $("#" + system + "-" + handler + "-enabled").removeClass("btn-success");
+        $("#" + system + "-" + handler + "-enabled").text("Disabled");
+      }
+
+      $("#" + system + "-" + handler + "-tests").removeClass("disabled");
+      $("#" + system + "-" + handler + "-tests").prop("disabled", false);
+      // It's primary while we're receiving it's status
+      $("#" + system + "-" + handler + "-enabled").removeClass("btn-primary");
+      return
     }
 
     function set_error_alert(system, handler, response) {

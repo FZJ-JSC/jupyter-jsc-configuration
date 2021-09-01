@@ -1,18 +1,18 @@
-#header {
-  min-height: 113px;
-}
-
 .jpy-logo {
   height: 51px;
 }
 
 .navbar-top {
   background: white;
-  min-height: 113px;
   padding-bottom: 0px;
 }
 
-.navbar-light .navbar-nav .nav-link {
+.navbar-top > .container {
+  min-height: 113px;
+}
+
+.navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-nav .nav-link:focus {
     color: black;
 }
 

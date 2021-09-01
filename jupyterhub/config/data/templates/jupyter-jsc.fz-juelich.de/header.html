@@ -1,7 +1,7 @@
 {% macro submenu(title, caption_href) %}
 {% set id = title.replace('-', '') %}
 <li class="dropdown-submenu">
-  <a id="navbarNavDropdown{{id}}" href="" aria-haspopup="true" aria-expanded="false" class="dropdown-item">
+  <a id="navbarNavDropdown{{id}}" aria-haspopup="true" aria-expanded="false" class="dropdown-item">
     {{ title }}
   </a>
   <ul aria-labelledby="navbarNavDropdown{{id}}" class="dropdown-menu dropdown-menu-2">
