@@ -36,6 +36,40 @@ Host tunnel_hdfcloud
     ControlMaster auto
     ControlPersist 0
 
+# JUSUF-Cloud Kubernetes
+Host available_jusufcloud
+    User userlabs
+    HostName 134.94.88.34
+    Port 22
+    IdentityFile /home/tunnel/keys/available
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    ControlPath /home/tunnel/ssh_socket/available_jusufcloud
+    ControlMaster auto
+    ControlPersist 0
+
+Host remote_jusufcloud
+    User userlabs
+    HostName 134.94.88.34
+    Port 22
+    IdentityFile /home/tunnel/keys/remote
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    ControlPath /home/tunnel/ssh_socket/remote_jusufcloud
+    ControlMaster auto
+    ControlPersist 0
+
+Host tunnel_jusufcloud
+    User userlabs
+    HostName 134.94.88.34
+    Port 22
+    IdentityFile /home/tunnel/keys/tunnel
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    ControlPath /home/tunnel/ssh_socket/tunnel_jusufcloud
+    ControlMaster auto
+    ControlPersist 0
+
 # HDFML
 HOST reservation_hdfml
     User ljupyter

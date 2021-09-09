@@ -10,6 +10,262 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 ) {
   "use strict";
 
+  // Logging functionalities
+  // ["jhub", "backend", "tunneling", "userlabs-mgr", "jusuf-cloud"]
+  ["jhub", "backend", "tunneling", "hdf-cloud", "jusuf-cloud"].forEach(function (system) {
+    var logger_url = "api/logger/" + system;
+    
+    $(document).ready(function () {
+      // Set inputs according to values from backend
+      ["stream", "file", "mail", "syslog"].forEach(function (handler) {
+        $.get(logger_url + "/" + handler, function (log_info) {
+          // console.log(system, handler, log_info);
+          let enabled = $.parseJSON(log_info["enabled"]);
+
+          toggle_log_infos(system, handler, enabled);
+        
+          $("#" + system + "-" + handler + "-loglevel").val(log_info["level"]);
+          $("#" + system + "-" + handler + "-formatter").val(log_info["formatter"]);
+          switch (handler) {
+            case "file":
+              $("#" + system + "-" + handler + "-filename").val(log_info["filename"] || "/mnt/logs/file.log");
+              $("#" + system + "-" + handler + "-backupcount").val(log_info["backupCount"] || 7 );
+              break;
+            case "mail":
+              let toaddrs = log_info["toaddrs"] || [];
+              $("#" + system + "-" + handler + "-receiver").val(toaddrs.join(";"));
+              $("#" + system + "-" + handler + "-host").val(log_info["mailhost"] || "mail.fz-juelich.de");
+              $("#" + system + "-" + handler + "-from").val(log_info["fromaddr"] || "logs@fz-juelich.de");
+              $("#" + system + "-" + handler + "-subject").val(log_info["subject"] || "Log Notification");
+              break;
+            case "syslog":
+              if ( "address" in log_info ) {
+                var host = log_info["address"][0] || "127.0.0.1";
+                var port = log_info["address"][1] || 514;
+              } else {
+                var host = "127.0.0.1";
+                var port = 514;
+              }              
+              $("#" + system + "-" + handler + "-host").val(host);
+              $("#" + system + "-" + handler + "-port").val(port);
+              $("#" + system + "-" + handler + "-socktype").val(log_info["socktype"]);
+              //let enabled = $.parseJSON(log_info["memory_enabled"]);
+              //$("#" + system + "-" + handler + "-memory").prop("checked", enabled);
+              //$("#" + system + "-" + handler + "-memory-capacity").val(log_info["memory_capacity"]);
+              //$("#" + system + "-" + handler + "-memory-flushlevel").val(log_info["memory_flushlevel"]);
+              break;
+          }
+        })
+      })
+    });
+
+    ["stream", "file", "mail", "syslog"].forEach(function (handler) {
+      var handler_url = logger_url + "/" + handler;
+      // POST
+      $("#" + system + "-" + handler + "-create").click(function () {
+        let data = collect_data(system, handler);
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        $.ajax({
+          url: handler_url,
+          type: 'POST',
+          contentType: "application/json",
+          cache: false,
+          dataType: "json",
+          data: JSON.stringify(data)
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully created " + handler);
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+              toggle_log_infos(system, handler, true);
+            } else {
+              set_error_alert(system, handler, response);
+              toggle_log_infos(system, handler, false);
+            }
+            $("#" + system + "-" + handler + "-create").html("Create");
+          });
+      });
+      // PATCH
+      $("#" + system + "-" + handler + "-patch").click(function () {
+        let data = collect_data(system, handler);
+        $(this).prop<("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+          url: handler_url,
+          type: 'PATCH',
+          contentType: "application/json",
+          cache: false,
+          dataType: "json",
+          data: JSON.stringify(data)
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully updated " + handler);
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+            } else {
+              set_error_alert(system, handler, response);
+            }
+            $(this).prop("disabled", false);
+            $("#" + system + "-" + handler + "-patch").html("Patch");
+            toggle_log_infos(system, handler, true);
+          });
+      });
+      // DELETE
+      $("#" + system + "-" + handler + "-delete").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+        $.ajax({
+          url: handler_url,
+          type: 'DELETE',
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully deleted " + handler);
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+              toggle_log_infos(system, handler, false);
+            } else {
+              set_error_alert(system, handler, response);
+              toggle_log_infos(system, handler, false);
+            }
+            $("#" + system + "-" + handler + "-delete").html("Delete");
+          });
+      });
+      // LogTests
+      $("#" + system + "-" + handler + "-tests").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $.ajax({
+          url: logger_url + "/test",
+          type: 'GET',
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Test logs sent");
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+            } else {
+              set_error_alert(system, handler, response);
+            }
+            $("#" + system + "-" + handler + "-tests").prop("disabled", false);
+            $("#" + system + "-" + handler + "-tests").removeClass("disabled");
+            $("#" + system + "-" + handler + "-tests").html("Send test logs");
+          });
+      });
+
+      // Update enabled "button" if anything's changed
+      ["loglevel", "formatter", "filename", "backupcount", "receiver", "host", "from", "subject", "port", "socktype"].forEach(function (inputelement) {
+        // only change if handler is enabled and not already changed
+        $("#" + system + "-" + handler + "-" + inputelement).change(function () {
+          if ( $("#" + system + "-" + handler + "-enabled").hasClass("btn-success") ) {
+            $("#" + system + "-" + handler + "-enabled").text("Values changed");
+            $("#" + system + "-" + handler + "-enabled").removeClass("btn-success");
+            $("#" + system + "-" + handler + "-enabled").addClass("btn-primary");
+            $("#" + system + "-" + handler + "-tests").addClass("disabled");
+            $("#" + system + "-" + handler + "-tests").prop("disabled", true);
+          }
+        });
+      });
+    })
+
+    function collect_data(system, handler) {
+      let data = {};
+      switch(handler) {
+        case "stream":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+          };
+          break;
+        case "file":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "filename": $("#" + system + "-" + handler + "-filename").val(),
+            "backupCount": parseInt($("#" + system + "-" + handler + "-backupcount").val()),
+          };
+          break;
+        case "mail":
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "toaddrs": $("#" + system + "-" + handler + "-receiver").val().split(";"),
+            "mailhost": $("#" + system + "-" + handler + "-host").val(),
+            "fromaddr": $("#" + system + "-" + handler + "-from").val(),
+            "subject": $("#" + system + "-" + handler + "-subject").val(),
+          };
+          break;
+        case "syslog":
+          let host = $("#" + system + "-" + handler + "-host").val();
+          let port = parseInt($("#" + system + "-" + handler + "-port").val());
+          let address = [host, port];
+          data = {
+            "level": parseInt($("#" + system + "-" + handler + "-loglevel").val()),
+            "formatter": $("#" + system + "-" + handler + "-formatter").val(),
+            "address": address,
+            "socktype": $("#" + system + "-" + handler + "-socktype").val(),
+          };
+          break;
+        default:
+          data = {};
+      }
+      return data
+    }
+
+    function toggle_log_infos(system, handler, enabled) {
+      if (enabled) {
+        $("#" + system + "-" + handler + "-create").addClass("disabled");
+        $("#" + system + "-" + handler + "-create").prop("disabled", true);
+        $("#" + system + "-" + handler + "-patch").removeClass("disabled");
+        $("#" + system + "-" + handler + "-patch").prop("disabled", false);
+        $("#" + system + "-" + handler + "-delete").removeClass("disabled");
+        $("#" + system + "-" + handler + "-delete").prop("disabled", false);
+
+        $("#" + system + "-" + handler + "-enabled").removeClass("btn-danger");
+        $("#" + system + "-" + handler + "-enabled").addClass("btn-success");
+        $("#" + system + "-" + handler + "-enabled").text("Enabled");
+      } else {
+        $("#" + system + "-" + handler + "-create").removeClass("disabled");
+        $("#" + system + "-" + handler + "-create").prop("disabled", false);
+        $("#" + system + "-" + handler + "-patch").addClass("disabled");
+        $("#" + system + "-" + handler + "-patch").prop("disabled", true);
+        $("#" + system + "-" + handler + "-delete").addClass("disabled");
+        $("#" + system + "-" + handler + "-delete").prop("disabled", true);
+
+        $("#" + system + "-" + handler + "-enabled").addClass("btn-danger");
+        $("#" + system + "-" + handler + "-enabled").removeClass("btn-success");
+        $("#" + system + "-" + handler + "-enabled").text("Disabled");
+      }
+
+      $("#" + system + "-" + handler + "-tests").removeClass("disabled");
+      $("#" + system + "-" + handler + "-tests").prop("disabled", false);
+      // It's primary while we're receiving it's status
+      $("#" + system + "-" + handler + "-enabled").removeClass("btn-primary");
+      return
+    }
+
+    function set_error_alert(system, handler, response) {
+      if (response.status == 599) {
+        $("#" + system + "-" + handler + "-alert").text("Send failure: Broken pipe. Please try again");
+      } else {
+        $("#" + system + "-" + handler + "-alert").text("Error: " + response.status + " " + response.statusText);
+      }
+      reset_alert(system, handler);
+      $("#" + system + "-" + handler + "-alert").addClass("alert-danger");
+    }
+
+    function reset_alert(system, handler) {
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-secondary");
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-success");
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-danger");
+    }
+  })
+
+  // User Lab table code
   var base_url = window.jhdata.base_url;
   var prefix = window.jhdata.prefix;
   var admin_access = window.jhdata.admin_access;
@@ -19,14 +275,12 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 
   function getRow(element) {
     var original = element;
-    while (!element.hasClass("server-row")) {
-      element = element.parent();
-      if (element[0].tagName === "BODY") {
-        console.error("Couldn't find row for", original);
-        throw new Error("No server-row found");
-      }
+    var parents = element.parents("tr");
+    if (parents.length != 1) {
+      console.error("Couldn't find row for", original);
+      throw new Error("No server row found");
     }
-    return element;
+    return parents;
   }
 
   function resort(col, order) {
@@ -87,9 +341,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     }
     stop({
       success: function () {
-        el.text("stop " + serverName).addClass("hidden");
-        row.find(".access-server").addClass("hidden");
-        row.find(".start-server").removeClass("hidden");
+        el.text("stop " + serverName).addClass("d-none");
+        row.find(".access-server").addClass("d-none");
+        row.find(".start-server-admin").removeClass("d-none");
       },
     });
   });
@@ -121,7 +375,7 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
   if (admin_access && options_form) {
     // if admin access and options form are enabled
     // link to spawn page instead of making API requests
-    $(".start-server").map(function (i, el) {
+    $(".start-server-admin").map(function (i, el) {
       el = $(el);
       var row = getRow(el);
       var user = row.data("user");
@@ -133,9 +387,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     });
     // cannot start all servers in this case
     // since it would mean opening a bunch of tabs
-    $("#start-all-servers").addClass("hidden");
+    $("#start-all-servers").addClass("d-none");
   } else {
-    $(".start-server").click(function () {
+    $(".start-server-admin-admin").click(function () {
       var el = $(this);
       var row = getRow(el);
       var user = row.data("user");
@@ -151,9 +405,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
       }
       start({
         success: function () {
-          el.text("start " + serverName).addClass("hidden");
-          row.find(".stop-server").removeClass("hidden");
-          row.find(".access-server").removeClass("hidden");
+          el.text("start " + serverName).addClass("d-none");
+          row.find(".stop-server").removeClass("d-none");
+          row.find(".access-server").removeClass("d-none");
         },
       });
     });
@@ -258,7 +512,7 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     .find(".stop-all-button")
     .click(function () {
       // stop all clicks all the active stop buttons
-      $(".stop-server").not(".hidden").click();
+      $(".stop-server").not(".d-none").click();
     });
 
   function start(el) {
@@ -270,8 +524,8 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
   $("#start-all-servers-dialog")
     .find(".start-all-button")
     .click(function () {
-      $(".start-server")
-        .not(".hidden")
+      $(".start-server-admin")
+        .not(".d-none")
         .each(function (i) {
           setTimeout(start(this), i * 500);
         });

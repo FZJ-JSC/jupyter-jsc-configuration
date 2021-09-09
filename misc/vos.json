@@ -57,7 +57,7 @@
         "JupyterLab": {
             "JupyterLab": {
                 "replace_allowed_lists": {
-                    "systems": ["HDF-Cloud"],
+                    "systems": ["JUWELS", "HDF-Cloud", "JUSUF-Cloud"],
                     "partitions_no": ["booster"]
 	        }
             }
@@ -110,6 +110,18 @@
     "Services": {
         "JupyterLab": {
             "JupyterLab-3.0": {}
+	}
+    }
+  },
+  "AllSpark": {
+    "authenticators": [],
+    "usernames": ["a.grosch@fz-juelich.de", "t.kreuzer@fz-juelich.de", "m.memon@fz-juelich.de"],
+    "admin": false,
+    "weight": 11,
+    "exclusive": false,
+    "Services": {
+        "JupyterLab": {
+            "AllSparkNotebook-3.1.2": {}
 	}
     }
   }

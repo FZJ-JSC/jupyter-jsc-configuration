@@ -1,0 +1,308 @@
+#header {
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
+  max-width: 94% !important;
+}
+
+.footer-bottom {
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840)) !important;
+  min-width: calc(1024px * 0.94) !important;
+  max-width: 94% !important;
+  margin: 0 auto;
+}
+
+#body {
+  height: calc(94vw * calc(840 / 1810));
+}
+
+.background-wrapper {
+  height: calc(94vw * calc(840 / 1810));
+  min-height: 445px;
+  max-height: calc(100% - 113px - 153px);
+
+  width: calc((100vh - 113px - 153px) * calc(1810 / 840));
+  min-width: 1024px;
+  max-width: 94%;
+
+  margin: 0 auto;
+  background: url("/hub/static/images/pages/spawn/background.jpg") top center
+    no-repeat;
+  background-size: contain;
+  position: absolute;
+
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.form-control {
+  /*max-width: 269px !important;*/
+}
+
+.bottom-button:hover {
+  background-color: #225f8d !important;
+  border: solid 1px #225f8d !important;
+  border-radius: 6px !important;
+}
+
+.bottom-button {
+  background-color: #004176 !important;
+  border-color: #004176 !important;
+  border: solid 1px #004176 !important;
+  border-radius: 6px !important;
+}
+
+.col-sm-8 {
+  width: 390px !important;
+}
+
+.col-sm-offset-2 {
+  margin-left: 0 !important;
+}
+
+.pull-right {
+  text-align: right !important;
+}
+
+.content > .row {
+  float: left;
+  margin-left: 0px !important;
+  color: black;
+  /*margin-top: 20px;*/
+}
+
+.content {
+  width: 70%;
+  max-width: 464px;
+  height: 100%;
+
+  text-align: justify;
+  color: black;
+  font-family: "Weissenhof_Grotesk", Arial, Helvetica, sans-serif;
+  padding: 4vh 0vh;
+  margin: auto;
+  margin-left: 15%;
+}
+
+.content > .col-sm-offset-2 {
+  padding-left: 0px !important;
+}
+
+.content h2 {
+  color: #004176;
+}
+
+.tr-header {
+  font-weight: 500 !important;
+}
+
+table {
+  background-color: white !important;
+  margin-bottom: 5px !important;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 3px;
+  vertical-align: middle !important;
+}
+
+.btn {
+  padding: 3px 8px;
+}
+
+#labbutton {
+  padding: 4px 12px;
+}
+
+.home-server-row {
+  border-top: none !important;
+}
+
+.table-div {
+  border-top: 1px solid black;
+  overflow: auto;
+}
+
+.material-switch > input[type="checkbox"] {
+  display: none;
+}
+.material-switch > label {
+  cursor: pointer;
+  height: 0px;
+  position: relative;
+  width: 40px;
+}
+.material-switch > label::before {
+  background: rgb(0, 0, 0);
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  content: "";
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -40px;
+  position: absolute;
+  opacity: 0.3;
+  transition: all 0.4s ease-in-out;
+  width: 40px;
+}
+.material-switch > label::after {
+  background: rgb(255, 255, 255);
+  border-radius: 16px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  content: "";
+  height: 24px;
+  left: -4px;
+  margin-top: -8px;
+  position: absolute;
+  top: -4px;
+  transition: all 0.3s ease-in-out;
+  width: 24px;
+}
+.material-switch > input[type="checkbox"]:checked + label::before {
+  background: inherit;
+  opacity: 0.5;
+}
+.material-switch > input[type="checkbox"]:checked + label::after {
+  background: inherit;
+  left: 20px;
+}
+.tooltip-inner {
+  max-width: 320px; /* If max-width does not work, try using width instead */
+  width: 320px;
+  text-align: left;
+}
+
+.custom-div > div > font,
+.custom-div > div > p > font {
+  font-weight: normal;
+  font-size: 14px !important;
+}
+
+.custom-div {
+  float: left;
+  text-align: left;
+  margin-right: 6px;
+  min-width: 0%;
+}
+.dropdown_custom {
+  margin-bottom: 2px;
+  min-width: 100%;
+}
+.button_custom {
+  border-style: solid;
+  padding-top: 3px;
+  margin-top: -4px;
+  text-align: right;
+  background: white;
+  border-color: black;
+  color: black;
+  min-width: 166px;
+}
+
+.label_custom {
+  margin-right: 6px;
+  height: 34px;
+  padding: 6px;
+  background: white;
+  color: black;
+  border: solid 1px;
+  border-radius: 6px;
+  border-style: solid;
+  border-width: thin;
+  font-weight: normal;
+  text-align: right;
+  min-width: 110px;
+}
+
+.resource_label_custom {
+  margin-right: 6px;
+  height: 34px;
+  padding: 6px;
+  background: white;
+  color: black;
+  font-weight: normal;
+  text-align: right;
+  min-width: 192px;
+  border: solid 1px black;
+  border-radius: 6px;
+}
+
+.input_custom {
+  float: unset;
+  max-width: 6em;
+  min-width: 6em;
+  text-align: right;
+  color: black;
+  border: solid 1px black !important;
+  border-radius: 6px;
+}
+.checkbox_li_span_custom {
+  color: rgb(243, 117, 36);
+}
+.checkbox_div_custom {
+  display: display;
+  overflow: visible;
+  min-height: 53px;
+  min-width: 464px;
+  color: black;
+  border-style: none;
+}
+
+.checkbox_li_custom {
+  float: left;
+  width: 269px;
+  text-align: right;
+  background: #4696d2;
+  background: white;
+  color: black;
+  border: solid 1px black;
+  border-radius: 6px;
+}
+
+.qm_custom {
+  margin-right: 10px;
+}
+.reservation_info_custom {
+  width: 100%;
+  float: right;
+}
+.table_custom {
+  width: 100%;
+  float: left;
+  max-width: 369px;
+  margin-bottom: 8px;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-style: solid;
+  border-width: thin;
+  color: black !important;
+}
+.table_tr_custom {
+  min-width: 100%;
+}
+.table_th_custom {
+  text-align: left;
+  padding-left: 5em;
+  min-width: 464px;
+}
+.table_tdl_custom {
+  text-align: left;
+  padding-left: 6px;
+  padding-right: 1em;
+}
+.table_tdr_custom {
+  text-align: left;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-left: 2px solid black;
+}

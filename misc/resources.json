@@ -348,7 +348,7 @@
         }
     },
     "JUWELS": {
-        "LoginBooster": {},
+        "LoginNodeBooster": {},
         "LoginNode": {},
         "LoginNodeVis": {},
         "batch": {

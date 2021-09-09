@@ -38,7 +38,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
           Ok: {
             text: "Ok",
             btnClass: "btn-default",
-            action: function () {},
+            action: function () { },
           },
         },
       });
@@ -47,7 +47,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
         title: "2-Factor Authentication - Request",
         backgroundDismiss: "2-Factor Authentication",
         content:
-          "We´ll send you a confirmation email.<br>Please follow the activation link in that email to proceed.",
+          "We'll send you a confirmation email.<br>Please follow the activation link in that email to proceed.",
         buttons: {
           Ok: {
             text: "REQUEST EMAIL",
@@ -63,7 +63,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
           Cancel: {
             text: "Cancel",
             btnClass: "btn-default",
-            action: function () {},
+            action: function () { },
           },
         },
       });
@@ -82,7 +82,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
           Ok: {
             text: "Ok",
             btnClass: "btn-default",
-            action: function () {},
+            action: function () { },
           },
         },
       });
@@ -107,7 +107,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
           Cancel: {
             text: "Cancel",
             btnClass: "btn-default",
-            action: function () {},
+            action: function () { },
           },
         },
       });

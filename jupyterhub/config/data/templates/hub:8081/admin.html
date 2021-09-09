@@ -1,0 +1,363 @@
+{% extends "jupyter-jsc.fz-juelich.de/page.html" %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href='{{ static_url("css/pages/admin.css", include_version=False) }}?v={{ random_int(10) }}'
+  type="text/css" />
+{% endblock %}
+
+{% macro th(label, key='', colspan="") %}
+<th data-sort="{{key}}" colspan="{{colspan}}">
+  {{ label }}
+  {% if key %}
+  <a href="#">
+    <i class="fa {% if sort.get(key) == 'asc' -%} fa-sort-asc
+    {%- elif sort.get(key) == 'desc' -%} fa-sort-desc
+    {%- else -%} fa-sort
+    {%- endif %} sort-icon">
+    </i>
+  </a>
+  {% endif %}
+</th>
+{% endmacro %}
+
+{% block main -%}
+<div id="admin-page" class="px-4">
+
+  <ul class="nav nav-pills" id="admin-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="logging-tab" data-toggle="tab" href="#logging" role="tab"
+        aria-controls="home" aria-selected="true">Logging</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="profile"
+        aria-selected="false">User Labs</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="table-content">
+    <div id="logging" class="tab-pane fade show active py-4" role="tabpanel" aria-labelledby="logging-tab"> 
+
+      {% macro request_buttons(log, system) %}
+      <div class="mb-2">
+        <button id="{{system}}-{{log|lower}}-create" type="button" class="btn btn-rounded btn-success">Create</button>
+        <button id="{{system}}-{{log|lower}}-patch" type="button" class="btn btn-rounded btn-primary">Patch</button>
+        <button id="{{system}}-{{log|lower}}-delete" type="button" class="btn btn-rounded btn-danger">Delete</button>
+        <div id="{{system}}-{{log|lower}}-alert" class="alert alert-secondary mt-2" role="alert">Output area</div>
+      </div>
+      {% endmacro %}
+
+      {% macro select(log, system, id="loglevel", text="LogLevel") %}
+      <label for="{{system}}-{{log|lower}}-{{id}}">{{ text }}</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-{{id}}">
+        <option value="NOTSET">NotSet</option>
+        <option value="TRACE">Trace</option>
+        <option value="DEBUG">Debug</option>
+        <option value="INFO">Info</option>
+        <option value="WARNING">Warning</option>
+        <option value="ERROR">Error</option>
+        <option value="CRITICAL">Critical</option>
+        <option value="DEACTIVATE">Deactivate</option>
+      </select>
+      {% endmacro %}
+
+      {% macro formatter(log, system) %}
+      <label for="{{system}}-{{log|lower}}-formatter">Formatter</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-formatter">
+        <option value="json">JSON</option>
+        <option value="simple">Simple</option>
+      </select>
+      {% endmacro %}
+
+      {% macro input(log, system, id, text, type="text") %}
+      <label for="{{system}}-{{log|lower}}-{{id}}">{{ text }}</label>
+      <input type={{type}} class="form-control mb-2" id="{{system}}-{{log|lower}}-{{id}}">
+      {% endmacro %}
+
+      {% macro stream_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {% endmacro %}
+
+      {% macro file_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "logfile", "Log File") }}
+      {% endmacro %}
+
+      {% macro mail_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "receiver", "Receiver (if multiple, ; separated)") }}
+      {{ input(log, system, "host", "Host") }}
+      {{ input(log, system, "from", "From") }}
+      {{ input(log, system, "subject", "Subject") }}
+      {% endmacro %}
+
+      {% macro syslog_logger(log, system) %}
+      {{ request_buttons(log, system) }}
+      {{ select(log, system) }}
+      {{ formatter(log, system) }}
+      {{ input(log, system, "host", "Host") }}
+      {{ input(log, system, "port", "Port", type="number") }}
+      <label for="{{system}}-{{log|lower}}-protocol">{{ log }} Protocol</label>
+      <select class="form-control mb-2" id="{{system}}-{{log|lower}}-protocol">
+        <option value="udp">UDP</option>
+        <option value="tcp">TCP</option>
+      </select>
+      <hr/>
+      <div class="custom-control custom-switch mb-2">
+        <input class="custom-control-input" type="checkbox"  id="{{system}}-{{log|lower}}-memory">
+        <label class="custom-control-label" for="{{system}}-{{log|lower}}-memory">
+          Enable SysLog memory 
+        </label>
+      </div>
+      {{ input(log, system, "memory-capacity", "Memory Capacity", type="number") }}
+      {{ select(log, system, "memory-flushlevel", "Memory FlushLevel") }}
+      {% endmacro %}
+      
+      {% macro loglevel_interface(title, system) %}
+      <div class="card bg-light border-dark mb-4">
+        <div class="card-body">
+          <h4 class="card-title">{{ title }}</h4>
+          <div class="row">
+            <div class="col-4">
+              <div class="list-group" id="{{system}}-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="{{system}}-stream-list" data-toggle="list" href="#{{system}}-stream" role="tab" aria-controls="home">Stream</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-file-list" data-toggle="list" href="#{{system}}-file" role="tab" aria-controls="profile">File</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-mail-list" data-toggle="list" href="#{{system}}-mail" role="tab" aria-controls="messages">Mail</a>
+                <a class="list-group-item list-group-item-action" id="{{system}}-syslog-list" data-toggle="list" href="#{{system}}-syslog" role="tab" aria-controls="settings">SysLog</a>
+              </div>
+            </div>
+
+            <div class="col-8">
+              <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="{{system}}-stream" role="tabpanel" aria-labelledby="{{system}}-stream-list">
+                  {{ stream_logger("Stream", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-file" role="tabpanel" aria-labelledby="{{system}}-file-list">
+                  {{ file_logger("File", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-mail" role="tabpanel" aria-labelledby="{{system}}-mail-list">
+                  {{ mail_logger("Mail", system) }}  
+                </div>
+                <div class="tab-pane fade" id="{{system}}-syslog" role="tabpanel" aria-labelledby="{{system}}-syslog-list">
+                  {{ syslog_logger("SysLog", system) }}  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endmacro %}
+
+      {{ loglevel_interface("JupyterHub", "jhub") }}
+      {{ loglevel_interface("Backend", "backend") }}
+      {{ loglevel_interface("Tunnel", "tunneling") }}
+      {{ loglevel_interface("Userlabs Manager", "userlabs-mgr") }}
+      {{ loglevel_interface("JUSUF Cloud Userlabs Manager", "jusuf-cloud") }}
+    </div>
+
+    <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+      <table class="table table-striped">
+        <thead style="border-top: 1px solid #dee2e6;">
+          <tr>
+            {% block thead %}
+            {{ th("User (%i)" % users|length, 'name') }}
+            {{ th("Admin", 'admin') }}
+            {{ th("Last Activity", 'last_activity') }}
+            {{ th("Running (%i)" % running|length, 'running', colspan=2) }}
+            {% endblock thead %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <a id="add-users" role="button" class="btn btn-block btn-rounded btn-default"
+                style="color: #333 !important">Add Users</a>
+            </td>
+            <td colspan="2"></td>
+            <td>
+              <a id="start-all-servers" role="button" class="btn btn-block btn-rounded btn-primary mt-0">Start
+                All</a>
+              <a id="stop-all-servers" role="button" class="btn btn-block btn-rounded btn-danger mt-0">Stop
+                All</a>
+            </td>
+            <td colspan="2"></td>
+            <td>
+              <a id="shutdown-hub" role="button" class="btn btn-block btn-rounded btn-danger">Shutdown Hub</a>
+            </td>
+          </tr>
+          {% for user in users %}
+          {% for spawner in user.all_spawners() %}
+          <tr class="user-row server-row" id="user-{{user.name}}" data-user="{{ user.name }}"
+            data-server-name="{{spawner.name}}" data-admin="{{user.admin}}">
+    
+            {% block user_row scoped %}
+            <td class="name-col">{{user.name}}
+              {%- if spawner.name -%}/{{ spawner.name }} {%- endif -%}
+            </td>
+            <td class="admin-col">
+              {%- if spawner.name == '' -%} {% if user.admin %}admin{% endif %} {%- endif -%}
+            </td>
+            <td class="time-col">
+              {%- if spawner.last_activity -%} {{ spawner.last_activity.isoformat() + 'Z' }}
+              {%- else -%} Never
+              {%- endif -%}
+            </td>
+            <td class="server-col text-center">
+              <a role="button"
+                class="stop-server btn btn-rounded btn-sm btn-danger{% if not spawner.active %} d-none{% endif %}">
+                stop server
+              </a>
+              <a role="button"
+                class="start-server-admin btn btn-rounded btn-sm btn-primary{% if spawner.active %} d-none{% endif %}">
+                start server
+              </a>
+            </td>
+            <td class="server-col">
+              {%- if admin_access %}
+              <a role="button"
+                class="access-server btn btn-rounded btn-sm btn-primary{% if not spawner.active %} d-none{% endif %}">
+                access server
+              </a>
+              {%- endif %}
+            </td>
+            <td class="text-center">
+              {%- if spawner.name == '' -%}
+              <a role="button" class="edit-user btn btn-rounded btn-sm btn-primary">edit user</a>
+              {%- endif -%}
+            </td>
+            <td class="text-center">
+              {%- if spawner.name == '' -%}
+              {#- user row -#}
+              {%- if user.name != current_user.name -%}
+              <a role="button" class="delete-user btn btn-rounded btn-sm btn-danger">delete user</a>
+              {%- endif -%}
+              {%- else -%}
+              {#- named spawner row -#}
+              <a role="button" class="delete-server btn btn-rounded btn-sm btn-warning">delete server</a>
+              {%- endif -%}
+            </td>
+            {% endblock user_row %}
+          </tr>
+    
+          {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    
+      <nav aria-label="page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item set-disable">
+            <a class="page-link" tabindex="-1">Previous</a>
+          </li>
+          {% for n in range(pagination.total_pages) %}
+          <li class="page-item"><a class="page-link set-href">{{ n+1 }}</a></li>
+          {% endfor %}
+          <li class="page-item set-disable">
+            <a class="page-link">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+
+  <div id="version-footer" class="container-fluid small">
+    <div class="navbar-text">
+      JupyterHub {{ server_version }}
+    </div>
+  </div>
+</div>
+
+
+
+{% call modal('Delete User', btn_class='btn-danger delete-button') %}
+Are you sure you want to delete user <span class="delete-username">USER</span>?
+This operation cannot be undone.
+{% endcall %}
+
+{% call modal('Stop All Servers', btn_label='Stop All', btn_class='btn-danger stop-all-button') %}
+Are you sure you want to stop all your users' servers? Kernels will be shutdown and unsaved data may be lost.
+{% endcall %}
+
+{% call modal('Start All Servers', btn_label='Start All', btn_class='btn-primary start-all-button') %}
+Are you sure you want to start all servers? This can slam your server resources.
+{% endcall %}
+
+{% call modal('Shutdown Hub', btn_label='Shutdown', btn_class='btn-danger shutdown-button') %}
+Are you sure you want to shutdown the Hub?
+You can choose to leave the proxy and/or single-user servers running by unchecking the boxes below:
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="shutdown-proxy-checkbox">Shutdown proxy
+  </label>
+</div>
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="shutdown-servers-checkbox">Shutdown single-user-servers
+  </label>
+</div>
+{% endcall %}
+
+{% macro user_modal(name, multi=False) %}
+{% call modal(name, btn_class='btn-primary save-button') %}
+<div class="form-group">
+  <{%- if multi -%} textarea {%- else -%} input type="text" {%- endif %} class="form-control username-input"
+    placeholder="{%- if multi -%} usernames separated by lines{%- else -%} username {%-endif-%}">
+    {%- if multi -%}</textarea>{%- endif -%}
+</div>
+<div class="checkbox">
+  <label>
+    <input type="checkbox" class="admin-checkbox">Admin
+  </label>
+</div>
+{% endcall %}
+{% endmacro %}
+
+{{ user_modal('Edit User') }}
+
+{{ user_modal('Add Users', multi=True) }}
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script type="text/javascript">
+  require(["admin"]);
+
+  $(document).ready(function () {
+    let args = window.location.search;
+    $(".set-href").each(function (index, item) {
+      if (args.includes("page")) {
+        item.href = args.replace(/page=[0-9]*/, "page=" + item.innerHTML);
+      }
+    });
+    {% set pages = pagination.total_pages %}
+    if (args.includes("page=")) {
+      let page_arg = args.match(/page=-*[0-9]*/)[0];
+      let page = parseInt(page_arg.match(/-*[0-9][0-9]*/));
+      if (page <= 1) {
+        $(".set-disable").first().addClass("disabled");
+      }
+      if (page >= {{ pages }}) {
+        $(".set-disable").last().addClass("disabled");
+      }
+      let previous_page = page > {{ pages }} ? {{ pages }} : (page-1);
+      let next_page = page < {{ pages }} ? 1 : (page-1);
+      $(".set-disable>a").first().attr('href', args.replace(/page=-*[0-9]*/, "page=" + previous_page));
+      $(".set-disable>a").last().attr('href', args.replace(/page=-*[0-9]*/, "page=" + next_page));
+    } else {
+      $(".set-disable").first().addClass("disabled");
+      if ({{ pages }} == 1) {
+        $(".set-disable").last().addClass("disabled");
+      }
+      $(".set-disable>a").last().attr('href', "?page=2");
+    }
+  })
+</script>
+
+
+{% endblock %}

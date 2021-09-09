@@ -1,9 +1,17 @@
-{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %} {% if
-announcement_logout %} {% set announcement = announcement_logout %} {% endif %}
+{% extends "jupyter-jsc-devel.fz-juelich.de/page.html" %}
+{% if announcement_logout %}
+{% set announcement = announcement_logout %}
+{% endif %}
+
+{% block stylesheet -%}
+<link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/pages/logout.css", include_version=False) }}'
+  type="text/css" />
+{% endblock %}
+
 {% block main %}
-
-<div id="logout-main" class="container">
-  <p>Successfully logged out.</p>
+<div id="logout-page" class="d-flex text-center">
+  <div class="m-auto w-50">
+    <p class="p-4">Successfully logged out.</p>
+  </div>
 </div>
-
 {% endblock %}

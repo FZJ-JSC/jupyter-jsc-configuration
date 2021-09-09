@@ -34,7 +34,7 @@ class HPCUpdateHandler(APIHandler):
         auth_state = await user.get_auth_state()
         if (
             auth_state
-            and "hpc_infos_attribute" in auth_state.get("oauth_user", {}).keys()
+            and "oauth_user" in auth_state.keys()
         ):
             # User is logged in
             body = self.get_json_body()

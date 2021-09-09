@@ -1,0 +1,30 @@
+{
+    "backend": {
+        "test": "http://backend:8080/api/logtest",
+        "stream": "http://backend:8080/api/logger/stream",
+        "file": "http://backend:8080/api/logger/file",
+        "mail": "http://backend:8080/api/logger/mail",
+        "syslog": "http://backend:8080/api/logger/syslog"
+    },
+    "tunneling": {
+        "test": "http://tunneling:8000/api/logtest",
+        "stream": "http://tunneling:8000/api/logger/stream",
+        "file": "http://tunneling:8000/api/logger/file",
+        "mail": "http://tunneling:8000/api/logger/mail",
+        "syslog": "http://tunneling:8000/api/logger/syslog"
+    },
+    "hdf-cloud": {
+        "test": "http://userlabs-mgr.userlabs.svc:8080/api/logtest",
+        "stream": "http://userlabs-mgr.userlabs.svc:8080/api/logger/stream",
+        "file": "http://userlabs-mgr.userlabs.svc:8080/api/logger/file",
+        "mail": "http://userlabs-mgr.userlabs.svc:8080/api/logger/mail",
+        "syslog": "http://userlabs-mgr.userlabs.svc:8080/api/logger/syslog"
+    },
+    "jusuf-cloud": {
+        "test": "http://134.94.88.34:80/api/logtest",
+        "stream": "http://134.94.88.34:80/api/logger/stream",
+        "file": "http://134.94.88.34:80/api/logger/file",
+        "mail": "http://134.94.88.34:80/api/logger/mail",
+        "syslog": "http://134.94.88.34:80/api/logger/syslog"
+    }
+}

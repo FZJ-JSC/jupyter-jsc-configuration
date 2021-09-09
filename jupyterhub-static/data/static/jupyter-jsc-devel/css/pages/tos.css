@@ -1,78 +1,16 @@
-#header {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
-  max-width: 94% !important;
-}
-
-.footer-bottom {
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840)) !important;
-  min-width: calc(1024px * .94) !important;
-  max-width: 94% !important;
-  margin: 0 auto;
-}
-
-#body {
-  height: calc( 94vw * calc(840 / 1810));
-}
-
-.background-wrapper {
-  height: calc( 94vw * calc(840 / 1810));
-  min-height: 445px;
-  max-height: calc(100% - 113px - 153px);
-
-  width: calc((100vh - 113px - 153px)*calc(1810 / 840));
-  min-width: 1024px;
-  max-width: 94%;
-
-  margin: 0 auto;
-  background: url("/hub/static/images/pages/tos/background.jpg") top center no-repeat;
-  background-size: contain;
-  position: absolute;
-
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.content {
+#tos-page {
+  background: url("/hub/static/images/pages/tos/background.jpg") center center
+    no-repeat;
+  background-size: cover;
   height: 100%;
-  //background-color: rgb(173,189,227);
-  //width: calc((100vh - 113px - 153px)*calc(1810 / 840) * 0.24);
-  width: 78%;
-
-  text-align: justify;
+  padding: 0 3%;
   color: black;
-  font-family: "Weissenhof_Grotesk", Arial, Helvetica, sans-serif;
-  padding: 4vh 4vh 0 4vh;
 }
 
+#tos-page > h1:first-child{
+  padding-top: 4vh;
+}
 
-.content > h1 {
+h1, h3 {
   text-align: left;
-  padding-left: 3%;
-}
-
-.rest-container {
-  height: 81%;
-  overflow: auto;
-}
-
-th,
-td {
-  border: solid 1px black;
-  padding: 2% 2%;
-}
-
-p {
-  margin-bottom: 0px;
-}
-
-.rest {
-  height: 100%;
-  padding: 0 2% 0 3%;
-  margin: 0;
-  text-align: justify;
 }

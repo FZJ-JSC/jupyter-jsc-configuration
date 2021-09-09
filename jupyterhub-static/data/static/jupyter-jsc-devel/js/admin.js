@@ -10,6 +10,177 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 ) {
   "use strict";
 
+  // Logging functionalities
+  // ["jhub", "backend", "tunneling", "userlabs-mgr", "jusuf-cloud"]
+  ["backend", "tunneling", "userlabs-mgr", "jusuf-cloud"].forEach(function (system) {
+    if (system == "jhub") {
+      var logger_url = "api/logger";
+    } else {
+      var logger_url = "api/" + system + "/logger";
+    }
+
+    $(document).ready(function () {
+      // Set inputs according to values from backend
+      ["stream", "file", "mail", "syslog"].forEach(function (handler) {
+        $.get(logger_url + "/" + handler, function (log_info) {
+          // console.log(handler, log_info);
+          let enabled = $.parseJSON(log_info["enabled"]);
+          $("#" + system + "-" + handler + "-create").prop("disabled", enabled);
+          $("#" + system + "-" + handler + "-patch").prop("disabled", !enabled);
+          $("#" + system + "-" + handler + "-delete").prop("disabled", !enabled);
+
+          toggle_log_infos(system, handler, enabled);
+        
+          $("#" + system + "-" + handler + "-loglevel").val(log_info["level"]);
+          $("#" + system + "-" + handler + "-formatter").val(log_info["formatter"]);
+          switch (handler) {
+            case "file":
+              $("#" + system + "-" + handler + "-logfile").val(log_info["logfile"]);
+              break;
+            case "mail":
+              $("#" + system + "-" + handler + "-receiver").val(log_info["receiver"]);
+              $("#" + system + "-" + handler + "-host").val(log_info["host"]);
+              $("#" + system + "-" + handler + "-from").val(log_info["from"]);
+              $("#" + system + "-" + handler + "-subject").val(log_info["subject"]);
+              break;
+            case "syslog":
+              $("#" + system + "-" + handler + "-host").val(log_info["host"]);
+              $("#" + system + "-" + handler + "-port").val(log_info["port"]);
+              $("#" + system + "-" + handler + "-protocol").val(log_info["protocol"]);
+              let enabled = $.parseJSON(log_info["memory_enabled"]);
+              $("#" + system + "-" + handler + "-memory").prop("checked", enabled);
+              $("#" + system + "-" + handler + "-memory-capacity").val(log_info["memory_capacity"]);
+              $("#" + system + "-" + handler + "-memory-flushlevel").val(log_info["memory_flushlevel"]);
+              break;
+          }
+        })
+      })
+    });
+
+    ["stream", "file", "mail", "syslog"].forEach(function (handler) {
+      var handler_url = logger_url + "/" + handler;
+      // POST
+      $("#" + system + "-" + handler + "-create").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+        let loglevel = $("#" + system + "-" + handler + "-loglevel").val();
+        let formatter = $("#" + system + "-" + handler + "-formatter").val();
+        let post_url = handler_url + "/" + loglevel + "/" + formatter;
+        switch (handler) {
+          case "file":
+            var filename = $("#" + system + "-" + handler + "-logfile").val();
+            filename = encodeURIComponent(encodeURIComponent(filename));
+            post_url += "/" + filename;
+            break;
+          case "mail":
+            var receiver = $("#" + system + "-" + handler + "-receiver").val();
+            var host = $("#" + system + "-" + handler + "-host").val();
+            var from = $("#" + system + "-" + handler + "-from").val();
+            var subject = $("#" + system + "-" + handler + "-subject").val();
+            post_url += "/" + receiver + "/" + host + "/" + from + "/" + subject;
+            break;
+          case "syslog":
+            var host = $("#" + system + "-" + handler + "-host").val();
+            var port = $("#" + system + "-" + handler + "-port").val();
+            var protocol = $("#" + system + "-" + handler + "-protocol").val();
+            var memory = $("#" + system + "-" + handler + "-memory").prop("checked");
+            var memory_capacity = $("#" + system + "-" + handler + "-memory-capacity").val();
+            var memory_flushlevel = $("#" + system + "-" + handler + "-memory-flushlevel").val();
+            post_url += "/" + host + "/" + port + "/" + protocol + "/" + memory + "/" + memory_capacity + "/" + memory_flushlevel;
+            break;
+        }
+        $.post(post_url).always(function (response) {
+          if (response.status == 200) {
+            $("#" + system + "-" + handler + "-alert").text("Successfully created a new " + handler + " handler");
+            reset_alert(system, handler);
+            $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+            $("#" + system + "-" + handler + "-create").prop("disabled", true);
+            $("#" + system + "-" + handler + "-patch").prop("disabled", false);
+            $("#" + system + "-" + handler + "-delete").prop("disabled", false);
+            toggle_log_infos(system, handler, true);
+          } else {
+            set_error_alert(system, handler, response);
+            $("#" + system + "-" + handler + "-create").prop("disabled", false);
+          }
+          $("#" + system + "-" + handler + "-create").html("Create");
+        })
+      });
+      // PATCH
+      $("#" + system + "-" + handler + "-patch").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+        let loglevel = $("#" + system + "-" + handler + "-loglevel").val();
+        let patch_url = handler_url + "/" + loglevel;
+        $.ajax({
+          url: patch_url,
+          type: 'PATCH',
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully updated the loglevel to " + loglevel);
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+            } else {
+              set_error_alert(system, handler, response);
+            }
+            $("#" + system + "-" + handler + "-patch").prop("disabled", false);
+            $("#" + system + "-" + handler + "-patch").html("Patch");
+          });
+      });
+      // DELETE
+      $("#" + system + "-" + handler + "-delete").click(function () {
+        $(this).prop("disabled", true);
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+        $.ajax({
+          url: handler_url,
+          type: 'DELETE',
+        })
+          .always(function (response) {
+            if (response.status == 200) {
+              $("#" + system + "-" + handler + "-alert").text("Successfully deleted " + handler + " handler");
+              reset_alert(system, handler);
+              $("#" + system + "-" + handler + "-alert").addClass("alert-success");
+              $("#" + system + "-" + handler + "-create").prop("disabled", false);
+              $("#" + system + "-" + handler + "-patch").prop("disabled", true);
+              $("#" + system + "-" + handler + "-delete").prop("disabled", true);
+              toggle_log_infos(system, handler, false);
+            } else {
+              set_error_alert(system, handler, response);
+              $("#" + system + "-" + handler + "-delete").prop("disabled", false);
+            }
+            $("#" + system + "-" + handler + "-delete").html("Delete");
+          });
+      });
+    })
+
+    function toggle_log_infos(system, handler, enabled) {
+      let children = $("#" + system + "-" + handler).children();
+      if (enabled) {
+        children.prop("disabled", true);
+        $("#" + system + "-" + handler  + "-loglevel").prop("disabled", false);
+      } else {
+        children.prop("disabled", false);
+      }
+    }
+
+    function set_error_alert(system, handler, response) {
+      if (response.status == 599) {
+        $("#" + system + "-" + handler + "-alert").text("Send failure: Broken pipe. Please try again");
+      } else {
+        $("#" + system + "-" + handler + "-alert").text("Error: " + response.status + " " + response.statusText);
+      }
+      reset_alert(system, handler);
+      $("#" + system + "-" + handler + "-alert").addClass("alert-danger");
+    }
+
+    function reset_alert(system, handler) {
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-secondary");
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-success");
+      $("#" + system + "-" + handler + "-alert").removeClass("alert-danger");
+    }
+  })
+
+  // User Lab table code
   var base_url = window.jhdata.base_url;
   var prefix = window.jhdata.prefix;
   var admin_access = window.jhdata.admin_access;
@@ -19,14 +190,12 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
 
   function getRow(element) {
     var original = element;
-    while (!element.hasClass("server-row")) {
-      element = element.parent();
-      if (element[0].tagName === "BODY") {
-        console.error("Couldn't find row for", original);
-        throw new Error("No server-row found");
-      }
+    var parents = element.parents("tr");
+    if (parents.length != 1) {
+      console.error("Couldn't find row for", original);
+      throw new Error("No server row found");
     }
-    return element;
+    return parents;
   }
 
   function resort(col, order) {
@@ -87,9 +256,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     }
     stop({
       success: function () {
-        el.text("stop " + serverName).addClass("hidden");
-        row.find(".access-server").addClass("hidden");
-        row.find(".start-server").removeClass("hidden");
+        el.text("stop " + serverName).addClass("d-none");
+        row.find(".access-server").addClass("d-none");
+        row.find(".start-server-admin").removeClass("d-none");
       },
     });
   });
@@ -121,7 +290,7 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
   if (admin_access && options_form) {
     // if admin access and options form are enabled
     // link to spawn page instead of making API requests
-    $(".start-server").map(function (i, el) {
+    $(".start-server-admin").map(function (i, el) {
       el = $(el);
       var row = getRow(el);
       var user = row.data("user");
@@ -133,9 +302,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     });
     // cannot start all servers in this case
     // since it would mean opening a bunch of tabs
-    $("#start-all-servers").addClass("hidden");
+    $("#start-all-servers").addClass("d-none");
   } else {
-    $(".start-server").click(function () {
+    $(".start-server-admin-admin").click(function () {
       var el = $(this);
       var row = getRow(el);
       var user = row.data("user");
@@ -151,9 +320,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
       }
       start({
         success: function () {
-          el.text("start " + serverName).addClass("hidden");
-          row.find(".stop-server").removeClass("hidden");
-          row.find(".access-server").removeClass("hidden");
+          el.text("start " + serverName).addClass("d-none");
+          row.find(".stop-server").removeClass("d-none");
+          row.find(".access-server").removeClass("d-none");
         },
       });
     });
@@ -258,7 +427,7 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
     .find(".stop-all-button")
     .click(function () {
       // stop all clicks all the active stop buttons
-      $(".stop-server").not(".hidden").click();
+      $(".stop-server").not(".d-none").click();
     });
 
   function start(el) {
@@ -270,8 +439,8 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function (
   $("#start-all-servers-dialog")
     .find(".start-all-button")
     .click(function () {
-      $(".start-server")
-        .not(".hidden")
+      $(".start-server-admin")
+        .not(".d-none")
         .each(function (i) {
           setTimeout(start(this), i * 500);
         });

@@ -29,3 +29,5 @@ echo "${d_7}-${d_1};gpus;$used_gpus" >> usage-stats-jupyter-jsc-weekly.txt
 git add usage-stats-jupyter-jsc-weekly.txt
 git commit -m "update Jupyter-JSC metrics"
 git push origin master
+
+find /nfs/jupyter-jsc-live/logs/jupyterhub -type f -name "metrics.log*" -mtime +30 -delete

@@ -1,73 +1,59 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "moment", "jhapi", "utils"], function (
+require(["jquery", "jhapi"], function (
   $,
-  moment,
   JHAPI,
-  utils
 ) {
   "use strict";
 
   var base_url = window.jhdata.base_url;
-  var prefix = window.jhdata.prefix;
+  // var prefix = window.jhdata.prefix;
   var user = window.jhdata.user;
-  var user_active = window.jhdata.user_active;
+  // var user_active = window.jhdata.user_active;
   var api = new JHAPI(base_url);
   var cancel_url = window.jhdata.cancel_url;
 
   // Named servers buttons
-
-  function countProperties(obj) {
-    var count = 0;
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) ++count;
-    }
-    return count;
-  }
-
   function getRow(element) {
-    while (!element.hasClass("home-server-row")) {
-      element = element.parent();
-    }
-    return element;
+    return element.parents("tr");
   }
 
   function disableRow(row) {
-    row.find(".btn").attr("disabled", true).off("click");
+    row.find(".btn").addClass("disabled").off("click");
   }
 
   function enableRow(row, running) {
     // enable buttons on a server row
     // once the server is running or not
-    row.find(".btn").attr("disabled", false);
+    row.find(".btn").removeClass("disabled");
     //row.find(".stop-server").click(stopServer);
     row.find(".stop-server").click(cancelServer);
     row.find(".delete-server").click(deleteServer);
     var na = row.find(".na_status").text();
 
     if (running) {
-      row.find(".start-server").addClass("hidden");
-      row.find(".delete-server").addClass("hidden");
-      row.find(".stop-server").removeClass("hidden");
-      row.find(".url-server").removeClass("hidden");
-      row.find(".server-link").removeClass("hidden");
-      row.find(".server-link-nourl").addClass("hidden");
+      row.find(".start-server").addClass("d-none");
+      row.find(".delete-server").addClass("d-none");
+      row.find(".stop-server").removeClass("d-none");
+      row.find(".url-server").removeClass("d-none");
+      row.find(".server-link").removeClass("d-none");
+      row.find(".server-link-nourl").addClass("d-none");
     } else {
       var row_start = row.find(".start-server");
-      row_start.removeClass("hidden");
+      row_start.removeClass("d-none");
       if (na == "1") {
-        row_start.attr("disabled", true);
+        row_start.addClass("disabled");
         row_start.text("n/a");
       } else {
-        row_start.attr("disabled", false);
+        row_start.removeClass("disabled");
         row_start.text("Start");
       }
-      row.find(".delete-server").removeClass("hidden");
-      row.find(".stop-server").addClass("hidden");
-      row.find(".url-server").addClass("hidden");
-      row.find(".server-link").addClass("hidden");
-      row.find(".server-link-nourl").removeClass("hidden");
+      row.find(".delete-server").removeClass("d-none");
+      row.find(".stop-server").addClass("d-none");
+      row.find(".url-server").addClass("d-none");
+      row.find(".server-link").addClass("d-none");
+      row.find(".server-link-nourl").removeClass("d-none");
     }
   }
 
@@ -161,6 +147,7 @@ require(["jquery", "moment", "jhapi", "utils"], function (
       }
     }
     if (b) {
+      console.log("ABC");
       window.location.href = "../spawn/" + user + "/" + serverName + "?service=Dashboard";
     }
   });
@@ -212,21 +199,16 @@ require(["jquery", "moment", "jhapi", "utils"], function (
   });
 
   function onClickVO() {
-    var old_value = $("#vo_button").prop("value");
-    var x = $(this);
-    var value = x[0].text;
-    if (old_value != value) {
-      api.set_vo(value, {
-        success: function () {
-          $("#vo_button").prop("value", value);
-          $("#vo_button").html(value + ' <span class="caret"></span>');
-          location.reload();
-        },
-      });
-    }
+    var value = $(this).val();
+    api.set_vo(value, {
+      success: function () {
+        $("#vo-select").val(value);
+        location.reload();
+      },
+    });
   }
 
-  $(".vo-dropdown").click(onClickVO);
+  $("#vo-select").change(onClickVO);
   $(".stop-server").click(cancelServer);
   $(".delete-server").click(deleteServer);
 });

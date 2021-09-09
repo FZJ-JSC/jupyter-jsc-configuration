@@ -1,19 +1,22 @@
 {% macro modal(title, btn_label=None, btn_class="btn-primary") %}
 {% set key = title.replace(' ', '-').lower() %}
 {% set btn_label = btn_label or title %}
-<div class="modal fade" id="{{key}}-dialog" tabindex="-1" role="dialog" aria-labelledby="{{key}}-label" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="{{key}}-dialog" tabindex="-1" role="dialog" aria-labelledby="{{key}}-label"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" id="{{key}}-label">{{title}}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
         {{ caller() }}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn {{btn_class}}" data-dismiss="modal" data-dismiss="modal">{{btn_label}}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn {{btn_class}}" data-dismiss="modal">{{btn_label}}</button>
       </div>
     </div>
   </div>
@@ -25,256 +28,130 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>{% block title %}Jupyter-JSC{% endblock %}</title>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta property="og:image" content="{{ static_url("images/mini_website.jpg", include_version=False) }}">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:site_name" content="jupyter-jsc">
-    <meta property="og:title" content="jupyter-jsc">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jupyter-jsc-devel.fz-juelich.de/">
+  <title>{% block title %}Jupyter-JSC{% endblock %}</title>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta property="og:image" content='{{ static_url("images/mini_website.jpg", include_version=False) }}''>
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="jupyter-jsc">
+  <meta property="og:title" content="jupyter-jsc">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jupyter-jsc-devel.fz-juelich.de/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+  <link rel="icon" href=' {{ static_url("images/favicon.svg", include_version=False) }}' type="jpg/png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+    integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/base.css", include_version=False) }}'
+    type="text/css" />
+  <link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/header.css", include_version=False) }}'
+    type="text/css" />
+  <link rel="stylesheet" href='{{ static_url("jupyter-jsc-devel/css/footer.css", include_version=False) }}'
+    type="text/css" />
+  {% block stylesheet %}
+  {% endblock %}
 
-    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/style.min.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/base.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/header.css", include_version=False) }}" type="text/css"/>
-    <link rel="stylesheet" href="{{ static_url("jupyter-jsc-devel/css/footer.css", include_version=False) }}" type="text/css"/>
-    <link rel="icon" href="{{ static_url("images/favicon.svg", include_version=False) }}" type="jpg/png"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"/>
-    {% block stylesheet %}
-    {% endblock %}
-    {% block scripts %}
-    <script src="{{static_url("components/requirejs/require.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("components/jquery/dist/jquery.min.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-    <script src="{{static_url("jupyter-jsc-devel/js/jquery.textfit.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    {% endblock %}
-    <script>
-      require.config({
-          {% if version_hash %}
-          urlArgs: "v={{version_hash}}",
-          {% endif %}
-          baseUrl: '{{static_url("js", include_version=False)}}',
-          paths: {
-            components: '../components',
-            jquery: '../components/jquery/dist/jquery.min',
-            bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
-            moment: "../components/moment/moment",
-          },
-          shim: {
-            bootstrap: {
-              deps: ["jquery"],
-              exports: "bootstrap"
-            },
-          }
-      });
-    </script>
+  {% block scripts %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script type="text/javascript">
-      window.jhdata = {
-        base_url: "{{base_url}}",
-        prefix: "{{prefix}}",
-        {% if user -%}
-          user: "{{user.json_escaped_name}}",
-        {% endif -%}
-        {% if user and user.active -%}
-          user_active: true,
-        {% else -%}
-          user_active: false,
-        {% endif -%}
-        {% if admin_access -%}
-          admin_access: true,
-        {% else -%}
-          admin_access: false,
-        {% endif -%}
-        {% if not no_spawner_check and user and user.spawner.options_form -%}
-          options_form: true,
-        {% else -%}
-          options_form: false,
-        {% endif -%}
-        {% if cancel_url -%}
-          cancel_url: "{{ cancel_url }}",
-        {% endif -%}
-      }
-    </script>
+  <script src='{{static_url("components/requirejs/require.js", include_version=False) }}' type="text/javascript"
+    charset="utf-8"></script>
+  <script src='{{static_url("components/jquery/dist/jquery.min.js", include_version=False) }}' type="text/javascript"
+    charset="utf-8"></script>
+  <script src='{{static_url("components/bootstrap/dist/js/bootstrap.min.js", include_version=False) }}'
+    type="text/javascript" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+  {% endblock %}
+  <script>
+  require.config({
+    {% if version_hash %}
+    urlArgs: "v={{version_hash}}",
+    {% endif %}
+    baseUrl: '{{static_url("jupyter-jsc-devel/js", include_version=False)}}',
+    paths: {
+      components: '../components',
+      jquery: '../components/jquery/dist/jquery.min',
+      bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
+      moment: "../components/moment/moment",
+    },
+    shim: {
+      bootstrap: {
+      deps: ["jquery"],
+      exports: "bootstrap"
+      },
+    }
+  });
+  </script>
 
-    {% block meta %}
-    {% endblock %}
-
+  <script type="text/javascript">
+    window.jhdata = {
+      base_url: "{{base_url}}",
+      prefix: "{{prefix}}",
+      {% if user -%}
+      user: "{{user.json_escaped_name}}",
+      {% endif -%}
+      {% if user and user.active -%}
+      user_active: true,
+      {% else -%}
+      user_active: false,
+      {% endif -%}
+      {% if admin_access -%}
+      admin_access: true,
+      {% else -%}
+      admin_access: false,
+      {% endif -%}
+      {% if not no_spawner_check and user and user.spawner.options_form -%}
+      options_form: true,
+      {% else -%}
+      options_form: false,
+      {% endif -%}
+      {% if cancel_url -%}
+      cancel_url: "{{ cancel_url }}",
+      {% endif -%}
+    }
+  </script>
+  {% block meta %}
+  {% endblock %}
 </head>
 
 <body>
 
-<noscript>
-  <div id='noscript'>
-    JupyterHub requires JavaScript.<br>
-    Please enable it to proceed.
-  </div>
-</noscript>
+  <noscript>
+    <div id='noscript'>
+      JupyterHub requires JavaScript.<br>
+      Please enable it to proceed.
+    </div>
+  </noscript>
 
-<div id="container">
-{% block navbar %}
-  <div id="header-background">
-    <div id="header">
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <span id="jupyterhub-logo" class="pull-left"><a href="https://www.fz-juelich.de/jsc" target="_blank"><img src="{{ static_url("images/header/jsc.png", include_version=False) }}" alt='Jupyter-JSC' class='jpy-logo' title='Home'/></a></span>
-          </div>
+  <div id="container" class="d-flex flex-column h-100">
+    {% set show_login = show_login | default(true) %}
+    {% include "jupyter-jsc-devel.fz-juelich.de/header.html" %}
 
-          <div id="thenavbar">
-            <ul class="nav navbar-nav">
-              {% block nav_bar_left_items -%}
-                <li><a href="{{base_url}}home">Start</a></li>
-                {% if user.admin -%}
-                  <li id="navbarbtn-2"><a href="{{base_url}}admin">Admin</a></li>
-                {% endif -%}
-                <li id="navbarbtn-links" class="main-menu-btn menu-btn"><a>Links</a>
-                  <div id="navbarmenu-links" class="menu-box">
-                    <ul>
-                      <li id="navbarbtn-links-1" class="menu-btn"><a>Jupyter-JSC</a>
-                        <div id="navbarmenu-links-1" class="menu-box menu-sub-box menu-sub-box-1 show-sub-header" style="">
-                          <ul>
-                            <li class=""><a target="_blank" href="https://docs.jupyter-jsc-devel.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf">Presentation</a></li>
-                            <li class=""><a href="https://docs.jupyter-jsc-devel.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb">Extensions at Jupyter-JSC</a></li>
-                            <li class=""><a href="https://docs.jupyter-jsc-devel.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb">Markdown Tips and Tricks</a></li>
-                            <li class=""><a href="https://docs.jupyter-jsc-devel.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_general.ipynb">Setup your own kernel</a></li>
-                            <li class=""><a href="https://docs.jupyter-jsc-devel.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_conda.ipynb">Setup your own kernel with conda</a></li>
-                            <li class=""><a target="_blank" href="https://www.unicore.eu/about-unicore/case-studies/jupyter-at-jsc/">Jupyter-JSC at unicore.eu</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li id="navbarbtn-links-2" class="menu-btn"><a>Jupyter</a>
-                        <div id="navbarmenu-links-2" class="menu-box menu-sub-box menu-sub-box-2 show-sub-header" style="">
-                          <ul>
-                            <li class=""><a target="_blank" href="https://www.jupyter.org">Home</a></li>
-                            <li class=""><a target="_blank" href="https://newsletter.jupyter.org">Newsletter</a></li>
-                            <li class=""><a target="_blank" href="https://www.youtube.com/watch?v=HW29067qVWk">Introduction Video</a></li>
-                            <li class=""><a target="_blank" href="https://blog.jupyter.org">Blog</a></li>
-                            <li class=""><a target="_blank" href="https://jupyter.org/documentation.html">Documentation</a></li>
-                            <li class=""><a target="_blank" href="https://twitter.com/projectjupyter">Twitter</a></li>
-                            <li class=""><a target="_blank" href="https://github.com/trending/jupyter-notebook">Jupyter-Notebooks</a></li>
-                            <li class=""><a target="_blank" href="https://gitter.im/jupyter/jupyter">Jupyter Gitter</a></li>
-                            <li class=""><a target="_blank" href="https://gitter.im/jupyterlab/jupyterlab">JupyterLab Gitter</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                      <li id="navbarbtn-links-3" class="menu-btn"><a>JSC</a>
-                        <div id="navbarmenu-links-3" class="menu-box menu-sub-box menu-sub-box-3 show-sub-header" style="">
-                          <ul>
-                            <li class=""><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUWELS/JUWELS_node.html">JUWELS</a></li>
-                            <li class=""><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JURECA/JURECA_node.html">JURECA</a></li>
-                            <li class=""><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></li>
-                            <!--<li class=""><a target="_blank" href="">HDFML</a></li>-->
-                            <li class=""><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></li>
-                            <li class=""><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/News/Newsletter/newsletter_node.html">Newsletter</a></li>
-                            <li class=""><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/News/Events/events_node.html">Events</a></li>
-                            <li class=""><a target="_blank" href="https://twitter.com/fzj_jsc">Twitter</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </li>
-              {% endblock -%}
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              {% block nav_bar_right_items -%}
-                <li>
-                  {% block login_widget -%}
-                    <span id="login_widget">
-                      {% if user -%}
-                        {% if auth_state and auth_state.get("last_login", False) -%}
-                          <p>Last login: {{ auth_state.get("last_login") }} </p>
-                        {% endif -%}
-                        <p class="navbar-text">{{user.name}}</p>
-                        {% set vo_available = auth_state.get("vo_available", []) %}
-                        {% set vo_active = auth_state.get("vo_active", '' ) %}
-                        {% if vo_available|length > 1 -%}
-			<!-- <label for="vo_button" id="vo_button_label" class="text-center label_custom">Groups:</label> -->
-                          <label for="vo_button" id="vo_button_label" class="navbar-text">Group (<a href="/hub/groups">?</a>):</label>
-                          <div class="btn-group">
-                            <button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="vo_button" name="vo_button" value="{{vo_active}}">{{vo_active}} <span class="caret"></span></button>
-                            <ul class="dropdown-menu" name="vo_dropdown" id="vo_dropdown">
-                              {% for vo in vo_available -%}
-                                <li><a class="vo-dropdown" value="{{vo}}" id="vo_button_dd_{{vo}}">{{vo}}</a></li>
-                              {% endfor -%}
-                            </ul>
-                          </div>
-                        {% endif -%}
-                        <a id="logout" role="button" class="navbar-btn btn-sm btn btn-default"> <i aria-hidden="true" class="fa fa-sign-out"></i> Logout</a>
-                      {% endif -%}
-                    </span>
-                  {% endblock -%}
-                </li>
-              {% endblock -%}
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div> <!-- #header -->
-  </div> <!-- #header-background -->
-{% endblock %}
+    {% block announcement %}
+    {% if announcement %}
+    <div class="container text-center announcement alert alert-warning">
+      {{ announcement | safe }}
+    </div>
+    {% endif %}
+    {% endblock %}
 
-
-  {% block announcement %}
-  {% if announcement %}
-  <div class="container text-center announcement alert alert-warning">
-    {{ announcement | safe }}
-  </div>
-  {% endif %}
-  {% endblock %}
-
-  <div id="body">
-    <div class="background-wrapper">
+    <div id="main" class="container-md p-0 flex-grow-1">
       {% block main %}
       {% endblock %}
-    </div> <!-- #background-wrapper -->
-  </div> <!-- #body -->
-  <div class="footer">
-    <div class="footer-top-background">
-      <div class="footer-top">
-        <div id="ampel-jupyter-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUPYTER.svg"/><span class="" id="ampel-jupyter">{{ messages.get("JUPYTER", "") }}</span></div><a href="https://jupyter-jsc-devel.fz-juelich.de">Jupyter-JSC</a></div>
-        <div id="ampel-juwels-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUWELS.svg"/><span class="" id="ampel-juwels">{{ messages.get("JUWELS", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels">JUWELS</a></div>
-        <div id="ampel-jureca-img"><div class="ampel-div"><img src="/hub/status-images/systems/JURECA.svg"/><span class="" id="ampel-jureca">{{ messages.get("JURECA", "") }}</span></div><a target="_blank" href="https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca">JURECA</a></div>
-        <div id="ampel-jusuf-img"><div class="ampel-div"><img src="/hub/status-images/systems/JUSUF.svg"/><span class="" id="ampel-jusuf">{{ messages.get("JUSUF", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html">JUSUF</a></div>
-        <div id="ampel-deep-img"><div class="ampel-div"><img src="/hub/status-images/systems/DEEP.svg"/><span class="" id="ampel-deep">{{ messages.get("DEEP", "") }}</span></div><a target="_blank" href="https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html">DEEP</a></div>
-        <div id="ampel-hdfml-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFML.svg"/><span class="" id="ampel-hdfml">{{ messages.get("HDFML", "") }}</span></div><a>HDFML</a></div>
-        <div id="ampel-hdfcloud-img"><div class="ampel-div"><img src="/hub/status-images/systems/HDFCLOUD.svg"/><span class="" id="ampel-hdfcloud">{{ messages.get("HDFCLOUD", "") }}</span></div><a target="_blank" href="https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html">HDF-Cloud</a></div>
-      </div> <!-- #footer-top -->
-    </div> <!-- #footer-top-background -->
-    <div class="footer-bottom-background">
-      <div class="footer-bottom">
-        <div class="footer-links">
-          <a target="_blank" href="https://www.fz-juelich.de">&copy; Forschungszentrum Jülich</a>
-          <a href="/hub/imprint">Imprint</a>
-          <a href="/hub/privacy">Privacy Policy</a>
-          <a href="mailto:ds-support@fz-juelich.de?subject=Jupyter-JSC Support&amp;body=Please describe your problem here. (english or german)">Support</a>
-          <a href="/hub/terms">Terms of Service</a>
-        </div>
-        <a href="https://www.helmholtz.de/en/" target="_blank" ><img class="helmholtz-logo" src="{{ static_url("images/footer/helmholtz.png", include_version=False) }}"/></a>
-      </div> <!-- #footer-bottom -->
-    </div> <!-- #footer-bottom-background -->
-  </div> <!-- #footer -->
+    </div>
 
+    {% include "jupyter-jsc-devel.fz-juelich.de/footer.html" %}
 
-</div> <!-- #container -->
-{% call modal('Error', btn_label='OK') %}
-  <div class="ajax-error">
-    The error
+    <script src='{{static_url("jupyter-jsc-devel/js/logout.js", include_version=False) }}' type="text/javascript"
+      charset="utf-8"></script>
+    {% block script %}
+    {% endblock %}
   </div>
-{% endcall %}
-
-
-<script src="{{static_url("jupyter-jsc-devel/js/header.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("jupyter-jsc-devel/js/footer.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{static_url("jupyter-jsc-devel/js/logout.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
-{% block script %}
-{% endblock %}
-
 </body>
 
 </html>

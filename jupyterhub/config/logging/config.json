@@ -1,0 +1,62 @@
+{
+    "disable_existing_loggers": true,
+    "formatters": {
+        "json": {
+            "()": "jsonformatter.JsonFormatter",
+            "fmt": "{\"asctime\": \"asctime\", \"levelno\": \"levelno\", \"levelname\": \"levelname\", \"logger\": \"name\", \"file\": \"pathname\", \"line\": \"lineno\", \"function\": \"funcName\", \"Message\": \"message\"}",
+            "mix_extra": true
+        },
+        "simple": {
+            "()": "logging_receiver.ExtraFormatter",
+            "format": "%(asctime)s levelno=%(levelno)s levelname=%(levelname)s logger=%(name)s file=%(pathname)s line=%(lineno)d function=%(funcName)s : %(message)s"
+        }
+    },
+    "handlers": {
+        "file": {
+            "backupCount": 7,
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": "/mnt/logs/file.log",
+            "formatter": "simple",
+            "level": 40,
+            "when": "midnight"
+        },
+        "mail": {
+            "class": "logging.handlers.SMTPHandler",
+            "formatter": "simple",
+            "fromaddr": "localtest@fz-juelich.de",
+            "level": 60,
+            "mailhost": "mail.fz-juelich.de",
+            "subject": "Test Notification",
+            "toaddrs": [
+                "t.kreuzer@fz-juelich.de"
+            ]
+        },
+        "stream": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "level": 30,
+            "stream": "ext://sys.stdout"
+        },
+        "syslog": {
+            "address": [
+                "134.94.199.3",
+                5141
+            ],
+            "class": "logging.handlers.SysLogHandler",
+            "formatter": "json",
+            "level": 20,
+            "socktype": "ext://socket.SOCK_DGRAM"
+        }
+    },
+    "loggers": {
+        "Receiver": {
+            "handlers": [
+                "stream",
+                "file",
+                "syslog"
+            ],
+            "propagate": true
+        }
+    },
+    "version": 1
+}

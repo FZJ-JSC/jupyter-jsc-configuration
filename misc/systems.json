@@ -2,10 +2,10 @@
     "UNICORE": {
         "JUWELS": {
             "base_url": "https://zam2125.zam.kfa-juelich.de:9112/JUWELS/rest/core",
-            "interactive_partitions": ["LoginNode", "LoginBooster"],
+            "interactive_partitions": ["LoginNode", "LoginNodeBooster"],
 	    "LoginNode": ["juwels0?.fz-juelich.de"],
 	    "LoginNodeVis": ["juwelsvis??.fz-juelich.de"],
-	    "LoginBooster": ["juwels2?.fz-juelich.de"],
+	    "LoginNodeBooster": ["juwels2?.fz-juelich.de"],
 	    "strict_session_ids": true,
 	    "nodes": ["juwels01", "juwels02", "juwels03", "juwels04", "juwels05", "juwels06", "juwels07", "juwels08", "juwels09"],
 	    "node_mapping": {
@@ -121,6 +121,9 @@
 	    "tunnel_node": "hdfcloud"
         },
         "JUSUF-Cloud": {
+            "base_url": "http://134.94.88.34:80/api/userlab",
+            "certificate_inactive": "",
+            "tunnel_node": "jusufcloud"
         }
     }
 }

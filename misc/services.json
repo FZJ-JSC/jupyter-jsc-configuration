@@ -32,7 +32,7 @@
             "JupyterLab": {
                 "vo_mapping": {
                     "HIFIS": "default",
-                    "admins": "admins",
+                    "admins": "default",
                     "debug": "default",
                     "devel": "default",
                     "aiidalab": "default",
@@ -43,6 +43,11 @@
                 }
             },
 	    "AiidaLab": {
+                "allowed_lists": {
+                    "systems": ["HDF-Cloud"]
+                }
+	    },
+	    "AllSparkNotebook-3.1.2": {
                 "allowed_lists": {
                     "systems": ["HDF-Cloud"]
                 }

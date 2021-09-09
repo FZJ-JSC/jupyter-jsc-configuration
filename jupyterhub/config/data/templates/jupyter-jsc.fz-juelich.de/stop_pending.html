@@ -1,23 +1,25 @@
-{% extends "jupyter-jsc.fz-juelich.de/page.html" %} {% block main %}
+{% extends "jupyter-jsc.fz-juelich.de/page.html" %}
 
-<div class="container">
-  <div class="row">
-    <div class="text-center">
-      {% block message %}
-      <p>Your server is stopping.</p>
-      <p>You will be able to start it again once it has finished stopping.</p>
-      {% endblock message %}
-      <p>
-        <i class="fa fa-spinner fa-pulse fa-fw fa-3x" aria-hidden="true"></i>
-      </p>
-      <a role="button" id="refresh" class="btn btn-lg btn-primary" href="#"
-        >refresh</a
-      >
-    </div>
+{% block stylesheet -%}
+<link rel="stylesheet" href='{{ static_url("css/pages/stop_pending.css", include_version=False) }}?v=20210806'
+  type="text/css" />
+{% endblock %}
+
+{% block main %}
+<div id="stop-pending-page" class="d-flex text-center">
+  <div class="m-auto">
+    {% block message %}
+    <p>Your server is stopping.</p>
+    <p>You will be able to start it again once it has finished stopping.</p>
+    {% endblock message %}
+    <p> <i class="fa fa-spinner fa-pulse fa-fw fa-3x" aria-hidden="true"></i> </p>
+    <a role="button" id="refresh" class="btn btn-lg btn-primary" href="#">refresh</a>
   </div>
 </div>
+{% endblock %}
 
-{% endblock %} {% block script %} {{ super() }}
+{% block script %}
+{{ super() }}
 <script type="text/javascript">
   require(["jquery"], function ($) {
     $("#refresh").click(function () {

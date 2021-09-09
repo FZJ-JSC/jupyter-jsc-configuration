@@ -30,8 +30,12 @@ else
     HOSTNAMEI=${HOSTNAMES}i
 fi
 
-# JupyterHub will create a ssh tunnel between JupyterHub and this node to communicate
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+STATUS_CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 60, "failed": false, "message": "", "html_message": "Preparing environment on '"${HOSTNAMES}"' ..."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL})
+
+# Check if connection to JupyterHub is valid
+if [[ $STATUS_CODE -gt 204 ]]; then
+    exit 0
+fi
 
 # Set some default environment variables
 export LC_ALL=en_US.UTF-8
@@ -43,7 +47,13 @@ unset TMP_PORT
 [[ -x /bin/python3 ]] && TMP_PORT=$(/bin/python3 -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
 if [[ -n "$TMP_PORT" ]]; then JUPYTER_JSC_PORT=${TMP_PORT}; else echo "Could not request a free port -> taking a random one"; fi
 
-curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT} &> /dev/null
+# JupyterHub will create a ssh tunnel between JupyterHub and this node to communicate
+STATUS_CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 65, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... port-forwarding established"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/tunneling/${JUPYTERHUB_USER}/${JUPYTERHUB_SERVER_NAME}/${JUPYTER_JSC_STARTUUID}/${HOSTNAMEI}/${JUPYTER_JSC_PORT})
+
+# Check if connection to JupyterHub is valid
+if [[ $STATUS_CODE -gt 204 ]]; then
+    exit 0
+fi
 
 # If we cannot send updates to JupyterHub something went wrong. Let's try to cancel the script here.
 if [[ $? -ne 0 ]]; then
@@ -72,13 +82,20 @@ fi
 # Hook to load customized environments before starting JupyterLab
 if [[ -f ${HOME}/.jupyter/pre_jupyter-jsc.sh ]]; then
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 78, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... loading customized environment from $HOME/.jupyter/pre_jupyter-jsc.sh"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    echo "Use ~/.jupyter/pre_jupyter-jsc.sh"
+    echo "--"
     cat ${HOME}/.jupyter/pre_jupyter-jsc.sh
+    echo "--"
     source ${HOME}/.jupyter/pre_jupyter-jsc.sh
 fi
 
 # Hook to load customized modules before starting JupyterLab
 if [[ -f ${HOME}/.jupyter/start_jupyter-jsc.sh ]]; then
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 80, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... loading customized environment from $HOME/.jupyter/start_jupyter-jsc.sh"}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    echo "Use ~/.jupyter/start_jupyter-jsc.sh script"
+    echo "--"
+    cat ${HOME}/.jupyter/start_jupyter-jsc.sh
+    echo "--"
     source ${HOME}/.jupyter/start_jupyter-jsc.sh
 else
     module purge
@@ -96,6 +113,7 @@ fi
 
 # Inform user if root directory for JupyterLab is not $HOME
 if [[ ! $JUPYTER_JSC_HOME == $HOME ]]; then
+    echo "Use custom home directory: ${JUPYTER_JSC_HOME}"
     curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 85, "failed": false, "message": "", "html_message": "&nbsp;&nbsp;... use $JUPYTER_JSC_HOME as starting directory."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
 fi
 
@@ -108,11 +126,22 @@ fi
 cd ${JUPYTER_JSC_HOME}
 # Inform user if a customized start command is used
 if [[ -n $JUPYTERJSC_USER_CMD ]]; then
-    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab with custom command $JUPYTERJSC_USER_CMD ('"$JUPYTERJSC_USER_CMD"'). Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    STATUS_CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab with custom command $JUPYTERJSC_USER_CMD ('"$JUPYTERJSC_USER_CMD"'). Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL})
+    # Check if connection to JupyterHub is valid
+    if [[ $STATUS_CODE -gt 204 ]]; then
+        exit 0
+    fi
+    echo "Use custom command:"
+    echo "--"
     echo $JUPYTERJSC_USER_CMD
+    echo "--"
     timeout 30d $JUPYTERJSC_USER_CMD &
 else
-    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL} &> /dev/null
+    STATUS_CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${JUPYTER_JSC_STARTUUID}" -H "Content-Type: application/json" --data '{"progress": 90, "failed": false, "message": "", "html_message": "Starting JupyterLab. Waiting for an answer. This may take a few seconds."}' http://${JUPYTER_JSC_REMOTENODE}:${JUPYTER_JSC_REMOTEPORT}/hub/api/${JUPYTERHUB_STATUS_URL})
+    # Check if connection to JupyterHub is valid
+    if [[ $STATUS_CODE -gt 204 ]]; then
+        exit 0
+    fi
     timeout 30d jupyterhub-singleuser --debug --config ${DIR}/.config.py &
 fi
 child=$!

@@ -1,0 +1,54 @@
+{% macro ampel(system, href) %}
+<div id="ampel-{{system}}" class="mx-3">
+  <img class="ampel-img" src="/hub/status-images/systems/{{system}}.svg" />
+  <a href="{{href}}" target="_blank" class="align-middle" data-toggle="ample-tooltip"
+    title='{{messages.get(system, "")}}'>
+    {% if system == "JUPYTER" -%}
+    Jupyter-JSC
+    {% elif system == "HDFCLOUD" %}
+    HDF-Cloud
+    {% else %}
+    {{ system }}
+    {% endif -%}
+  </a>
+</div>
+{% endmacro %}
+
+
+<nav id="footer" class="navbar navbar-bottom navbar-dark">
+  <div class="footer-top d-flex">
+    <div class="container justify-content-center">
+      {{ ampel("JUPYTER", "https://jupyter-jsc-devel.fz-juelich.de") }}
+      {{ ampel("JUWELS", "https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#juwels") }}
+      {{ ampel("JURECA", "https://dispatch.fz-juelich.de:8812/HIGHMESSAGES#jureca") }}
+      {{ ampel("JUSUF", "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html") }}
+      {{ ampel("DEEP", "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html") }}
+      {{ ampel("HDFML", "") }}
+      {{ ampel("HDFCLOUD", "https://www.fz-juelich.de/ias/jsc/EN/Expertise/SciCloudServices/HDFCloud/_node.html") }}
+    </div>
+  </div>
+  <div class="footer-bottom d-flex pt-4">
+    <div class="container">
+      <div class="w-100 text-center pb-2">
+        <a target="_blank" href="https://www.fz-juelich.de">&copy; Forschungszentrum Jülich</a>
+        <a href="/hub/imprint" class="ml-3">Imprint</a>
+        <a href="/hub/privacy" class="ml-3">Privacy Policy</a>
+        <a href="mailto:ds-support@fz-juelich.de?subject=Jupyter-JSC Support&amp;body=Please describe your problem here. (english or german)"
+          class="ml-3">Support</a>
+        <a href="/hub/terms" class="ml-3">Terms of Service</a>
+      </div>
+      <div class="w-100 text-center text-lg-right">
+        <a href="https://www.helmholtz.de/en/" target="_blank">
+          <img id="helmholtz-logo" src='{{ static_url("images/footer/helmholtz.png", include_version=False) }}'
+            class="pb-4" />
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  $(function () {
+    $('[data-toggle="ample-tooltip"]').tooltip()
+  })
+</script>

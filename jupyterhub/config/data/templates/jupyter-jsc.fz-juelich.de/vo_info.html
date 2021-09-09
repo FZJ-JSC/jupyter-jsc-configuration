@@ -1,50 +1,43 @@
 {% extends "jupyter-jsc.fz-juelich.de/page.html" %}
 {% if announcement_home %}
-  {% set announcement = announcement_home %}
+{% set announcement = announcement_home %}
 {% endif %}
 
 {% block stylesheet %}
-  <link rel="stylesheet" href="{{ static_url("css/pages/vo_info.css", include_version=False) }}" type="text/css"/>
+<link rel="stylesheet" href='{{ static_url("css/pages/vo_info.css", include_version=False) }}?v=20210806'
+  type="text/css" />
 {% endblock %}
 
 
 {% block main -%}
-
-  <div class="content">
-    <div style="clear:both"></div>
-    <div class="rest-container">
-      <div class="rest" style="height: unset !important">
-        <div class="header-row">
-          <h1 class="">Your groups for Jupyter-JSC</h1>
-        </div>
-        {% for vo_name, vo_text in vo_details.items() -%}
-          <div class="image-text-container">
-            <div class="image-container">
-              {% if vo_name == vo_active -%}
-                <h2>{{vo_name}} (active)</h2>
-              {% else -%}
-                <h2>{{vo_name}}</h2>
-              {% endif -%}
-              <img src="/hub/static/images/pages/vo_info/{{vo_name}}.png" onerror="this.style.display='None'" title="Default-Group"/>
-            </div>
-            <div class="text-container">
-              <h2 class="placeholder">{{vo_name}}</h2>
-              {{vo_text | safe}}
-            </div>
-          </div>
-          <div style="clear:both"></div>
-<hr style="border-top: 1px solid black">
-        {% endfor -%}
-      </div>
+<div id="vo-info-page">
+  <h1>Your groups for Jupyter-JSC</h1>
+  <hr style="border-top: 1px solid black; margin-top: 20px;">
+  {% for vo_name, vo_text in vo_details.items() -%}
+  <div class="d-flex">
+    <div class="image-container">
+      {% if vo_name == vo_active -%}
+      <h2>{{vo_name}} (active)</h2>
+      {% else -%}
+      <h2>{{vo_name}}</h2>
+      {% endif -%}
+      <img src="/hub/static/images/pages/vo_info/{{vo_name}}.png" onerror="this.style.display='None'"
+        title="Default-Group" />
+    </div>
+    <div class="text-container">
+      <h2 class="placeholder">{{vo_name}}</h2>
+      {{vo_text | safe}}
     </div>
   </div>
+  <div style="clear:both"></div>
+  <hr style="border-top: 1px solid black">
+  {% endfor -%}
+</div>
 {% endblock -%}
 
 {% block script %}
 {{ super() }}
 <script type="text/javascript">
-require(["home"]);
+  require(["home"]);
 </script>
-
-<script src="{{static_url("js/pages/home.js", include_version=False) }}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}

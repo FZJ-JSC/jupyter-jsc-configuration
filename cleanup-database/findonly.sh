@@ -42,7 +42,7 @@ data:
     tunnel_id_ports = tunnel_cursor.fetchall()
     to_delete_tunnels = [str(x[0]) for x in tunnel_id_ports if x[1] not in jhub_ports]
     if len(to_delete_tunnels) > 0:
-      print("You may want to delete these userlab ids:\n  DELETE FROM tunnel_tunnels WHERE id IN {ids};".format(ids=tuple(to_delete_tunnels)))
+      print("You may want to delete these tunnel ids:\n  DELETE FROM tunnel_tunnels WHERE id IN {ids};".format(ids=tuple(to_delete_tunnels)))
     else:
       print("Tunnels database looks good. Nothing to delete")
     tunnel_cursor.close()
@@ -54,7 +54,7 @@ data:
     to_delete_userlabs = [str(x[0]) for x in userlab_id_ports if x[1] not in jhub_ports]
     to_stop_userlabs = [str(x[2]) for x in userlab_id_ports if x[1] not in jhub_ports]
     if len(to_delete_userlabs) > 0:
-      print("You may want to delete these tunnel ids:\n  DELETE FROM userlab_userlab WHERE id IN {ids};".format(ids=tuple(to_delete_userlabs)))
+      print("You may want to delete these userlabs ids:\n  DELETE FROM userlab_userlab WHERE id IN {ids};".format(ids=tuple(to_delete_userlabs)))
     else:
       print("Userlabs database looks good. Nothing to delete")
     userlab_cursor.close()

@@ -26,7 +26,8 @@ spec:
           effect: "NoSchedule"
       containers:
         - name: jupyterlab-_id_
-          image: aiidalab/aiidalab-docker-stack:sha-418166b
+          # image: aiidalab/aiidalab-docker-stack:sha-418166b
+          image: aiidalab/aiidalab-docker-stack:21.07.1
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:

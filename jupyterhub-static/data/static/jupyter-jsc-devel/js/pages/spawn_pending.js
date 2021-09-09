@@ -4,6 +4,7 @@ function getright(percent) {
   }
   return 180;
 }
+
 function getleft(percent) {
   if (percent <= 50) {
     return 0;
@@ -14,6 +15,7 @@ function getleft(percent) {
 function moveBarTo(progText) {
   moveBarToFull(progText, 0.8, false);
 }
+
 function moveBarToFull(progText, animationTime, setRed) {
   if (progText == 100) {
     animationTime = 0.1;
