@@ -19,7 +19,7 @@
                 "juwels08": "jwlogin08i",
                 "juwels09": "jwlogin09i"
 	    },
-	    "project_kernel": ["training2114"],
+	    "project_kernel": ["training2114", "hai_sbi2021"],
 	    "project_symlink": ["training"],
 	    "remote_hub_port": 25490,
 	    "fuser": "ljupyter",
