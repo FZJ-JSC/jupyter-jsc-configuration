@@ -127,6 +127,7 @@ else
         echo "$(date) Hard      : ${STORAGE_HARD_BYTES}" >> ${JOB_PATH}/logs/start.log 2>&1
         if [[ $USED_BYTES -gt $STORAGE_HARD_BYTES ]]; then
             >&2 echo "Used storage: ${USED_HUMAN}. Soft limit: ${STORAGE_USERDATA_SOFT}. Hard limit: ${STORAGE_USERDATA_HARD}."
+	    curl -X "POST" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" -H "uuidcode: ${STARTUUIDCODE}" -H "Content-Type: application/json" --data '{"error": "Disk Quota exceeded ('"${USED_HUMAN}"'/'"${STORAGE_USERDATA_HARD}"'). You cannot start a JuypterLab anymore. Please contact support ( ds-support(at)fz-juelich.de )."}' http://${REMOTE_NODE}:${REMOTE_PORT}${JUPYTERHUB_BASE_URL}hub/api/${JUPYTERHUB_CANCEL_URL} >> ${JOB_PATH}/logs/start.log 2>&1
             exit 231
         elif [[ $USED_BYTES -gt $STORAGE_SOFT_BYTES ]]; then
             if [[ -f ${LOCAL_USERHOMES_PATH}/skel/motd.d/softlimit ]]; then
