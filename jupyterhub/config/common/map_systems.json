@@ -24,5 +24,6 @@
   "deep_dam": "DEEP",
   "deep_cpu": "DEEP",
   "deep_ml-gpu": "DEEP",
-  "deep_booster": "DEEP"
+  "deep_booster": "DEEP",
+  "judac": "JUDAC"
 }

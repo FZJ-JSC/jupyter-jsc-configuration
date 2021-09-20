@@ -22,5 +22,6 @@
   "deep_dam": "dp-dam",
   "deep_cpu": "dp-cn",
   "deep_booster": "dp-esb",
-  "deep_ml-gpu": "ml-gpu"
+  "deep_ml-gpu": "ml-gpu",
+  "judac": "judac"
 }
