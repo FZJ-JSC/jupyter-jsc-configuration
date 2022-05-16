@@ -1,0 +1,235 @@
+{
+  "drf-services": {
+    "unicoremgr": {
+      "send_access_token": true,
+      "request_timeout": 10,
+      "certificate_path": "/mnt/unicoremgr_certs/..data/tls.crt",
+      "urls": {
+        "services": "https://drf-unicoremgr.jupyterjsc.svc/api/services/",
+        "logs": "https://drf-unicoremgr.jupyterjsc.svc/api/logs/handler"
+      }
+    },
+    "k8smgrhdfcloud": {
+      "request_timeout": 10,
+      "certificate_path": "/mnt/k8smgr_certs/..data/tls.crt",
+      "urls": {
+        "services": "https://drf-k8smgr.userlabs.svc/api/services/",
+        "logs": "https://drf-k8smgr.userlabs.svc/api/logs/handler"
+      }
+    },
+    "tunnel": {
+      "authentication_token": "",
+      "request_timeout": 10,
+      "certificate_path": "/mnt/tunnel_certs/..data/tls.crt",
+      "urls": {
+        "tunnel": "https://drf-tunnel.jupyterjsc.svc/api/tunnel/",
+        "restart": "https://drf-tunnel.jupyterjsc.svc/api/restart/",
+        "logs": "https://drf-tunnel.jupyterjsc.svc/api/logs/handler"
+      }
+    }
+  },
+  "unity": {
+    "revoke": {
+      "url": "https://unity-jsc.fz-juelich.de/oauth2/revoke",
+      "certificate_path": "/mnt/unity_certs/..data/tls.crt",
+      "request_timeout": 10,
+      "client_id": "jupyter-jsc.fz-juelich.de",
+      "expected_status_code": 200
+    }
+  },
+  "vos": {
+    "default": {
+      "authenticators": [
+        "ldap"
+      ],
+      "usernames": [],
+      "admin": false,
+      "weight": 1,
+      "Systems": {},
+      "Services": {
+        "JupyterLab": {
+          "JupyterLab": {
+            "max_per_user": 10
+          }
+        }
+      },
+      "description": "Default group"
+    },
+    "admin": {
+      "authenticators": [],
+      "usernames": [
+        "t.kreuzer@fz-juelich.de"
+      ],
+      "admin": true,
+      "weight": 2,
+      "Systems": {},
+      "Services": {
+        "JupyterLab": {
+          "JupyterLab": {
+            "max_per_user": 5
+          }
+        }
+      },
+      "description": "Admin group"
+    }
+  },
+  "services": {
+    "JupyterLab": {
+      "options_name": "Version",
+      "options": {
+        "JupyterLab": {
+          "name": "K8s Test JupyterLab",
+          "vo_mapping": {
+            "admins": "default"
+          },
+          "allowed_lists": {
+            "systems": [
+              "DEMO-SITE",
+              "HDF-Cloud"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "systems": {
+    "JUWELS": {
+      "base_url": "https://zam2126.zam.kfa-juelich.de/JUWELS/rest/core",
+      "interactive_partitions": [
+        "LoginNode"
+      ],
+      "LoginNode": [
+        "juwels??.fz-juelich.de"
+      ],
+      "nodes": ["juwels01"],
+      "nodes_mapping": {"juwels01": "juwels01i"},
+      "fuser": "ljupyter",
+      "host": "juwels01.fz-juelich.de",
+      "weight": 1,
+      "drf-service": "unicoremgr"
+    },
+    "HDF-Cloud": {
+      "drf-service": "k8smgrhdfcloud"
+    }
+  },
+  "resources": {
+    "JUWELS": {
+      "LoginNode": {},
+      "batch": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            10
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      }
+    }
+  },
+  "map_systems": {
+    "jureca_booster": "JURECA",
+    "jureca-dc_cpu": "JURECA",
+    "jureca-dc_cpu-bigmem": "JURECA",
+    "jureca-dc_cpu-devel": "JURECA",
+    "jureca-dc_gpu": "JURECA",
+    "jureca-dc_gpu-devel": "JURECA",
+    "juwels": "JUWELS",
+    "juwels_devel": "JUWELS",
+    "juwels_develgpus": "JUWELS",
+    "juwels_booster": "JUWELS",
+    "juwels_develbooster": "JUWELS",
+    "juwels_gpus": "JUWELS",
+    "jusuf": "JUSUF",
+    "jusuf_cpu": "JUSUF",
+    "jusuf_gpus": "JUSUF",
+    "jusuf_develgpus": "JUSUF",
+    "hdfml": "HDFML",
+    "deep_dam": "DEEP",
+    "deep_cpu": "DEEP",
+    "deep_ml-gpu": "DEEP",
+    "deep_booster": "DEEP",
+    "judac": "JUDAC",
+    "demo_site": "DEMO-SITE",
+    "demo_site_NOBATCH": "DEMO-SITE"
+  },
+  "map_partitions": {
+    "jureca_booster": "booster",
+    "jureca-dc_cpu": "dc-cpu",
+    "jureca-dc_cpu-bigmem": "dc-cpu-bigmem",
+    "jureca-dc_cpu-devel": "dc-cpu-devel",
+    "jureca-dc_gpu": "dc-gpu",
+    "jureca-dc_gpu-devel": "dc-gpu-devel",
+    "juwels": "batch",
+    "juwels_devel": "devel",
+    "juwels_develgpus": "develgpus",
+    "juwels_booster": "booster",
+    "juwels_develbooster": "develbooster",
+    "juwels_gpus": "gpus",
+    "jusuf": "batch",
+    "jusuf_cpu": "batch",
+    "jusuf_gpus": "gpus",
+    "jusuf_develgpus": "develgpus",
+    "hdfml": "batch",
+    "deep_dam": "dp-dam",
+    "deep_cpu": "dp-cn",
+    "deep_booster": "dp-esb",
+    "deep_ml-gpu": "ml-gpu",
+    "judac": "judac"
+  },
+  "map_user_options": {},
+  "default_partitions": {
+    "juwels": [
+      "juwels_devel"
+    ],
+    "juwels_booster": [
+      "juwels_develbooster"
+    ],
+    "juwels_gpus": [
+      "juwels_develgpus"
+    ],
+    "jusuf_gpus": [
+      "jusuf_develgpus"
+    ],
+    "deep_cpu": [
+      "deep_ml-gpu"
+    ],
+    "jureca-dc_cpu": [
+      "jureca-dc_cpu-bigmem",
+      "jureca-dc_cpu-devel"
+    ],
+    "jureca-dc_gpu": [
+      "jureca-dc_gpu-devel"
+    ]
+  },
+  "selfapihandler": {
+    "allowed_auth_state_keys": ["access_token", "exp", "last_login", "vo_active", "vo_available", "used_authenticator_attr", "username_attr"]
+  },
+  "maintenance-check": {
+    "interval": 60,
+    "health_threshold": 40,
+    "url": "https://status.jsc.fz-juelich.de/api",
+    "services": {
+      "JUWELS": "13",
+      "JURECA": "1",
+      "JUSUF": "30",
+      "HDFML": "21"
+    },
+    "logger_name": "MaintenanceCheck",
+    "logger": {
+      "stream": {
+        "formatter": "simple",
+        "level": 10,
+        "stream": "ext://sys.stdout"
+      }
+    }
+  }
+}
