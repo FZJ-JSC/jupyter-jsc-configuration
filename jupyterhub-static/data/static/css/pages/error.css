@@ -1,7 +1,0 @@
-#error-page {
-  background: url("/hub/static/images/pages/error/background.jpg") center center
-    no-repeat;
-  background-size: cover;
-  height: 100%;
-  padding: 4vh 0vh;
-}

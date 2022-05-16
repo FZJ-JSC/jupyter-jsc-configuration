@@ -1,4 +1,0 @@
-proxy:
-  secretToken: fd0454d5aea3ced7cda6f5a5cca136b23f27a7885f22726f36eace5d9424cf0w9
-  service:
-    type: ClusterIP
