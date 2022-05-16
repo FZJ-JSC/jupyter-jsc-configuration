@@ -30,7 +30,7 @@
   },
   "unity": {
     "revoke": {
-      "url": "https://unity-jsc.fz-juelich.de/oauth2/revoke",
+      "url": "https://unity-jsc.fz-juelich.de/jupyter-oauth2/revoke",
       "certificate_path": "/mnt/unity_certs/..data/tls.crt",
       "request_timeout": 10,
       "client_id": "jupyter-jsc.fz-juelich.de",
