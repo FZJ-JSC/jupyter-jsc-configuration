@@ -3,7 +3,7 @@
     "unicoremgr": {
       "send_access_token": true,
       "request_timeout": 10,
-      "certificate_path": "/mnt/unicoremgr_certs/..data/ca.pem",
+      "certificate_path": false,
       "urls": {
         "services": "https://drf-unicoremgr.jupyterjsc.svc/api/services/",
         "logs": "https://drf-unicoremgr.jupyterjsc.svc/api/logs/handler"
@@ -11,7 +11,7 @@
     },
     "k8smgrhdfcloud": {
       "request_timeout": 10,
-      "certificate_path": "/mnt/k8smgr_certs/..data/ca.pem",
+      "certificate_path": false,
       "urls": {
         "services": "https://drf-k8smgr.jupyterjsc.svc/api/services/",
         "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler"
@@ -20,7 +20,7 @@
     "tunnel": {
       "authentication_token": "",
       "request_timeout": 10,
-      "certificate_path": "/mnt/tunnel_certs/..data/ca.pem",
+      "certificate_path": false,
       "urls": {
         "tunnel": "https://drf-tunnel.jupyterjsc.svc/api/tunnel/",
         "restart": "https://drf-tunnel.jupyterjsc.svc/api/restart/",
