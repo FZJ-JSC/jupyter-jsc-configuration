@@ -13,8 +13,8 @@
       "request_timeout": 10,
       "certificate_path": false,
       "urls": {
-        "services": "https://drf-k8smgr.jupyterjsc.svc/api/services/",
-        "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler"
+        "services": "http://drf-k8smgr.jupyterjsc.svc/api/services/",
+        "logs": "http://drf-k8smgr.juyterjsc.svc/api/logs/handler"
       }
     },
     "tunnel": {
