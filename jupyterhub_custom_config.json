@@ -11,7 +11,7 @@
     },
     "k8smgrhdfcloud": {
       "request_timeout": 10,
-      "certificate_path": "/mnt/k8smgr_certs/..data/tls.crt",
+      "certificate_path": "/mnt/k8smgr_certs/..data/tls.ca",
       "urls": {
         "services": "https://drf-k8smgr.jupyterjsc.svc/api/services/",
         "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler"
