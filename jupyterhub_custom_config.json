@@ -84,7 +84,7 @@
           },
           "allowed_lists": {
             "systems": [
-              "DEMO-SITE",
+              "DEEP",
               "HDF-Cloud"
             ]
           }
@@ -108,6 +108,21 @@
       "weight": 1,
       "drf-service": "unicoremgr"
     },
+    "DEEP": {
+      "base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
+      "interactive_partitions": [
+        "LoginNode"
+      ],
+      "LoginNode": [
+        "deep.fz-juelich.de"
+      ],
+      "nodes": ["deep01"],
+      "nodes_mapping": {"deep01": "deepv"},
+      "fuser": "ljupyter",
+      "host": "deep.fz-juelich.de",
+      "weight": 2,
+      "drf-service": "unicoremgr"
+    },
     "HDF-Cloud": {
       "drf-service": "k8smgrhdfcloud"
     }
@@ -122,6 +137,81 @@
           "minmax": [
             1,
             10
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      }
+    },
+    "DEEP": {
+      "LoginNode": {},
+      "dp-cn": {
+        "Nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            50
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "dp-dam": {
+        "Nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            56
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "dp-esb": {
+        "Nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            75
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "ml-gpu": {
+        "Nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            3
           ]
         },
         "runtime": {
@@ -157,9 +247,7 @@
     "deep_cpu": "DEEP",
     "deep_ml-gpu": "DEEP",
     "deep_booster": "DEEP",
-    "judac": "JUDAC",
-    "demo_site": "DEMO-SITE",
-    "demo_site_NOBATCH": "DEMO-SITE"
+    "judac": "JUDAC"
   },
   "map_partitions": {
     "jureca_booster": "booster",
