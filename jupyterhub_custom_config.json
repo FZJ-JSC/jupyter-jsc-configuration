@@ -101,10 +101,6 @@
       "LoginNode": [
         "juwels??.fz-juelich.de"
       ],
-      "nodes": ["juwels01"],
-      "nodes_mapping": {"juwels01": "juwels01i"},
-      "fuser": "ljupyter",
-      "host": "juwels01.fz-juelich.de",
       "weight": 1,
       "drf-service": "unicoremgr"
     },
@@ -116,10 +112,6 @@
       "LoginNode": [
         "deep.fz-juelich.de"
       ],
-      "nodes": ["deep01"],
-      "nodes_mapping": {"deep01": "deepv"},
-      "fuser": "ljupyter",
-      "host": "deep.fz-juelich.de",
       "weight": 2,
       "drf-service": "unicoremgr"
     },
