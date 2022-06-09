@@ -86,6 +86,7 @@
             "systems": [
               "DEEP",
               "JUWELS",
+              "JURECA",
               "HDF-Cloud"
             ]
           }
@@ -95,19 +96,24 @@
   },
   "systems": {
     "JUWELS": {
-      "base_url": "https://zam2126.zam.kfa-juelich.de/JUWELS/rest/core",
       "interactive_partitions": [
         "LoginNode", "LoginNodeBooster", "LoginNodeVis"
       ],
       "weight": 1,
       "drf-service": "unicoremgr"
     },
-    "DEEP": {
-      "base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
+    "JURECA": {
       "interactive_partitions": [
         "LoginNode"
       ],
       "weight": 2,
+      "drf-service": "unicoremgr"
+    },
+    "DEEP": {
+      "interactive_partitions": [
+        "LoginNode"
+      ],
+      "weight": 3,
       "drf-service": "unicoremgr"
     },
     "HDF-Cloud": {
@@ -115,6 +121,169 @@
     }
   },
   "resources": {
+    "JURECA": {
+      "LoginNode": {},
+      "dc-cpu": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            64
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "dc-cpu-bigmem": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            48
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "dc-cpu-devel": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            120
+          ]
+        }
+      },
+      "dc-gpu": {
+        "GPUS": {
+          "default": 4,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            24
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "dc-gpu-devel": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            512
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "inactive-booster-devel": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            8
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            360
+          ]
+        }
+      },
+      "inactive-booster": {
+        "GPUS": {
+          "default": 4,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            46
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "mem192": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            64
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      }
+    },
     "JUWELS": {
       "LoginNode": {},
       "LoginNodeVis": {},
@@ -139,7 +308,7 @@
       },
       "booster": {
         "GPUS": {
-          "default": 1,
+          "default": 4,
           "divisor": 1,
           "minmax": [
             1,
@@ -183,7 +352,7 @@
       },
       "develbooster": {
         "GPUS": {
-          "default": 1,
+          "default": 4,
           "divisor": 1,
           "minmax": [
             1,
@@ -209,7 +378,7 @@
       },
       "develgpus": {
         "GPUS": {
-          "default": 1,
+          "default": 4,
           "divisor": 1,
           "minmax": [
             1,
@@ -235,7 +404,7 @@
       },
       "gpus": {
         "GPUS": {
-          "default": 1,
+          "default": 4,
           "divisor": 1,
           "minmax": [
             1,
