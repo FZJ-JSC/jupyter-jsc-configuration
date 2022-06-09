@@ -96,10 +96,7 @@
     "JUWELS": {
       "base_url": "https://zam2126.zam.kfa-juelich.de/JUWELS/rest/core",
       "interactive_partitions": [
-        "LoginNode"
-      ],
-      "LoginNode": [
-        "juwels??.fz-juelich.de"
+        "LoginNode", "LoginNodeBooster", "LoginNodeVis"
       ],
       "weight": 1,
       "drf-service": "unicoremgr"
@@ -108,9 +105,6 @@
       "base_url": "https://zam2125.zam.kfa-juelich.de:9112/DEEP/rest/core",
       "interactive_partitions": [
         "LoginNode"
-      ],
-      "LoginNode": [
-        "deep.fz-juelich.de"
       ],
       "weight": 2,
       "drf-service": "unicoremgr"
@@ -122,13 +116,155 @@
   "resources": {
     "JUWELS": {
       "LoginNode": {},
+      "LoginNodeVis": {},
+      "LoginNodeBooster": {},
       "batch": {
         "nodes": {
           "default": 1,
           "divisor": 1,
           "minmax": [
             1,
-            10
+            1024
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "booster": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            384
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "devel": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            8
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            120
+          ]
+        }
+      },
+      "develbooster": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            120
+          ]
+        }
+      },
+      "develgpus": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            2
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            120
+          ]
+        }
+      },
+      "gpus": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            4
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            46
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "mem192": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            64
           ]
         },
         "runtime": {
