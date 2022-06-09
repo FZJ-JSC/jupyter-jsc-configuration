@@ -87,6 +87,8 @@
               "DEEP",
               "JUWELS",
               "JURECA",
+              "JUSUF",
+              "HDFML",
               "HDF-Cloud"
             ]
           }
@@ -109,11 +111,25 @@
       "weight": 2,
       "drf-service": "unicoremgr"
     },
-    "DEEP": {
+    "JUSUF": {
       "interactive_partitions": [
         "LoginNode"
       ],
       "weight": 3,
+      "drf-service": "unicoremgr"
+    },
+    "HDFML": {
+      "interactive_partitions": [
+        "LoginNode"
+      ],
+      "weight": 4,
+      "drf-service": "unicoremgr"
+    },
+    "DEEP": {
+      "interactive_partitions": [
+        "LoginNode"
+      ],
+      "weight": 5,
       "drf-service": "unicoremgr"
     },
     "HDF-Cloud": {
@@ -435,6 +451,100 @@
           "minmax": [
             1,
             64
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      }
+    },
+    "JUSUF": {
+      "LoginNode": {},
+      "batch": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            1024
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "develgpus": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            1
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            2
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      },
+      "gpus": {
+        "GPUS": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            1
+          ]
+        },
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            46
+          ]
+        },
+        "runtime": {
+          "default": 30,
+          "divisor": 60,
+          "minmax": [
+            10,
+            1440
+          ]
+        }
+      }
+    },
+    "HDFML": {
+      "LoginNode": {},
+      "batch": {
+        "nodes": {
+          "default": 1,
+          "divisor": 1,
+          "minmax": [
+            1,
+            15
           ]
         },
         "runtime": {
