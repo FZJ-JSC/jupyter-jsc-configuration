@@ -85,6 +85,7 @@
           "allowed_lists": {
             "systems": [
               "DEEP",
+              "JUWELS",
               "HDF-Cloud"
             ]
           }
