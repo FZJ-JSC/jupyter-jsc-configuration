@@ -727,5 +727,25 @@
         "stream": "ext://sys.stdout"
       }
     }
+  },
+  "reservation-check": {
+    "interval": 300,
+    "systems": {
+      "JURECA": {
+        "host": "jureca.fz-juelich.de"
+      },
+      "JUWELS": {
+        "host": "juwels.fz-juelich.de"
+      },
+      "JUSUF": {
+        "host": "jusuf.fz-juelich.de"
+      },
+      "HDFML": {
+        "host": "hdfml.fz-juelich.de"
+      },
+      "DEEP": {
+        "host": "deep.fz-juelich.de"
+      }
+    }
   }
 }
