@@ -6,7 +6,7 @@
       "certificate_path": "/mnt/unicoremgr_certs/..data/ca.pem",
       "urls": {
         "services": "https://drf-unicoremgr.jupyterjsc.svc/api/services/",
-        "logs": "https://drf-unicoremgr.jupyterjsc.svc/api/logs/handler"
+        "logs": "https://drf-unicoremgr.jupyterjsc.svc/api/logs/handler/"
       }
     },
     "k8smgrhdfcloud": {
@@ -14,7 +14,7 @@
       "certificate_path": "/mnt/k8smgr_certs/..data/ca.pem",
       "urls": {
         "services": "https://drf-k8smgr.jupyterjsc.svc/api/services/",
-        "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler"
+        "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler/"
       }
     },
     "tunnel": {
@@ -24,7 +24,7 @@
       "urls": {
         "tunnel": "https://drf-tunnel.jupyterjsc.svc/api/tunnel/",
         "restart": "https://drf-tunnel.jupyterjsc.svc/api/restart/",
-        "logs": "https://drf-tunnel.jupyterjsc.svc/api/logs/handler"
+        "logs": "https://drf-tunnel.jupyterjsc.svc/api/logs/handler/"
       }
     }
   },
