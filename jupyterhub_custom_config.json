@@ -14,7 +14,7 @@
       "certificate_path": "/mnt/k8smgr_certs/..data/ca.pem",
       "urls": {
         "services": "https://drf-k8smgr.jupyterjsc.svc/api/services/",
-        "logs": "https://drf-k8smgr.juyterjsc.svc/api/logs/handler/"
+        "logs": "https://drf-k8smgr.jupyterjsc.svc/api/logs/handler/"
       }
     },
     "tunnel": {
