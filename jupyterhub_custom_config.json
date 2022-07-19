@@ -50,6 +50,9 @@
         "JupyterLab": {
           "JupyterLab": {
             "max_per_user": 10
+          },
+          "AiidaLab": {
+            "max_per_user": 2
           }
         }
       },
@@ -67,6 +70,9 @@
         "JupyterLab": {
           "JupyterLab": {
             "max_per_user": 5
+          },
+          "AiidaLab": {
+            "max_per_user": 2
           }
         }
       },
@@ -89,6 +95,17 @@
               "JURECA",
               "JUSUF",
               "HDFML",
+              "HDF-Cloud"
+            ]
+          }
+        },        
+        "AiidaLab": {
+          "name": "AiidaLab - 21.07.1",
+          "vo_mapping": {
+            "admins": "default"
+          },
+          "allowed_lists": {
+            "systems": [
               "HDF-Cloud"
             ]
           }
