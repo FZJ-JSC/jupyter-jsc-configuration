@@ -23,17 +23,7 @@
 <div class="row g-0 h-100 justify-content-center">
   <div class="col-auto">
     <div id="link-div" class="col-auto my-4 p-4">
-      {# <h2>Links</h2> #}
       <div class="row">
-        {{ link_list("Jupyter-JSC", {
-            "Presentation": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf",
-            "Extensions at Jupyter-JSC": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb",
-            "Markdown Tips and Tricks": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb",
-            "Setup your own kernel": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_general.ipynb",
-            "Setup your own kernel with conda": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_conda.ipynb",
-            "Jupyter-JSC at unicore.eu": "https://www.unicore.eu/about-unicore/case-studies/jupyter-at-jsc/"
-          }) 
-        }}
         {{ link_list("Jupyter", {
             "Home": "https://www.jupyter.org",
             "Newsletter": "https://newsletter.jupyter.org",
@@ -46,15 +36,24 @@
             "JupyterLab Gitter": "https://gitter.im/jupyterlab/jupyterlab"
           })
         }}
-        {{ link_list("JSC", { 
-            "Home": "https://www.jupyter.org",
-            "JUWELS": "https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUWELS/JUWELS_node.html",
-            "JURECA": "https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JURECA/JURECA_node.html",
-            "JUSUF": "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html",
-            "DEEP": "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html",
-            "Newsletter": "https://www.fz-juelich.de/ias/jsc/EN/News/Newsletter/newsletter_node.html",
-            "Events": "https://www.fz-juelich.de/ias/jsc/EN/News/Events/events_node.html",
-            "Twitter": "https://twitter.com/fzj_jsc"
+        {{ link_list("JUNIQ", { 
+            "Home": "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility",
+            "JUPSI": "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility/juniq/d-wave-advantagetm-system-jupsi",
+            "OpenSuperQ": "https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JURECA/JURECA_node.html",
+            "JUQCS": "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html",
+          })
+        }}
+        {{ link_list("D-Wave", { 
+            "Home": "https://www.dwavesys.com/",
+            "Leap": "https://cloud.dwavesys.com/",
+            "Documentation": "https://docs.dwavesys.com/",
+            "Github": "https://github.com/dwavesystems",
+          })
+        }}
+        {{ link_list("Qiskit", { 
+            "Home": "https://qiskit.org/",
+            "Documentation": "https://qiskit.org/documentation/",
+            "Github": "https://github.com/Qiskit/qiskit",
           })
         }}
       </div>
