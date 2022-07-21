@@ -59,6 +59,7 @@ Footer */
   border-radius: 0;
   color: #002036;
   min-height: 42px;
+  max-width: unset;
 }
 
 .tooltip .tooltip-arrow::before {

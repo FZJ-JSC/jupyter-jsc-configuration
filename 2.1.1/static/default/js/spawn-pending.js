@@ -1,37 +1,20 @@
-// $(document).ready(function () {
-//   $('.left-tabs > li.nav-item').on('shown.bs.tab', function () {
-//     var should_show = JSON.parse(localStorage.getItem("spawnTabs"));
-//     if (!should_show) should_show = [];
-//     var id = $(this).children().first().attr('id');
-//     if (!(should_show.includes(id))) should_show.push(id);
-//     localStorage.setItem("homeTabs", JSON.stringify(should_show));
-//   });
-
-//   $('.left-tabs > li.nav-item').on('hidden.bs.tab', function () {
-//     var should_show = JSON.parse(localStorage.getItem("spawnTabs"));
-//     if (!should_show) return;
-//     var id = $(this).children().first().attr('id');
-//     if (should_show.includes(id)) {
-//       should_show.splice(should_show.indexOf(id), 1);
-//     }
-//     localStorage.setItem("homeTabs", JSON.stringify(should_show));
-//   });
-
-//   // Reopen open collapses on page reload
-//   var tabs = JSON.parse(localStorage.getItem("spawnTabs"));
-//   if (tabs) {
-//     for (const item of tabs) {
-//       var tabEl = $('#' + item);
-//       if (tabEl.length) {
-//         var tab = new bootstrap.Tab(tabEl);
-//         tab.show();
-//       }
-//     }
-//   }
-// })
+$(document).ready(function () {
+  var tr = $('tr[data-server-name]').not('.progress-tr').not('.collapse-tr');
+  var collapse = tr.next().find(".collapse");
+  var first_td = tr.children().first();
+  var icon = first_td.children().first();
+  var name = tr.data("server-name");
+  // Open collapse
+  icon.removeClass('collapsed');
+  new bootstrap.Collapse(collapse);
+  // and change to log vertical tag
+  var trigger = $("#" + name + "-logs-tab");
+  var tab = new bootstrap.Tab(trigger);
+  tab.show();
+})
 
 // Expand/collapse table rows
-$('tr[data-server-name]').not('.progress-tr').not('.collapse-tr').on('click', function () {
+$('tr[data-server-name]').not('.progress-tr').not('.collapse-tr').click(function () {
   var collapse = $(this).next().find('.collapse');
   var first_td = $(this).children().first();
   var icon = first_td.children().first();
@@ -44,4 +27,27 @@ $('tr[data-server-name]').not('.progress-tr').not('.collapse-tr').on('click', fu
     icon.addClass('collapsed');
     new bootstrap.Collapse(collapse);
   }
+});
+
+// Change to log vertical tag on toggle logs
+$(".progress-log-btn, .progress-info-text").click(function (event) {
+  var tr = $(this).parents("tr");
+  var collapse = tr.next().find(".collapse");
+  var hidden = collapse.css("display") == "none" ? true : false;
+  var name = tr.data("server-name");
+
+  console.log(hidden, $("#" + name + "-logs-tab").hasClass("active"));
+
+  // Do not hide collapse if already open, but not showing the logs tab
+  if (!hidden && !$("#" + name + "-logs-tab").hasClass("active")) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  else if (!hidden) {
+    return; // do not change to log tab if we should close the collapse 
+  }
+  // Change to log vertical tab
+  var trigger = $("#" + name + "-logs-tab");
+  var tab = new bootstrap.Tab(trigger);
+  tab.show();
 });

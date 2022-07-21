@@ -18,20 +18,6 @@
 </div>
 {%- endmacro -%}
 
-{%- macro carousel_item(title, href, title_text, text, active="") -%}
-<div class="carousel-item {{active}}">
-  <a target="_blank" href="{{href}}" title="{{title}}">
-    <div class="text-small">
-      <ul type="square">
-        <li class="text-dark "><small>{{ title.upper() }}</small></li>
-      </ul>
-    </div>
-    <h3>{{ title_text }}</h3>
-  </a>
-  <p> {{ text }} <a target="_blank" href="{{href}}">Read more.</a> </p>
-</div>
-{%- endmacro -%}
-
 
 {%- block main -%}
 <div class="row g-0 h-100 justify-content-center">

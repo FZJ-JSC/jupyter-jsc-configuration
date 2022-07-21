@@ -92,6 +92,13 @@ a.nav-link:hover {
 }
 
 
+/* Log divs */
+
+.log-div:not(:last-child) {
+  padding-bottom: 0.5rem;
+}
+
+
 /* JQuery confirm boxes */
 
 .jconfirm-box .checkbox {

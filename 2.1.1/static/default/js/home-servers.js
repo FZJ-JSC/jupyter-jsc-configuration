@@ -29,6 +29,7 @@ require(["jquery", "jhapi", "utils"], function (
       if (!(name in evtSources)) {
         var progress_url = utils.url_path_join(jhdata.base_url, "api/users", user, "servers", name, "progress");
         var progress_bar = $("#" + name + "-progress-bar");
+        var progress_info = $("#" + name + "-progress-info-text");
         var progress_log = $("#" + name + "-progress-log");
         var log_select = $("#" + name + "-log-select");
 
@@ -38,13 +39,16 @@ require(["jquery", "jhapi", "utils"], function (
         evtSources[name] = new EventSource(progress_url);
         evtSources[name]["name"] = name;
         evtSources[name]["progress_bar"] = progress_bar;
+        evtSources[name]["progress_info"] = progress_info;
         evtSources[name]["progress_log"] = progress_log;
         evtSources[name].onmessage = function (e) {
-          onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"], evtSources[name]["progress_log"]);
+          onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"],
+            evtSources[name]["progress_info"], evtSources[name]["progress_log"]);
         }
 
         progress_bar.removeClass("bg-success bg-danger");
         progress_bar.css("width", "0%");
+        progress_info.html("");
         progress_log.html("");
 
         // Update buttons to reflect pending state
@@ -61,12 +65,14 @@ require(["jquery", "jhapi", "utils"], function (
     for (const name in data) {
       const html_message = data[name].html_message;
       var progress_bar = $("#" + name + "-progress-bar");
+      var progress_info = $("#" + name + "-progress-info-text");
       var progress_log = $("#" + name + "-progress-log");
       var row = $('tr[data-server-name="' + name + '"]').first();
       // Only log message if it hasn't been logged yet      
       no_duplicate_log(html_message, progress_log);
       progress_bar.removeClass("bg-success");
       progress_bar.width(0);
+      progress_info.html("");
       enableRow(row, false);
     }
   }
@@ -131,10 +137,12 @@ require(["jquery", "jhapi", "utils"], function (
         // Only reset progress bar if stopping a running server
         // If cancelling, we want to keep the progress indicator
         var progress_bar = tr.find(".progress-bar");
+        var progress_info = tr.find(".progress-info-text");
         if (progress_bar.hasClass("bg-success")) {
           progress_bar.removeClass("bg-sucess");
           progress_bar.width(0);
-          progress_bar.html('');
+          progress_bar.html("");
+          progress_info.html("");
         }
       },
     });
@@ -154,10 +162,12 @@ require(["jquery", "jhapi", "utils"], function (
         // Only reset progress bar if stopping a running server
         // If cancelling, we want to keep the progress indicator
         var progress_bar = tr.find(".progress-bar");
+        var progress_info = tr.find(".progress-info-text");
         if (progress_bar.hasClass("bg-success")) {
           progress_bar.removeClass("bg-sucess");
           progress_bar.width(0);
-          progress_bar.html('');
+          progress_bar.html("");
+          progress_info.html("");
         }
       },
     });
@@ -196,7 +206,6 @@ require(["jquery", "jhapi", "utils"], function (
     var name = tr.data("server-name");
     var display_name = tr.find("th").text();
     var url = utils.url_path_join(base_url, "spawn", user, name);
-    url = createUrlAndUpdateTr(url, collapse, tr);
     $(this).attr("href", url);
 
     var options = createDataDict(collapse, display_name);
@@ -206,11 +215,13 @@ require(["jquery", "jhapi", "utils"], function (
     try {
       $(`form[id*=${name}]`).submit();
       var progress_bar = $("#" + name + "-progress-bar");
+      var progress_info = $("#" + name + "-progress-info-text");
       // Get the card instead of the parent div for the log
       var progress_log = $("#" + name + "-progress-log");
       var log_select = $("#" + name + "-log-select");
       progress_bar.removeClass("bg-success bg-danger");
       progress_bar.css("width", "0%");
+      progress_info.html("");
       progress_log.html("");
       var newTab = window.open("about:blank");
 
@@ -227,9 +238,11 @@ require(["jquery", "jhapi", "utils"], function (
             evtSources[name] = new EventSource(progress_url);
             evtSources[name]["name"] = name;
             evtSources[name]["progress_bar"] = progress_bar;
+            evtSources[name]["progress_info"] = progress_info;
             evtSources[name]["progress_log"] = progress_log;
             evtSources[name].onmessage = function (e) {
-              onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"], evtSources[name]["progress_log"]);
+              onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"],
+                evtSources[name]["progress_info"], evtSources[name]["progress_log"]);
             }
           }
 
@@ -239,6 +252,7 @@ require(["jquery", "jhapi", "utils"], function (
           progress_bar.css("width", "100%");
           progress_bar.attr("aria-valuenow", 100);
           progress_bar.addClass("bg-danger");
+          progress_info.html("last spawn failed");
           progress_log.append($("<div>").html(
             `Could not request spawn. Error: ${xhr.status} ${errorThrown}`)
           )
@@ -273,13 +287,7 @@ require(["jquery", "jhapi", "utils"], function (
     var display_name = $("#new_jupyterlab-name-input").val();
     // Automatically set name if none was specified
     if (display_name == "") {
-      var c = 1;
-      $("th[scope=row]").each(function () {
-        var name = $(this).html();
-        if (RegExp(/^jupyterlab_[0-9]*[0-9]$/).test(name)) c += 1;
-      })
-      display_name = "jupyterlab_" + c;
-      $("#new_jupyterlab-name-input").val(display_name); // Set name for user
+      display_name = "Unnamed JupyterLab"
     }
 
     $(this).attr("disabled", true);
@@ -289,7 +297,6 @@ require(["jquery", "jhapi", "utils"], function (
     spinner.removeClass("d-none");
 
     var url = utils.url_path_join(base_url, "spawn", user, server_name);
-    url = createUrlAndUpdateTr(url, $("#new_jupyterlab-configuration"), display_name);
     $(this).attr("href", url);
 
     var parent = $("#new_jupyterlab-dialog").find(".modal-content");
@@ -485,65 +492,6 @@ require(["jquery", "jhapi", "utils"], function (
   /*
   Util functions
   */
-  function createUrlAndUpdateTr(url, parent, display_name, tr) {
-    url += "?vo=" + $("#vo-form input[type='radio']:checked").val();
-    url += "&name=" + display_name;
-
-    function addParameter(param, input = false) {
-      if (input) { // <input>
-        var input = parent.find(`input[id*=${param}]`);
-        var parent_div = input.parents(".row").first();
-        if (parent_div.css("display") == "none") {
-          return;
-        }
-        var value = input.val();
-        if (param == "runtime") {
-          value = value * 60;
-        }
-      }
-      else { // <select>
-        var select = parent.find(`select[id*=${param}]`);
-        var value = select.val();
-
-        if (param == "type") {
-          param = "service";
-          value = "JupyterLab/" + value;
-        }
-
-        // For new jupterlabs, no tr exists that can be updated
-        if (tr) {
-          switch (param) {
-            case "system":
-              var td = tr.find(".system-td");
-              td.text(value);
-              break;
-            case "partition":
-              var td = tr.find(".partition-td");
-              td.text(value);
-              break;
-            case "project":
-              var td = tr.find(".project-td");
-              td.text(value);
-              break;
-          }
-        }
-      }
-
-      if (value != null && value != "") url += "&" + param + "=" + value;
-    }
-
-    addParameter("type");  // service
-    addParameter("system");
-    addParameter("account");
-    addParameter("project");
-    addParameter("partition");
-    addParameter("reservation");
-    addParameter("nodes", true);
-    addParameter("gpus", true);
-    addParameter("runtime", true);
-    return url;
-  }
-
   function createDataDict(parent, display_name) {
     var user_options = {}
     user_options["vo"] = $("#vo-form input[type='radio']:checked").val();
@@ -587,6 +535,8 @@ require(["jquery", "jhapi", "utils"], function (
   }
 
   function updateTr(collapse, tr) {
+    var name_td = tr.find("th");
+    name_td.text(collapse.find("input[id*=name]").val());
     var system_td = tr.find(".system-td");
     system_td.text(collapse.find("select[id*=system]").val());
     var partition_td = tr.find(".partition-td");
@@ -598,6 +548,7 @@ require(["jquery", "jhapi", "utils"], function (
   function update_spawn_events_dict(name, log_select) {
     // Save latest log to time stamp and empty it
     const start_event = spawn_events[name]["latest"][0];
+    if (!start_event) return;
     const start_message = start_event.html_message;
     var re = /([0-9]+(_[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
     var start_time = re.exec(start_message)[0];
@@ -608,6 +559,6 @@ require(["jquery", "jhapi", "utils"], function (
 
   /* Moved to home.html */
   // Handle EventSource message
-  // function onEvtMessage(event, evtSource, progress_bar, progress_log) {
+  // function onEvtMessage(event, evtSource, progress_bar, progress_info, progress_log) {
   // }
 });

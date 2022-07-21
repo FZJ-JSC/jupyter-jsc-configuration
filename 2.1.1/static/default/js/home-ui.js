@@ -81,7 +81,7 @@ $("div[id*=reservation] select").focus(function () {
 });
 
 // Check on click if we can remove the warning badge in tab
-$("[id$=tab").on("click", function () {
+$("[id$=tab").click(function () {
   var tab = $(this);
   var tab_content = $(tab.data("bsTarget"));
   var badges = tab_content.find(".badge");
@@ -101,13 +101,13 @@ $("[id$=tab").on("click", function () {
 
 // Remove all warning badges for a lab
 function removeWarnings(name) {
-  $("#" + name + "-configuration input, #" + name + "-configuration select").each(function() {
+  $("#" + name + "-configuration input, #" + name + "-configuration select").each(function () {
     $(this)[0].dispatchEvent(new Event("focus"));
   });
 }
 
 // Toggle the collapse on table row click
-$("tr[data-server-name]").not(".progress-tr").not(".collapse-tr").on("click", function () {
+$("tr[data-server-name]").not(".progress-tr").not(".collapse-tr").click(function () {
   var collapse = $(this).next().find(".collapse");
   var first_td = $(this).children().first();
   var icon = first_td.children().first();
@@ -122,34 +122,39 @@ $("tr[data-server-name]").not(".progress-tr").not(".collapse-tr").on("click", fu
   }
 });
 // But not on click of the action td
-$(".actions-td").on("click", function (event) {
+$(".actions-td").click(function (event) {
   event.preventDefault();
   event.stopPropagation();
 })
 
 // Change to log vertical tag on toggle logs
-// $(".btn[id*=progress-log-btn]").on("click", function(event) {
-$(".progress-log-btn").on("click", function (event) {
+$(".progress-log-btn, .progress-info-text").click(function (event) {
   var tr = $(this).parents("tr");
   var collapse = tr.next().find(".collapse");
   var hidden = collapse.css("display") == "none" ? true : false;
   var name = tr.data("server-name");
+
+  console.log(hidden, $("#" + name + "-logs-tab").hasClass("active"));
+
   // Do not hide collapse if already open, but not showing the logs tab
-  if (!hidden && !$("#" + name + "-logs-tab").hasClass("show")) {
+  if (!hidden && !$("#" + name + "-logs-tab").hasClass("active")) {
     event.preventDefault();
     event.stopPropagation();
   }
-  // Change to log vertical tag
+  else if (!hidden) {
+    return; // do not change to log tab if we should close the collapse 
+  }
+  // Change to log vertical tab
   var trigger = $("#" + name + "-logs-tab");
   var tab = new bootstrap.Tab(trigger);
   tab.show();
 });
 
 // Update styling of select components depending on available values
-function updateSelect(select, id, value, old_value, values, tab_id="options") {
+function updateSelect(select, id, value, old_value, values, tab_id = "options") {
   // For some systems (e.g. cloud), some options are not available
   var na = false;
-  if ( select.html() == "" ) {
+  if (select.html() == "") {
     select.append("<option disabled>Not available</option>");
     select.addClass("text-muted");
     select.removeAttr("required");
@@ -158,9 +163,9 @@ function updateSelect(select, id, value, old_value, values, tab_id="options") {
 
   // Disable select when there is only one option
   // Instead make div clickable to remove warning on select
-  if ( values.length == 1 || na ) {
+  if (values.length == 1 || na) {
     select.addClass("disabled");
-    select.parent().click(function() {
+    select.parent().click(function () {
       var warning_id = select.attr("id").replace("-select", "-warning");
       var warning = $("#" + warning_id);
       var tab_warning = $("#" + id + "-" + tab_id + "-tab-warning");
@@ -175,7 +180,7 @@ function updateSelect(select, id, value, old_value, values, tab_id="options") {
   }
 
   // Value is only supplied when setting values from saved values when first loading or resetting
-  if ( !value ) {
+  if (!value) {
     updateSelectValue(id, old_value, values, select, tab_id);
   } else {
     if (value == "None") select.prop("selectedIndex", 0);
@@ -183,7 +188,7 @@ function updateSelect(select, id, value, old_value, values, tab_id="options") {
   }
 }
 
-function updateSelectValue(id, old_value, values, select, tab_id="options") {
+function updateSelectValue(id, old_value, values, select, tab_id = "options") {
   var warning_id = select.attr("id").replace("-select", "-warning");
   var warning = $("#" + warning_id);
   var tab_warning = $("#" + id + "-" + tab_id + "-tab-warning");
@@ -195,7 +200,7 @@ function updateSelectValue(id, old_value, values, select, tab_id="options") {
     return;
   }
 
-  if ( values.includes(old_value) ) {
+  if (values.includes(old_value)) {
     select.val(old_value);
   } else {
     select.prop("selectedIndex", 0);
@@ -207,14 +212,14 @@ function updateSelectValue(id, old_value, values, select, tab_id="options") {
 }
 
 // Update styling of input components depending on available values
-function updateInput(id, old_value, value, min, max, input, tab_id="resources") {
+function updateInput(id, old_value, value, min, max, input, tab_id = "resources") {
   var warning_id = input.attr("id").replace("-input", "-warning");
   var warning = $("#" + warning_id);
   var tab_warning = $("#" + id + "-" + tab_id + "-tab-warning");
   var tab_link = tab_warning.parent();
 
-  if ( old_value != "" ) {
-    if ( old_value >= min && old_value <= max) {
+  if (old_value != "") {
+    if (old_value >= min && old_value <= max) {
       input.val(old_value);
     } else {
       input.val(value);
@@ -225,7 +230,7 @@ function updateInput(id, old_value, value, min, max, input, tab_id="resources") 
     // so that the warning symbol will disappear if the tab gets disabled
     // tab_warning[0].dispatchEvent(new Event("change"));
   }
-  else if ( old_value == "" && tab_link.hasClass("disabled") ) {
+  else if (old_value == "" && tab_link.hasClass("disabled")) {
     input.val(value);
     input.addClass("border-warning");
     warning.show();

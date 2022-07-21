@@ -3,9 +3,7 @@
 {%- block stylesheet -%}
   <link rel="stylesheet" href='{{static_url("css/home.css")}}' type="text/css"/>
   {# Vertical Tabs #}
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@1.0.1/dist/b5vtabs.min.css"
-    integrity="sha256-2yiJIxF53wjxXJpWRIHMVx2h6gbxPA9qR4PZ77fmA2k=" crossorigin="anonymous"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href='{{static_url("components/bootstrap5/vertical-tabs/b5vtabs.min.css")}}'>
 {%- endblock -%}
 
 
@@ -24,7 +22,7 @@
 
 {# Logic to determine if a lab can be opened/started #}
 {# If not a Lab from the current VO -- Not sure about this #}
-{# {%- if auth_state.get("vo_active", "") != user_options.get("vo_active_input") -%} {%- set na = 1 -%} #}
+{# {%- if auth_state.get("vo_active", "") != user_options.get("name").get("vo") -%} {%- set na = 1 -%} #}
 {# System is in maintenance #}
 {%- if system in maintenance_list -%} {%- set na = 1 -%}
 {# System is not in replace_allowed_lists of the VO config #}
@@ -73,7 +71,7 @@
 {%- endif -%}
 
 <div class="d-inline-flex justify-content-center">
-  {%- set margin = "me-3"%}
+  {%- set margin = "me-1"%}
   {# Save N/A status to page #}
   <span class="na-status d-none">{{na}}</span>
   {# N/A #}
@@ -100,7 +98,7 @@
       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
       <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3z"/>
     </svg>
-    Stop
+    Cancel
   </button>
   {# Stop #}
   <button type="button" class="btn btn-danger stop {%- if not active %} d-none {%- endif -%}
@@ -213,13 +211,15 @@
     {{ project }}
     {%- endif %}
   </td>
+  {%- set margin = "me-3"%}
   <td class="status-td">
     <div class="d-inline-flex flex-wrap align-items-center g-0">
       <div class="col-auto my-2">
-        <div class="progress flex-grow-1 me-3" style="height: 20px; min-width: 100px;">
+        <div class="progress flex-grow-1 {{margin}}" style="height: 20px; min-width: 100px;">
           <div id="{{name}}-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
           aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <div id="{{name}}-progress-info-text" class="progress-info-text text-muted text-center {{margin}}" style="font-size: smaller;"></div>
       </div>
       <div class="col-auto">
         <a class="progress-log-btn" role="button">
@@ -264,7 +264,7 @@
               <div class="row mb-3">
                 <label for="{{name}}-name-input" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
-                  <input type="name" class="form-control" id="{{name}}-name-input" value="{{display_name}}" disabled>
+                  <input type="name" class="form-control" id="{{name}}-name-input" value="{{display_name}}">
                 </div>
               </div>
               {{ form_div("Type", name) }}
@@ -475,8 +475,8 @@
         {%- set nodes = user_options.get("nodes", None) -%}
         {%- set runtime = user_options.get("runtime", None) -%}
         {%- set gpus = user_options.get("gpus", None) -%}
-        {# Exclude dashboards and juniq labs #}
-        {%- if service != "Dashboard" and user_options.get("vo", "default") != "juniq" -%}
+        {# Exclude dashboards #}
+        {%- if service != "Dashboard"  -%}
         {{ create_tr(spawner.name, display_name, s.active, s.pending, service, option, system, account, project, partition, reservation, runtime, nodes, gpus) }}
         {{ create_tr_collapse(spawner.name, display_name) }}
         {%- set tbody_ns.table_has_rows = True -%}
@@ -504,7 +504,7 @@ var spawn_events = {}
 {%- for s in named_spawners -%}
 {%- set spawner = s.orm_spawner -%}
 {%- set user_options = spawner.user_options -%}
-  {%- if user_options and user_options.get("service").startswith("JupyterLab") and user_options.get("vo") != "juniq"%}
+  {%- if user_options and user_options.get("service").startswith("JupyterLab") %}
   user_options["{{spawner.name}}"] = {{ user_options | tojson }}
   {%- endif -%}
   {%- if spawner.state and spawner.state.get("events") %}
@@ -583,6 +583,13 @@ function setValues(name, options) {
   updateProjects(id, option1, system, account, project);
   updatePartitions(id, option1, system, account, project, partition);
   updateResources(id, option1, system, account, project, partition, reservation);
+  // updateResources only sets reservation value, so update other resources manually
+  if (nodes) $("input#" + id + "-nodes-input").val(nodes);
+  if (runtime) {
+    let runtime_minutes = runtime/60;
+    $("input#" + id + "-runtime-input").val(runtime_minutes);
+  }
+  if (gpus) $("input#" + id + "-gpus-input").val(gpus);
 }
 
 $(document).ready(function () {
@@ -807,7 +814,7 @@ function updatePartitions(id, option, system, account, project, value=null) {
   updateSelect(select, id, value, old_value, values);
 }
 
-function updateResources(id, option, system, account, project, partition, reservation=null) {
+function updateResources(id, option, system, account, project, partition, reservation_value=null) {
   var nodes_input = $("input#" + id + "-nodes-input");
   var gpus_input = $("input#" + id + "-gpus-input");
   var runtime_input = $("input#" + id + "-runtime-input");
@@ -820,6 +827,7 @@ function updateResources(id, option, system, account, project, partition, reserv
   }
   var old_reservation_value = reservation_select.val();
   var reservation_values = [];
+  var reservation = null;
   // Reset all values
   var resources = [nodes_input, gpus_input, runtime_input, reservation_select];
   resources.forEach(function(resource) {
@@ -914,25 +922,30 @@ function updateResources(id, option, system, account, project, partition, reserv
             // if we changed from an existing value to not having a value
             if ( old_resource_values["runtime"] != "" ) {
               $("#" + id + "-runtime-warning").show();
-            }
+            };
             {%- endif %}
 
             {%- if reservations_allowed | length > 0 and reservations_allowed != ["None"] %}
-              {%- for reservation in spawner_options_form.get('dropdown_lists', {}).get('reservations', {}).get(system, {}).get(account, {}).get(project, {}).get(partition, []) | unique %}
-                {%- if reservation in reservations_allowed %}
+              {#- cannot use unique for list containing dictionary so use variable to keep track #}
+              {%- set reservation_list = [] %}
+              {%- for reservation in spawner_options_form.get('dropdown_lists', {}).get('reservations', {}).get(system, {}).get(account, {}).get(project, {}).get(partition, []) %}                
+                {%- if reservation in reservations_allowed and reservation not in reservation_list %}
+                  {{ reservation_list.append(reservation) | default("", True) }}
                   {%- if reservation == "None" %}
-                  $("#" + id + "-reservation-select").append('<option>{{reservation}}</option>');
+                  reservation = "None";
+                  $("#" + id + "-reservation-select").append('<option value="{{reservation}}">{{reservation}}</option>');
                   reservation_values.push("{{reservation}}");
                   {%- else %}
                     {# Check Reservation Info Dict for more information #}
                     {%- for reservation_line in spawner_options_form.get('reservations', {}).get(system, []) %}
-                      {%- if reservation == reservation_line[0] %}
-                        {%- if reservation_line[14] == "INACTIVE" %}
-                          $("#" + id + "-reservation-select").append('<option disabled style="color: #6c757d;">{{reservation}} [INACTIVE]</option>');
-                          reservation_values.push("{{reservation}}");
+                      {%- if reservation == reservation_line %}
+                        reservation = "{{reservation.get('ReservationName') | safe}}";
+                        {%- if reservation_line.get('State', "INACTIVE") == "INACTIVE" %}
+                          $("#" + id + "-reservation-select").append(`<option value="${reservation}" disabled style="color: #6c757d;">${reservation} [INACTIVE]</option>`);
+                          reservation_values.push(reservation);
                         {%- else %}
-                          $("#" + id + "-reservation-select").append('<option>{{reservation}}</option>');
-                          reservation_values.push("{{reservation}}");
+                          $("#" + id + "-reservation-select").append(`<option value="${reservation}">${reservation}</option>`);
+                          reservation_values.push(reservation);
                         {%- endif %}
                       {%- endif %}
                     {%- endfor %}
@@ -940,14 +953,15 @@ function updateResources(id, option, system, account, project, partition, reserv
                 {%- endif %} {# reservation in reservations_allowed #}
               {%- endfor %}    
                     
-              if (user_options[id] && user_options[id]["reservation_input"]) {
-                $("#" + id + "-reservation-select").val(user_options[id]["reservation_input"]);
+              if (user_options[id] && user_options[id]["reservation"]) {
+                $("#" + id + "-reservation-select").val(user_options[id]["reservation"]);
               }
               reservation_select.attr("required", true);
               $("#" + id + "-reservation-select-div").show();
               reservation_tab.removeClass("disabled");
+
               if ( reservation != "None" ) {
-                  updateSelectValue(id, old_reservation_value, reservation_values, reservation_select, tab_id="reservation");
+                  updateSelect(reservation_select, id, reservation_value, old_reservation_value, reservation_values, tab_id="reservation");
               } else {
                 reservation_select.val(reservation);
               }
@@ -993,6 +1007,7 @@ function updateSpawners() {
 
     var name = "{{s.name}}";
     var progress_bar = $("#" + name + "-progress-bar");
+    var progress_info = $("#" + name + "-progress-info-text");
     var progress_log = $("#" + name + "-progress-log");
 
     var tr = progress_bar.parents("tr");
@@ -1020,6 +1035,7 @@ function updateSpawners() {
     progress_bar.css("width", "100%");
     progress_bar.attr("aria-valuenow", current_progress);
     progress_bar.append( $("b").html(current_progress + "%") );
+    progress_info.html("spawning...");
     open_btn.addClass("disabled");
     if (current_progress < {{cancel_progress_activation}}) {
       stop_btn.addClass("disabled");
@@ -1035,24 +1051,27 @@ function updateSpawners() {
     // what is a better solution for this?
     evtSources[name]["name"] = name;
     evtSources[name]["progress_bar"] = progress_bar;
+    evtSources[name]["progress_info"] = progress_info;
     evtSources[name]["progress_log"] = progress_log;
 
     {%- elif s.active %}
     progress_bar.css("width", "100%");
     progress_bar.attr("aria-valuenow", current_progress);
-    progress_bar.addClass('bg-success');
+    progress_bar.addClass("bg-success");
+    progress_info.html("running");
     {%- endif %}
   {%- endfor %}
 
   for (const name in evtSources) {
     evtSources[name].onmessage = function (e) {
-      onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"], evtSources[name]["progress_log"]);
+      onEvtMessage(e, evtSources[name], evtSources[name]["progress_bar"], 
+        evtSources[name]["progress_info"], evtSources[name]["progress_log"]);
     }
   }
 }
 
 // Handle EventSource message
-function onEvtMessage(event, evtSource, progress_bar, progress_log) {
+function onEvtMessage(event, evtSource, progress_bar, progress_info, progress_log) {
   var tr = progress_bar.parents("tr");
   var server_name = tr.data("server-name");
   var collapse = tr.siblings(`.collapse-tr[data-server-name=${server_name}]`);
@@ -1072,6 +1091,7 @@ function onEvtMessage(event, evtSource, progress_bar, progress_log) {
     progress_bar.css("width", "100%");
     progress_bar.html("<b>" + evt.progress + "%</b>");
     progress_bar.attr("aria-valuenow", evt.progress);
+    progress_info.html("spawning...");
     delete_btn.addClass("disabled")
 
     if (evt.progress >= {{cancel_progress_activation}}) {
@@ -1097,8 +1117,9 @@ function onEvtMessage(event, evtSource, progress_bar, progress_log) {
     delete evtSources[evtSource.name];
     progress_bar.html('');
     progress_bar.addClass("bg-success");
-    cancel_btn.addClass("d-none");
-    stop_btn.removeClass("d-none");
+    progress_info.html("running");
+    cancel_btn.addClass("d-none disabled");
+    stop_btn.removeClass("d-none disabled");
     open_btn.removeClass("disabled");
     delete_btn.removeClass("disabled");
   }
@@ -1109,6 +1130,7 @@ function onEvtMessage(event, evtSource, progress_bar, progress_log) {
     progress_bar.html('');
     progress_bar.attr("aria-valuenow", 100);
     progress_bar.addClass("bg-danger");
+    progress_info.html("last spawn failed");
     // Change buttons to start or N/A
     var na = tr.find(".na-status").text();
     if (na == "1") {
@@ -1118,8 +1140,8 @@ function onEvtMessage(event, evtSource, progress_bar, progress_log) {
       tr.find(".na").addClass("d-none")
       tr.find(".start").removeClass("d-none");
     }
-    open_btn.addClass("d-none");
-    cancel_btn.addClass("d-none");
+    open_btn.addClass("d-none disabled");
+    cancel_btn.addClass("d-none disabled");
     delete_btn.removeClass("disabled");
   }
 }
@@ -1139,11 +1161,11 @@ function no_duplicate_log(html_message, progress_log) {
 
     // and only append if message has not been logged yet
     if ( !current_messages.includes(html_text) ) {
-      progress_log.append($("<div>").html(html_message));
+      progress_log.append($('<div class="log-div">').html(html_message));
     } 
 }
 </script>
 
 <script src='{{static_url("js/home-servers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
-<script src='{{static_url("js/home-components.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/home-ui.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
 {%- endblock %}

@@ -6,16 +6,6 @@
 <link rel="stylesheet" href='{{static_url("css/login.css")}}' type="text/css" />
 {%- endblock -%}
 
-{%- macro link_list(header, link_dict) -%}
-<div class="col" style="max-width: 50%;">
-  <h6>{{header}}</h6>
-  <ul class="ps-0">
-  {%- for label, href in link_dict.items() %}
-    <li><a href="{{href}}" target="_blank">{{ label }}</a></li>
-  {%- endfor %}
-  </ul>
-</div>
-{%- endmacro -%}
 
 {%- macro carousel_item(title, href, title_text, text, active="") -%}
 <div class="carousel-item {{active}}">

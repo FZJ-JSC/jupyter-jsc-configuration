@@ -67,16 +67,9 @@
 
     {% set base_url = "jupyter-jsc-staging" %}
 
-    {{ accordion("Jupyter-JSC", {
-        "Presentation": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf",
-        "Extensions at Jupyter-JSC": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb",
-        "Markdown Tips and Tricks": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb",
-        "Setup your own kernel": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_general.ipynb",
-        "Setup your own kernel with conda": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_conda.ipynb",
-        "Jupyter-JSC at unicore.eu": "https://www.unicore.eu/about-unicore/case-studies/jupyter-at-jsc/"
-        }, 
-      heading="Links") 
-    }}
+    {{ ul({
+      "Documentation": "https://docs." + base_url + ".fz-juelich.de",
+    },  heading="Links") }}
     {{ accordion("Jupyter", {
         "Home": "https://www.jupyter.org",
         "Newsletter": "https://newsletter.jupyter.org",
@@ -90,13 +83,12 @@
       }) 
     }}
     {{ accordion("JSC", { 
-        "Home": "https://www.jupyter.org",
-        "JUWELS": "https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUWELS/JUWELS_node.html",
-        "JURECA": "https://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JURECA/JURECA_node.html",
-        "JUSUF": "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUSUF/JUSUF_node.html",
-        "DEEP": "https://fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/DEEP-EST/_node.html",
-        "Newsletter": "https://www.fz-juelich.de/ias/jsc/EN/News/Newsletter/newsletter_node.html",
-        "Events": "https://www.fz-juelich.de/ias/jsc/EN/News/Events/events_node.html",
+        "JUWELS": "https://www.fz-juelich.de/en/ias/jsc/systems/supercomputers/juwels",
+        "JURECA": "https://www.fz-juelich.de/en/ias/jsc/systems/supercomputers/jureca",
+        "JUSUF": "https://www.fz-juelich.de/en/ias/jsc/systems/supercomputers/jusuf",
+        "DEEP": "https://www.fz-juelich.de/en/ias/jsc/systems/prototype-systems/deep_system",
+        "Newsletter": "https://www.fz-juelich.de/en/ias/jsc/news/news-items/newsletter-jsc-news",
+        "Events": "https://www.fz-juelich.de/en/ias/jsc/news/events/",
         "Twitter": "https://twitter.com/fzj_jsc"
       }) 
     }}
