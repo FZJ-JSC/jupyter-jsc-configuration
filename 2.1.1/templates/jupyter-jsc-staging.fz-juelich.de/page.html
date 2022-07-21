@@ -115,18 +115,19 @@
 
   {#- Container div enabling the body section to flex-grow #}
   <div class="d-flex flex-column h-100">
+    {%- set include_from = "default" %}  {# default or hostname #}
     {#- HEADER -#}
     {%- set show_login = show_login | default(true) -%}
     {%- set show_navigation = show_navigation | default(false) -%}
     <div>
-    {%- include hostname + "/header.html" -%}
+    {%- include  include_from + "/header.html" -%}
     </div>
 
     <div class="container-fluid flex-grow-1 p-0">
       <div class="d-flex flex-column h-100">
         {#- SIDEBAR -#}
         {%- if user -%}
-        {%- include hostname + "/sidebar.html" -%}
+        {%- include include_from + "/sidebar.html" -%}
         {%- endif -%}
 
         {# MAIN #}
@@ -137,7 +138,7 @@
         </main>
 
         {# FOOTER #}
-        {%- include hostname + "/footer.html" -%}  
+        {%- include include_from + "/footer.html" -%}  
       </div>
     </div>  
   </div> {# End of container div #}
