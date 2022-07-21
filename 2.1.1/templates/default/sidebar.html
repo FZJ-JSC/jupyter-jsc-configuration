@@ -65,10 +65,9 @@
     }, heading="Logging") }}
     {%- endif -%}
 
-    {% set base_url = "jupyter-jsc-staging" %}
 
     {{ ul({
-      "Documentation": "https://docs." + base_url + ".fz-juelich.de",
+      "Documentation": "https://docs." + hostname,
     },  heading="Links") }}
     {{ accordion("Jupyter", {
         "Home": "https://www.jupyter.org",

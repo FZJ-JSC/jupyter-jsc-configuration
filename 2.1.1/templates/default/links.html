@@ -25,13 +25,12 @@
     <div id="link-div" class="col-auto my-4 p-4">
       {# <h2>Links</h2> #}
       <div class="row">
-        {% set base_url = "jupyter-jsc-staging" %}
         {{ link_list("Jupyter-JSC", {
-            "Presentation": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf",
-            "Extensions at Jupyter-JSC": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb",
-            "Markdown Tips and Tricks": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb",
-            "Setup your own kernel": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_general.ipynb",
-            "Setup your own kernel with conda": "https://docs." + base_url + ".fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_conda.ipynb",
+            "Presentation": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/Jupyter-JSC_supercomputing-in-the-browser.pdf",
+            "Extensions at Jupyter-JSC": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/List_JupyterExtensions.ipynb",
+            "Markdown Tips and Tricks": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Markdown_Tipps-and-Tricks.ipynb",
+            "Setup your own kernel": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_general.ipynb",
+            "Setup your own kernel with conda": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/master/001-Jupyter/Create_JupyterKernel_conda.ipynb",
             "Jupyter-JSC at unicore.eu": "https://www.unicore.eu/about-unicore/case-studies/jupyter-at-jsc/"
           }) 
         }}
