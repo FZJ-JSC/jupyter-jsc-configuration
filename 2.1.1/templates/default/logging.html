@@ -163,6 +163,7 @@
   <div class="accordion text-black mt-3" id="jhub-logs-accordion">
     {{ create_accordion_item("JupyterHub", "jhub", "jhub-logs-accordion") }}
   </div>
+  {%- if show_drf_logs %}
   <div class="accordion text-black mt-3" id="unicore-logs-accordion">
     {{ create_accordion_item("Unicore Manager", "unicoremgr", "unicore-logs-accordion") }}
   </div>
@@ -172,6 +173,7 @@
   <div class="accordion text-black mt-3" id="tunnel-logs-accordion">
     {{ create_accordion_item("Tunnel", "tunnel", "tunnel-logs-accordion") }}
   </div>
+  {%- endif %}
 </div>
 {%- endblock -%}
 
