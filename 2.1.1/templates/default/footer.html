@@ -4,6 +4,7 @@
 
 {%- macro ampel(system, href) -%}
 <div id="ampel-{{system}}" class="mx-3">
+  {%- if not maintenance_messages -%} {% set maintenance_messages = {} -%} {%- endif %}
   <img class="ampel-img" src='{{static_url("images/footer/systems/" + system.lower() + ".svg")}}' />
   <a href="{{href}}" target="_blank" class="align-middle" data-toggle="ample-tooltip"
     title='{{maintenance_messages.get(system, "")}}'>
