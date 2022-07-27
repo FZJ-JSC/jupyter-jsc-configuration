@@ -852,21 +852,20 @@ function updateResources(id, option, system, account, project, partition, reserv
       {%- for option, system_resources in spawner_options_form.get('resources', {}).items() %}
       if (option == {{ option | tojson }}) {
 
-          console.log({{system_resources.get(system) | tojson}})
-
           {%- if system_resources.get(system, {}) == {} %}
-          {# There are no resources for the system, so we can hide everything here already #}
-          ["nodes", "gpus", "runtime"].forEach(function(resource) {
-            $("#" + id + "-nodes-input-div").hide();
-            $(`#${id}-${resource}-input-div`).hide();
-            // Show warning even if the div is hidden 
-            // if we changed from an existing value to not having a value
-            if ( old_resource_values[resource] != "" ) {
-              $(`#${id}-${resource}-warning`).show();
-            }
-          })
-          $("#" + id + "-reservation-select-div").hide();
-          return;
+            console.log("{{system_resources.get(system)}}")
+            {# There are no resources for the system, so we can hide everything here already #}
+            ["nodes", "gpus", "runtime"].forEach(function(resource) {
+              $("#" + id + "-nodes-input-div").hide();
+              $(`#${id}-${resource}-input-div`).hide();
+              // Show warning even if the div is hidden 
+              // if we changed from an existing value to not having a value
+              if ( old_resource_values[resource] != "" ) {
+                $(`#${id}-${resource}-warning`).show();
+              }
+            })
+            $("#" + id + "-reservation-select-div").hide();
+            return;
           {%- endif %}
       }
       {%- endfor %}
