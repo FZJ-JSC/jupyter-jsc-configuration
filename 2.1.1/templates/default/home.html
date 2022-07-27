@@ -849,9 +849,12 @@ function updateResources(id, option, system, account, project, partition, reserv
     {%- for system, accounts_allowed in systems_allowed.items() %}
 
 
-      {%- for option, systems in spawner_options_form.get('resources', {}).items() %}
+      {%- for option, system_resources in spawner_options_form.get('resources', {}).items() %}
       if (option == {{ option | tojson }}) {
-          {%- if systems.get(system, {}) == {} %}
+
+          console.log({{system_resources.get(system) | tojson}})
+
+          {%- if system_resources.get(system, {}) == {} %}
           {# There are no resources for the system, so we can hide everything here already #}
           ["nodes", "gpus", "runtime"].forEach(function(resource) {
             $("#" + id + "-nodes-input-div").hide();
