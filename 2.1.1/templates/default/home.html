@@ -846,12 +846,16 @@ function updateResources(id, option, system, account, project, partition, reserv
   reservation_tab.addClass("disabled");
 
   {%- for option, systems_allowed in spawner_options_form.get('dropdown_lists', {}).get('options', {}).items() %}
+
+    console.log({{systems_allowed|tojson}})
+
     {%- for system, accounts_allowed in systems_allowed.items() %}
+
       {%- for account, projects_allowed in accounts_allowed.items() %}
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
 
-          if (system == "HDF-Cloud" and {{system|tojson}} == "HDF-Cloud") {
+          if (system == "HDF-Cloud" && {{system|tojson}} == "HDF-Cloud") {
             console.log("before if")
             console.log("system:", system, {{system|tojson}})
             console.log("account:", account, {{account|tojson}})
