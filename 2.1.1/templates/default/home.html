@@ -848,31 +848,26 @@ function updateResources(id, option, system, account, project, partition, reserv
   {%- for option, systems_allowed in spawner_options_form.get('dropdown_lists', {}).get('options', {}).items() %}
     {%- for system, accounts_allowed in systems_allowed.items() %}
 
-
+      {# If are no resources for the system, we can hide everything here already #}
       {%- for option, system_resources in spawner_options_form.get('resources', {}).items() %}
-
-      console.log("system:", {{system|tojson}})
-      console.log("resources for system:", {{system_resources.get(system, {}) | tojson }})
-      console.log("resources for system:", "{{system_resources.get(system, {}) == {}}}")
-
       if (option == {{ option | tojson }}) {
-
           {%- if system_resources.get(system, {}) == {} %}
-            {# There are no resources for the system, so we can hide everything here already #}
-            ["nodes", "gpus", "runtime"].forEach(function(resource) {
+            if (system == {{ system | tojson }}) {
+              ["nodes", "gpus", "runtime"].forEach(function(resource) {
 
-              console.log(system, "has no resources");
+                console.log(system, "has no resources");
 
-              $("#" + id + "-nodes-input-div").hide();
-              $(`#${id}-${resource}-input-div`).hide();
-              // Show warning even if the div is hidden 
-              // if we changed from an existing value to not having a value
-              if ( old_resource_values[resource] != "" ) {
-                $(`#${id}-${resource}-warning`).show();
-              }
-            })
-            $("#" + id + "-reservation-select-div").hide();
-            return;
+                $("#" + id + "-nodes-input-div").hide();
+                $(`#${id}-${resource}-input-div`).hide();
+                // Show warning even if the div is hidden 
+                // if we changed from an existing value to not having a value
+                if ( old_resource_values[resource] != "" ) {
+                  $(`#${id}-${resource}-warning`).show();
+                }
+              })
+              $("#" + id + "-reservation-select-div").hide();
+              return;
+            }
           {%- endif %}
       }
       {%- endfor %}
