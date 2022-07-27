@@ -851,7 +851,9 @@ function updateResources(id, option, system, account, project, partition, reserv
 
       {%- for option, system_resources in spawner_options_form.get('resources', {}).items() %}
 
-      console.log({{ option | tojson }}, {{ system_resources | tojson }}, {{system_resources.get(system, {}) | tojson }})
+      console.log("system:", {{system|tojson}})
+      console.log("resources for system:", {{system_resources.get(system, {}) | tojson }})
+      console.log("resources for system:", {{system_resources.get(system, {}) == {}}})
 
       if (option == {{ option | tojson }}) {
 
