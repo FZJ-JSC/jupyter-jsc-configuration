@@ -851,7 +851,12 @@ function updateResources(id, option, system, account, project, partition, reserv
 
     {%- for system, accounts_allowed in systems_allowed.items() %}
 
+    console.log({{system|tojson}})
+
       {%- for account, projects_allowed in accounts_allowed.items() %}
+
+         console.log({{account|tojson}})
+
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
 
