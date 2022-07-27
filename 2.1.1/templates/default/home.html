@@ -853,9 +853,11 @@ function updateResources(id, option, system, account, project, partition, reserv
       if (option == {{ option | tojson }}) {
 
           {%- if system_resources.get(system, {}) == {} %}
-            console.log("{{system_resources.get(system)}}")
             {# There are no resources for the system, so we can hide everything here already #}
             ["nodes", "gpus", "runtime"].forEach(function(resource) {
+
+              console.log(system, "has no resources");
+
               $("#" + id + "-nodes-input-div").hide();
               $(`#${id}-${resource}-input-div`).hide();
               // Show warning even if the div is hidden 
