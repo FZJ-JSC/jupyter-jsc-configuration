@@ -852,7 +852,18 @@ function updateResources(id, option, system, account, project, partition, reserv
       {%- for option, systems in spawner_options_form.get('resources', {}).items() %}
       if (option == {{ option | tojson }}) {
           {%- if systems.get(system, {}) == {} %}
-          console.log("no resources for system {{system|tojson}}");
+          {# There are no resources for the system, so we can hide everything here already #}
+          ["nodes", "gpus", "runtime"].forEach(function(resource) {
+            $("#" + id + "-nodes-input-div").hide();
+            $(`#${id}-${resource}-input-div`).hide();
+            // Show warning even if the div is hidden 
+            // if we changed from an existing value to not having a value
+            if ( old_resource_values[resource] != "" ) {
+              $(`#${id}-${resource}-warning`).show();
+            }
+          })
+          $("#" + id + "-reservation-select-div").hide();
+          return;
           {%- endif %}
       }
       {%- endfor %}
