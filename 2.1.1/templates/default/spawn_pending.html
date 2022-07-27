@@ -229,14 +229,7 @@
 
 {%- block script -%}
 <script>
-var user_options = {};
-{%- for s in named_spawners -%}
-{%- set spawner = s.orm_spawner -%}
-{%- set user_options = spawner.user_options -%}
-  {%- if user_options and user_options.get("service").startswith("JupyterLab") %}
-  user_options["{{spawner.name}}"] = {{ user_options | tojson }}
-  {%- endif -%}
-{%- endfor %}
+var user_options = {{spawner.user_options | tojson}}
 </script>
 
 <script>
