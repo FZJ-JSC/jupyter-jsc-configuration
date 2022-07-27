@@ -846,39 +846,23 @@ function updateResources(id, option, system, account, project, partition, reserv
   reservation_tab.addClass("disabled");
 
   {%- for option, systems_allowed in spawner_options_form.get('dropdown_lists', {}).get('options', {}).items() %}
-
-    console.log({{systems_allowed|tojson}})
-
     {%- for system, accounts_allowed in systems_allowed.items() %}
 
-    console.log({{system|tojson}}, {{accounts_allowed|tojson}})
-
-    {%- for option, systems in spawner_options_form.get('resources', {}).items() %}
+    {# {%- for option, systems in spawner_options_form.get('resources', {}).items() %}
     if (option == {{ option | tojson }}) {
-        console.log("resources for systems:", {{systems|tojson}})
         {%- if systems.get(system, {}) == {} %}
+        console.log("no resources for system {{system|tojson}}");
         {%- endif %}
     }
-    {%- endfor %}
+    {%- endfor %} #}
 
       {%- for account, projects_allowed in accounts_allowed.items() %}
-
-         console.log({{account|tojson}})
-
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
 
-          if (system == "HDF-Cloud" && {{system|tojson}} == "HDF-Cloud") {
-            console.log("before if")
-            console.log("system:", system, {{system|tojson}})
-            console.log("account:", account, {{account|tojson}})
-            console.log("partition:", partition, {{partition|tojson}})
-          }
+          console.log({{system|tojson}}, "before if")
 
           if (option == {{ option | tojson }} && system == {{ system | tojson }} && account == {{ account | tojson }} && project == {{ project | tojson }} && partition == {{ partition | tojson }}) {
-            
-            console.log("in if")
-            
             {%- if "nodes" in spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}) %}
             var min = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[0] }};
             var max = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[1] }};
