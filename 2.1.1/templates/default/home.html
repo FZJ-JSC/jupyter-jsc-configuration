@@ -851,7 +851,7 @@ function updateResources(id, option, system, account, project, partition, reserv
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
 
-          if (system == "HDF-Cloud") {
+          if (system == "HDF-Cloud" and {{system|tojson}} == "HDF-Cloud") {
             console.log("before if")
             console.log("system:", system, {{system|tojson}})
             console.log("account:", account, {{account|tojson}})
