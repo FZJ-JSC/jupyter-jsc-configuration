@@ -513,6 +513,9 @@ var spawn_events = {}
   spawn_events["{{spawner.name}}"] = {"latest": []};
   {%- endif -%}
 {%- endfor %}
+
+
+var spawner_options_form = {{spawner_options_form | tojson}}
 </script>
 
 <script>
