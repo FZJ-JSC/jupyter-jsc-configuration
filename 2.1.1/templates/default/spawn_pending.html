@@ -229,6 +229,17 @@
 
 {%- block script -%}
 <script>
+var user_options = {};
+{%- for s in named_spawners -%}
+{%- set spawner = s.orm_spawner -%}
+{%- set user_options = spawner.user_options -%}
+  {%- if user_options and user_options.get("service").startswith("JupyterLab") %}
+  user_options["{{spawner.name}}"] = {{ user_options | tojson }}
+  {%- endif -%}
+{%- endfor %}
+</script>
+
+<script>
 require(["jquery", "jhapi", "utils"], function (
   $,
   JHAPI,
@@ -236,7 +247,7 @@ require(["jquery", "jhapi", "utils"], function (
 ) {
   var base_url = window.jhdata.base_url;
   var user = window.jhdata.user;
-  var api = new JHAPI(base_url);
+  var api = new JHAPI(base_url); 
 
   $( document ).ready(function() {
     checkStatus();
