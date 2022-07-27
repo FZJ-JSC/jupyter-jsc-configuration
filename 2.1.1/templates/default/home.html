@@ -853,7 +853,7 @@ function updateResources(id, option, system, account, project, partition, reserv
 
       console.log("system:", {{system|tojson}})
       console.log("resources for system:", {{system_resources.get(system, {}) | tojson }})
-      console.log("resources for system:", {{system_resources.get(system, {}) == {}}})
+      console.log("resources for system:", "{{system_resources.get(system, {}) == {}}}")
 
       if (option == {{ option | tojson }}) {
 
