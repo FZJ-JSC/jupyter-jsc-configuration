@@ -851,8 +851,8 @@ function updateResources(id, option, system, account, project, partition, reserv
             {%- if "nodes" in spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}) %}
             var min = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[0] }};
             var max = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[1] }};
-            if (user_options[id] && user_options[id]["resource_nodes"]) {
-              var value = user_options[id]["resource_nodes"];
+            if (user_options[id] && user_options[id]["nodes"]) {
+              var value = user_options[id]["nodes"];
             } else
               var value = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("default", 0) }};
 
@@ -877,8 +877,8 @@ function updateResources(id, option, system, account, project, partition, reserv
             {%- if "gpus" in spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}) %}
             var min = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("gpus", {}).get("minmax", [0, 1])[0] }};
             var max = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("gpus", {}).get("minmax", [0, 1])[1] }};
-            if (user_options[id] && user_options[id]["resource_gpus"]) {
-              var value = user_options[id]["resource_gpus"];
+            if (user_options[id] && user_options[id]["gpus"]) {
+              var value = user_options[id]["gpus"];
             } else
               var value = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("gpus", {}).get("default", 0) }};
 
@@ -903,8 +903,8 @@ function updateResources(id, option, system, account, project, partition, reserv
             {%- if "runtime" in spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}) %}
             var min = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("runtime", {}).get("minmax", [0, 1])[0] }};
             var max = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("runtime", {}).get("minmax", [0, 1])[1] }};
-            if (user_options[id] && user_options[id]["resource_runtime"]) {
-              var value = user_options[id]["resource_runtime"] / 60;
+            if (user_options[id] && user_options[id]["runtime"]) {
+              var value = user_options[id]["runtime"] / 60;
             } else
               var value = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("runtime", {}).get("default", 0) }};
             $("#" + id + "-runtime-text").text("Runtime (min) [" + min + "," + max + "]");
