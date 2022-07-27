@@ -847,6 +847,8 @@ function updateResources(id, option, system, account, project, partition, reserv
 
   {%- for option, systems_allowed in spawner_options_form.get('dropdown_lists', {}).get('options', {}).items() %}
     {%- for system, accounts_allowed in systems_allowed.items() %}
+      console.log(system);
+
       {%- for account, projects_allowed in accounts_allowed.items() %}
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
