@@ -852,7 +852,13 @@ function updateResources(id, option, system, account, project, partition, reserv
       {%- for account, projects_allowed in accounts_allowed.items() %}
         {%- for project, partitions_allowed in projects_allowed.items() %}
           {%- for partition, reservations_allowed in partitions_allowed.items() %}
+
+          console.log("before if")
+
           if (option == {{ option | tojson }} && system == {{ system | tojson }} && account == {{ account | tojson }} && project == {{ project | tojson }} && partition == {{ partition | tojson }}) {
+            
+            console.log("in if")
+            
             {%- if "nodes" in spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}) %}
             var min = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[0] }};
             var max = {{ spawner_options_form.get('resources', {}).get(option, {}).get(system, {}).get(partition, {}).get("nodes", {}).get("minmax", [0, 1])[1] }};
