@@ -103,7 +103,8 @@
     <div class="container-fluid flex-grow-1 p-0">
       <div class="d-flex flex-column h-100">
         {#- SIDEBAR -#}
-        {%- if user -%}
+        {%- set show_sidebar = show_sidebar | default(true) -%}
+        {%- if user and show_sidebar -%}
         {%- include template_path + "/sidebar.html" -%}
         {%- endif -%}
 
