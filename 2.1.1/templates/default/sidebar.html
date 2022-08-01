@@ -61,7 +61,6 @@
     {{ ul({
       "Admin": "/hub/admin",
       "Logging": "/hub/logging",
-      "JSC Service Status": "http://status.jsc.fz-juelich.de",
     }, heading="Admin") }}
     {%- endif -%}
 
@@ -82,6 +81,7 @@
 
     {{ ul({
       "Documentation": "https://docs." + hostname + "/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb",
+      "JSC Service Status": "http://status.jsc.fz-juelich.de",
     },  heading="Links") }}
     {{ accordion("Jupyter", {
         "Home": "https://www.jupyter.org",
