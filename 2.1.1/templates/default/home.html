@@ -635,7 +635,7 @@ $(document).ready(function () {
   {%- if s._failed and not s.active %}
   var id = "{{s.name | safe}}"
   var progress_bar = $(`tr[data-server-name=${id}] .progress-bar `);
-  progress_bar.html('');
+  progress_bar.css("width", "100%");
   progress_bar.attr("aria-valuenow", 100);
   progress_bar.addClass("bg-danger");
   {%- endif -%}
