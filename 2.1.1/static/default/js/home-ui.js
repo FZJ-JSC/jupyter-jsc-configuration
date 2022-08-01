@@ -121,8 +121,8 @@ $("tr[data-server-name]").not(".progress-tr").not(".collapse-tr").click(function
     new bootstrap.Collapse(collapse);
   }
 });
-// But not on click of the action td
-$(".actions-td").click(function (event) {
+// But not on click of the action td buttons
+$(".actions-td button").click(function (event) {
   event.preventDefault();
   event.stopPropagation();
 })
