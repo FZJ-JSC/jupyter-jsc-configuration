@@ -632,7 +632,7 @@ $(document).ready(function () {
   updateSpawners();
   // Update status for spawner if _failed is set
   {%- for s in named_spawners -%}
-  {%- if s._failed and not s.active %}
+  {%- if s._failed or s._cancel_event_yielded and not s.active %}
   var name = "{{s.name | safe}}"
   var progress_bar = $("#" + name + "-progress-bar");
   var progress_info = $("#" + name + "-progress-info-text");

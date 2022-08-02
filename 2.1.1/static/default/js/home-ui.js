@@ -134,8 +134,6 @@ $(".progress-log-btn, .progress-info-text").click(function (event) {
   var hidden = collapse.css("display") == "none" ? true : false;
   var name = tr.data("server-name");
 
-  console.log(hidden, $("#" + name + "-logs-tab").hasClass("active"));
-
   // Do not hide collapse if already open, but not showing the logs tab
   if (!hidden && !$("#" + name + "-logs-tab").hasClass("active")) {
     event.preventDefault();
