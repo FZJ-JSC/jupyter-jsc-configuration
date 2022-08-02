@@ -608,6 +608,15 @@ function setValues(name, options) {
   if (gpus) $("input#" + id + "-gpus-input").val(gpus);
 }
 
+function updateProgressBar(id) {
+  var progress_bar = $("#" + id + "-progress-bar");
+  var progress_info = $("#" + id + "-progress-info-text");
+  progress_bar.css("width", "100%");
+  progress_bar.attr("aria-valuenow", 100);
+  progress_bar.addClass("bg-danger");
+  progress_info.html("last spawn failed");
+}
+
 $(document).ready(function () {
   // Set values for all existing Labs
   for (const [name, options] of Object.entries(user_options)) {
@@ -633,13 +642,7 @@ $(document).ready(function () {
   // Update status for spawner if _failed is set
   {%- for s in named_spawners -%}
   {%- if s._failed or s._cancel_event_yielded and not s.active %}
-  var name = "{{s.name | safe}}"
-  var progress_bar = $("#" + name + "-progress-bar");
-  var progress_info = $("#" + name + "-progress-info-text");
-  progress_bar.css("width", "100%");
-  progress_bar.attr("aria-valuenow", 100);
-  progress_bar.addClass("bg-danger");
-  progress_info.html("last spawn failed");
+  updateProgressBar("{{s.name | safe}}");
   {%- endif -%}
   {%- endfor %}
 })
@@ -652,7 +655,7 @@ function get_id(element) {
   return id;
 }
 
-/* On user chaning JupyterLab configurations */
+/* On user changing JupyterLab configurations */
 $("select[id*=type]").change(function() {
   var id = get_id($(this));
   var option = $(this).val();
