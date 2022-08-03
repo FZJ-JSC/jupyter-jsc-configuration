@@ -1,0 +1,107 @@
+{#- Grouped entries in sidebar -#}
+{%- macro ul(link_dict, heading=None) -%}
+{%- if heading -%}
+<h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">{{ heading }}</h6>
+{%- endif %}
+<ul class="nav flex-column">
+  {%- for label, href in link_dict.items() %}
+    <li class="nav-item">
+      <div class="d-flex">
+        <a class="nav-link" aria-current="page" href="{{href}}"
+         {% if href.startswith('http') -%}target="_blank"{%- endif -%}>
+         {{ label }}
+        </a>
+      </div>
+    </li>
+  {%- endfor %}
+</ul>
+{%- endmacro -%}
+
+{# Accordion with links in sidebar #}
+{%- macro accordion(title, link_dict, heading=None) -%}
+{%- if heading -%}
+<h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">{{ heading }}</h6>
+{%- endif %}
+<div class="accordion accordion-flush" id="{{title}}-accordion">
+  <div class="accordion-item bg-transparent">
+    <h2 class="accordion-header" id="{{title}}-accordion-heading">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{title}}-collapse" aria-expanded="false" aria-controls="flush-collapseOne">
+        {{ title }}
+      </button>
+    </h2>
+    <div id="{{title}}-collapse" class="accordion-collapse collapse" aria-labelledby="{{title}}-accordion-heading" data-bs-parent="#{{title}}-accordion">
+      <div class="accordion-body pt-0">
+        <ul class="nav flex-column">
+          {%- for label, href in link_dict.items() %}
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{{href}}" target="_blank">{{ label }}</a>
+          </li>
+          {%- endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- block sidebar -%}
+<nav id="sidebar" class="col-lg-2 d-lg-block sidebar collapse offcanvas-collapse" style="padding-top: 90px;">
+
+  <div class="position-sticky pt-1">
+    {{ ul({
+      "JupyterLabs": "/hub/home",
+    }, heading="Jupyter") }}
+
+    {# {{ ul({
+      "JupyterLabs": "/hub/home",
+      "Dashboards": ""
+    }, heading="Jupyter") }} #}
+
+    {%- if user.admin -%}
+    {{ ul({
+      "Admin": "/hub/admin",
+      "Logging": "/hub/logging",
+      "JSC Service Status": "http://status.jsc.fz-juelich.de",
+    }, heading="Logging") }}
+    {%- endif -%}
+
+
+    {{ ul({
+      "Documentation": "https://docs." + hostname,
+    },  heading="Links") }}
+    {{ accordion("Jupyter", {
+        "Home": "https://www.jupyter.org",
+        "Newsletter": "https://newsletter.jupyter.org",
+        "Introduction Video": "https://www.youtube.com/watch?v=HW29067qVWk",
+        "Blog": "https://blog.jupyter.org",
+        "Documentation": "https://jupyter.org/documentation.html",
+        "Twitter": "https://twitter.com/projectjupyter",
+        "Jupyter-Notebooks": "https://github.com/trending/jupyter-notebook",
+        "Jupyter Gitter": "https://gitter.im/jupyter/jupyter",
+        "JupyterLab Gitter": "https://gitter.im/jupyterlab/jupyterlab"
+      }) 
+    }}
+    {{ accordion("JUNIQ", { 
+        "Home": "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility",
+        "JUPSI": "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility/juniq/d-wave-advantagetm-system-jupsi",
+        "OpenSuperQ": "https://opensuperq.eu/",
+        "JUQCS": "https://www.sciencedirect.com/science/article/pii/S0010465518303977",
+      }) 
+    }}
+    {{ accordion("D-Wave", { 
+        "Home": "https://www.dwavesys.com/",
+        "Leap": "https://cloud.dwavesys.com/",
+        "Documentation": "https://docs.dwavesys.com/",
+        "Github": "https://github.com/dwavesystems",
+      }) 
+    }}
+    {{ accordion("Qiskit", { 
+        "Home": "https://qiskit.org/",
+        "Documentation": "https://qiskit.org/documentation/",
+        "Github": "https://github.com/Qiskit/qiskit",
+      }) 
+    }}
+  </div>
+</nav>
+{%- endblock%}
+
