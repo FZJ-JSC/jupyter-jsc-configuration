@@ -13,45 +13,18 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jupyter-jsc.fz-juelich.de">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="icon" href="../images/favicon.svg" type="jpg/png" />
+  <link rel="icon" href="./images/favicon.svg" type="jpg/png" />
 
-  <link rel="stylesheet" href="../components/bootstrap-5.0/dist/css/bootstrap.min.css" type="text/css" />
-  <link rel="stylesheet" href="../css/base.css" type="text/css" />
-  <link rel="stylesheet" href="../css/header.css" type="text/css" />
-  <link rel="stylesheet" href="../css/footer.css" type="text/css" />
+  <link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="./css/base.css" type="text/css" />
+  <link rel="stylesheet" href="./css/header.css" type="text/css" />
+  <link rel="stylesheet" href="./css/footer.css" type="text/css" />
 
-  <script src="../components/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../components/bootstrap-5.0/dist/js/bootstrap.bundle.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../components/requirejs/require.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../components/jquery/dist/jquery.min.js"></script>
-  <script>
-    require.config({
-      urlArgs: "v="+ (new Date()).getTime(),
-      baseUrl: "../js",
-      paths: {
-        components: '../components',
-        jquery: '../components/jquery/dist/jquery.min',
-        bootstrap: '../components/bootstrap-5.0/dist/js/bootstrap.min',
-        moment: "../components/moment/moment",
-      },
-      shim: {
-        bootstrap: {
-          deps: ["jquery"],
-          exports: "bootstrap"
-        },
-      }
-    });
-  </script>
+  <!-- <script src="../components/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../components/bootstrap-5.0/dist/js/bootstrap.bundle.min.js" type="text/javascript" charset="utf-8"></script> -->
 </head>
 
 <body>
-  <noscript>
-    <div id='noscript'>
-      JupyterHub requires JavaScript.<br>
-      Please enable it to proceed.
-    </div>
-  </noscript>
-
   <!-- Container div enabling the body section to flex-grow -->
   <div class="d-flex flex-column h-100">
     <!-- HEADER -->
@@ -61,14 +34,14 @@
           <div class="container-fluid">
             <a class="navbar-brand" href="https://www.fz-juelich.de/jsc" target="_blank">
               <img id="jsc-logo" class="p-3" width="335px"
-                src="../images/header/jsc.png" alt='JSC'
+                src="./images/jsc.png" alt='JSC'
                 title="https://www.fz-juelich.de/jsc" />
             </a>
             <ul class="nav flex-grow-1 align-self-end">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a id="start-nav-item" class="nav-link text-decoration-none active" href="/login">Start</a>
               </li>
-              <!-- <li class="nav-item">
+              <li class="nav-item">
                 <a id="links-nav-item" class="nav-link text-decoration-none" href="/links">Links</a>
               </li>
               <li class="nav-item">
@@ -76,7 +49,7 @@
               </li> -->
             </ul>
             <a class="navbar-brand ps-3 me-4" href="/">
-              <img id="jupyter-logo" src="../images/header/jupyterjsc.png"
+              <img id="jupyter-logo" src="./images/jupyterjsc.png"
                 height="60px" alt="Jupyter-JSC" title="jupyter-jsc.fz-juelich.de">
             </a>
           </div>
@@ -114,7 +87,7 @@
             <div class="d-flex flex-grow-1 flex-lg-grow-0 justify-content-center justify-content-lg-end">
               <a href="https://www.helmholtz.de/en/" target="_blank">
                 <img id="helmholtz-logo" class="m-4"
-                  src="../images/footer/helmholtz.png"/>
+                  src="./images/helmholtz.png"/>
               </a>
             </div>
           </div>
