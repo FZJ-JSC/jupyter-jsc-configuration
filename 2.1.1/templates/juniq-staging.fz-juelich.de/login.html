@@ -1,0 +1,138 @@
+{%- extends template_path + "/page.html" -%}
+{%- set show_navigation = true -%}
+{%- set extra_main_classes = "h-100" -%}
+
+{%- block stylesheet -%}
+<link rel="stylesheet" href='{{static_url("css/login.css")}}' type="text/css" />
+{%- endblock -%}
+
+
+{%- macro carousel_item(title, href, title_text, text, active="") -%}
+<div class="carousel-item {{active}}">
+  <a target="_blank" href="{{href}}" title="{{title}}">
+    <div class="text-small">
+      <ul type="square">
+        <li class="text-dark"><small>{{ title.upper() }}</small></li>
+      </ul>
+    </div>
+    <h3>{{ title_text }}</h3>
+  </a>
+  <p class="fs-5"> {{ text }} <a target="_blank" href="{{href}}">Read more.</a> </p>
+</div>
+{%- endmacro -%}
+
+
+{%- block main -%}
+<div class="row g-0 h-100 justify-content-center">
+  <div class="col-12 col-lg-4 order-lg-1">
+    <div id="login-div" class="d-flex flex-column bg-secondary h-100">
+      <div id="upper-login-div" class="d-flex flex-column justify-content-center mx-auto p-4">
+        <h3>JUNIQ</h3>
+        <h4>The Jülich UNified Infrastructure for Quantum computing</h4>
+        <p class="fs-5">
+          JUNIQ provides access to different quantum computing devices which can be used within the same programming environment.
+          The necessary quantum computing modules are provided. Currently, algorithms can be run on the JUQCS emulator or the D-Wave Quantum Annealer JUPSI.
+          <br><br>
+          Please use your JUNIQ account to log in or register if you have not already done so. 
+          In case you have not yet applied for quantum computing time please follow the instructions on 
+          <a href="https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility/access-service-and-support">our website</a>.
+  
+        </p>
+      </div>
+      <div id="lower-login-div" class="bg-info">
+        <div class="d-flex justify-content-center align-items-center mx-auto p-4">
+            <a id="btn-login" class="btn btn-primary" role="button">Login</a>
+            <div class="white-line"></div>
+            <img src='{{static_url("images/pages/login/User.svg", include_version=False) }}' />
+            <div class="white-line"></div>
+            <a id="btn-register" class="btn btn-primary" role="button"
+              href="https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility/access-service-and-support">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="col-12 col-lg-8 order-lg-0">
+    <div id="carousel-background" class="d-flex align-items-center h-100">
+      <div id="login-carousel" class="carousel slide d-flex justify-content-center w-100" data-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        </div>
+        <div class="carousel-inner">
+          {{ carousel_item("JUNIQ",
+            "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility", 
+            "Quantum Computing in Your Browser",
+            "Welcome to the Jülich UNified Infrastructure for Quantum computing (JUNIQ), which brings Quantum Computing (QC) 
+            to Your Browser. JUNIQ has been built as QC Service (QC-PaaS) that provides pre-configured access to different 
+            QC devices to European researchers and industry. The programming interface is based on the Jupyter environment 
+            for cloud development, making algorithm development, execution and documentation convenient and transferable between 
+            several quantum devices.",
+            "active") 
+          }}
+
+          {{ carousel_item("D-Wave Advantage™ System",
+            "https://www.fz-juelich.de/en/ias/jsc/systems/quantum-computing/juniq-facility/juniq/d-wave-advantagetm-system-jupsi", 
+            "JUPSI", 
+            "The D-Wave Advantage™ System is an annealing quantum computer with more than 5000 superconducting qubits. With quantum  
+            annealing, computations are carried out by first bringing a connected system of qubits into a simple and known lowest energy 
+            state described in the basis of an initial Hamiltonian. This state turns out to be a uniform superposition state described in 
+            the basis of the final Hamiltonian that encodes the problem to solve. The system is then shifted to the lowest energy state of 
+            the sought classical problem, the second Hamiltonian, by adiabatically changing the interactions of the qubits. Quantum 
+            annealing can especially be used to solve optimization, sampling and machine learning problems.")
+          }}
+
+          {{ carousel_item("Qiskit",
+            "https://qiskit.org", 
+            "Quantum Software Development Framework", 
+            "The JUNIQ portal offers access to a Qiskit development environment for quantum computing research. 
+            Besides from the default set of tools offered by Qiskit, this environment has been extended with several custom-made 
+            plugins which provide access to quantum computing backends which are otherwise not available to the public, such as 
+            the OpenSuperQ prototype quantum computer (coming soon) as well the QC-emulator JUQCS running on JURECA-DC.")
+          }}
+
+          {{ carousel_item("OpenSuperQ",
+            "https://opensuperq.eu/",
+            "The OpenSuperQ Prototype Quantum Computer", 
+            "The European FET Flagship project OpenSuperQ developed a prototype quantum computing device 
+            maintained at the Peter Grünberg Institute of Forschungszentrum Jülich. Users of JUNIQ will soon be able to submit quantum 
+            computing experiments to this device through the extended Qiskit interface provided within the portal.") 
+          }}
+
+          {{ carousel_item("JUQCS",
+          "https://www.sciencedirect.com/science/article/pii/S0010465518303977",
+          "The Jülich Universal Quantum Computing Simulator", 
+          "JUQCS is a massively parallel emulator of a universal quantum computer which runs on JURECA-DC, one of the HPC systems 
+          at the Jülich Supercomputing Centre of Forschungszentrum Jülich. Running on this hardware, JUQCS can simulate quantum circuits 
+          of up to 40 qubits.")
+        }}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#login-carousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#login-carousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endblock -%}
+
+{%- block script -%}
+<script src='{{static_url("js/login.js", include_version=False) }}'></script>
+<script src='{{static_url("js/header.js", include_version=False) }}'></script>
+
+<script>
+$("#btn-login").click(function () {
+  var url = window.location.search;
+  window.location.href = "/hub/oauth_login" + url;
+});
+</script>
+{%- endblock -%}
