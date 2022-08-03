@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Jupyter-JSC</title>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta property="og:image" content="../images/mini_website.jpg">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="jupyter-jsc">
+  <meta property="og:title" content="jupyter-jsc">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jupyter-jsc.fz-juelich.de">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="../images/favicon.svg" type="jpg/png" />
+
+  <link rel="stylesheet" href="../components/bootstrap-5.0/dist/css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../css/base.css" type="text/css" />
+  <link rel="stylesheet" href="../css/header.css" type="text/css" />
+
+  <script src="../components/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../components/bootstrap-5.0/dist/js/bootstrap.bundle.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../components/requirejs/require.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../components/jquery/dist/jquery.min.js"></script>
+  <script>
+    require.config({
+      urlArgs: "v="+ (new Date()).getTime(),
+      baseUrl: "../js",
+      paths: {
+        components: '../components',
+        jquery: '../components/jquery/dist/jquery.min',
+        bootstrap: '../components/bootstrap-5.0/dist/js/bootstrap.min',
+        moment: "../components/moment/moment",
+      },
+      shim: {
+        bootstrap: {
+          deps: ["jquery"],
+          exports: "bootstrap"
+        },
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <noscript>
+    <div id='noscript'>
+      JupyterHub requires JavaScript.<br>
+      Please enable it to proceed.
+    </div>
+  </noscript>
+
+  <!-- Container div enabling the body section to flex-grow -->
+  <div class="d-flex flex-column h-100">
+    <!-- HEADER -->
+    <div>
+      <header class="overflow-auto">
+        <nav class="navbar navbar-light bg-white flex-column fixed-top shadow p-0">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="https://www.fz-juelich.de/jsc" target="_blank">
+              <img id="jsc-logo" class="p-3" width="335px"
+                src="../images/header/jsc.png" alt='JSC'
+                title="https://www.fz-juelich.de/jsc" />
+            </a>
+            <ul class="nav flex-grow-1 align-self-end">
+              <li class="nav-item">
+                <a id="start-nav-item" class="nav-link text-decoration-none active" href="/login">Start</a>
+              </li>
+              <!-- <li class="nav-item">
+                <a id="links-nav-item" class="nav-link text-decoration-none" href="/links">Links</a>
+              </li>
+              <li class="nav-item">
+                <a id="links-nav-item" class="nav-link text-decoration-none" href="https://docs.jupyter-jsc.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb" target="_blank">Documentation</a>
+              </li> -->
+            </ul>
+            <a class="navbar-brand ps-3 me-4" href="/">
+              <img id="jupyter-logo" src="../images/header/jupyterjsc.png"
+                height="60px" alt="Jupyter-JSC" title="jupyter-jsc.fz-juelich.de">
+            </a>
+          </div>
+        </nav>
+      </header>
+    </div>
+
+    <div class="container-fluid flex-grow-1 p-0">
+      <div class="d-flex flex-column h-100">
+        <!-- MAIN -->
+        <main class="h-100">
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="navbar p-0 mt-auto">
+          <div id="footer-top" class="container-fluid justify-content-evenly p-4">
+          </div>
+          <div id="footer-bottom" class="container-fluid justify-content-between">
+            <div class="d-flex flex-wrap flex-grow-1 justify-content-center align-items-center text-center ms-4" style="min-height: 60px;">
+              <a target="_blank" href="https://www.fz-juelich.de">&copy; Forschungszentrum Jülich</a>
+              <a href="/hub/imprint" class="ms-3">Imprint</a>
+              <a href="/hub/privacy" class="ms-3">Privacy Policy</a>
+              <a href="mailto:ds-support@fz-juelich.de?subject=Jupyter-JSC Support&amp;body=Please describe your problem here. (english or german)"
+                class="ms-3">Support</a>
+              <a href="/hub/terms" class="ms-3">Terms of Service</a>
+            </div>
+            <div class="d-flex flex-grow-1 flex-lg-grow-0 justify-content-center justify-content-lg-end">
+              <a href="https://www.helmholtz.de/en/" target="_blank">
+                <img id="helmholtz-logo" class="m-4"
+                  src="../images/footer/helmholtz.png"/>
+              </a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>  
+  </div> <!-- End of container div -->
+</body>
+
+</html>
