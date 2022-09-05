@@ -1,6 +1,0 @@
-#!/bin/bash
-UUID=$(python3 -c "import uuid; print(uuid.uuid4().hex)")
-HUB_API_USER="http://${REMOTE_NODE}:${REMOTE_PORT}/hub/api/user"
-TMP=$(curl -X "GET" -H "Authorization: token ${JUPYTERHUB_API_TOKEN}" ${HUB_API_USER} 2>/dev/null)
-OUTPUT=$(python3 -c 'import json,sys; d = json.loads(sys.argv[1]); out = d.get("auth_state", {}).get("access_token", "Could get access token. Please re-login at https://jupyter-jsc.fz-juelich.de .") ;print(out);' "$TMP")
-echo "$OUTPUT"
