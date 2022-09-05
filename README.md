@@ -26,5 +26,6 @@
 - [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-files-staging)
 - [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-files-production)
 
-### Maintenance- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/maintenance-files-staging)
+### Maintenance
+- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/maintenance-files-staging)
 - [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/maintenance-files-production)
