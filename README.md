@@ -2,11 +2,11 @@
 
 ## JupyterHub
 ### Jupyter-JSC
-- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-staging)
-- [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-production)
-### Juniq
 - [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-staging)
 - [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-production)
+### Juniq
+- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-staging)
+- [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-production)
 
 ## UnicoreMgr
 - [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/unicoremgr-staging)
