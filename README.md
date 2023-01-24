@@ -7,6 +7,12 @@
 ### Juniq
 - [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-staging)
 - [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-juniq-production)
+### EuroCC
+- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-eurocc-staging)
+- [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-eurocc-production)
+### CoE RAISE
+- [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-coeraise-staging)
+- [Production](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/jupyterhub-coeraise-production)
 
 ## UnicoreMgr
 - [Staging](https://gitlab.jsc.fz-juelich.de/jupyterjsc/k8s/config/-/tree/unicoremgr-staging)
