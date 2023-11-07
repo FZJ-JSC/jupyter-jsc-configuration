@@ -1,0 +1,147 @@
+{%- import "macros/svgs.jinja" as svg -%}
+
+{%- macro random_int(len) -%}
+  {%- for _ in range(len) -%}
+      {{ range(10) | random }}
+  {%- endfor -%}
+{%- endmacro -%}
+
+{%- macro number_of_users(system) -%}
+  {%- if system == "jupyter" -%}
+    {%- set system_svg = svg.users_svg -%}
+    {%- set url_suffix = "" -%}
+  {%- elif system == "hdfcloud"%}
+    {%- set system_svg = svg.servers_svg -%}
+    {%- set url_suffix = "var-system=HDF-Cloud" -%}
+  {%- else -%}
+    {%- set system_svg = svg.servers_svg -%}
+    {%- set url_suffix = "var-system=" + system.upper() -%}
+  {%- endif -%}
+<a class="system-users d-inline-block text-muted ms-1" data-toggle="users-tooltip" title="Number of active {%- if system == 'jupyter' %} users in the last 24 hours {%- else %} servers {%- endif -%}"
+  href="https://{{hostname}}/grafana/?{{url_suffix}}" target="_blank">
+  <span id="{{system}}-users">0</span>
+  <span> {{ system_svg | safe }} </span>
+  <div class="system-users-link-div d-inline-block">
+    <span class="system-users-link" id="{{system}}-users-link">
+      {{ svg.link_svg | safe }}
+    </span>
+  </div>
+</a>
+{%- endmacro -%}
+
+{%- macro ampel(system, href) -%}
+{%- set system_lower = system.lower() %}
+<div id="ampel-{{system_lower}}" class="text-center">
+  <img class="ampel-img" src='{{static_url( "images/footer/systems/" + system_lower + ".svg?v=" + random_int(10) )}}' />
+  <a id="ampel-{{system_lower}}-tooltip" href="{{href}}" target="_blank" class="align-middle" data-toggle="ample-tooltip">
+    {%- if system == "JUPYTER" -%}
+    Jupyter-JSC
+    {%- elif system == "HDFCLOUD" -%}
+    HDF-Cloud
+    {%- else -%}
+    {{ system }}
+    {%- endif -%}
+  </a>
+  {{ number_of_users(system_lower) }}
+</div>
+{%- endmacro -%}
+
+
+{%- block footer -%}
+<footer class="navbar mt-auto p-0">
+  <div id="footer-top" class="container-fluid justify-content-evenly p-4">
+    {{ ampel("JUPYTER", "https://status.jsc.fz-juelich.de/services/40") }}
+    {{ ampel("JUWELS", "https://status.jsc.fz-juelich.de/services/13") }}
+    {{ ampel("JURECA", "https://status.jsc.fz-juelich.de/services/1") }}
+    {{ ampel("JUSUF", "https://status.jsc.fz-juelich.de/services/30") }}
+    {{ ampel("DEEP", "https://status.jsc.fz-juelich.de/services/43") }}
+    {{ ampel("HDFML", "https://status.jsc.fz-juelich.de/services/21") }}
+    {{ ampel("HDFCLOUD", "https://status.jsc.fz-juelich.de/services/32") }}
+  </div>
+  <div id="footer-bottom" class="container-fluid justify-content-center">
+    {%- set logo_width = "220px" -%}
+    {%- set div_classes = "px-2 text-center" %}
+    <a class="py-2 {{div_classes}}" target="_blank" href="https://www.fz-juelich.de">&copy; Forschungszentrum Jülich</a>
+    <div class="flex-grow-1 {{div_classes}}">
+      {%- set footer_margin = "m-1" %}
+      <a href="/hub/imprint">Legal Notice</a>
+      <span class="{{ footer_margin }}">|</span>
+      <a href="/hub/privacy">Privacy Policy</a>
+      <span class="{{ footer_margin }}">|</span>
+      <a href="/hub/terms">Terms of Service</a>
+      <span class="{{ footer_margin }}">|</span>
+      <a href="mailto:ds-support@fz-juelich.de?subject=Jupyter-JSC Support&amp;body=Please describe your problem here. (english or german)">Support</a>
+    </div>
+    <div class="py-4 {{div_classes}}">
+      <a href="https://www.helmholtz.de/en/" target="_blank">
+        <img id="helmholtz-logo" width="{{ logo_width }}" src='{{ static_url("images/footer/helmholtz.png", include_version=False) }}'/>
+      </a>
+    </div>
+  </div>
+</footer>
+{%- endblock -%}
+
+
+{%- block script -%}
+<script type="text/javascript">
+require(["jquery", "jhapi"], function ($, JHAPI) {
+  "use strict";
+
+  var base_url = window.jhdata.base_url;
+  var api = new JHAPI(base_url);
+
+  $(function () {
+    $('[data-toggle="ample-tooltip"]').tooltip();
+    $('[data-toggle="users-tooltip"]').tooltip();
+  })
+
+  function updateSystemHoverTooltips() {
+    api.api_request( "incidents", {
+      success: function(data) {
+        const threshold = data.threshold;
+        for (const [system, systemInfo] of Object.entries(data)) {
+          if (systemInfo.incident) {
+            $(`#ampel-${system.toLowerCase()}-tooltip`)
+              .attr('data-bs-original-title', systemInfo.incident);
+          }
+        }
+      }
+    })
+  }
+
+  function updateNumberOfUsers() {
+    api.api_request("usercount", {
+      success: function(data) {
+        for (const [system, usercount] of Object.entries(data)) {
+          switch (system) {
+            case 'jupyterhub':
+              $("#jupyter-users").html(usercount);
+              break;
+            case 'HDF-Cloud':
+              $(`#hdfcloud-users`).html(usercount['total']);
+              break;
+            default:
+              $(`#${system.toLowerCase()}-users`).html(usercount['total']);
+              var partitionInfos = "";
+              for (const [partition, users] of Object.entries(usercount['partitions']))
+              {
+                partitionInfos += `\n${partition}: ${users}`;
+              }
+              $(`#${system.toLowerCase()}-users`)
+                .parents("[data-toggle]")
+                .attr("data-bs-original-title", `Number of active servers${partitionInfos}`);
+          }
+        }
+      }
+    })
+  }
+
+  $(document).ready(function() {
+    updateSystemHoverTooltips();
+    updateNumberOfUsers();
+    setInterval(updateNumberOfUsers, 60000);
+  })
+
+})
+</script>
+{%- endblock -%}

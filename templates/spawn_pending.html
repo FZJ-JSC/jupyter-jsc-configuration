@@ -1,0 +1,276 @@
+{%- extends "page.html" -%}
+{%- import "macros/svgs.jinja" as svg -%}
+
+{%- block stylesheet -%}
+  <link rel="stylesheet" href='{{ static_url("css/home.css", include_version=False) }}' type="text/css"/>
+  <link rel="stylesheet" href='{{ static_url("css/spawn.css", include_version=False) }}' type="text/css"/>
+{%- endblock -%}
+
+{%- macro create_text_input(label, value) -%}
+{%- set key = label.lower() %}
+<div id="{{key}}-input-div"  class="row mb-3">
+  <label for="{{ key }}-input" class="col-4 col-form-label">{{ label }}</label>
+  <div class="col-8">
+    <input type="text" class="form-control" id="{{ key }}-input" value="{{value}}" disabled>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro create_number_input(label, value) -%}
+{%- set key = label.lower() -%}
+<div id="{{key}}-input-div" class="row mb-3"> 
+  <label for="{{key}}-input" class="col-4 col-form-label">{{ label }}</label>
+  <div class="col-8">
+    <input type="number" id="{{key}}-input" class="form-control" value="{{value}}" disabled>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro create_checkbox_input(label, checked) -%}
+{%- set key = label.lower() -%}
+<div id="{{key}}-input-div" class="row mb-3 align-items-center">
+  <label for="{{key}}-input" class="col-4 col-form-label">{{ label }}</label>
+  <div class="col-8">
+    <input type="checkbox" class="form-check-input" id="{{key}}-input" {%- if checked %} checked {%- endif %} disabled>
+  </div>
+</div>
+{%- endmacro -%}
+
+
+{%- set user_options = spawner.user_options -%}
+{%- set name = user_options.get("name") -%}
+{%- set service = user_options.get("service").split('/')[0] -%}
+{%- set option = user_options.get("service").split('/')[1] -%}
+{%- set service_name = auth_state.get("custom_config", {}).get("services").get(service).get("options").get(option).get("name") -%}
+{%- set version = user_options.get("options", "JupyterLab") -%}
+{%- set system = user_options.get("system", None) -%}
+{%- set account = user_options.get("account", None) -%}
+{%- set project = user_options.get("project", None) -%}
+{%- set partition = user_options.get("partition", None) -%}
+{%- set reservation = user_options.get("reservation", None) -%}
+{%- set nodes = user_options.get("nodes", None) -%}
+{%- set runtime = user_options.get("runtime", None) -%}
+{%- set xserver = user_options.get("xserver", None) -%}
+{%- set gpus = user_options.get("gpus", None) -%}
+{%- set additional_spawn_options = user_options.get("additional_spawn_options", {}) -%}
+
+{#- Check if we should disable any tabs -#}
+{%- set no_resources = True -%}
+{%- if nodes != None or gpus != None or runtime != None or xserver != None -%}
+  {%- set no_resources = False -%}
+{%- endif -%}
+
+
+{%- block main -%}
+<div class="container-fluid p-4">
+  <h1>Your server is starting up...</h1>
+  <p>You will be redirected automatically when it's ready for you.</p>
+
+  <div class="accordion" id="labInfoAccordion">
+    <div class="accordion-item" style="border-bottom-right-radius: .25rem;border-bottom-left-radius: .25rem;">
+      <h2 class="accordion-header" id="labInfo">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#labInfoCollapse">
+          Lab Info (click to expand)
+        </button>
+      </h2>
+      <div id="labInfoCollapse" class="accordion-collapse collapse" data-bs-parent="#labInfoAccordion">
+        <div class="accordion-body text-black">
+          <div class="d-flex align-items-start m-3">
+            {#- TAB NAV PILLS -#}
+            {%- set nav_tab_margins = "mb-3" %}
+            <div class="nav flex-column nav-pills p-3 ps-0" id="tab" role="tablist">
+              <button class="nav-link active {{ nav_tab_margins }}" id="config-info-tab" data-bs-toggle="pill" data-bs-target="#config-info" type="button" role="tab">Lab Config</button>
+              <button class="nav-link {{ nav_tab_margins }} {%- if no_resources %} disabled {%- endif %}" id="resources-info-tab" data-bs-toggle="pill" data-bs-target="#resources-info" type="button" role="tab" >Resources</button>
+              <button class="nav-link {{ nav_tab_margins }} {%- if not additional_spawn_options %} disabled {%- endif %}" id="modules-info-tab" data-bs-toggle="pill" data-bs-target="#modules-info" type="button" role="tab" >Kernels and Extensions</span></button>
+            </div>
+            {#- TAB NAV CONTENT -#}
+            <div class="tab-content w-100" id="tabContent">
+              <div class="tab-pane fade show active" id="config-info" role="tabpanel">
+                {{ create_text_input("Name", name) }}
+                {{ create_text_input("Version", service_name) }}
+                <hr>
+                {{ create_text_input("System", system) }}
+                {{ create_text_input("Account", account) }}
+                {{ create_text_input("Project", project) }}
+                {{ create_text_input("Partition", partition) }}
+                {%- if reservation != None %}
+                <hr id="reservation-hr">
+                {{ create_text_input("Reservation", reservation) }}
+                {%- endif %}
+              </div>
+              <div class="tab-pane fade" id="resources-info" role="tabpanel">
+                {%- if not no_resources -%}
+                  {%- if nodes -%} {{ create_number_input("Nodes", nodes) }} {%- endif %}
+                  {%- if gpus -%} {{ create_number_input("GPUs", gpus) }} {%- endif %}
+                  {%- if runtime -%} {{ create_number_input("Runtime", (runtime/60)|int) }} {%- endif %}
+                  {%- set resources = auth_state.get("options_form", {}).get('resources', {}) -%}
+                  {%- set xserver_options = resources.get(option, {}).get(system, {}).get(partition, {}).get("xserver", {}) -%}
+                  {%- set show_checkbox = xserver_options.get("checkbox", False) -%}
+                  {%- if show_checkbox -%}
+                    {%- set cb_label = xserver_options.get("checkbox_label", "XServer") %}
+                    {{ create_checkbox_input(cb_label, xserver) }}
+                  {%- endif %}
+                  {%- if xserver -%}
+                  {%- set label = xserver_options.get("label", "XServer") %}
+                  {{ create_number_input(label, xserver) }}
+                  {%- endif %}
+                  
+                {%- endif %}
+              </div>
+              <div class="tab-pane fade" id="modules-info" role="tabpanel">
+              {%- if additional_spawn_options -%}
+                {%- set module_sets = auth_state.get("custom_config", {}).get("additional_spawn_options", {}) %}
+                {%- for set, modules in module_sets.items() -%}
+                  {% set ns = namespace(first = true) -%}
+                  {%- for module, module_info in modules.items() -%}
+                    {%- if ns.first %}
+                    <h4>{{ set | title}}</h4>
+                    <div class="row g-0">
+                    {%- endif %}
+                      <div class="form-check col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" class="form-check-input" id="{{ module }}-check" disabled {%- if module in additional_spawn_options %} checked {%- endif %}>
+                          <label class="form-check-label" for="{{ module }}-check">
+                            <span class="align-middle">{{ module_info['displayName'] }}</span>
+                            <a href="{{ module_info['href'] }}" target="_blank" class="text-muted">{{ svg.info_svg | safe }}</a>
+                          </label>
+                        </input>
+                      </div>
+                    {%- set ns.first = false -%}
+                  {%- endfor -%}
+                    </div>
+                {%- endfor -%}
+              {%- endif %}
+              </div>
+            </div> {#- tab content #}
+          </div> {#- flex div #}
+        </div> {#- accordion body #}
+      </div> {#- accordion collapse #}
+    </div>  {#- accordion item #}
+  </div>  {#- accordion #}
+
+  <div class="card mt-4">
+    <div class="card-header d-flex">
+      <div class="flex-grow-1">
+        <div class="progress" style="height: 20px;">
+          <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
+        </div>
+        <div id="progress-info-text" class="text-center text-muted my-auto w-100" style="font-size: smaller;">spawning...</div>
+      </div>
+      <button id="cancel" type="button" class="btn btn-danger ms-4" disabled>{{ svg.stop_svg | safe }} Cancel </button>
+      <button id="retry" type="button" class="btn btn-primary ms-4 d-none" disabled>{{ svg.retry_svg | safe }} Retry </button>
+    </div>
+    <div class="card-body text-black">
+      <div id="log"></div>
+    </div>
+  </div>
+
+</div>
+{%- endblock -%}
+
+{%- block script -%}
+{%- set cancel_progress_refresh_rate = 1000 -%}
+{%- set cancel_progress_activation = 30 -%}
+{%- set cancel_progress_deactivation = 99 -%}
+
+<script>
+require(["jquery", "jhapi", "utils"], function (
+  $,
+  JHAPI,
+  utils
+) {
+  var base_url = window.jhdata.base_url;
+  var user = window.jhdata.user;
+  var api = new JHAPI(base_url);
+  var timeout;
+
+  // Cancel server spawn on click
+  $("#cancel").click(function (event) {
+    $("#cancel").attr("disabled", true);
+    api.cancel_named_server(user, "{{spawner.name}}");
+    clearTimeout(timeout);
+  });
+
+  // Retry server spawn on click
+  $("#retry").click(function (event) {
+    $("#retry").attr("disabled", true);
+
+    api.start_named_server(user, "{{spawner.name}}", {
+      data: JSON.stringify({{spawner.user_options | safe}}),
+      success: function () {
+        $("#retry").addClass("d-none");
+        $("#cancel").attr("disabled", true).removeClass("d-none");
+        $("#progress-bar").removeClass("bg-danger");
+        $("#progress-info-text").html("spawning...");
+        $("#log").html("");
+        updateStatus();
+      },
+      error: function (xhr, textStatus, errorThrown) {
+        $("#progress-bar").addClass("bg-danger");
+        $("#progress-info-text").html("last spawn failed");
+        let details = $("<details>")
+          .append($("<summary>").html(`Could not request spawn. Error: ${xhr.status} ${errorThrown}`))
+          .append($("<pre>").html(JSON.stringify(JSON.parse(xhr.responseText), null, 2)));
+        let div = $("<div>").addClass("log-div").html(details);
+        $("#log").html("").append(div);
+        $("#retry").removeAttr("disabled");
+      }
+    })
+  });
+
+  function updateStatus() {
+    var interv = setInterval(_updateStatus, {{ cancel_progress_refresh_rate }});
+    var logged = [];
+
+    function _updateStatus() {
+      api.api_request(`/users/progress/status/${user}/{{spawner.name}}`, {
+        success: function (data) {
+          data["events"].forEach(function (event) {
+            const perc = event["progress"];
+            const htmlMsg = event["html_message"];
+
+            if (Number(perc) && !(logged.includes(htmlMsg))) {
+              logged.push(htmlMsg);
+              $("#progress-bar").html('<b>' + perc + '%</b>');
+              if (htmlMsg) {
+                $("#log").append($('<div class="log-div">').html(htmlMsg));
+              }
+              if (perc >= {{ cancel_progress_activation }}) {
+                $("#cancel").removeAttr("disabled");
+              }
+              if (perc == {{ cancel_progress_deactivation }}) {
+                $("#cancel").attr("disabled", true);
+                $(`#progress-bar`).addClass("bg-danger");
+                $("#progress-info-text").html("cancelling...");
+              }
+              if (perc == 95) {
+                // Refresh if stuck on 95%
+                timeout = setTimeout(() => window.location.reload(), 120000);
+              }
+              // Clear interval on 100%
+              if (perc == 100) {
+                clearInterval(interv);
+                if (event["failed"]) {
+                  $(`#progress-bar`).html("").addClass("bg-danger");
+                  $("#progress-info-text").html("last spawn failed");
+                  $("#retry").removeAttr("disabled").removeClass("d-none");
+                  $("#cancel").addClass("d-none");
+                } else {
+                  window.location.reload();
+                }
+              }
+            }
+          })
+        },
+        error: function () {
+          clearInterval(interv);
+        }
+      })
+    }
+  }
+
+  $( document ).ready(function() {
+    updateStatus();
+  });
+});
+</script>
+{%- endblock -%}

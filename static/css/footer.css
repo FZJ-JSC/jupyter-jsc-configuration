@@ -1,0 +1,93 @@
+/* Top 
+Footer */
+
+#footer-top {
+  background-color: #EEE;
+}
+
+.ampel-img {
+  height: 40px;
+}
+
+div[id^='ampel'] {
+  min-width: 150px;
+}
+
+#footer-top a:not(.system-users) {
+  color: #023d6b;
+  font-weight: bold;
+}
+
+#footer-top a:hover {
+  color: #002036;
+}
+
+
+/* Bottom 
+Footer */
+
+#footer-bottom {
+  background-color: #002036;
+  min-height: 60px;
+  padding-left: 72px;
+  padding-right: 72px;
+}
+
+#footer-bottom * {
+  color: white;
+  font-size: 14px;
+}
+
+
+/* Tooltip
+*/
+
+/* .tooltip-inner {
+  background-color: #002036;
+  border-radius: 0;
+}
+
+.tooltip .tooltip-arrow::before {
+  border-top-color: #002036;
+} */
+
+.tooltip-inner {
+  background-color: #eee;
+  border-radius: 0;
+  color: #002036;
+  min-height: 42px;
+  max-width: unset;
+  white-space: pre-line;
+  text-align: start;
+}
+
+.tooltip .tooltip-arrow::before {
+  border-top-color: transparent;
+}
+
+/* System Users Dashboard Links */
+
+.system-users:hover {
+  text-decoration: none;
+  color: #002036 !important;
+}
+
+.system-users-link-div {
+  position: relative;
+  overflow: hidden;
+  width: 16px;
+  height: 16px; 
+}
+
+.system-users-link {
+  position: absolute;
+  left: -100px;
+  top: -0.1em;
+  height: 16px;
+  width: 16px;
+  transition: 0.25s;
+}
+
+.system-users:hover .system-users-link {
+  left: 0;
+}
