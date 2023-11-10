@@ -98,7 +98,7 @@ define(["jquery", "utils"], function ($, utils) {
       html_message: "<details><summary>Start cancelled by user.</summary>You clicked the cancel button.</details>"
     });
     this.api_request(
-      utils.url_path_join("users/progress/update", user, server_name),
+      utils.url_path_join("users/progress/events", user, server_name),
       options
     );
   };
@@ -112,7 +112,7 @@ define(["jquery", "utils"], function ($, utils) {
       html_message: "<details><summary>Start cancelled by user.</summary>You clicked the cancel button.</details>"
     });
     this.api_request(
-      utils.url_path_join("users/progress/update", user),
+      utils.url_path_join("users/progress/events", user),
       options
     );
   };
