@@ -222,7 +222,7 @@ require(["jquery", "jhapi", "utils"], function (
     var logged = [];
 
     function _updateStatus() {
-      api.api_request(`/users/progress/status/${user}/{{spawner.name}}`, {
+      api.api_request(`/users/progress/events/${user}/{{spawner.name}}`, {
         success: function (data) {
           data["events"].forEach(function (event) {
             const perc = event["progress"];
