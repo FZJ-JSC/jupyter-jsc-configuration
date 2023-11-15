@@ -10,7 +10,7 @@
 {%- set named_spawners = user.all_spawners(include_default=False) | list -%}
 {%- set custom_config = auth_state.get("custom_config", {}) -%}
 {%- set dropdown_options = auth_state.get("options_form", {}).get("dropdown_list", {}) -%}
-{%- set additional_spawn_options = custom_config.get("additional_spawn_options", {}) -%}
+{%- set additionalSpawnOptions = custom_config.get("additionalSpawnOptions", {}) -%}
 {%- set new = "new_jupyterlab" -%}  {# id for new jupyterlabs. Cannot contain "-" #}
 
 
@@ -234,7 +234,7 @@
           </div>
           <div class="tab-pane fade" id="{{ id }}-modules" role="tabpanel">
             <form id="{{id}}-modules-form">
-              {%- for module_set in custom_config.get("additional_spawn_options", {}).keys() %}
+              {%- for module_set in custom_config.get("additionalSpawnOptions", {}).keys() %}
               <div id="{{id}}-{{module_set}}-div">
                 <h4>{{ module_set | title}}</h4>
                 <div id="{{id}}-{{module_set}}-checkboxes-div" class="row g-0"></div>
@@ -479,7 +479,7 @@ function updateService(id, value) {
     var serviceName = (serviceInfos.JupyterLab.options[service] || {}).name || service;
     select.append(`<option value="${service}">${serviceName}</option>`);
   }
-  if (!value) value = serviceInfos.JupyterLab.default_option;
+  if (!value) value = serviceInfos.JupyterLab.defaultOption;
   updateLabConfigSelect(select, value, currentVal);
 }
 
@@ -531,7 +531,7 @@ function updatePartitions(id, service, system, account, project, value) {
   var loginNodes = [];
   var computeNodes = [];
   const partitionsAllowed = ( ( (dropdownOptions[service] || {}) [system] || {}) [account] || {}) [project] || {};
-  const interactivePartitions = (systemInfos[system] || {}).interactive_partitions || {};
+  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || {};
   for (const partition of Object.keys(partitionsAllowed).sort()) {
     if ( interactivePartitions.includes(partition) ) loginNodes.push(partition);
     else computeNodes.push(partition);
@@ -704,9 +704,9 @@ function updateResources(id, service, system, account, project, partition, nodes
 }
 
 function updateModules(id, service, system, account, project, partition, values) {
-  const moduleInfos = {{custom_config.get("additional_spawn_options", {}) | tojson}} || {};
+  const moduleInfos = {{custom_config.get("additionalSpawnOptions", {}) | tojson}} || {};
   const systemInfos = {{custom_config.get("systems") | tojson}};
-  const interactivePartitions = (systemInfos[system] || {}).interactive_partitions || {}; 
+  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || {}; 
 
   const form = $(`#${id}-modules-form`);
   var tabWarning = $(`#${id}-modules-tab-warning`);
@@ -723,7 +723,7 @@ function updateModules(id, service, system, account, project, partition, values)
     var insertIndex = -1;
     for (const [module, moduleInfo] of Object.entries(modules)) {
       if (moduleInfo.sets.includes(service)) {
-        if (moduleInfo.allowed_systems && !moduleInfo.allowed_systems.includes(system)) {
+        if (moduleInfo.allowedSystems && !moduleInfo.allowedSystems.includes(system)) {
           // Module not in allowed systems, so do nothing.
         }
         else {
@@ -841,7 +841,7 @@ $("select[id*=system]").change(function() {
   const serviceInfos = {{custom_config.get("services") | tojson}};
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
   // First check for system specific default option, then for general one
-  var default_option = ((systemInfos[values.system].services || {}).JupyterLab || {}).default_option || serviceInfos.JupyterLab.default_option;
+  var default_option = ((systemInfos[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfos.JupyterLab.defaultOption;
   if (default_option && values.service != default_option) {
     // Not using default/latest version, show a warning message
     let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
@@ -976,7 +976,7 @@ function _updateProgressState(id, text, bg) {
 
 function checkComputeMaintenance(system, partition) {
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-  const interactivePartitions = (systemInfos[system] || {}).interactive_partitions || [];
+  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || [];
   if (!interactivePartitions.includes(partition)) {
     const systemUpper = system.replace('-', '').toUpperCase();
     if ((systemsHealth[systemUpper] || 0) >= (systemsHealth.compute_threshold || 40)) return true;
@@ -1178,7 +1178,7 @@ function setUserOptions(id, options, available) {
   const runtime_in_min = runtime / 60;
   const gpus = options["gpus"];
   const xserver = options["xserver"];
-  const modules = options["additional_spawn_options"];
+  const modules = options["additionalSpawnOptions"];
 
   $(`#${id}-name-input`).val(name);
   if (available) {

@@ -419,7 +419,7 @@ require(["jquery", "jhapi", "utils"], function (
     _addInputValue("gpus");
     _addInputValue("runtime");
     _addInputValue("xserver");
-    _addCbValues("additional_spawn_options");
+    _addCbValues("additionalSpawnOptions");
     return options;
   }
 
