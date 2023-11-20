@@ -1022,7 +1022,6 @@ function checkIfAvailable(id, options) {
   const reservation = options["reservation"];
   const nodes = options["nodes"];
   const runtime = options["runtime"];
-  const runtime_in_min = runtime / 60;
   const gpus = options["gpus"];
   const xserver = options["xserver"];
 
@@ -1141,7 +1140,7 @@ function checkIfAvailable(id, options) {
     }
     let min = (partitionResources.runtime.minmax || [0,1])[0];
     let max = (partitionResources.runtime.minmax || [0,1])[1];
-    if (runtime_in_min < min || runtime_in_min > max) {
+    if (runtime < min || runtime > max) {
       reason += "runtime";
       setLabAsNA(id, reason);
       return false;
@@ -1175,7 +1174,6 @@ function setUserOptions(id, options, available) {
   const reservation = options["reservation"];
   const nodes = options["nodes"];
   const runtime = options["runtime"];
-  const runtime_in_min = runtime / 60;
   const gpus = options["gpus"];
   const xserver = options["xserver"];
   const modules = options["additionalSpawnOptions"];
@@ -1192,7 +1190,7 @@ function setUserOptions(id, options, available) {
       updateProjects(id, service, system, account, project);
       updatePartitions(id, service, system, account, project, partition);
       updateReservation(id, service, system, account, project, partition, reservation);
-      updateResources(id, service, system, account, project, partition, nodes, gpus, runtime_in_min, xserver);
+      updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
       updateModules(id, service, system, account, project, partition, modules);
     }
     catch (e) { setLabAsNA(id, "due to a JS error."); }
@@ -1248,7 +1246,7 @@ function setUserOptions(id, options, available) {
     // Resources
     if ((nodes || runtime || gpus || xserver) !== undefined) {
       _setInputValue("nodes", nodes);
-      _setInputValue("runtime", runtime_in_min);
+      _setInputValue("runtime", runtime);
       _setInputValue("gpus", gpus);
       {#- Don't have info about resources, so just never show the xserver checkbox #}
       _setInputValue("xserver", xserver);

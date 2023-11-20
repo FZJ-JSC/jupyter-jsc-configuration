@@ -389,10 +389,7 @@ require(["jquery", "jhapi", "utils"], function (
     function _addInputValue(param) {
       var input = collapsibleTr.find(`input[id*=${param}]`);
       var value = input.val();
-      if (param == "runtime") {
-        value = value * 60;
-      }
-      else if (param == "xserver") {
+      if (param == "xserver") {
         if (!collapsibleTr.find(`input[id*=xcbserver-input]`)[0].checked) return;
       }
       if (value) options[param] = value;

@@ -102,7 +102,7 @@
                 {%- if not no_resources -%}
                   {%- if nodes -%} {{ create_number_input("Nodes", nodes) }} {%- endif %}
                   {%- if gpus -%} {{ create_number_input("GPUs", gpus) }} {%- endif %}
-                  {%- if runtime -%} {{ create_number_input("Runtime", (runtime/60)|int) }} {%- endif %}
+                  {%- if runtime -%} {{ create_number_input("Runtime", (runtime)|int) }} {%- endif %}
                   {%- set resources = auth_state.get("options_form", {}).get('resources', {}) -%}
                   {%- set xserver_options = resources.get(option, {}).get(system, {}).get(partition, {}).get("xserver", {}) -%}
                   {%- set show_checkbox = xserver_options.get("checkbox", False) -%}
