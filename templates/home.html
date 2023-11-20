@@ -1,161 +1,82 @@
 {%- extends "page.html" -%}
+{%- import "macros/home.jinja" as home -%}
+{%- import "macros/inputs.jinja" as inputs -%}
 {%- import "macros/svgs.jinja" as svg -%}
 
 {%- block stylesheet -%}
   <link rel="stylesheet" href='{{static_url("css/home.css")}}' type="text/css"/>
 {%- endblock -%}
 
-
 {#- Set some convenience variables -#}
-{%- set named_spawners = user.all_spawners(include_default=False) | list -%}
+{%- set named_spawners = [] -%}
+{%- for s in user.all_spawners(include_default=False) | list -%}
+  {%- if s.orm_spawner.user_options and s.orm_spawner.user_options.get("service").startswith("JupyterLab") -%}
+  {%- do named_spawners.append(s) -%}
+  {%- endif -%}
+{%- endfor -%}
 {%- set custom_config = auth_state.get("custom_config", {}) -%}
 {%- set dropdown_options = auth_state.get("options_form", {}).get("dropdown_list", {}) -%}
-{%- set additionalSpawnOptions = custom_config.get("additionalSpawnOptions", {}) -%}
+{%- set userModules = custom_config.get("userModules", {}) -%}
 {%- set new = "new_jupyterlab" -%}  {# id for new jupyterlabs. Cannot contain "-" #}
 
-
-{%- macro create_text_input(id, key, label="", placeholder="") -%}
-{#- Macro to create a (non-required) text input #}
-<div id="{{id}}-{{key}}-input-div"  class="row mb-3">
-  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
-  <div class="col-8">
-    <input type="text" class="form-control" id="{{id}}-{{key}}-input" placeholder="{{placeholder}}">
-  </div>
-</div>
-{%- endmacro -%}
-
-{%- macro create_select(id, key, label="") -%}
-{#- Macro to create an empty select which should be filled via JS. -#}
-<div id="{{id}}-{{key}}-select-div" class="row mb-3">
-  <label for="{{id}}-{{key}}-select" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
-  <div class="col-8">
-    <select id="{{id}}-{{key}}-select" class="form-select" required></select>
-    <div class="invalid-feedback">Please choose a {{ key }}.</div>
-  </div>
-</div>
-{%- endmacro -%}
-
-{%- macro create_number_input(id, key, label="") -%}
-<div id="{{id}}-{{key}}-input-div" class="row mb-3">  {# style="display: none; #}
-  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
-  <div class="col-8">
-    <input type="number" id="{{id}}-{{key}}-input" class="form-control" value="-1">
-    {#- Set the warning message via JS for different min max values. #}
-    <div class="invalid-feedback"></div>
-  </div>
-</div>
-{%- endmacro -%}
-
-{%- macro create_checkbox_input(id, key, label="") -%}
-<div id="{{id}}-{{key}}-input-div" class="row mb-3 align-items-center" style="display: none;">
-  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
-  <div class="col-8">
-    <input type="checkbox" class="form-check-input" id="{{id}}-{{key}}-input" value="None">
-  </div>
-</div>
-{%- endmacro -%}
-
-
-{%- macro create_announcement() -%}
-<div class="alert bg-info alert-dismissible fade show" style="color: #023d6b;" role="alert">
-  <h4 class="alert-heading">       
-    {{ svg.announcement_svg | safe }}
-    <span class="align-middle"> {{ custom_config.get("announcement", {}).get("title", "") | safe }} </span>
-  </h4>
-  {{ custom_config.get("announcement", {}).get("body", "")  | safe }}
-  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-{%- endmacro -%}
-
-{%- macro create_lab_summary_tr(s, user_options) -%}
-  {%- set id = s.orm_spawner.name -%}
-  {%- set name = user_options.get("name") -%}
-  {%- set system = user_options.get("system", None) -%}
-  {%- set partition = user_options.get("partition", None) -%}
-  {%- set project = user_options.get("project", None) -%}
-<tr data-server-id="{{id}}" class="lab-summary-tr">
+{%- macro create_summary_tr(s, user_options) -%}
+{%- set id = s.orm_spawner.name -%}
+{%- set name = user_options.get("name") -%}
+{%- set system = user_options.get("system", "") -%}
+{%- set flavor = user_options.get("flavor", "") -%}
+{%- set partition = user_options.get("partition", "") -%}
+{%- set project = user_options.get("project", "") -%}
+{%- set runtime = user_options.get("runtime", "") -%}
+{%- set nodes = user_options.get("nodes", "") -%}
+{%- set gpus = user_options.get("gpus", "") -%}
+<tr data-server-id="{{id}}" class="summary-tr">
   <td class="details-td" data-bs-target="#{{id}}-collapse">
-    <div class="d-flex mx-auto accordion-icon collapsed"></div>
+    <div class="d-flex mx-auto accordion-icon collapsed mx-4"></div>
   </td>
   <th scope="row" class="name-td">{{ name }}</th> 
-  <td class="system-td">{{ system }}</td>
-  <td class="partition-td">
-    {%- if not partition %}
-    <span class="text-muted">N/A</span>
-    {%- else %}
-    {{ partition }} 
-    {%- endif %}
+  <td class="config-td">
+    <div style="max-height: 152px; overflow: auto;">
+      {%- macro _config_td_entry(label, value) %}
+        <span class="text-muted" style="font-size: smaller;">{{ label }}</span><br>
+        <span id="{{id}}-config-td-{{label|lower}}">{{ value }}</span>
+      {%- endmacro -%}
+      {%- set row_margins = "mx-3 mb-1" -%}
+      {%- set sm_breakpoint = "col-12 col-md-4 text-center" %}
+      <div class="row {{row_margins}} justify-content-between">
+        <div class="row col-6 col-md-12">
+          <div class="col text-md-start {{sm_breakpoint}}">
+          {%- if system %} {{ _config_td_entry("System", system) }} {%- endif %}
+          </div>
+          <div class="col text-md-center {{sm_breakpoint}}">
+          {%- if flavor %} {{ _config_td_entry("Flavor", flavor) }}
+          {%- elif partition %} {{ _config_td_entry("Partition", partition) }} {%- endif %}
+          </div>
+          <div class="col text-md-end {{sm_breakpoint}}">
+          {%- if project %} {{ _config_td_entry("Project", project) }} {%- endif %}
+          </div>
+        </div>
+        <div class="row col-6 col-md-12">
+          <div class="col text-md-start {{sm_breakpoint}}">
+          {%- if runtime %} {{ _config_td_entry("Runtime", (runtime/60)|int) }}  min {%- endif %}
+          </div>
+          <div class="col text-md-center {{sm_breakpoint}}">
+          {%- if nodes %} {{ _config_td_entry("Nodes", nodes) }} {%- endif %}
+          </div>
+          <div class="col text-md-end {{sm_breakpoint}}">
+          {%- if gpus %} {{ _config_td_entry("GPUs", gpus) }} {%- endif %}
+          </div>
+        </div>
+      </div>
+    </div>
   </td>
-  <td class="project-td"> 
-    {%- if not project %}
-    <span class="text-muted">N/A</span>
-    {%- else %}
-    {{ project }}
-    {%- endif %}
-  </td>
-  {{ create_lab_progress_td(id) }}
-  <td class="actions-td"> 
-    {%- set button_margin = "my-1 me-1" -%} 
-    {#- Save N/A status to page #}
-    <span id="{{id}}-na-status" class="na-status d-none">0</span>  
-    {#- Create and show appropriate buttons #}
-    <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none {{button_margin}}">
-      {{ svg.na_svg | safe }} N/A
-    </button>
-    <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
-    <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {%if s.active and not s._stop_pending-%}d-none{%-endif%} {{button_margin}}">
-      {{ svg.start_svg | safe }} Start
-    </button>
-    <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {{button_margin}}" href='/user/{{user.name}}/{{id}}' target="_blank">
-      {{ svg.open_svg | safe }} Open
-    </a>
-    <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending == None-%}d-none{%-endif-%}">
-      {{ svg.stop_svg | safe }} Cancel
-    </button>
-    <button type="button" id="{{id}}-stop-btn" class="btn btn-danger btn-stop-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending != None-%}d-none{%-endif-%}">
-      {{ svg.stop_svg | safe }} Stop
-    </button>
-    <div id="{{id}}-spawner-info" class="d-none d-inline-block" style="font-size: smaller;"></div>
-  </td>
+  {{ home.create_lab_progress_td(id) }}
+  {{ home.create_action_td(s, user, id) }}
 </tr>
 {%- endmacro -%}
 
-{%- macro create_lab_progress_td(id) -%}
-<td class="status-td">
-  <div class="d-flex">
-    <div class="progress" style="height: 20px; min-width: 100px;">
-      <div id="{{id}}-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
-    </div>
-    <a role="button" class="log-info-btn lh-1 ms-3" style="padding-top: 1px;">{{ svg.info_filled_svg | safe }}</a>
-  </div>
-  <div id="{{id}}-progress-info-text" class="progress-info-text text-muted" style="font-size: smaller;"></div>
-</td>
-{%- endmacro -%}
-
-{%- macro create_lab_config_buttons(id, start_button_only=false) -%}
-<hr>
-<div class="d-flex">
-  {%- if start_button_only %}
-  <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
-  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none ms-auto me-2">
-      {{ svg.na_svg | safe }} N/A
-  </button>
-  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
-  {%- else %}
-  <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
-  <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>
-  <div class="alert fade p-0 m-0" role="alert">
-    <span class="align-middle"></span>
-    <button type="button" class="btn-close align-middle" onClick="$(this).parent().removeClass('show p-1').addClass('p-0');"></button>
-  </div>
-  <button type="button" id="{{id}}-delete-btn" class="btn btn-danger btn-delete-lab ms-auto"> {{ svg.delete_svg | safe }} Delete </button>
-  {%- endif %}
-</div>
-{%- endmacro -%}
-
-{%- macro create_lab_collapsible_tr(id, user_options, show_logs=True) -%}
-  {%- set name = user_options.get("name", "") -%}
-<tr data-server-id="{{id}}" class="lab-collapsible-tr" style="--bs-table-accent-bg: transparent;">
+{%- macro create_collapsible_tr(id, user_options, show_logs=True) -%}
+{%- set name = user_options.get("name", "") -%}
+<tr data-server-id="{{id}}" class="collapsible-tr" style="--bs-table-accent-bg: transparent;">
   <td colspan="100%" class="p-0">  {#- Remove padding to hide td when collapsed #}
     <div class="collapse" id="{{id}}-collapse">
       <div class="d-flex align-items-start m-3">
@@ -186,15 +107,19 @@
         <div class="tab-content w-100" id="{{ id }}-tabContent">
           <div class="tab-pane fade show active" id="{{ id }}-config" role="tabpanel">
             <form id="{{id}}-lab-config-form">
-              {{ create_text_input(id, "name", placeholder="Give your lab a name") }}
-              {{ create_select(id, "version") }}
+              {{ inputs.create_text_input(id, "name", placeholder="Give your lab a name") }}
+              {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
               <hr>
-              {{ create_select(id, "system") }}
-              {{ create_select(id, "account") }}
-              {{ create_select(id, "project") }}
-              {{ create_select(id, "partition") }}
+              {{ inputs.create_select(id, "system") }}
+              {{ inputs.create_select(id, "flavor") }}
+              {# <div id="{{id}}-flavor-info-div">
+                <span class="fw-bold">Available flavors</span>
+              </div> #}
+              {{ inputs.create_select(id, "account") }}
+              {{ inputs.create_select(id, "project") }}
+              {{ inputs.create_select(id, "partition") }}
               <hr id="{{id}}-reservation-hr">
-              {{ create_select(id, "reservation") }}
+              {{ inputs.create_select(id, "reservation") }}
               <div id="{{id}}-reservation-info-div" class="row mb-3">
                 {%- set reservation_info_classes = "col-4 fw-bold"%}
                 <div id="{{id}}-reservation-info" class="col-8 offset-4">
@@ -220,21 +145,21 @@
                 </div>
               </div>
             </form>
-            {{ create_lab_config_buttons(id, id == new) }}
+            {{ home.create_lab_config_buttons(id, id == new) }}
           </div>
           <div class="tab-pane fade" id="{{ id }}-resources" role="tabpanel">
             <form id="{{id}}-resources-form">
-              {{ create_number_input(id, "nodes") }}
-              {{ create_number_input(id, "gpus", "GPUs") }}
-              {{ create_number_input(id, "runtime", "Runtime (minutes)") }}
-              {{ create_checkbox_input(id, "xcbserver", "Activate XServer")}}
-              {{ create_number_input(id, "xserver", "Use XServer GPU Index") }}
+              {{ inputs.create_number_input(id, "nodes") }}
+              {{ inputs.create_number_input(id, "gpus", "GPUs") }}
+              {{ inputs.create_number_input(id, "runtime", "Runtime (minutes)") }}
+              {{ inputs.create_checkbox_input(id, "xcbserver", "Activate XServer")}}
+              {{ inputs.create_number_input(id, "xserver", "Use XServer GPU Index") }}
             </form>
-            {{ create_lab_config_buttons(id, id == new) }}
+            {{ home.create_lab_config_buttons(id, id == new) }}
           </div>
           <div class="tab-pane fade" id="{{ id }}-modules" role="tabpanel">
             <form id="{{id}}-modules-form">
-              {%- for module_set in custom_config.get("additionalSpawnOptions", {}).keys() %}
+              {%- for module_set in custom_config.get("userModules", {}).keys() %}
               <div id="{{id}}-{{module_set}}-div">
                 <h4>{{ module_set | title}}</h4>
                 <div id="{{id}}-{{module_set}}-checkboxes-div" class="row g-0"></div>
@@ -253,12 +178,12 @@
                 <label class="form-check-label" for="{{id}}-modules-select-none">Deselect all</label>
               </div>
             </div>
-            {{ create_lab_config_buttons(id, id == new) }}
+            {{ home.create_lab_config_buttons(id, id == new) }}
           </div>
           <div class="tab-pane fade" id="{{ id }}-logs" role="tabpanel">
-              {{create_select(id, "log") }}
+              {{ inputs.create_select(id, "log") }}
               <div id="{{id}}-log" class="card card-body"></div>
-              {{ create_lab_config_buttons(id, id == new) }}
+              {{ home.create_lab_config_buttons(id, id == new) }}
           </div>
         </div>
       </div>
@@ -270,36 +195,31 @@
 
 {%- block main -%}
 <div class="container-fluid p-4">
-  {#- TITLE SECTION #}
-  <h1>JupyterLabs</h1>
-  <p>You can configure your existing JupyterLabs by expanding the corresponding table row.</p>
-
   {#- ANNOUNCEMENT #}
   {%- if custom_config.get("announcement", {}).get("show", False) %}
-  {{ create_announcement() }}
+  {{ home.create_announcement(custom_config) }}
   {%- endif -%}
 
   {#- TABLE #}
+  <p>You can configure your existing JupyterLabs by expanding the corresponding table row.</p>
   <div class="table-responsive-md">
     <table id="jupyterlabs-table" class="table table-bordered table-striped table-hover table-light align-middle">
     {#- TABLE HEAD #}
       <thead class="table-secondary">
         <tr>
-          <th scope="col"></th>
-          <th scope="col">Name</th>
-          <th scope="col">System</th>
-          <th scope="col">Partition</th>
-          <th scope="col">Project</th>
-          <th scope="col" style="width: 175px;">Status</th>
-          <th scope="col" style="width: 210px;">Actions</th>
+          <th scope="col" width="1%"></th>
+          <th scope="col" width="20%">Name</th>
+          <th scope="col">Configuration</th>
+          <th scope="col" width="10%;">Status</th>
+          <th scope="col" width="10%;">Actions</th>
         </tr>
       </thead>
       {#- TABLE BODY #}
       <tbody>
         {#- New JupyterLab row #}
-        <tr data-server-id="{{ new }}" class="table-new-lab lab-summary-tr">
+        <tr data-server-id="{{ new }}" class="new-spawner-tr summary-tr">
           <th scope="col" class="details-td">
-            <div class="d-flex">
+            <div class="d-flex mx-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg m-auto" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
               </svg>
@@ -307,16 +227,14 @@
           </th>
           <th scope="row" colspan="100%" class="text-center">New JupyterLab</th>
         </tr>
-        {{ create_lab_collapsible_tr(new, {}) }}
+        {{ create_collapsible_tr(new, {}) }}
         {#- Existing JupyterLab rows -#}
         {#- By looping through named_spawners #}
         {%- for s in named_spawners -%}
           {%- set user_options = s.orm_spawner.user_options -%}
-          {%- if user_options -%}
-            {%- set name = user_options.get("name") -%}
-            {{ create_lab_summary_tr(s, user_options) }}
-            {{ create_lab_collapsible_tr(s.orm_spawner.name, user_options) }}
-          {%- endif -%}
+          {%- set name = user_options.get("name") -%}
+          {{ create_summary_tr(s, user_options) }}
+          {{ create_collapsible_tr(s.orm_spawner.name, user_options) }}
         {%- endfor %}
       </tbody>
     </table>
@@ -330,7 +248,7 @@
 
 <script>
 {#- Manually sets some cancel related variables -#}
-{%- set cancel_progress_activation = 10 -%}
+{%- set cancel_progress_activation = 30 -%}
 {#- Percentage when cancel should be disabled again
     since it is already in progress -#}
 {%- set cancel_progress_deactivation = 99 %}
@@ -342,18 +260,15 @@ var spawnEvents = {};
 {%- for s in named_spawners -%}
 {%- set spawner = s.orm_spawner -%}
 {%- set userOptions = spawner.user_options -%}
-  {%- if userOptions and userOptions.get("service").startswith("JupyterLab") %}
 userOptions["{{spawner.name}}"] = {{ userOptions | tojson }}
-  {%- endif -%}
-  {%- if spawner.state and spawner.state.get("events") %}
-    spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
-  {%- else -%}
-    {#- We still want to show a "latest" entry for the log dropdown,
-    so we manually create an entry for spawners without events #}
-    spawnEvents["{{spawner.name}}"] = {"latest": []};
-  {%- endif -%}
+{%- if spawner.state and spawner.state.get("events") %}
+spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
+{%- else -%}
+{#- We still want to show a "latest" entry for the log dropdown,
+so we manually create an entry for spawners without events #}
+spawnEvents["{{spawner.name}}"] = {"latest": []};
+{%- endif -%}
 {%- endfor %}
-
 var systemsHealth = {};
 </script>
 
@@ -361,7 +276,7 @@ var systemsHealth = {};
 {# Callbacks related to interacting with table rows -#}
 
 // Toggle the collapsible table row on table row click
-$(".lab-summary-tr").click(function() {
+$(".summary-tr").click(function() {
   let id = $(this).data("server-id");
   let accordionIcon = $(this).find(".accordion-icon");
   let collapse = $(`.collapse[id*=${id}]`);
@@ -491,10 +406,42 @@ function updateSystems(id, service, value) {
   resetInputElement(select);
 
   const systemsAllowed = dropdownOptions[service] || {};
-  for (const system of Object.keys(systemInfos).sort((a,b) => (systemInfos[a]["weight"] || 99)  < (systemInfos[b]["weight"] || 99) ? -1 : 1)) {
+  for (const system of Object.keys(systemInfos).sort((a,b) => (systemInfos[a]["weight"] || 99) < (systemInfos[b]["weight"] || 99) ? -1 : 1)) {
     if (system in systemsAllowed) select.append(`<option value="${system}">${system}</option>`);
   }
   updateLabConfigSelect(select, value, currentVal);
+}
+
+function updateFlavors(id, service, system, value) {
+  const systemInfos = {{custom_config.get("systems") | tojson}} || {};
+  
+  let select = $(`select#${id}-flavor-select`);
+  const currentVal = select.val();
+  resetInputElement(select);
+
+  const flavorsAllowed = (systemInfos[system] || {}).flavors || [];
+  for (const flavor of flavorsAllowed.sort()) {
+    select.append(`<option value="${flavor}">${flavor}</option>`);
+  }
+  Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
+  updateLabConfigSelect(select, value, currentVal);
+
+  {#- Create available flavors diagram. Currently not used #}
+  {# $(`#${id}-flavor-info-div`).html("");
+  for (const flavor of flavorsAllowed.sort()) {
+    let used = 2;
+    let free = 2;
+    let diagramHtml = `
+      <div class="row align-items-center g-0 mt-4">
+        <span class="col-4">${flavor}</span>
+        <div class="progress col ms-2">
+          <div class="progress-bar" role="progressbar" style="width: ${used/(used+free)*100}%">${used} Used</div>
+          <div class="progress-bar bg-success" role="progressbar" style="width: ${free/(used+free)*100}%">${free} Free</div>
+        </div>
+      </div>
+    `
+    $(`#${id}-flavor-info-div`).append(diagramHtml);
+  } #}
 }
 
 function updateAccounts(id, service, system, value) {
@@ -506,6 +453,7 @@ function updateAccounts(id, service, system, value) {
   for (const account of Object.keys(accountsAllowed).sort()) {
     select.append(`<option value="${account}">${account}</option>`);
   }
+  Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).addClass("d-none") : $(`#${id}-account-select-div`).removeClass("d-none");
   updateLabConfigSelect(select, value, currentVal);
 }
 
@@ -518,6 +466,7 @@ function updateProjects(id, service, system, account, value) {
   for (const project of Object.keys(projectsAllowed).sort()) {
     select.append(`<option value="${project}">${project}</option>`);
   }
+  Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).addClass("d-none") : $(`#${id}-project-select-div`).removeClass("d-none");
   updateLabConfigSelect(select, value, currentVal);
 }
 
@@ -553,6 +502,7 @@ function updatePartitions(id, service, system, account, project, value) {
     }
     select.append('</optgroup>');
   }
+  Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).addClass("d-none") : $(`#${id}-partition-select-div`).removeClass("d-none");
   updateLabConfigSelect(select, value, currentVal);
 }
 
@@ -636,7 +586,6 @@ function updateResources(id, service, system, account, project, partition, nodes
         let min = (partitionResources.gpus.minmax || [0,1])[0];
         let max = (partitionResources.gpus.minmax || [0,1])[1];
         $(`label[for*=${id}-gpus-input]`).text("GPUs [" + min + "," + max + "]");
-        // Set default if no value was passed
         let defaultGpus = partitionResources.gpus.default || 0;
         updateLabConfigInput(gpusInput, gpus, currentGpusVal, min, max, defaultGpus);
         $(`#${id}-gpus-input-div`).show();
@@ -704,7 +653,7 @@ function updateResources(id, service, system, account, project, partition, nodes
 }
 
 function updateModules(id, service, system, account, project, partition, values) {
-  const moduleInfos = {{custom_config.get("additionalSpawnOptions", {}) | tojson}} || {};
+  const moduleInfos = {{custom_config.get("userModules", {}) | tojson}} || {};
   const systemInfos = {{custom_config.get("systems") | tojson}};
   const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || {}; 
 
@@ -829,6 +778,7 @@ $("select[id*=system]").change(function() {
   const values = getLabConfigSelectValues(id);
   if (!$(this).hasClass("no-update")) {
     try { 
+      updateFlavors(id, values.service, values.system);
       updateAccounts(id, values.service, values.system);
     }
     catch (e) { 
@@ -841,8 +791,8 @@ $("select[id*=system]").change(function() {
   const serviceInfos = {{custom_config.get("services") | tojson}};
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
   // First check for system specific default option, then for general one
-  var default_option = ((systemInfos[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfos.JupyterLab.defaultOption;
-  if (default_option && values.service != default_option) {
+  var defaultOption = ((systemInfos[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfos.JupyterLab.defaultOption;
+  if (defaultOption && values.service != defaultOption) {
     // Not using default/latest version, show a warning message
     let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
     $(`#${id}-spawner-info`).removeClass("d-none").html(reason);
@@ -1168,6 +1118,7 @@ function setUserOptions(id, options, available) {
   const name = options["name"];
   const service = options["service"].split('/')[1];
   const system = options["system"];
+  const flavor = options["flavor"];
   const account = options["account"];
   const project = options["project"];
   const partition = options["partition"];
@@ -1176,7 +1127,7 @@ function setUserOptions(id, options, available) {
   const runtime = options["runtime"];
   const gpus = options["gpus"];
   const xserver = options["xserver"];
-  const modules = options["additionalSpawnOptions"];
+  const modules = options["userModules"];
 
   $(`#${id}-name-input`).val(name);
   if (available) {
@@ -1186,6 +1137,7 @@ function setUserOptions(id, options, available) {
     try {
       updateService(id, service);
       updateSystems(id, service, system);
+      updateFlavors(id, service, system, flavor);
       updateAccounts(id, service, system, account);
       updateProjects(id, service, system, account, project);
       updatePartitions(id, service, system, account, project, partition);
@@ -1297,7 +1249,7 @@ function spawnStatusChanged(event) {
       $(`#${id}-progress-info-text`).html("");
       $(`#${id}-log`).html("");
       // Update buttons to reflect pending state
-      let tr = $(`tr.lab-summary-tr[data-server-id=${id}]`);
+      let tr = $(`tr.summary-tr[data-server-id=${id}]`);
       // _enableTrButtonsRunning
       tr.find(".btn-na-lab, .btn-start-lab").addClass("d-none");
       tr.find(".btn-open-lab, .btn-cancel-lab").removeClass("d-none").addClass("disabled");
@@ -1306,8 +1258,8 @@ function spawnStatusChanged(event) {
 }
 
 function onEvtMessage(event, id) {
-  var tr = $(`.lab-summary-tr[data-server-id=${id}]`);
-  var collapsibleTr = $(`.lab-collapsible-tr[data-server-id=${id}]`)
+  var tr = $(`.summary-tr[data-server-id=${id}]`);
+  var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
   var cancelBtn = tr.find(".btn-cancel-lab");
   var collapseBtns = collapsibleTr.find("button").not(".nav-link");
 
@@ -1394,7 +1346,7 @@ function updateSpawnProgress() {
     {%- if s.ready %}
     _updateProgressState(id, "running", "bg-success");
     {%- elif not s._stop_pending %}
-    var tr = $(`#${id}.lab-summary-tr`);
+    var tr = $(`#${id}.summary-tr`);
     tr.find(".btn-open-lab").addClass("disabled");
     var currentProgress = 0;
     if (latestEvents.length > 0) {
@@ -1406,7 +1358,7 @@ function updateSpawnProgress() {
       tr.find(".stop, .cancel").addClass("disabled");
     }
     // Disable the delete button during the spawn process.
-    var collapse = $(`.lab-collapsible-tr[data-server-id=${id}]`);
+    var collapse = $(`.collapsible-tr[data-server-id=${id}]`);
     collapse.find(".btn-delete-lab").addClass("disabled");
     // Update progress with percentage also
     _updateProgressPercentage(id, "spawning...", currentProgress);

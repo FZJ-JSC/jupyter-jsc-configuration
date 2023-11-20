@@ -1,0 +1,48 @@
+{%- macro create_text_input(id, key, label="", placeholder="", warning="", required=false) -%}
+{#- Macro to create a text input #}
+{%- set key = key.lower() %}
+<div id="{{id}}-{{key}}-input-div"  class="row mb-3">
+  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
+  <div class="col-8">
+    <input type="text" class="form-control" id="{{id}}-{{key}}-input" 
+      placeholder="{{placeholder}}" {% if required -%}required{%- endif -%}>
+    <div class="invalid-feedback">{{ warning }}</div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro create_select(id, key, label="") -%}
+{#- Macro to create an empty select which should be filled via JS. -#}
+{%- set key = key.lower() %}
+<div id="{{id}}-{{key}}-select-div" class="row mb-3">
+  <label for="{{id}}-{{key}}-select" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
+  <div class="col-8">
+    <select id="{{id}}-{{key}}-select" class="form-select" required>
+    </select>
+    <div class="invalid-feedback">Please choose a {{ key }}.</div>
+    {# {% if caller -%} {{ caller() }} {%- endif %} #}
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro create_number_input(id, key, label="") -%}
+{%- set key = key.lower() %}
+<div id="{{id}}-{{key}}-input-div" class="row mb-3">  {# style="display: none; #}
+  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
+  <div class="col-8">
+    <input type="number" id="{{id}}-{{key}}-input" class="form-control" value="-1">
+    {#- Set the warning message via JS for different min max values. #}
+    <div class="invalid-feedback"></div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro create_checkbox_input(id, key, label="") -%}
+{%- set key = key.lower() %}
+<div id="{{id}}-{{key}}-input-div" class="row mb-3 align-items-center" style="display: none;">
+  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
+  <div class="col-8">
+    <input type="checkbox" class="form-check-input" id="{{id}}-{{key}}-input" value="None">
+  </div>
+</div>
+{%- endmacro -%}

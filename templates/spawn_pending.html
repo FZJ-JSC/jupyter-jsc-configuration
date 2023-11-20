@@ -52,7 +52,7 @@
 {%- set runtime = user_options.get("runtime", None) -%}
 {%- set xserver = user_options.get("xserver", None) -%}
 {%- set gpus = user_options.get("gpus", None) -%}
-{%- set additionalSpawnOptions = user_options.get("additionalSpawnOptions", {}) -%}
+{%- set userModules = user_options.get("userModules", {}) -%}
 
 {#- Check if we should disable any tabs -#}
 {%- set no_resources = True -%}
@@ -81,7 +81,7 @@
             <div class="nav flex-column nav-pills p-3 ps-0" id="tab" role="tablist">
               <button class="nav-link active {{ nav_tab_margins }}" id="config-info-tab" data-bs-toggle="pill" data-bs-target="#config-info" type="button" role="tab">Lab Config</button>
               <button class="nav-link {{ nav_tab_margins }} {%- if no_resources %} disabled {%- endif %}" id="resources-info-tab" data-bs-toggle="pill" data-bs-target="#resources-info" type="button" role="tab" >Resources</button>
-              <button class="nav-link {{ nav_tab_margins }} {%- if not additionalSpawnOptions %} disabled {%- endif %}" id="modules-info-tab" data-bs-toggle="pill" data-bs-target="#modules-info" type="button" role="tab" >Kernels and Extensions</span></button>
+              <button class="nav-link {{ nav_tab_margins }} {%- if not userModules %} disabled {%- endif %}" id="modules-info-tab" data-bs-toggle="pill" data-bs-target="#modules-info" type="button" role="tab" >Kernels and Extensions</span></button>
             </div>
             {#- TAB NAV CONTENT -#}
             <div class="tab-content w-100" id="tabContent">
@@ -118,8 +118,8 @@
                 {%- endif %}
               </div>
               <div class="tab-pane fade" id="modules-info" role="tabpanel">
-              {%- if additionalSpawnOptions -%}
-                {%- set module_sets = auth_state.get("custom_config", {}).get("additionalSpawnOptions", {}) %}
+              {%- if userModules -%}
+                {%- set module_sets = auth_state.get("custom_config", {}).get("userModules", {}) %}
                 {%- for set, modules in module_sets.items() -%}
                   {% set ns = namespace(first = true) -%}
                   {%- for module, module_info in modules.items() -%}
@@ -128,7 +128,7 @@
                     <div class="row g-0">
                     {%- endif %}
                       <div class="form-check col-sm-6 col-md-4 col-lg-3">
-                        <input type="checkbox" class="form-check-input" id="{{ module }}-check" disabled {%- if module in additionalSpawnOptions %} checked {%- endif %}>
+                        <input type="checkbox" class="form-check-input" id="{{ module }}-check" disabled {%- if module in userModules %} checked {%- endif %}>
                           <label class="form-check-label" for="{{ module }}-check">
                             <span class="align-middle">{{ module_info['displayName'] }}</span>
                             <a href="{{ module_info['href'] }}" target="_blank" class="text-muted">{{ svg.info_svg | safe }}</a>

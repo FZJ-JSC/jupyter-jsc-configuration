@@ -1,0 +1,70 @@
+{%- import "macros/svgs.jinja" as svg -%}
+
+{%- macro create_announcement(custom_config) -%}
+<div class="alert bg-info alert-dismissible fade show" style="color: #023d6b;" role="alert">
+  <h4 class="alert-heading">       
+    {{ svg.announcement_svg | safe }}
+    <span class="align-middle"> {{ custom_config.get("announcement", {}).get("title", "") | safe }} </span>
+  </h4>
+  {{ custom_config.get("announcement", {}).get("body", "")  | safe }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{%- endmacro -%}
+
+{%- macro create_lab_progress_td(id) -%}
+<td class="status-td">
+  <div class="d-flex">
+    <div class="progress" style="height: 20px; min-width: 100px;">
+      <div id="{{id}}-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"></div>
+    </div>
+    <a role="button" class="log-info-btn lh-1 ms-3" style="padding-top: 1px;">{{ svg.info_filled_svg | safe }}</a>
+  </div>
+  <div id="{{id}}-progress-info-text" class="progress-info-text text-muted" style="font-size: smaller;"></div>
+</td>
+{%- endmacro -%}
+
+{%- macro create_action_td(s, user, id) -%}
+<td class="actions-td"> 
+  {%- set button_margin = "my-1 me-1" -%} 
+  {#- Save N/A status to page #}
+  <span id="{{id}}-na-status" class="na-status d-none">0</span>  
+  {#- Create and show appropriate buttons #}
+  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none {{button_margin}}">
+    {{ svg.na_svg | safe }} N/A
+  </button>
+  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
+  <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {%if s.active and not s._stop_pending-%}d-none{%-endif%} {{button_margin}}">
+    {{ svg.start_svg | safe }} Start
+  </button>
+  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {{button_margin}}" href='/user/{{user.name}}/{{id}}' target="_blank">
+    {{ svg.open_svg | safe }} Open
+  </a>
+  <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending == None-%}d-none{%-endif-%}">
+    {{ svg.stop_svg | safe }} Cancel
+  </button>
+  <button type="button" id="{{id}}-stop-btn" class="btn btn-danger btn-stop-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending != None-%}d-none{%-endif-%}">
+    {{ svg.stop_svg | safe }} Stop
+  </button>
+</td>
+{%- endmacro -%}
+
+{%- macro create_lab_config_buttons(id, start_button_only=false) -%}
+<hr>
+<div class="d-flex">
+  {%- if start_button_only %}
+  <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
+  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none ms-auto me-2">
+      {{ svg.na_svg | safe }} N/A
+  </button>
+  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
+  {%- else %}
+  <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
+  <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>
+  <div class="alert fade p-0 m-0" role="alert">
+    <span class="align-middle"></span>
+    <button type="button" class="btn-close align-middle" onClick="$(this).parent().removeClass('show p-1').addClass('p-0');"></button>
+  </div>
+  <button type="button" id="{{id}}-delete-btn" class="btn btn-danger btn-delete-lab ms-auto"> {{ svg.delete_svg | safe }} Delete </button>
+  {%- endif %}
+</div>
+{%- endmacro -%}

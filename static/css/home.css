@@ -2,15 +2,15 @@ td h6 {
   font-size: .75rem;
 }
 
-tr.lab-summary-tr {
+tr.summary-tr {
   height: 73px
 }
 
-tr.lab-collapsible-tr {
+tr.collapsible-tr {
   height: unset;
 }
 
-.table-new-lab {
+.new-spawner-tr {
   --bs-table-bg: #fff;
   --bs-table-striped-bg: #fff;
   --bs-table-striped-color: #023d6b;
