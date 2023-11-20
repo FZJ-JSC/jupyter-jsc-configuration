@@ -57,7 +57,7 @@
         </div>
         <div class="row col-6 col-md-12">
           <div class="col text-md-start {{sm_breakpoint}}">
-          {%- if runtime %} {{ _config_td_entry("Runtime", (runtime/60)|int) }}  min {%- endif %}
+          {%- if runtime %} {{ _config_td_entry("Runtime", (runtime)|int) }}  min {%- endif %}
           </div>
           <div class="col text-md-center {{sm_breakpoint}}">
           {%- if nodes %} {{ _config_td_entry("Nodes", nodes) }} {%- endif %}

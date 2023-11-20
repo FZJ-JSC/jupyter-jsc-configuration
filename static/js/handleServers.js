@@ -426,7 +426,7 @@ require(["jquery", "jhapi", "utils"], function (
     tr.find(`#${id}-config-td-flavor`).text(options.flavor);
     tr.find(`#${id}-config-td-partition`).text(options.partition);
     tr.find(`#${id}-config-td-project`).text(options.project);
-    tr.find(`#${id}-config-td-runtime`).text(options.runtime / 60);
+    tr.find(`#${id}-config-td-runtime`).text(options.runtime);
     tr.find(`#${id}-config-td-nodes`).text(options.nodes);
     tr.find(`#${id}-config-td-gpus`).text(options.gpus);
   }
