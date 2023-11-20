@@ -74,7 +74,7 @@ require(["jquery", "jhapi", "utils"], function (
   function startServer() {
     var tr = _getTr(this);
     const id = tr.data("server-id");
-    var collapsibleTr = tr.siblings(`.lab-collapsible-tr[data-server-id=${id}]`);
+    var collapsibleTr = tr.siblings(`.collapsible-tr[data-server-id=${id}]`);
 
     _disableTrButtons(tr);
     // Validate the form and start spawn only after validation
@@ -86,13 +86,13 @@ require(["jquery", "jhapi", "utils"], function (
       return;
     }
 
-    // Update the summary row according to the values set in the collapsibleTr
-    _updateTr(tr, collapsibleTr);
     // Set the href of the start button to the spawn url
     _resetProgress(id);
     $(`#${id}-log`).html("");
 
     var options = _createDataDict(collapsibleTr);
+    // Update the summary row according to the values set in the collapsibleTr
+    _updateTr(tr, id, options);
     // Open a new tab for spawn_pending.html
     // Need to create it here for context reasons
     var newTab = window.open("about:blank");
@@ -227,7 +227,7 @@ require(["jquery", "jhapi", "utils"], function (
       tab.show();
       // Open the collapsibleTr if it was hidden
       const id = getId(this);
-      var tr = $(`.lab-summary-tr[data-server-id=${id}`);
+      var tr = $(`.summary-tr[data-server-id=${id}`);
       if (!$(`${id}-collapse`).css("display") == "none") {
         tr.trigger("click");
       }
@@ -249,7 +249,7 @@ require(["jquery", "jhapi", "utils"], function (
   function saveChanges() {
     var collapsibleTr = _getTr(this);
     const id = getId(this);
-    var tr = $(`.lab-summary-tr[data-server-id=${id}]`);
+    var tr = $(`.summary-tr[data-server-id=${id}]`);
     var alert = $(this).siblings(".alert");
 
     const displayName = _getDisplayName(collapsibleTr);
@@ -257,7 +257,7 @@ require(["jquery", "jhapi", "utils"], function (
     api.update_named_server(user, id, {
       data: JSON.stringify(options),
       success: function () {
-        _updateTr(tr, collapsibleTr);
+        _updateTr(tr, id, options);
         // Update global user options
         userOptions[id] = options;
         alert.children("span")
@@ -285,13 +285,12 @@ require(["jquery", "jhapi", "utils"], function (
       success: function () {
         $(`#${id}-name-input`).val(options["name"]);
         // Reset all user inputs to the values saved in the global user options
-        let available = checkIfAvailable(id, options)
-        setUserOptions(id, options, available);
+        setUserOptions(id, options);
         // Remove all tab warnings since manual changes shouldn't cause warnings
         $("[id$=tab-warning]").addClass("invisible");
         // Show first tab after resetting values
-        let trigger = $(`#${id}-collapse`).find(".nav-link").first();
-        let tab = new bootstrap.Tab(trigger);
+        var trigger = $(`#${id}-collapse`).find(".nav-link").first();
+        var tab = new bootstrap.Tab(trigger);
         tab.show();
         alert.children("span")
           .text(`Successfully reverted settings for ${name}.`);
@@ -411,6 +410,7 @@ require(["jquery", "jhapi", "utils"], function (
 
     _addSelectValue("version"); // service
     _addSelectValue("system");
+    _addSelectValue("flavor");
     _addSelectValue("account");
     _addSelectValue("project");
     _addSelectValue("partition");
@@ -419,16 +419,19 @@ require(["jquery", "jhapi", "utils"], function (
     _addInputValue("gpus");
     _addInputValue("runtime");
     _addInputValue("xserver");
-    _addCbValues("additionalSpawnOptions");
+    _addCbValues("userModules");
     return options;
   }
 
-  function _updateTr(tr, collapsibleTr) {
-    const displayName = _getDisplayName(collapsibleTr);
-    tr.find(".name-td").text(displayName);
-    tr.find(".system-td").text(collapsibleTr.find("select[id*=system]").val());
-    tr.find(".partition-td").text(collapsibleTr.find("select[id*=partition]").val());
-    tr.find(".project-td").text(collapsibleTr.find("select[id*=project]").val());
+  function _updateTr(tr, id, options) {
+    tr.find(".name-td").text(options.name);
+    tr.find(`#${id}-config-td-system`).text(options.system);
+    tr.find(`#${id}-config-td-flavor`).text(options.flavor);
+    tr.find(`#${id}-config-td-partition`).text(options.partition);
+    tr.find(`#${id}-config-td-project`).text(options.project);
+    tr.find(`#${id}-config-td-runtime`).text(options.runtime / 60);
+    tr.find(`#${id}-config-td-nodes`).text(options.nodes);
+    tr.find(`#${id}-config-td-gpus`).text(options.gpus);
   }
 
   function _updateSpawnEventsAndLog(id) {

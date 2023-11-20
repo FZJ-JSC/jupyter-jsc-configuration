@@ -3,6 +3,11 @@
 <div class="dropdown">
   <button class="btn btn-outline-primary dropdown-toggle mb-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">{{ user.name }}</button>
   <ul class="dropdown-menu dropdown-menu-end w-100">
+    <li><h6 class="dropdown-header">External links</h6></li>
+    <li><a id="status-nav-item" class="dropdown-item text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
+    <li><a id="docs-nav-item" class="dropdown-item text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+    <li><a id="links-nav-item" class="dropdown-item text-decoration-none" style="color: black !important; background-color: transparent !important;" target="_blank" href="{{base_url}}links">More Links</a></li>
+    <li><hr class="dropdown-divider"></li>
     {%- if auth_state and auth_state.get("last_login", False) %}
     <li><h6 class="dropdown-header">Last login</h6></li>
     <li><a class="dropdown-item disabled text-black">{{ auth_state.get("last_login") }}</a></li>
@@ -26,14 +31,28 @@
 {%- endmacro -%}
 
 {%- macro navigation(prefix="") -%}
-<ul class="nav flex-grow-1 align-self-end">
-  <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none" href="{{base_url}}home">Start</a></li>
-  <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link text-decoration-none" href="{{base_url}}links">Links</a></li>
-  <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
-  <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
-  {% if user and user.admin -%}
-  <li class="nav-item"><a id="{{prefix}}admin-nav-item" class="nav-link text-decoration-none" href="{{base_url}}admin">Admin</a></li>
-  <li class="nav-item"><a id="{{prefix}}logging-nav-item" class="nav-link text-decoration-none" href="{{base_url}}logging">Logging</a></li>
+<ul class="nav flex-grow-1">
+  {% if user -%}
+    {%- set start_nav_active = false -%}
+    {%- set start_nav_text = "JupyterLab" -%}
+  {%- else -%}
+    {%- set start_nav_active = true -%}
+    {%- set start_nav_text = "Start" -%}
+  {%- endif %}
+  <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none {% if start_nav_active -%} active {%- endif -%}" href="{{base_url}}home">{{start_nav_text}}</a></li>
+  {%- if user -%}
+  {# <li class="nav-item"><a id="{{prefix}}custom-image-nav-item" class="nav-link text-decoration-none" href="{{base_url}}custom">Custom Images</a></li> #}
+    {%- if user.admin -%}
+    <li class="nav-item"><a id="{{prefix}}admin-nav-item" class="nav-link text-decoration-none" href="{{base_url}}admin">Admin</a></li>
+    <li class="nav-item"><a id="{{prefix}}logging-nav-item" class="nav-link text-decoration-none" href="{{base_url}}logging">Logging</a></li>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if not user %}
+  <div class="d-flex align-items-end ms-auto">
+    <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link nav-link-secondary text-decoration-none" href="{{base_url}}links">Links</a></li>
+    <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link nav-link-secondary text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
+    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link nav-link-secondary text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+  </div>
   {%- endif %}
 </ul>
 {%- endmacro -%}
@@ -70,4 +89,4 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 </nav> #}
-{%- endblock -%}
+{%- endblock %}

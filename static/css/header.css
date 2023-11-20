@@ -5,12 +5,29 @@ nav .nav-link {
 }
 
 nav .nav-link:hover,
-nav .nav-link.active,
-.navbar-collapse .navlink:hover,
-.navbar-collapse .navlink.active {
-  border-bottom: 5px solid #023d6b;
+nav .nav-link.active {
   color: #023d6b;
   font-weight: bold;
+}
+
+nav .nav-link.active {
+  border-bottom: 5px solid #023d6b;
+}
+
+nav .nav-link-secondary {
+  font-size: 16px;
+  border-bottom: 5px solid transparent;
+  color: #6c757d;
+}
+
+nav .nav-link-secondary:hover,
+nav .nav-link-secondary.active {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+nav .nav-link-secondary.active {
+  border-bottom: 5px solid transparent;
 }
 
 @media (min-width: 992px) {
