@@ -47,7 +47,7 @@
       intervServer = setInterval(_checkServer, 5000);
       fail_counter = 0;
       function _checkServer() {
-        timeout(4000, fetch("{{base_url}}/user/{{user.name}}/{{server_name}}")).then(function (response) {
+        timeout(4000, fetch("{{ base_url|default('/', true) }}/user/{{user.name}}/{{server_name}}")).then(function (response) {
           if (response.ok) {
             if (!response.url.includes("spawn-pending")) {
               window.location.replace(response.url);
@@ -68,7 +68,7 @@
                     text: "Ok",
                     btnClass: "btn-blue",
                     action: function () {
-                      window.location.replace("{{base_url}}");
+                      window.location.replace("{{ base_url|default('/', true) }}");
                     }
                   }
                 }

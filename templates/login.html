@@ -114,7 +114,7 @@ $("#start-nav-item, #collapse-start-nav-item").addClass("active");
 
 $("#btn-login").click(function () {
   var url = window.location.search;
-  window.location.href = "{{base_url}}oauth_login" + url;
+  window.location.href = "{{ base_url|default('/', true) }}oauth_login" + url;
 });
 </script>
 {%- endblock -%}

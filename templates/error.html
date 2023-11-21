@@ -24,7 +24,7 @@
       {%- endif -%}
     {%- endblock error_detail -%}
 
-    <a href="{{base_url}}home" class="btn btn-light" role="button">Return to Home</a>
+    <a href="{{ base_url|default('/', true) }}home" class="btn btn-light" role="button">Return to Home</a>
   </div>
 </div>
 {%- endblock -%}
