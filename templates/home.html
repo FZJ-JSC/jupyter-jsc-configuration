@@ -964,7 +964,7 @@ function checkIfAvailable(id, options) {
   }
 
   // Check if system is not available due to groups
-  const service = options["service"].split('/')[1];
+  const service = options["profile"].split('/')[1];
   const system = options["system"];
   const account = options["account"];
   const project = options["project"];
@@ -1116,7 +1116,7 @@ function setLabAsNA(id, reason) {
 
 function setUserOptions(id, options, available) {
   const name = options["name"];
-  const service = options["service"].split('/')[1];
+  const service = options["profile"].split('/')[1];
   const system = options["system"];
   const flavor = options["flavor"];
   const account = options["account"];
