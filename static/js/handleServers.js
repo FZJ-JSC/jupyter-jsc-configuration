@@ -379,7 +379,7 @@ require(["jquery", "jhapi", "utils"], function (
       var select = collapsibleTr.find(`select[id*=${param}]`);
       var value = select.val();
       if (param == "version") {
-        param = "service"
+        param = "profile"
         value = "JupyterLab/" + value;
       }
       if (value) options[param] = value;
