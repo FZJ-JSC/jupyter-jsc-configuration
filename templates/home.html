@@ -10,7 +10,7 @@
 {#- Set some convenience variables -#}
 {%- set named_spawners = [] -%}
 {%- for s in user.all_spawners(include_default=False) | list -%}
-  {%- if s.orm_spawner.user_options and s.orm_spawner.user_options.get("service").startswith("JupyterLab") -%}
+  {%- if s.orm_spawner.user_options and s.orm_spawner.user_options.get("profile").startswith("JupyterLab") -%}
   {%- do named_spawners.append(s) -%}
   {%- endif -%}
 {%- endfor -%}
