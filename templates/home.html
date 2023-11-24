@@ -10,8 +10,17 @@
 {#- Set some convenience variables -#}
 {%- set named_spawners = [] -%}
 {%- for s in user.all_spawners(include_default=False) | list -%}
-  {%- if s.orm_spawner.user_options and s.orm_spawner.user_options.get("profile", "JupyterLab/3.6").startswith("JupyterLab") -%}
-  {%- do named_spawners.append(s) -%}
+  {%- if s.orm_spawner.user_options -%}
+    {%- if (
+        "profile" in s.orm_spawner.user_options 
+        and s.orm_spawner.user_options.get("profile").startswith("JupyterLab")
+      )
+      or (
+        "service" in s.orm_spawner.user_options
+        and s.orm_spawner.user_options.get("service").startswith("JupyterLab")
+      )
+    -%}
+    {%- do named_spawners.append(s) -%}
   {%- endif -%}
 {%- endfor -%}
 {%- set custom_config = auth_state.get("custom_config", {}) -%}
@@ -963,8 +972,16 @@ function checkIfAvailable(id, options) {
     return false;
   }
 
+function get_service(options) {
+  if ("profile" in options)
+    let service = options.get("profile").split('/')[1];
+  else 
+    let service = options.get("service").split('/')[1];
+  return service
+}
+
   // Check if system is not available due to groups
-  const service = options.get("profile", "JupyterLab/3.6").split('/')[1];
+  const service = get_service(options);
   const system = options["system"];
   const account = options["account"];
   const project = options["project"];
@@ -1116,7 +1133,7 @@ function setLabAsNA(id, reason) {
 
 function setUserOptions(id, options, available) {
   const name = options["name"];
-  const service = options.get("profile", "JupyterLab/3.6").split('/')[1];
+  const service = get_service(options);
   const system = options["system"];
   const flavor = options["flavor"];
   const account = options["account"];
