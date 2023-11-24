@@ -56,7 +56,7 @@
   </script>
   <script type="text/javascript">
     window.jhdata = {
-      base_url: "{{ base_url|default('/', true) }}",
+      base_url: "{{ base_url }}",
       prefix: "{{prefix}}",
       {%- if user %}
       user: "{{user.json_escaped_name}}",

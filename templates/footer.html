@@ -64,11 +64,11 @@
     <a class="py-2 {{div_classes}}" target="_blank" href="https://www.fz-juelich.de">&copy; Forschungszentrum Jülich</a>
     <div class="flex-grow-1 {{div_classes}}">
       {%- set footer_margin = "m-1" %}
-      <a href="{{ base_url|default('/', true) }}imprint">Legal Notice</a>
+      <a href="{{ base_url }}imprint">Legal Notice</a>
       <span class="{{ footer_margin }}">|</span>
-      <a href="{{ base_url|default('/', true) }}privacy">Privacy Policy</a>
+      <a href="{{ base_url }}privacy">Privacy Policy</a>
       <span class="{{ footer_margin }}">|</span>
-      <a href="{{ base_url|default('/', true) }}terms">Terms of Service</a>
+      <a href="{{ base_url }}terms">Terms of Service</a>
       <span class="{{ footer_margin }}">|</span>
       <a href="mailto:ds-support@fz-juelich.de?subject=Jupyter-JSC Support&amp;body=Please describe your problem here. (english or german)">Support</a>
     </div>

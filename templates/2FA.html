@@ -15,7 +15,7 @@
         2FA</a>
       <a id="remove-2fa" role="button" class="remove-2fa btn btn-danger mr-2 mb-1">Remove 2FA</a>
       {%- else %}
-      <a role="button" class="btn btn-primary mr-2 mb-1" href="{{ base_url|default('/', true) }}oauth_login?next=2FA">Login
+      <a role="button" class="btn btn-primary mr-2 mb-1" href="{{ base_url }}oauth_login?next=2FA">Login
         required</a>
       {%- endif %}
       <a role="button" class="btn btn-warning mb-1"
@@ -114,7 +114,7 @@
               text: "RE-LOGIN to initialize",
               btnClass: 'btn-primary',
               action: function () {
-                window.location.replace("{{ base_url|default('/', true) }}logout?stopall=false&alldevices=true");
+                window.location.replace("{{ base_url }}logout?stopall=false&alldevices=true");
               }
             },
             Cancel: {
