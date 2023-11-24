@@ -975,9 +975,9 @@ function checkIfAvailable(id, options) {
 
 function get_service(options) {
   if ("profile" in options)
-    return options.get("profile").split('/')[1];
+    return options["profile"].split('/')[1];
   else 
-    return options.get("service").split('/')[1];
+    return options["service"].split('/')[1];
 }
 
   // Check if system is not available due to groups
