@@ -760,7 +760,7 @@ function getId(element, slice_index = -2) {
   return id;
 }
 
-function get_service(options) {
+function getService(options) {
   if ("profile" in options)
     return options["profile"].split('/')[1];
   else 
@@ -981,7 +981,7 @@ function checkIfAvailable(id, options) {
   }
 
   // Check if system is not available due to groups
-  const service = get_service(options);
+  const service = getService(options);
   const system = options["system"];
   const account = options["account"];
   const project = options["project"];
@@ -1133,7 +1133,7 @@ function setLabAsNA(id, reason) {
 
 function setUserOptions(id, options, available) {
   const name = options["name"];
-  const service = get_service(options);
+  const service = getService(options);
   const system = options["system"];
   const flavor = options["flavor"];
   const account = options["account"];
