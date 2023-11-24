@@ -39,8 +39,8 @@
 
 {%- set user_options = spawner.user_options -%}
 {%- set name = user_options.get("name") -%}
-{%- set service = user_options.get("profile").split('/')[0] -%}
-{%- set option = user_options.get("profile").split('/')[1] -%}
+{%- set service = user_options.get("profile", "JupyterLab/3.6").split('/')[0] -%}
+{%- set option = user_options.get("profile", "JupyterLab/3.6").split('/')[1] -%}
 {%- set service_name = auth_state.get("custom_config", {}).get("services").get(service).get("options").get(option).get("name") -%}
 {%- set version = user_options.get("options", "JupyterLab") -%}
 {%- set system = user_options.get("system", None) -%}
