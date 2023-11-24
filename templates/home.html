@@ -760,6 +760,13 @@ function getId(element, slice_index = -2) {
   return id;
 }
 
+function get_service(options) {
+  if ("profile" in options)
+    return options["profile"].split('/')[1];
+  else 
+    return options["service"].split('/')[1];
+}
+
 function getLabConfigSelectValues(id) {
   return {
     "service": $(`select#${id}-version-select`).val(),
@@ -972,13 +979,6 @@ function checkIfAvailable(id, options) {
     setLabAsNA(id, reason);
     return false;
   }
-
-function get_service(options) {
-  if ("profile" in options)
-    return options["profile"].split('/')[1];
-  else 
-    return options["service"].split('/')[1];
-}
 
   // Check if system is not available due to groups
   const service = get_service(options);
