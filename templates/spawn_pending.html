@@ -259,6 +259,7 @@ require(["jquery", "jhapi", "utils"], function (
                   $("#progress-info-text").html("last spawn failed");
                   $("#retry").removeAttr("disabled").removeClass("d-none");
                   $("#cancel").addClass("d-none");
+                  clearTimeout(timeout);
                 } else {
                   window.location.reload();
                 }
