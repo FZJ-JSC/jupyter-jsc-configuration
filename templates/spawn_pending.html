@@ -39,7 +39,7 @@
 
 {%- set user_options = spawner.user_options -%}
 {%- set name = user_options.get("name") -%}
-{%- if "profile" in s.orm_spawner.user_options -%}
+{%- if "profile" in user_options -%}
 {%- set service = user_options.get("profile", "JupyterLab/3.6").split('/')[0] -%}
 {%- set option = user_options.get("profile", "JupyterLab/3.6").split('/')[1] -%}
 {%- else -%}
