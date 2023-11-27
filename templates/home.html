@@ -455,6 +455,10 @@ function updateFlavors(id, service, system, value) {
     }
     Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
+  })
+  .fail(function() {
+    $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none");
+    updateLabConfigSelect(select, value, currentVal);
   });
 }
 
