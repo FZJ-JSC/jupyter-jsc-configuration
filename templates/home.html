@@ -456,8 +456,6 @@ function updateFlavors(id, service, system, value) {
     Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   });
-  
-  
 }
 
 function updateAccounts(id, service, system, value) {
@@ -958,7 +956,7 @@ function checkComputeMaintenance(system, partition) {
 }
 
 async function setSystemsHealth() {
-  var incidentUrl = location.origin + indow.jhdata.base_url + "api/incidents?_xsrf=" + window.jhdata.xsrf_token;
+  var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents?_xsrf=" + window.jhdata.xsrf_token;
   var data = await $.get( incidentUrl );
   
   for (const entry in data) {
