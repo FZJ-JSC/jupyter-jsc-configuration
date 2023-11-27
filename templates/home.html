@@ -122,9 +122,9 @@
               <hr>
               {{ inputs.create_select(id, "system") }}
               {{ inputs.create_select(id, "flavor") }}
-              {# <div id="{{id}}-flavor-info-div">
+              <div id="{{id}}-flavor-info-div">
                 <span class="fw-bold">Available flavors</span>
-              </div> #}
+              </div>
               {{ inputs.create_select(id, "account") }}
               {{ inputs.create_select(id, "project") }}
               {{ inputs.create_select(id, "partition") }}
@@ -428,30 +428,36 @@ function updateFlavors(id, service, system, value) {
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
   resetInputElement(select);
+  $(`#${id}-flavor-info-div`).html("");
 
-  const flavorsAllowed = (systemInfos[system] || {}).flavors || [];
-  for (const flavor of flavorsAllowed.sort()) {
-    select.append(`<option value="${flavor}">${flavor}</option>`);
-  }
-  Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
-  updateLabConfigSelect(select, value, currentVal);
+  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
+  $.get( flavorUrl, function(data) {
+    let lowercase_system = system.split("-").join("").toLowerCase();
+    const flavorsAllowed = data[lowercase_system] || {};
 
-  {#- Create available flavors diagram. Currently not used #}
-  {# $(`#${id}-flavor-info-div`).html("");
-  for (const flavor of flavorsAllowed.sort()) {
-    let used = 2;
-    let free = 2;
-    let diagramHtml = `
-      <div class="row align-items-center g-0 mt-4">
-        <span class="col-4">${flavor}</span>
-        <div class="progress col ms-2">
-          <div class="progress-bar" role="progressbar" style="width: ${used/(used+free)*100}%">${used} Used</div>
-          <div class="progress-bar bg-success" role="progressbar" style="width: ${free/(used+free)*100}%">${free} Free</div>
+    for (const flavor of Object.keys(flavorsAllowed).sort()) {
+      select.append(`<option value="${flavor}">${flavor}</option>`);
+      {#- Create available flavors diagram. Currently not used #}
+      let current = flavorsAllowed[flavor].current || 0;
+      let max_allowed = flavorsAllowed[flavor].max || 0;
+      // Nothing defined in outpostflavors, so skip
+      if (current == 0 && max_allowed == 0) break;  
+      let diagramHtml = `
+        <div class="row align-items-center g-0 mt-4">
+          <span class="col-4">${flavor}</span>
+          <div class="progress col ms-2">
+            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 100}%">${current} Used</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${current/max_allowed*100 || 100}%">${max-current} Free</div>
+          </div>
         </div>
-      </div>
-    `
-    $(`#${id}-flavor-info-div`).append(diagramHtml);
-  } #}
+      `
+      $(`#${id}-flavor-info-div`).append(diagramHtml);
+    }
+    Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
+    updateLabConfigSelect(select, value, currentVal);
+  });
+  
+  
 }
 
 function updateAccounts(id, service, system, value) {
@@ -952,7 +958,7 @@ function checkComputeMaintenance(system, partition) {
 }
 
 async function setSystemsHealth() {
-  var incidentUrl = location.origin + "/api/incidents?_xsrf=" + window.jhdata.xsrf_token;
+  var incidentUrl = location.origin + indow.jhdata.base_url + "api/incidents?_xsrf=" + window.jhdata.xsrf_token;
   var data = await $.get( incidentUrl );
   
   for (const entry in data) {
