@@ -427,11 +427,12 @@ function updateFlavors(id, service, system, value) {
   
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
-  resetInputElement(select);
-  $(`#${id}-flavor-info-div`).html("");
 
   let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
   $.get( flavorUrl, function(data) {
+    resetInputElement(select);
+    $(`#${id}-flavor-info-div`).html("");
+
     const flavorsAllowed = data[system] || {};
     for (const flavor of Object.keys(flavorsAllowed).sort()) {
       let current = flavorsAllowed[flavor].current || 0;
@@ -454,6 +455,8 @@ function updateFlavors(id, service, system, value) {
     updateLabConfigSelect(select, value, currentVal);
   })
   .fail(function() {
+    resetInputElement(select);
+    $(`#${id}-flavor-info-div`).html("");
     $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   });
