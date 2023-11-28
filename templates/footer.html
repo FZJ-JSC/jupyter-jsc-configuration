@@ -10,9 +10,9 @@
   {%- if system == "jupyter" -%}
     {%- set system_svg = svg.users_svg -%}
     {%- set url_suffix = "" -%}
-  {%- elif system == "hdfcloud"%}
+  {%- elif system == "jsccloud"%}
     {%- set system_svg = svg.servers_svg -%}
-    {%- set url_suffix = "var-system=HDF-Cloud" -%}
+    {%- set url_suffix = "var-system=JSC-Cloud" -%}
   {%- else -%}
     {%- set system_svg = svg.servers_svg -%}
     {%- set url_suffix = "var-system=" + system.upper() -%}
@@ -36,8 +36,8 @@
   <a id="ampel-{{system_lower}}-tooltip" href="{{href}}" target="_blank" class="align-middle" data-toggle="ample-tooltip">
     {%- if system == "JUPYTER" -%}
     Jupyter-JSC
-    {%- elif system == "HDFCLOUD" -%}
-    HDF-Cloud
+    {%- elif system == "JSCCLOUD" -%}
+    JSC-Cloud
     {%- else -%}
     {{ system }}
     {%- endif -%}
@@ -56,7 +56,7 @@
     {{ ampel("JUSUF", "https://status.jsc.fz-juelich.de/services/30") }}
     {{ ampel("DEEP", "https://status.jsc.fz-juelich.de/services/43") }}
     {{ ampel("HDFML", "https://status.jsc.fz-juelich.de/services/21") }}
-    {{ ampel("HDFCLOUD", "https://status.jsc.fz-juelich.de/services/32") }}
+    {{ ampel("JSCCLOUD", "https://status.jsc.fz-juelich.de/services/44") }}
   </div>
   <div id="footer-bottom" class="container-fluid justify-content-center">
     {%- set logo_width = "220px" -%}
@@ -117,8 +117,8 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
             case 'jupyterhub':
               $("#jupyter-users").html(usercount);
               break;
-            case 'HDF-Cloud':
-              $(`#hdfcloud-users`).html(usercount['total']);
+            case 'JSC-Cloud':
+              $(`#jsccloud-users`).html(usercount['total']);
               break;
             default:
               $(`#${system.toLowerCase()}-users`).html(usercount['total']);
