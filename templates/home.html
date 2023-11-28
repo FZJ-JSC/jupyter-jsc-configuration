@@ -432,8 +432,7 @@ function updateFlavors(id, service, system, value) {
 
   let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
   $.get( flavorUrl, function(data) {
-    let lowercase_system = system.split("-").join("").toLowerCase();
-    const flavorsAllowed = data[lowercase_system] || {};
+    const flavorsAllowed = data[system] || {};
 
     for (const flavor of Object.keys(flavorsAllowed).sort()) {
       select.append(`<option value="${flavor}">${flavor}</option>`);
