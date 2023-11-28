@@ -24,7 +24,7 @@
 {%- endmacro -%}
 
 {%- macro create_action_td(s, user, id) -%}
-<td class="actions-td"> 
+<td class="actions-td" style="white-space: nowrap;"> 
   {%- set button_margin = "my-1 me-1" -%} 
   {#- Save N/A status to page #}
   <span id="{{id}}-na-status" class="na-status d-none">0</span>  
