@@ -433,15 +433,13 @@ function updateFlavors(id, service, system, value) {
   let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
   $.get( flavorUrl, function(data) {
     const flavorsAllowed = data[system] || {};
-    let diagramHtml;
     for (const flavor of Object.keys(flavorsAllowed).sort()) {
-      select.append(`<option value="${flavor}">${flavor}</option>`);
-      {#- Create available flavors diagram. Currently not used #}
-      let current = flavorsAllowed[flavor].current || -1;
-      let max_allowed = flavorsAllowed[flavor].max || -1;
+      let current = flavorsAllowed[flavor].current || 0;
+      let max_allowed = flavorsAllowed[flavor].max || 0;
       // Nothing defined in outpostflavors, so skip
-      if (current < 0 || max_allowed < 0) break;  
-      diagramHtml = `
+      if (current <= 0 && max_allowed <= 0) continue;  
+      select.append(`<option value="${flavor}">${flavor}</option>`);
+      let diagramHtml = `
         <div class="row align-items-center g-0 mt-4">
           <span class="col-4">${flavor}</span>
           <div class="progress col ms-2">
@@ -450,8 +448,8 @@ function updateFlavors(id, service, system, value) {
           </div>
         </div>
       `
+      $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
-    $(`#${id}-flavor-info-div`).append(diagramHtml);
     Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   })
