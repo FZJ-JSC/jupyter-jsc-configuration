@@ -424,7 +424,6 @@ function updateSystems(id, service, value) {
 
 function updateFlavors(id, service, system, value) {
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-  
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
 
@@ -436,16 +435,16 @@ function updateFlavors(id, service, system, value) {
     const flavorsAllowed = data[system] || {};
     for (const flavor of Object.keys(flavorsAllowed).sort()) {
       let current = flavorsAllowed[flavor].current || 0;
-      let max_allowed = flavorsAllowed[flavor].max || 0;
-      // Nothing defined in outpostflavors, so skip
-      if (current <= 0 && max_allowed <= 0) continue;  
+      let max_allowed = flavorsAllowed[flavor].max || -1;
+      // Flavor not valid, so skip
+      if (max_allowed <= 0 || current < 0) continue;  
       select.append(`<option value="${flavor}">${flavor}</option>`);
       let diagramHtml = `
         <div class="row align-items-center g-0 mt-4">
           <span class="col-4">${flavor}</span>
           <div class="progress col ms-2">
-            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 100}%">${current} Used</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${current/max_allowed*100 || 100}%">${max_allowed-current} Free</div>
+            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100}%">${current} Used</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${current/max_allowed*100}%">${max_allowed-current} Free</div>
           </div>
         </div>
       `
