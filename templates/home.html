@@ -54,7 +54,7 @@
       {%- set breakpoint = "col-12 col-lg-4 text-center" %}
       <div class="row {{row_margins}} justify-content-between">
         <div class="row col-6 col-md-12">
-          <div class="col text-start {{breakpoint}}">
+          <div class="col text-lg-start {{breakpoint}}">
           {%- if system %} {{ _config_td_entry("System", system) }} {%- endif %}
           </div>
           <div class="col text-lg-center {{breakpoint}}">
@@ -66,7 +66,7 @@
           </div>
         </div>
         <div class="row col-6 col-md-12">
-          <div class="col text-start {{breakpoint}}">
+          <div class="col text-lg-start {{breakpoint}}">
           {%- if runtime %} {{ _config_td_entry("Runtime", (runtime)|int) }}  min {%- endif %}
           </div>
           <div class="col text-lg-center {{breakpoint}}">
