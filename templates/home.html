@@ -51,28 +51,29 @@
         <span id="{{id}}-config-td-{{label|lower}}">{{ value }}</span>
       {%- endmacro -%}
       {%- set row_margins = "mx-3 mb-1" -%}
-      {%- set breakpoint = "col-12 col-lg-4 text-center" %}
+      {%- set row_breakpoints = "col-12 col-md-6 col-lg-12" -%}
+      {%- set breakpoints = "col-12 col-lg-4" %}
       <div class="row {{row_margins}} justify-content-between">
-        <div class="row col-6 col-md-12">
-          <div class="col text-lg-start {{breakpoint}}">
+        <div class="row {{row_breakpoints}}">
+          <div class="col text-lg-start {{breakpoints}}">
           {%- if system %} {{ _config_td_entry("System", system) }} {%- endif %}
           </div>
-          <div class="col text-lg-center {{breakpoint}}">
+          <div class="col text-lg-center {{breakpoints}}">
           {%- if flavor %} {{ _config_td_entry("Flavor", flavor) }}
           {%- elif partition %} {{ _config_td_entry("Partition", partition) }} {%- endif %}
           </div>
-          <div class="col text-lg-end {{breakpoint}}">
+          <div class="col text-lg-end {{breakpoints}}">
           {%- if project %} {{ _config_td_entry("Project", project) }} {%- endif %}
           </div>
         </div>
-        <div class="row col-6 col-md-12">
-          <div class="col text-lg-start {{breakpoint}}">
+        <div class="row {{row_breakpoints}}">
+          <div class="col text-lg-start {{breakpoints}}">
           {%- if runtime %} {{ _config_td_entry("Runtime", (runtime)|int) }}  min {%- endif %}
           </div>
-          <div class="col text-lg-center {{breakpoint}}">
+          <div class="col text-lg-center {{breakpoints}}">
           {%- if nodes %} {{ _config_td_entry("Nodes", nodes) }} {%- endif %}
           </div>
-          <div class="col text-lg-end {{breakpoint}}">
+          <div class="col text-lg-end {{breakpoints}}">
           {%- if gpus %} {{ _config_td_entry("GPUs", gpus) }} {%- endif %}
           </div>
         </div>
