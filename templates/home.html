@@ -449,7 +449,7 @@ function updateFlavors(id, service, system, value) {
           <div class="col-4">
             <span>${flavor}</span>
             <a class="lh-1 ms-3" style="padding-top: 1px;" data-toggle="flavor-tooltip" title="${description}">
-              {{ svg.info_filled_svg | safe }}
+              {{ svg.info_svg | safe }}
             </a>
           </div>
           <div class="progress col ms-2 fw-bold" style="height: 20px;">
@@ -724,7 +724,7 @@ function updateModules(id, service, system, account, project, partition, values)
                   <input type="checkbox" class="form-check-input" id="${id}-${module}-check" value="${module}" ${checked}>
                     <label class="form-check-label" for="${id}-${module}-check">
                       <span class="align-middle">${moduleInfo.displayName}</span>
-                      <a href="${moduleInfo.href}" target="_blank" class="text-muted">{{ svg.info_svg | safe }}</a>
+                      <a href="${moduleInfo.href}" target="_blank" class="text-muted ms-3">{{ svg.info_svg | safe }}</a>
                     </label>
                   </input>
                 </div>
