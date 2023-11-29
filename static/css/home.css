@@ -106,7 +106,7 @@ Vertical tabs
 .module-info-link {
   position: absolute;
   left: -100px;
-  top: -0.1em;
+  top: -0.1rem;
   height: 16px;
   width: 16px;
   transition: 0.25s;
@@ -114,6 +114,10 @@ Vertical tabs
 
 .module-info:hover .module-info-link {
   left: 0;
+}
+
+module-info:hover {
+  text-decoration: none;
 }
 
 

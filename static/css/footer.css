@@ -80,7 +80,7 @@ Footer */
 .system-users-link {
   position: absolute;
   left: -100px;
-  top: -0.1em;
+  top: -0.1rem;
   height: 16px;
   width: 16px;
   transition: 0.25s;
