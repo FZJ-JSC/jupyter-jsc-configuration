@@ -723,7 +723,14 @@ function updateModules(id, service, system, account, project, partition, values)
                   <input type="checkbox" class="form-check-input" id="${id}-${module}-check" value="${module}" ${checked}>
                     <label class="form-check-label" for="${id}-${module}-check">
                       <span class="align-middle">${moduleInfo.displayName}</span>
-                      <a href="${moduleInfo.href}" target="_blank" class="text-muted ms-3">{{ svg.info_svg | safe }}</a>
+                      <a href="${moduleInfo.href}" target="_blank" class="module-info text-muted ms-3">
+                        <span>{{ svg.info_svg | safe }}</span>
+                          <div class="module-info-link-div d-inline-block">
+                            <span class="module-info-link" id="{{module}}-info-link">
+                              {{ svg.link_svg | safe }}
+                            </span>
+                          </div>
+                      </a>
                     </label>
                   </input>
                 </div>
