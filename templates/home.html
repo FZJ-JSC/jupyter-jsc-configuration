@@ -433,7 +433,7 @@ function updateSystems(id, service, value) {
 
 function updateFlavors(id, service, system, value) {
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-  {# const userGroups = {{auth_state.get("groups") | tojson}} || ["default"]; #}
+  const userGroups = {{auth_state.get("groups") | tojson}} || ["default"];
 
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
