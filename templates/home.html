@@ -1387,7 +1387,7 @@ function updateSpawnProgress() {
   
   {%- if s.active %}
     {%- if s.ready %}
-    _updateProgressState(id, "running", "bg-success");
+    _updateProgressState(id, "Running", "bg-success");
     {%- elif not s._stop_pending %}
     var tr = $(`#${id}.summary-tr`);
     tr.find(".btn-open-lab").addClass("disabled");
@@ -1404,14 +1404,14 @@ function updateSpawnProgress() {
     var collapse = $(`.collapsible-tr[data-server-id=${id}]`);
     collapse.find(".btn-delete-lab").addClass("disabled");
     // Update progress with percentage also
-    _updateProgressPercentage(id, "spawning...", currentProgress);
+    _updateProgressPercentage(id, "Spawning...", currentProgress);
     // Add an event listener to catch and display updates.
     var progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
     evtSources[id] = new EventSource(progressUrl);
     {%- endif %}
   {%- elif s._failed or s._cancel_event_yielded %}
   var id = "{{s.name | safe}}";
-  _updateProgressState(id, "last spawn failed", "bg-danger")
+  _updateProgressState(id, "Last spawn failed", "bg-danger")
   {%- endif -%}
 
   {%- endfor %}
