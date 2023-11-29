@@ -440,12 +440,22 @@ function updateFlavors(id, service, system, value) {
       // Flavor not valid, so skip
       if (max_allowed <= 0 || current < 0) continue;  
       select.append(`<option value="${flavor}">${flavor}</option>`);
+      
+      let free = max_allowed - current;
+      let description = "Dummy description";
+
       let diagramHtml = `
         <div class="row align-items-center g-0 mt-4">
-          <span class="col-4">${flavor}</span>
-          <div class="progress col ms-2">
+          <div class="col-4">
+            <span>${flavor}</span>
+            <button type="button" class="flavor-info-btn lh-1 ms-3" style="padding-top: 1px;" 
+              data-bs-toggle="tooltip" data-bs-placement="right" title="${description}">
+              {{ svg.info_filled_svg | safe }}
+            </button>
+          </div>
+          <div class="progress col ms-2 fw-bold" style="height: 20px;">
             <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current} Used</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${(max_allowed-current)/max_allowed*100 || 100}%">${max_allowed-current} Free</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${free/max_allowed*100 || 100}%">${free} Free</div>
           </div>
         </div>
       `
