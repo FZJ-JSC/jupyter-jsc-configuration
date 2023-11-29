@@ -451,7 +451,7 @@ function updateFlavors(id, service, system, value) {
             <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#${flavor}Info">
               {{ svg.info_filled_svg | safe }}
             </button>
-            <div class="collapse" id="collapseExample">
+            <div class="collapse" id="${flavor}Info">
               <div class="card card-body">${description}</div>
             </div>
           </div>
