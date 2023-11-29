@@ -17,7 +17,8 @@
     {%- set system_svg = svg.servers_svg -%}
     {%- set url_suffix = "var-system=" + system.upper() -%}
   {%- endif -%}
-<a class="system-users d-inline-block text-muted ms-1" data-toggle="users-tooltip" title="Number of active {%- if system == 'jupyter' %} users in the last 24 hours {%- else %} servers {%- endif -%}"
+<a class="system-users d-inline-block text-muted ms-1" 
+  data-bs-toggle="tooltip" data-bs-placement="top" title="Number of active {%- if system == 'jupyter' %} users in the last 24 hours {%- else %} servers {%- endif -%}"
   href="https://{{hostname}}/grafana/?{{url_suffix}}" target="_blank">
   <span id="{{system}}-users">0</span>
   <span> {{ system_svg | safe }} </span>
@@ -33,7 +34,7 @@
 {%- set system_lower = system.lower() %}
 <div id="ampel-{{system_lower}}" class="text-center">
   <img class="ampel-img" src='{{static_url( "images/footer/systems/" + system_lower + ".svg?v=" + random_int(10) )}}' />
-  <a id="ampel-{{system_lower}}-tooltip" href="{{href}}" target="_blank" class="align-middle" data-toggle="ample-tooltip">
+  <a id="ampel-{{system_lower}}-tooltip" href="{{href}}" target="_blank" class="align-middle" data-bs-toggle="tooltip" data-bs-placement="top">
     {%- if system == "JUPYTER" -%}
     Jupyter-JSC
     {%- elif system == "JSCCLOUD" -%}
@@ -89,11 +90,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
 
   var base_url = window.jhdata.base_url;
   var api = new JHAPI(base_url);
-
-  $(function () {
-    $('[data-toggle="ample-tooltip"]').tooltip();
-    $('[data-toggle="users-tooltip"]').tooltip();
-  })
 
   function updateSystemHoverTooltips() {
     api.api_request( "incidents", {
