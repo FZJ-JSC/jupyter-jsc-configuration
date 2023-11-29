@@ -106,7 +106,7 @@ Vertical tabs
 .module-info-link {
   position: absolute;
   left: -100px;
-  top: -0.1rem;
+  top: -0.005rem;
   height: 16px;
   width: 16px;
   transition: 0.25s;
