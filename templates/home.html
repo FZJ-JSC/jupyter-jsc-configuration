@@ -26,7 +26,6 @@
 {%- endfor -%}
 {%- set custom_config = auth_state.get("custom_config", {}) -%}
 {%- set dropdown_options = auth_state.get("options_form", {}).get("dropdown_list", {}) -%}
-{%- set userModules = custom_config.get("userModules", {}) -%}
 {%- set new = "new_jupyterlab" -%}  {# id for new jupyterlabs. Cannot contain "-" #}
 
 {%- macro create_summary_tr(s, user_options) -%}
@@ -123,9 +122,18 @@
               <hr>
               {{ inputs.create_select(id, "system") }}
               {{ inputs.create_select(id, "flavor") }}
-              <div id="{{id}}-flavor-info-div">
-                <span class="fw-bold">Available flavors</span>
+              <div id="{{id}}-flavor-legend-div" class="row align-items-center g-0 mt-4">
+                <span class="col-4 fw-bold">Available Flavors</span>
+                <div class="col d-flex align-items-center ms-2">
+                  {%- set box_style = "height: 15px; width: 15px; border-radius: 0.25rem;"%}
+                  <div style="{{box_style}} background-color: #023d6b;"></div>
+                  <span class="ms-1">= Used</span>
+                  <span class="mx-2"></span>
+                  <div style="{{box_style}} background-color: #198754;"></div>
+                  <span class="ms-1">= Free</span>
+                </div>
               </div>
+              <div id="{{id}}-flavor-info-div" class="mb-3"></div>
               {{ inputs.create_select(id, "account") }}
               {{ inputs.create_select(id, "project") }}
               {{ inputs.create_select(id, "partition") }}
@@ -425,50 +433,70 @@ function updateSystems(id, service, value) {
 
 function updateFlavors(id, service, system, value) {
   const systemInfos = {{custom_config.get("systems") | tojson}} || {};
+  {# const userGroups = {{auth_state.get("groups") | tojson}} || ["default"]; #}
+
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
 
   let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
   $.get( flavorUrl, function(data) {
+    const systemFlavors = data[system] || {};
     resetInputElement(select);
     $(`#${id}-flavor-info-div`).html("");
 
-    const flavorsAllowed = data[system] || {};
-    for (const flavor of Object.keys(flavorsAllowed).sort()) {
-      let current = flavorsAllowed[flavor].current || 0;
-      let max_allowed = flavorsAllowed[flavor].max || -1;
-      // Flavor not valid, so skip
-      if (max_allowed <= 0 || current < 0) continue;  
-      select.append(`<option value="${flavor}">${flavor}</option>`);
-      
-      let free = max_allowed - current;
-      let description = "Dummy description";
+    var flavorsAllowed = {}
+    userGroups.forEach(function(group) {
+      if (group in systemFlavors) {
+        for (const [flavor, description] of Object.entries(systemFlavors[group])) {
+          // Flavor has already been added, check weight
+          if (flavor in flavorsAllowed) {
+            // Only overwrite if new weight is not larger
+            if (description.weight <= flavorsAllowed[flavor].weight) {
+              flavorsAllowed[flavor] = description;
+            }
+          }
+          else {
+            flavorsAllowed[flavor] = description;
+          }
+        }
+      }
+    })
 
+    // Sort flavorsAllowed by flavor weights
+    for (const [flavor, description] of Object.entries(flavorsAllowed).sort(([,a],[,b]) => (a["weight"] || 99) < (b["weight"] || 99) ? -1 : 1)) {
+      let current = description.current || 0;
+      let max_allowed = description.max || -1;
+      // Flavor not valid, so skip
+      if (max_allowed <= 0 || current < 0) continue;
+      select.append(`<option value="${flavor}">${description.display_name}</option>`);
+
+      let free = max_allowed - current;
       let diagramHtml = `
         <div class="row align-items-center g-0 mt-4">
           <div class="col-4">
             <span>${flavor}</span>
             <a class="lh-1 ms-3" style="padding-top: 1px;" 
-              data-bs-toggle="tooltip" data-bs-placement="right" title="${description}">
+              data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
               {{ svg.info_svg | safe }}
             </a>
           </div>
-          <div class="progress col ms-2 fw-bold" style="height: 20px;">
-            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current} Used</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${free/max_allowed*100 || 100}%">${free} Free</div>
+          <div class="progress col ms-2 fw-bold" style="height: 20px;"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="${current} out of ${max_allowed} used">
+            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current}</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${free/max_allowed*100 || 100}%">${free}</div>
           </div>
         </div>
       `
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
     enableTooltips();  {# Defined in page.html #}
-    Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
+    Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).removeClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   })
   .fail(function() {
     resetInputElement(select);
     $(`#${id}-flavor-info-div`).html("");
-    $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none");
+    $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   });
 }
