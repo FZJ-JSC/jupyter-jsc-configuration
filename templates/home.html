@@ -445,7 +445,7 @@ function updateFlavors(id, service, system, value) {
           <span class="col-4">${flavor}</span>
           <div class="progress col ms-2">
             <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current} Used</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${current/max_allowed*100 || 100}%">${max_allowed-current} Free</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${(max_allowed-current)/max_allowed*100 || 100}%">${max_allowed-current} Free</div>
           </div>
         </div>
       `
