@@ -116,7 +116,7 @@ Vertical tabs
   left: 0;
 }
 
-module-info:hover {
+.module-info:hover {
   text-decoration: none;
 }
 
