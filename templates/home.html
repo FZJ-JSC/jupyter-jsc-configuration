@@ -461,9 +461,7 @@ function updateFlavors(id, service, system, value) {
       `
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
-    $(function () {
-      $('[data-toggle="flavor-tooltip"]').tooltip();
-    })
+    enableTooltips();  {# Defined in page.html #}
     Object.keys(flavorsAllowed).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-info-div`).removeClass("d-none");
     updateLabConfigSelect(select, value, currentVal);
   })
