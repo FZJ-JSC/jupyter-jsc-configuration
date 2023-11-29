@@ -44,7 +44,7 @@ require(["jquery", "jhapi", "utils"], function (
         console.log("stop error");
         tr.find(".btn-open-lab, .btn-cancel-lab").removeClass("disabled");
         $(`#${id}-progress-bar`).removeClass("bg-danger").addClass("bg-success");
-        $(`#${id}-progress-info-text`).html("Running (stop failed)");
+        $(`#${id}-progress-info-text`).html("running (stop failed)");
         $(`#${id}-log`)
           .append($('<div class="log-div">')
             .html`Could not stop server. Error: ${xhr.responseText}`);
@@ -130,7 +130,7 @@ require(["jquery", "jhapi", "utils"], function (
           .width(100)
           .removeClass(".bg-success")
           .addClass(".bg-danger");
-        $(`#${id}-progress-info-text`).html("Last spawn failed");
+        $(`#${id}-progress-info-text`).html("last spawn failed");
         // Update progress in log
         let details = $("<details>")
           .append($("<summary>")

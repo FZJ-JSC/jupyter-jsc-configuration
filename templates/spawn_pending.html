@@ -159,7 +159,7 @@
         <div class="progress" style="height: 20px;">
           <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
         </div>
-        <div id="progress-info-text" class="text-center text-muted my-auto w-100" style="font-size: smaller;">Spawning...</div>
+        <div id="progress-info-text" class="text-center text-muted my-auto w-100" style="font-size: smaller;">spawning...</div>
       </div>
       <button id="cancel" type="button" class="btn btn-danger ms-4" disabled>{{ svg.stop_svg | safe }} Cancel </button>
       <button id="retry" type="button" class="btn btn-primary ms-4 d-none" disabled>{{ svg.retry_svg | safe }} Retry </button>
@@ -205,13 +205,13 @@ require(["jquery", "jhapi", "utils"], function (
         $("#retry").addClass("d-none");
         $("#cancel").attr("disabled", true).removeClass("d-none");
         $("#progress-bar").removeClass("bg-danger");
-        $("#progress-info-text").html("Spawning...");
+        $("#progress-info-text").html("spawning...");
         $("#log").html("");
         updateStatus();
       },
       error: function (xhr, textStatus, errorThrown) {
         $("#progress-bar").addClass("bg-danger");
-        $("#progress-info-text").html("Last spawn failed");
+        $("#progress-info-text").html("last spawn failed");
         let details = $("<details>")
           .append($("<summary>").html(`Could not request spawn. Error: ${xhr.status} ${errorThrown}`))
           .append($("<pre>").html(JSON.stringify(JSON.parse(xhr.responseText), null, 2)));
@@ -245,7 +245,7 @@ require(["jquery", "jhapi", "utils"], function (
               if (perc == {{ cancel_progress_deactivation }}) {
                 $("#cancel").attr("disabled", true);
                 $(`#progress-bar`).addClass("bg-danger");
-                $("#progress-info-text").html("Cancelling...");
+                $("#progress-info-text").html("cancelling...");
               }
               if (perc == 95) {
                 // Refresh if stuck on 95%
@@ -256,7 +256,7 @@ require(["jquery", "jhapi", "utils"], function (
                 clearInterval(interv);
                 if (event["failed"]) {
                   $(`#progress-bar`).html("").addClass("bg-danger");
-                  $("#progress-info-text").html("Last spawn failed");
+                  $("#progress-info-text").html("last spawn failed");
                   $("#retry").removeAttr("disabled").removeClass("d-none");
                   $("#cancel").addClass("d-none");
                   clearTimeout(timeout);
