@@ -307,7 +307,7 @@ $("button[role=tab]").click(function() {
   warning.addClass("invisible");
 })
 // Toggle log tabs on log button or info text click
-$(".log-info-btn, .progress-info-text").click(function() {
+$(".log-info-btn, .log-info-text").click(function() {
   let id = $(this).parents("tr").data("server-id");
   let accordionIcon = $(this).find(".accordion-icon");
   let collapse = $(`.collapse[id*=${id}]`);
@@ -1313,7 +1313,7 @@ function onEvtMessage(event, id) {
       evtSources[id].close();
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
-        _updateProgressState(id, "last spawn failed", "bg-danger");
+        _updateProgressState(id, "Last spawn failed", "bg-danger");
         // Change buttons to start or N/A
         var na = tr.find(".na-status").text() || 0;
         if (na != "0") {
@@ -1331,7 +1331,7 @@ function onEvtMessage(event, id) {
         {%- for s in named_spawners %}
         if (id == "{{s.name}}") {
           {%- if not s._stop_pending %}
-          _updateProgressState(id, "running", "bg-success");
+          _updateProgressState(id, "Running", "bg-success");
           cancelBtn.addClass("d-none disabled");
           tr.find(".btn-stop-lab").removeClass("d-none disabled");
           tr.find(".btn-open-lab").removeClass("disabled");
@@ -1344,12 +1344,12 @@ function onEvtMessage(event, id) {
     else { // Spawn in progress
       collapseBtns.addClass("disabled");
       if (evt.progress == {{cancel_progress_deactivation}}) {
-        _updateProgressPercentage(id, "cancelling...", evt.progress);
+        _updateProgressPercentage(id, "Cancelling...", evt.progress);
         $(`#${id}-progress-bar`).addClass("bg-danger");
         cancelBtn.addClass("disabled");
       }
       else {
-        _updateProgressPercentage(id, "spawning...", evt.progress);
+        _updateProgressPercentage(id, "Spawning...", evt.progress);
         if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
           cancelBtn.removeClass("disabled");
         }
