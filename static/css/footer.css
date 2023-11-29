@@ -60,7 +60,7 @@ Footer */
 }
 
 .tooltip .tooltip-arrow::before {
-  border-top-color: transparent;
+  border-color: transparent;
 }
 
 /* System Users Dashboard Links */
