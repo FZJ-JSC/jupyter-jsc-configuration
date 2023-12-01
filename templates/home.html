@@ -464,7 +464,7 @@ function updateFlavors(id, service, system, value) {
             </div>
             <div class="progress col ms-2 fw-bold" style="height: 20px;"
               data-bs-toggle="tooltip" data-bs-placement="top" title="${current} used">
-              <div class="progress-bar bg-success" role="progressbar" style="width: 100%">${current} / ∞</div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: 100%">∞</div>
             </div>
           </div>
         `
@@ -473,7 +473,7 @@ function updateFlavors(id, service, system, value) {
         var diagramHtml = `
           <div class="row align-items-center g-0 mt-4">
             <div class="col-4">
-              <span>${flavor}</span>
+              <span>${description.display_name}</span>
               <a class="lh-1 ms-3" style="padding-top: 1px;" 
                 data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
                 {{ svg.info_svg | safe }}
