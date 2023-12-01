@@ -456,7 +456,7 @@ function updateFlavors(id, service, system, value) {
         var diagramHtml = `
           <div class="row align-items-center g-0 mt-4">
             <div class="col-4">
-              <span>${flavor}</span>
+              <span>${description.display_name}</span>
               <a class="lh-1 ms-3" style="padding-top: 1px;" 
                 data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
                 {{ svg.info_svg | safe }}
