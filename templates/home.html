@@ -448,26 +448,45 @@ function updateFlavors(id, service, system, value) {
       let current = description.current || 0;
       let max_allowed = description.max || -1;
       // Flavor not valid, so skip
-      if (max_allowed <= 0 || current < 0) continue;
+      if (max_allowed == 0 || current < 0) continue;
       select.append(`<option value="${flavor}">${description.display_name}</option>`);
 
-      let free = max_allowed - current;
-      let diagramHtml = `
-        <div class="row align-items-center g-0 mt-4">
-          <div class="col-4">
-            <span>${flavor}</span>
-            <a class="lh-1 ms-3" style="padding-top: 1px;" 
-              data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
-              {{ svg.info_svg | safe }}
-            </a>
+      if (max_allowed == -1) {
+        // infinite labs allowed
+        let diagramHtml = `
+          <div class="row align-items-center g-0 mt-4">
+            <div class="col-4">
+              <span>${flavor}</span>
+              <a class="lh-1 ms-3" style="padding-top: 1px;" 
+                data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
+                {{ svg.info_svg | safe }}
+              </a>
+            </div>
+            <div class="progress col ms-2 fw-bold" style="height: 20px;"
+              data-bs-toggle="tooltip" data-bs-placement="top" title="${current} used">
+              <div class="progress-bar bg-success" role="progressbar" style="width: 100%">${current} / ∞</div>
+            </div>
           </div>
-          <div class="progress col ms-2 fw-bold" style="height: 20px;"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="${current} out of ${max_allowed} used">
-            <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current}</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${free/max_allowed*100 || 100}%">${free}</div>
+        `
+      } else {
+        let free = max_allowed - current;
+        let diagramHtml = `
+          <div class="row align-items-center g-0 mt-4">
+            <div class="col-4">
+              <span>${flavor}</span>
+              <a class="lh-1 ms-3" style="padding-top: 1px;" 
+                data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
+                {{ svg.info_svg | safe }}
+              </a>
+            </div>
+            <div class="progress col ms-2 fw-bold" style="height: 20px;"
+              data-bs-toggle="tooltip" data-bs-placement="top" title="${current} out of ${max_allowed} used">
+              <div class="progress-bar" role="progressbar" style="width: ${current/max_allowed*100 || 0}%">${current}</div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: ${free/max_allowed*100 || 100}%">${free}</div>
+            </div>
           </div>
-        </div>
-      `
+        `        
+      }
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
     enableTooltips();  {# Defined in page.html #}
