@@ -453,7 +453,7 @@ function updateFlavors(id, service, system, value) {
 
       if (max_allowed == -1) {
         // infinite labs allowed
-        let diagramHtml = `
+        var diagramHtml = `
           <div class="row align-items-center g-0 mt-4">
             <div class="col-4">
               <span>${flavor}</span>
@@ -470,7 +470,7 @@ function updateFlavors(id, service, system, value) {
         `
       } else {
         let free = max_allowed - current;
-        let diagramHtml = `
+        var diagramHtml = `
           <div class="row align-items-center g-0 mt-4">
             <div class="col-4">
               <span>${flavor}</span>
