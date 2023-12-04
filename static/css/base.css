@@ -114,11 +114,13 @@ details summary::-webkit-details-marker {
 details summary {
   position: relative;
   list-style: none;
+  color: black;
 }
 
 .log-div {
   padding: 0.5rem;
   border-top: 1px solid #dfe0e1;
+  color: #6c757d;
 }
 
 .log-div:first-child > details summary {
