@@ -112,10 +112,13 @@ details summary::-webkit-details-marker {
 }
 
 details summary {
-  padding: 0.5rem;
-  border-top: 1px solid #dfe0e1;
   position: relative;
   list-style: none;
+}
+
+.log-div {
+  padding: 0.5rem;
+  border-top: 1px solid #dfe0e1;
 }
 
 .log-div:first-child > details summary {
