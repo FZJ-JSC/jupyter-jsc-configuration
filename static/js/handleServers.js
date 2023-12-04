@@ -432,16 +432,26 @@ require(["jquery", "jhapi", "utils"], function (
   }
 
   function _updateSpawnEventsAndLog(id) {
-    const startEvent = spawnEvents[id]["latest"][0];
-    if (startEvent) {
-      const startMsg = startEvent.html_message;
+    if (spawnEvents[id]["latest"].length) {
       var re = /([0-9]+(_[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
-      var startTime = re.exec(startMsg)[0];
-      spawnEvents[id][startTime] = spawnEvents[id]["latest"];
-      spawnEvents[id]["latest"] = [];
-      $(`#${id}-log-select`)
-        .append(`<option value="${startTime}">${startTime}</option>`)
-        .val("latest");
+      for (const [index, event] of spawnEvents[id]["latest"].entries()) {
+        const startMsg = event.html_message || event.message;
+        var startTime = re.exec(startMsg);
+        if (startTime) {
+          spawnEvents[id][startTime] = spawnEvents[id]["latest"];
+          spawnEvents[id]["latest"] = [];
+          $(`#${id}-log-select`)
+            .append(`<option value="${startTime}">${startTime}</option>`)
+            .val("latest");
+          break;
+        }
+      }
+      // We didn't manage to find a time, so update with no timestamp
+      if ((spawnEvents[id]["latest"].length)) {
+        spawnEvents[id]["previous"] = spawnEvents[id]["latest"];
+        spawnEvents[id]["latest"] = [];
+      }
     }
+
   }
 });
