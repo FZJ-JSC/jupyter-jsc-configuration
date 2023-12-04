@@ -436,8 +436,9 @@ require(["jquery", "jhapi", "utils"], function (
       var re = /([0-9]+(_[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
       for (const [index, event] of spawnEvents[id]["latest"].entries()) {
         const startMsg = event.html_message || event.message;
-        var startTime = re.exec(startMsg);
-        if (startTime) {
+        const startTimeMatch = re.exec(startMsg);
+        if (startTimeMatch) {
+          const startTime = startTimeMatch[0];
           spawnEvents[id][startTime] = spawnEvents[id]["latest"];
           spawnEvents[id]["latest"] = [];
           $(`#${id}-log-select`)
