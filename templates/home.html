@@ -8,19 +8,19 @@
 {%- endblock -%}
 
 {#- Set some convenience variables -#}
-{%- set named_spawners = [] -%}
-{%- for s in user.all_spawners(include_default=False) | list -%}
-  {%- if s.orm_spawner.user_options -%}
+{%- set lab_spawners = [] -%}
+{%- for s in spawners -%}
+  {%- if s.user_options -%}
     {%- if (
-        "profile" in s.orm_spawner.user_options 
-        and s.orm_spawner.user_options.get("profile").startswith("JupyterLab")
+        "profile" in s.user_options 
+        and s.user_options.get("profile").startswith("JupyterLab")
       )
       or (
-        "service" in s.orm_spawner.user_options
-        and s.orm_spawner.user_options.get("service").startswith("JupyterLab")
+        "service" in s.user_options
+        and s.user_options.get("service").startswith("JupyterLab")
       )
     -%}
-    {%- do named_spawners.append(s) -%}
+    {%- do lab_spawners.append(s) -%}
     {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
@@ -29,7 +29,7 @@
 {%- set new = "new_jupyterlab" -%}  {# id for new jupyterlabs. Cannot contain "-" #}
 
 {%- macro create_summary_tr(s, user_options) -%}
-{%- set id = s.orm_spawner.name -%}
+{%- set id = s.name -%}
 {%- set name = user_options.get("name") -%}
 {%- set system = user_options.get("system", "") -%}
 {%- set flavor = user_options.get("flavor", "") -%}
@@ -248,12 +248,12 @@
         </tr>
         {{ create_collapsible_tr(new, {}) }}
         {#- Existing JupyterLab rows -#}
-        {#- By looping through named_spawners #}
-        {%- for s in named_spawners -%}
-          {%- set user_options = s.orm_spawner.user_options -%}
+        {#- By looping through lab_spawners #}
+        {%- for s in lab_spawners -%}
+          {%- set user_options = s.user_options -%}
           {%- set name = user_options.get("name") -%}
           {{ create_summary_tr(s, user_options) }}
-          {{ create_collapsible_tr(s.orm_spawner.name, user_options) }}
+          {{ create_collapsible_tr(s.name, user_options) }}
         {%- endfor %}
       </tbody>
     </table>
@@ -276,17 +276,16 @@
 var evtSources = {};
 var userOptions = {};
 var spawnEvents = {};
-{%- for s in named_spawners -%}
-{%- set spawner = s.orm_spawner -%}
-{%- set userOptions = spawner.user_options -%}
-userOptions["{{spawner.name}}"] = {{ userOptions | tojson }}
-{%- if spawner.state and spawner.state.get("events") %}
-spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
-{%- else -%}
-{#- We still want to show a "latest" entry for the log dropdown,
-so we manually create an entry for spawners without events #}
-spawnEvents["{{spawner.name}}"] = {"latest": []};
-{%- endif -%}
+{%- for s in lab_spawners -%}
+  {%- set userOptions = s.user_options -%}
+userOptions["{{s.name}}"] = {{ userOptions | tojson }}
+  {%- if s.state and s.state.get("events") %}
+spawnEvents["{{s.name}}"] = {{ s.state.get("events") | tojson }};
+  {%- else -%}
+  {#- We still want to show a "latest" entry for the log dropdown,
+  so we manually create an entry for spawners without events #}
+spawnEvents["{{s.name}}"] = {"latest": []};
+  {%- endif -%}
 {%- endfor %}
 var systemsHealth = {};
 </script>
@@ -1367,9 +1366,9 @@ function onEvtMessage(event, id) {
         collapseBtns.removeClass("disabled");
       }
       else if (evt.ready) {  // Spawn successful
-        {%- for s in named_spawners %}
+        {%- for s in lab_spawners %}
         if (id == "{{s.name}}") {
-          {%- if not s._stop_pending %}
+          {%- if not user.spawners[s.name]._stop_pending %}
           _updateProgressState(id, "running", "bg-success");
           cancelBtn.addClass("d-none disabled");
           tr.find(".btn-stop-lab").removeClass("d-none disabled");
@@ -1409,7 +1408,7 @@ function onEvtMessage(event, id) {
 }
 
 function updateSpawnProgress() {
-  {%- for s in named_spawners %}
+  {%- for s in lab_spawners %}
   var id = "{{s.name}}";
   var latestEvents = spawnEvents["{{s.name}}"]["latest"] || [];
   // Append log messages
@@ -1427,7 +1426,7 @@ function updateSpawnProgress() {
   {%- if s.active %}
     {%- if s.ready %}
     _updateProgressState(id, "running", "bg-success");
-    {%- elif not s._stop_pending %}
+    {%- elif not user.spawners[s.name]._stop_pending %}
     var tr = $(`#${id}.summary-tr`);
     tr.find(".btn-open-lab").addClass("disabled");
     var currentProgress = 0;
