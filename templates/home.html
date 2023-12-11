@@ -1489,7 +1489,11 @@ spawnStatusChangedEvtSource.onmessage = spawnStatusChanged;
 let generalSpawnNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
 let newSpawnEvtSource = new EventSource(generalSpawnNotificationUrl);
 newSpawnEvtSource.onmessage = (e) => {
-  console.log("a new spawn has occured");
+  console.log(e);
+  for  (const id of Object.keys(userOptions)) {
+    const values = getLabConfigSelectValues(id);
+    updateFlavors(id, values.service, values.system);
+  }
 };
 
 </script>
