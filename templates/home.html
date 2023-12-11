@@ -249,9 +249,9 @@
         {{ create_collapsible_tr(new, {}) }}
         {#- Existing JupyterLab rows -#}
         {#- By looping through lab_spawners #}
-        {%- for s in lab_spawners -%}
-          {%- set user_options = s.user_options -%}
-          {%- set name = user_options.get("name") -%}
+        {%- for spawner in lab_spawners -%}
+          {%- set s = user.spawners[spawner.name] -%}
+          {%- set user_options = spawner.user_options -%}
           {{ create_summary_tr(s, user_options) }}
           {{ create_collapsible_tr(s.name, user_options) }}
         {%- endfor %}
@@ -267,7 +267,7 @@
 
 <script>
 {#- Manually sets some cancel related variables -#}
-{%- set cancel_progress_activation = 30 -%}
+{%- set cancel_progress_activation = 0 -%}
 {#- Percentage when cancel should be disabled again
     since it is already in progress -#}
 {%- set cancel_progress_deactivation = 99 %}
@@ -276,15 +276,15 @@
 var evtSources = {};
 var userOptions = {};
 var spawnEvents = {};
-{%- for s in lab_spawners -%}
-  {%- set userOptions = s.user_options -%}
-userOptions["{{s.name}}"] = {{ userOptions | tojson }}
-  {%- if s.state and s.state.get("events") %}
-spawnEvents["{{s.name}}"] = {{ s.state.get("events") | tojson }};
+{%- for spawner in lab_spawners -%}
+  {%- set userOptions = spawner.user_options -%}
+userOptions["{{spawner.name}}"] = {{ userOptions | tojson }}
+  {%- if spawner.state and spawner.state.get("events") %}
+spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
   {%- else -%}
   {#- We still want to show a "latest" entry for the log dropdown,
   so we manually create an entry for spawners without events #}
-spawnEvents["{{s.name}}"] = {"latest": []};
+spawnEvents["{{spawner.name}}"] = {"latest": []};
   {%- endif -%}
 {%- endfor %}
 var systemsHealth = {};
@@ -1408,25 +1408,26 @@ function onEvtMessage(event, id) {
 }
 
 function updateSpawnProgress() {
-  {%- for s in lab_spawners %}
-  var id = "{{s.name}}";
-  var latestEvents = spawnEvents["{{s.name}}"]["latest"] || [];
+  {%- for spawner in lab_spawners %}
+  var id = "{{spawner.name}}";
+  var latestEvents = spawnEvents[id]["latest"] || [];
   // Append log messages
   for (const event of latestEvents) {
     _appendToLog(event["html_message"], $(`#${id}-log`));
   }
   // Add options to log select and select the latest log by default
   var logSelect = $(`#${id}-log-select`);
-  for (const log in spawnEvents["{{s.name}}"]) {
+  for (const log in spawnEvents[id]) {
     if (log == "latest") logSelect.prepend(`<option value="${log}">${log}</option>`);
     else logSelect.append(`<option value="${log}">${log}</option>`);
   }
   logSelect.val("latest");
   
-  {%- if s.active %}
+  {%- set s = user.spawners[spawner.name] -%}
+  {%- if s.active -%}
     {%- if s.ready %}
     _updateProgressState(id, "running", "bg-success");
-    {%- elif not user.spawners[s.name]._stop_pending %}
+    {%- elif not s._stop_pending %}
     var tr = $(`#${id}.summary-tr`);
     tr.find(".btn-open-lab").addClass("disabled");
     var currentProgress = 0;
