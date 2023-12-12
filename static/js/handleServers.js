@@ -19,8 +19,9 @@ require(["jquery", "jhapi", "utils"], function (
     api.cancel_named_server(user, id, {
       success: function () {
         console.log("cancel success");
-        // If cancelling, we want to keep to keep the
-        // progress indicator,so we do not reset the progress bar
+        _enableTrButtonsNonRunning(tr);
+        // If cancelling, we want to keep the progress indicator
+        _updateProgressState(id, "last spawn failed", "bg-danger");
       },
       error: function () {
         console.log("cancel error");
