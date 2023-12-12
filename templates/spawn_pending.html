@@ -7,6 +7,7 @@
 {%- endblock -%}
 
 {%- macro create_text_input(label, value) -%}
+{%- if value -%}
 {%- set key = label.lower() %}
 <div id="{{key}}-input-div"  class="row mb-3">
   <label for="{{ key }}-input" class="col-4 col-form-label">{{ label }}</label>
@@ -14,6 +15,7 @@
     <input type="text" class="form-control" id="{{ key }}-input" value="{{value}}" disabled>
   </div>
 </div>
+{%- endif -%}
 {%- endmacro -%}
 
 {%- macro create_number_input(label, value) -%}
@@ -49,6 +51,7 @@
 {%- set service_name = auth_state.get("custom_config", {}).get("services").get(service).get("options").get(option).get("name") -%}
 {%- set version = user_options.get("options", "JupyterLab") -%}
 {%- set system = user_options.get("system", None) -%}
+{%- set flavor = user_options.get("flavor", None) -%}
 {%- set account = user_options.get("account", None) -%}
 {%- set project = user_options.get("project", None) -%}
 {%- set partition = user_options.get("partition", None) -%}
@@ -95,6 +98,7 @@
                 {{ create_text_input("Version", service_name) }}
                 <hr>
                 {{ create_text_input("System", system) }}
+                {{ create_text_input("Flavor", flavor) }}
                 {{ create_text_input("Account", account) }}
                 {{ create_text_input("Project", project) }}
                 {{ create_text_input("Partition", partition) }}
