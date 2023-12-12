@@ -436,7 +436,7 @@ function updateFlavors(id, service, system, value) {
   let select = $(`select#${id}-flavor-select`);
   const currentVal = select.val();
 
-  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors?_xsrf=" + window.jhdata.xsrf_token;
+  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
   $.get( flavorUrl, function(data) {
     let systemFlavors = data[system] || {};
     resetInputElement(select);
@@ -824,6 +824,7 @@ function getLabConfigSelectValues(id) {
   return {
     "service": $(`select#${id}-version-select`).val(),
     "system": $(`select#${id}-system-select`).val(),
+    "flavor": $(`select#${id}-flavor-select`).val(),
     "account": $(`select#${id}-account-select`).val(),
     "project": $(`select#${id}-project-select`).val(),
     "partition": $(`select#${id}-partition-select`).val(),
@@ -1005,7 +1006,7 @@ function checkComputeMaintenance(system, partition) {
 }
 
 async function setSystemsHealth() {
-  var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents?_xsrf=" + window.jhdata.xsrf_token;
+  var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
   var data = await $.get( incidentUrl );
   
   for (const entry in data) {
@@ -1489,10 +1490,9 @@ spawnStatusChangedEvtSource.onmessage = spawnStatusChanged;
 let generalSpawnNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
 let newSpawnEvtSource = new EventSource(generalSpawnNotificationUrl);
 newSpawnEvtSource.onmessage = (e) => {
-  console.log(e);
-  for  (const id of Object.keys(userOptions)) {
+  for (const id of Object.keys(userOptions)) {
     const values = getLabConfigSelectValues(id);
-    updateFlavors(id, values.service, values.system);
+    updateFlavors(id, values.service, values.system, values.flavor);
   }
 };
 
