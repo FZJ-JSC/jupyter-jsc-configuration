@@ -1368,7 +1368,7 @@ function onEvtMessage(event, id) {
       }
       else if (evt.ready) {  // Spawn successful
         {%- for spawner in lab_spawners -%}
-        {%- set s = user.spawners[spawner.name]._stop_pending%}
+        {%- set s = user.spawners[spawner.name] %}
         if (id == "{{s.name}}") {
           {%- if not s._stop_pending %}
           _updateProgressState(id, "running", "bg-success");
