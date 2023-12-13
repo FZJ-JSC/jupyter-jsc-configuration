@@ -286,7 +286,8 @@ require(["jquery", "jhapi", "utils"], function (
       success: function () {
         $(`#${id}-name-input`).val(options["name"]);
         // Reset all user inputs to the values saved in the global user options
-        setUserOptions(id, options);
+        let available = checkIfAvailable(id, options);
+        setUserOptions(id, options, available);
         // Remove all tab warnings since manual changes shouldn't cause warnings
         $("[id$=tab-warning]").addClass("invisible");
         // Show first tab after resetting values
