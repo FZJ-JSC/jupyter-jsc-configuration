@@ -45,12 +45,13 @@
   <th scope="row" class="name-td">{{ name }}</th> 
   <td class="config-td">
     <div style="max-height: 152px; overflow: auto;">
-      {%- macro _config_td_entry(label, value, alignment="start") -%}
+      {%- macro _config_td_entry(label, value, alignment="start", key="") -%}
+      {%- if not key %} {% set key = label.lower() %} {% endif -%}
       {%- set breakpoints = "col-12 col-lg-4" %}
-      <div id="{{id}}-config-td-div-{{label|lower}}"
+      <div id="{{id}}-config-td-div-{{key}}"
         class="col text-lg-{{alignment}} {{breakpoints}} {% if not value %}d-none{% endif %}">
         <span class="text-muted" style="font-size: smaller;">{{ label }}</span><br>
-        <span id="{{id}}-config-td-{{label|lower}}">{{ value }}</span>
+        <span id="{{id}}-config-td-{{key}}">{{ value }}</span>
       </div>
       {%- endmacro -%}
       {%- set row_margins = "mx-3 mb-1" -%}
@@ -63,7 +64,7 @@
           {{ _config_td_entry("Project", project, "end") }}
         </div>
         <div class="row {{row_breakpoints}}">
-          {{ _config_td_entry("Runtime (min)", runtime, "start") }}
+          {{ _config_td_entry("Runtime (min)", runtime, key="runtime", alignment="start") }}
           {{ _config_td_entry("Nodes", nodes, "center") }}
           {{ _config_td_entry("GPUs", gpus, "end") }}
         </div>
