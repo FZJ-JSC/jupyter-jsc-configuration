@@ -423,13 +423,15 @@ require(["jquery", "jhapi", "utils"], function (
 
   function _updateTr(tr, id, options) {
     tr.find(".name-td").text(options.name);
-    tr.find(`#${id}-config-td-system`).text(options.system);
-    tr.find(`#${id}-config-td-flavor`).text(options.flavor);
-    tr.find(`#${id}-config-td-partition`).text(options.partition);
-    tr.find(`#${id}-config-td-project`).text(options.project);
-    tr.find(`#${id}-config-td-runtime`).text(options.runtime);
-    tr.find(`#${id}-config-td-nodes`).text(options.nodes);
-    tr.find(`#${id}-config-td-gpus`).text(options.gpus);
+    function _updateTd(key) {
+      let configTdDiv = tr.find(`#${id}-config-td-div-${key}`);
+      if (options[key]) configTdDiv.removeClass("d-none");
+      else configTdDiv.addClass("d-none");
+      let configDiv = tr.find(`#${id}-config-td-${key}`);
+      configDiv.text(options[key]);
+    }
+    ["system", "flavor", "partition", "project",
+      "runtime", "nodes", "gpus"].forEach(key => _updateTd(key));
   }
 
   function _updateSpawnEventsAndLog(id) {
