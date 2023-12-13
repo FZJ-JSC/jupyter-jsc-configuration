@@ -434,7 +434,7 @@ require(["jquery", "jhapi", "utils"], function (
 
   function _updateSpawnEventsAndLog(id) {
     if (spawnEvents[id]["latest"].length) {
-      var re = /([0-9]+(_[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
+      var re = /([0-9]+(-[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
       for (const [index, event] of spawnEvents[id]["latest"].entries()) {
         const startMsg = event.html_message || event.message;
         const startTimeMatch = re.exec(startMsg);
