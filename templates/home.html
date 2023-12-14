@@ -429,67 +429,73 @@ function updateFlavors(id, service, system, value) {
   const currentVal = select.val();
 
   let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-  $.get( flavorUrl, function(data) {
-    let systemFlavors = data[system] || {};
-    resetInputElement(select);
-    $(`#${id}-flavor-info-div`).html("");
+  $.ajax({
+    type: "GET",
+    url: flavorUrl, 
+    async: false,
+    success: function(data) {
+      let systemFlavors = data[system] || {};
+      resetInputElement(select);
+      $(`#${id}-flavor-info-div`).html("");
 
-    // Sort systemFlavors by flavor weights
-    for (const [flavor, description] of Object.entries(systemFlavors).sort(([,a],[,b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
-      var current = description.current;
-      var max_allowed = description.max;
-      // Flavor not valid, so skip
-      if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
-      select.append(`<option value="${flavor}">${description.display_name}</option>`);
+      // Sort systemFlavors by flavor weights
+      for (const [flavor, description] of Object.entries(systemFlavors).sort(([,a],[,b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
+        var current = description.current;
+        var max_allowed = description.max;
+        // Flavor not valid, so skip
+        if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
+        select.append(`<option value="${flavor}">${description.display_name}</option>`);
 
-      // Infinite allowed
-      if (max_allowed == -1) {
-        var progress_tooltip = `${current} used`;
-        var max_allowed_label = '∞';
-        if (current == 0) {
-          var current_width = 0;
-          var max_allowed_width = 100;
-        } 
-        else {
-          var current_width = 20;
-          var max_allowed_width = 80;
+        // Infinite allowed
+        if (max_allowed == -1) {
+          var progress_tooltip = `${current} used`;
+          var max_allowed_label = '∞';
+          if (current == 0) {
+            var current_width = 0;
+            var max_allowed_width = 100;
+          } 
+          else {
+            var current_width = 20;
+            var max_allowed_width = 80;
+          }
         }
-      }
-      else {
-        var progress_tooltip = `${current} out of ${max_allowed} used`;
-        var max_allowed_label = max_allowed - current;
-        var current_width = current/max_allowed * 100 || 0;
-        var max_allowed_width = max_allowed_label/max_allowed * 100 || 100;
-      }
+        else {
+          var progress_tooltip = `${current} out of ${max_allowed} used`;
+          var max_allowed_label = max_allowed - current;
+          var current_width = current/max_allowed * 100 || 0;
+          var max_allowed_width = max_allowed_label/max_allowed * 100 || 100;
+        }
 
-      var diagramHtml = `
-        <div class="row align-items-center g-0 mt-4">
-          <div class="col-4">
-            <span>${description.display_name}</span>
-            <a class="lh-1 ms-3" style="padding-top: 1px;" 
-              data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
-              {{ svg.info_svg | safe }}
-            </a>
+        var diagramHtml = `
+          <div class="row align-items-center g-0 mt-4">
+            <div class="col-4">
+              <span>${description.display_name}</span>
+              <a class="lh-1 ms-3" style="padding-top: 1px;" 
+                data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
+                {{ svg.info_svg | safe }}
+              </a>
+            </div>
+            <div class="progress col ms-2 fw-bold" style="height: 20px;"
+              data-bs-toggle="tooltip" data-bs-placement="top" title="${progress_tooltip}">
+              <div class="progress-bar" role="progressbar" style="width: ${current_width}%">${current}</div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: ${max_allowed_width}%">${max_allowed_label}</div>
+            </div>
           </div>
-          <div class="progress col ms-2 fw-bold" style="height: 20px;"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="${progress_tooltip}">
-            <div class="progress-bar" role="progressbar" style="width: ${current_width}%">${current}</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${max_allowed_width}%">${max_allowed_label}</div>
-          </div>
-        </div>
-      `        
-      $(`#${id}-flavor-info-div`).append(diagramHtml);
+        `        
+        $(`#${id}-flavor-info-div`).append(diagramHtml);
+      }
+      enableTooltips();  {# Defined in page.html #}
+      Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).removeClass("d-none");
+      updateLabConfigSelect(select, value, currentVal);
+    },
+    error: function() {
+      resetInputElement(select);
+      $(`#${id}-flavor-info-div`).html("");
+      $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none");
+      updateLabConfigSelect(select, value, currentVal);
+      setLabAsNA(id, "as flavors N/A")
     }
-    enableTooltips();  {# Defined in page.html #}
-    Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).removeClass("d-none");
-    updateLabConfigSelect(select, value, currentVal);
   })
-  .fail(function() {
-    resetInputElement(select);
-    $(`#${id}-flavor-info-div`).html("");
-    $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none");
-    updateLabConfigSelect(select, value, currentVal);
-  });
 }
 
 function updateAccounts(id, service, system, value) {
@@ -831,7 +837,7 @@ $("select[id*=version]").change(function() {
       updateSystems(id, values.service);
     }
     catch (e) { 
-      setLabAsNA(id, "due to a JS error.");
+      setLabAsNA(id, "due to a JS error");
       console.log(e);
     }
   }
@@ -845,7 +851,7 @@ $("select[id*=system]").change(function() {
       updateAccounts(id, values.service, values.system);
     }
     catch (e) { 
-      setLabAsNA(id, "due to a JS error.");
+      setLabAsNA(id, "due to a JS error");
       console.log(e);
     }
   }
@@ -872,7 +878,7 @@ $("select[id*=account]").change(function() {
       updateProjects(id, values.service, values.system, values.account);
     }
     catch (e) {
-      setLabAsNA(id, "due to a JS error.");
+      setLabAsNA(id, "due to a JS error");
       console.log(e);
     }
   }
@@ -885,7 +891,7 @@ $("select[id*=project]").change(function() {
       updatePartitions(id, values.service, values.system, values.account, values.project);
     }
     catch (e) {
-      setLabAsNA(id, "due to a JS error.");
+      setLabAsNA(id, "due to a JS error");
       console.log(e);
     }
   }
@@ -899,7 +905,7 @@ $("select[id*=partition]").change(function() {
       updateResources(id, values.service, values.system, values.account, values.project, values.partition);
       updateModules(id, values.service, values.system, values.account, values.project, values.partition);    }
     catch (e) {
-      setLabAsNA(id, "due to a JS error.");
+      setLabAsNA(id, "due to a JS error");
       console.log(e);
     }
   }
@@ -1208,7 +1214,7 @@ function setUserOptions(id, options, available) {
       updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
       updateModules(id, service, system, account, project, partition, modules);
     }
-    catch (e) { setLabAsNA(id, "due to a JS error."); }
+    catch (e) { setLabAsNA(id, "due to a JS error"); }
   }
   else {
     function _setSelectOption(key, value) {
