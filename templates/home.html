@@ -792,8 +792,8 @@ function updateModules(id, service, system, account, project, partition, values)
 
 <script>
 function getId(element, slice_index = -2) {
-  var id_array = $(element).attr("id").split('-');
-  var id = id_array.slice(0, slice_index).join('-');
+  let id_array = $(element).attr("id").split('-');
+  let id = id_array.slice(0, slice_index).join('-');
   return id;
 }
 
