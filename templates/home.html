@@ -1486,9 +1486,9 @@ let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
 spawnStatusChangedEvtSource.onmessage = spawnStatusChanged;
 
 // Test general spawn event notifications
-let generalSpawnNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-let newSpawnEvtSource = new EventSource(generalSpawnNotificationUrl);
-newSpawnEvtSource.onmessage = (e) => {
+let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
+spawnStartStopEvtSource.onmessage = (e) => {
   for (const id of Object.keys(userOptions)) {
     const values = getLabConfigSelectValues(id);
     updateFlavors(id, values.service, values.system, values.flavor);

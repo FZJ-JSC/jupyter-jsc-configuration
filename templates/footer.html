@@ -135,9 +135,13 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
   $(document).ready(function() {
     updateSystemHoverTooltips();
     updateNumberOfUsers();
-    setInterval(updateNumberOfUsers, 60000);
   })
 
+  let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+  let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
+  spawnStartStopEvtSource.onmessage = (e) => {
+    updateNumberOfUsers();
+  };
 })
 </script>
 {%- endblock -%}
