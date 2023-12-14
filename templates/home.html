@@ -433,6 +433,7 @@ function updateFlavors(id, service, system, value) {
     type: "GET",
     url: flavorUrl, 
     async: false,
+    timeout: 1000,
     success: function(data) {
       let systemFlavors = data[system] || {};
       resetInputElement(select);
