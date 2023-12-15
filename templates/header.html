@@ -1,19 +1,14 @@
-{%- macro user_information() -%}
+{%- macro create_user_widget() -%}
 {%- if user %}
 <div class="dropdown">
-  <button class="btn btn-outline-primary dropdown-toggle mb-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">{{ user.name }}</button>
+  <button class="btn btn-outline-primary dropdown-toggle mb-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">{{ user.name }}</button>
   <ul class="dropdown-menu dropdown-menu-end w-100">
-    <li><h6 class="dropdown-header">External links</h6></li>
-    <li><a id="status-nav-item" class="dropdown-item text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
-    <li><a id="docs-nav-item" class="dropdown-item text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
-    <li><a id="links-nav-item" class="dropdown-item text-decoration-none" style="color: black !important; background-color: transparent !important;" target="_blank" href="{{ base_url }}links">More Links</a></li>
-    <li><hr class="dropdown-divider"></li>
     {%- if auth_state and auth_state.get("last_login", False) %}
     <li><h6 class="dropdown-header">Last login</h6></li>
     <li><a class="dropdown-item disabled text-black">{{ auth_state.get("last_login") }}</a></li>
     <li><hr class="dropdown-divider"></li>
     {%- endif -%}
-
+    <li><a class="dropdown-item text-decoration-none" href="{{ base_url }}2FA">2-Factor Authentication</a></li>
     <li>
       <button id="logout" class="dropdown-item">
         <svg class="align-middle" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
@@ -30,62 +25,51 @@
 {%- endif -%}
 {%- endmacro -%}
 
-{%- macro navigation(prefix="") -%}
-<ul class="nav flex-grow-1">
-  {% if user -%}
-    {%- set start_nav_active = false -%}
-    {%- set start_nav_text = "JupyterLab" -%}
-  {%- else -%}
-    {%- set start_nav_active = true -%}
-    {%- set start_nav_text = "Start" -%}
-  {%- endif %}
-  <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none {% if start_nav_active -%} active {%- endif -%}" href="{{ base_url }}home">{{start_nav_text}}</a></li>
-  {%- if user -%}
-  {# <li class="nav-item"><a id="{{prefix}}custom-image-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}custom">Custom Images</a></li> #}
-    {%- if user.admin -%}
+{%- macro create_navigation(prefix="") -%}
+<ul class="nav">
+  {#- Show different headers depending on if a user is logged in or not -#}
+  
+  {#- If not logged in, we cannot show these links in the user widget, so we put them in the nav bar instead -#}
+  <div class="d-flex">
+    {%- if user %}
+    <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}home">JupyterLab</a></li>
+    {%- if user.admin %}
     <li class="nav-item"><a id="{{prefix}}admin-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}admin">Admin</a></li>
     {%- endif -%}
-  {%- endif -%}
-  {%- if not user %}
-  <div class="d-flex align-items-end ms-auto">
-    <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link nav-link-secondary text-decoration-none" href="{{ base_url }}links">Links</a></li>
-    <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link nav-link-secondary text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
-    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link nav-link-secondary text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+    {%- else %}
+    <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}login">Login</a></li>
+    {%- endif %}
+    <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
+    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+    <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}links">More Links</a></li>
   </div>
-  {%- endif %}
 </ul>
 {%- endmacro -%}
 
 {%- block header %}
 <nav class="navbar navbar-light navbar-expand-lg bg-white pb-0">
   <div class="container-fluid">
-    {#- Logo left #}
     <a class="navbar-brand" href="https://fz-juelich.de/jsc/en" target="_blank">
       <img id="jsc-logo" class="p-3" width="335px" title="https://fz-juelich.de/jsc/en" alt='JSC' src='{{ static_url("images/header/jsc.png", include_version=False) }}' />
     </a>
-    <button class="navbar-toggler mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsibleContent" aria-controls="navbarCollapsibleContent" aria-expanded="false" aria-label="Toggle navigation">
+    {#- Button that toggles the navigation. Is visible on medium screens and smaller. #}
+    <button class="navbar-toggler mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsibleContent">
       <span class="navbar-toggler-icon"></span>
     </button>
+    {#- This div is hidden on medium screens and smaller. #}
     <div class="collapse navbar-collapse align-self-end">
-      {#- Navigation #}
-      {{ navigation() }}
+      {{ create_navigation() }}
     </div>
-    <div class="d-flex flex-column align-items-end ms-auto me-2">
-      {#- Logo right #}
-      <a class="navbar-brand me-0" href="/">
+    <div class="d-flex flex-column align-items-end ms-auto">
+      <a class="navbar-brand" href="/">
         <img id="jupyter-logo" src='{{ static_url("images/header/jupyterjsc.png", include_version=False) }}' height="60px" alt="Jupyter-JSC" title="{{hostname}}{{ base_url|default('', true) }}">
       </a>
-      {#- User widget #}
-      {{ user_information() }}
+      {{ create_user_widget() }}
     </div>
   </div>
+  {#- This div is toggled by the navbar toggle button above and appears below the logos. #}
   <div class="collapse navbar-collapse d-lg-none" style="margin-left: 2rem;" id="navbarCollapsibleContent">
-      {{ navigation(prefix="collapse-") }}
+      {{ create_navigation(prefix="collapse-") }}
   </div>
 </nav>
-{#- <nav id="second-nav" class="navbar navbar-light bg-secondary navbar-expand-lg d-lg-none">
-  <button class="navbar-toggler border-0 mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-</nav> #}
 {%- endblock %}
