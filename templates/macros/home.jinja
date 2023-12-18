@@ -1,3 +1,4 @@
+{%- import "macros/inputs.jinja" as inputs -%}
 {%- import "macros/svgs.jinja" as svg -%}
 
 {%- macro create_announcement(custom_config) -%}
@@ -9,6 +10,54 @@
   {{ custom_config.get("announcement", {}).get("body", "")  | safe }}
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
+{%- endmacro -%}
+
+{%- macro create_summary_tr(s, user_options) -%}
+{%- set id = s.name -%}
+{%- set name = user_options.get("name") -%}
+{%- set system = user_options.get("system", "") -%}
+{%- set flavor = user_options.get("flavor", "") -%}
+{%- set partition = user_options.get("partition", "") -%}
+{%- set project = user_options.get("project", "") -%}
+{%- set runtime = user_options.get("runtime", "") -%}
+{%- set nodes = user_options.get("nodes", "") -%}
+{%- set gpus = user_options.get("gpus", "") -%}
+<tr data-server-id="{{id}}" class="summary-tr">
+  <td class="details-td" data-bs-target="#{{id}}-collapse">
+    <div class="d-flex mx-auto accordion-icon collapsed mx-4"></div>
+  </td>
+  <th scope="row" class="name-td">{{ name }}</th> 
+  <td class="config-td">
+    <div style="max-height: 152px; overflow: auto;">
+      {%- macro _config_td_entry(label, value, alignment="start", key="") -%}
+      {%- if not key %} {% set key = label.lower() %} {% endif -%}
+      {%- set breakpoints = "col-12 col-lg-4" %}
+      <div id="{{id}}-config-td-div-{{key}}"
+        class="col text-lg-{{alignment}} {{breakpoints}} {% if not value %}d-none{% endif %}">
+        <span class="text-muted" style="font-size: smaller;">{{ label }}</span><br>
+        <span id="{{id}}-config-td-{{key}}">{{ value }}</span>
+      </div>
+      {%- endmacro -%}
+      {%- set row_margins = "mx-3 mb-1" -%}
+      {%- set row_breakpoints = "col-12 col-md-6 col-lg-12" -%}
+      <div class="row {{row_margins}} justify-content-between">
+        <div class="row {{row_breakpoints}}">
+          {{ _config_td_entry("System", system, "start") }}
+          {{ _config_td_entry("Flavor", flavor, "center") }}
+          {{ _config_td_entry("Partition", partition, "center") }}
+          {{ _config_td_entry("Project", project, "end") }}
+        </div>
+        <div class="row {{row_breakpoints}}">
+          {{ _config_td_entry("Runtime (min)", runtime, key="runtime", alignment="start") }}
+          {{ _config_td_entry("Nodes", nodes, "center") }}
+          {{ _config_td_entry("GPUs", gpus, "end") }}
+        </div>
+      </div>
+    </div>
+  </td>
+  {{ create_lab_progress_td(id) }}
+  {{ create_action_td(id, s) }}
+</tr>
 {%- endmacro -%}
 
 {%- macro create_lab_progress_td(id) -%}
@@ -28,7 +77,7 @@
 </td>
 {%- endmacro -%}
 
-{%- macro create_action_td(s, user, id) -%}
+{%- macro create_action_td(id, s) -%}
 <td class="actions-td" style="white-space: nowrap;"> 
   {%- set button_margin = "my-1 me-1" -%} 
   {#- Save N/A status to page #}
@@ -41,7 +90,7 @@
   <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {%if s.active and not s._stop_pending-%}d-none{%-endif%} {{button_margin}}">
     {{ svg.start_svg | safe }} Start
   </button>
-  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {{button_margin}}" href='/user/{{user.name}}/{{id}}' target="_blank">
+  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {{button_margin}}" href='/user/{{s.user.name}}/{{id}}' target="_blank">
     {{ svg.open_svg | safe }} Open
   </a>
   <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending == None-%}d-none{%-endif-%}">
@@ -51,6 +100,140 @@
     {{ svg.stop_svg | safe }} Stop
   </button>
 </td>
+{%- endmacro -%}
+
+{%- macro create_collapsible_tr(s, user_options, custom_config, new_lab_id="new_jupyterlab") -%}
+{%- if s %} {%- set id = s.name -%}
+{%- else %} {%- set id = new_lab_id -%}
+{%- endif -%}
+{%- set name = user_options.get("name", "") -%}
+<tr data-server-id="{{id}}" class="collapsible-tr" style="--bs-table-accent-bg: transparent;">
+  <td colspan="100%" class="p-0">  {#- Remove padding to hide td when collapsed #}
+    <div class="collapse" id="{{id}}-collapse">
+      <div class="d-flex align-items-start m-3">
+        {#- TAB NAV PILLS -#}
+        {%- set nav_tab_margins = "mb-3" %}
+        <div class="nav flex-column nav-pills p-3 ps-0" id="{{ id }}-tab" role="tablist">
+          <button class="nav-link active {{ nav_tab_margins }}" id="{{ id }}-config-tab" data-bs-toggle="pill" data-bs-target="#{{ id }}-config" type="button" role="tab">Lab Config</button>
+          <button class="nav-link {{ nav_tab_margins }}" id="{{ id }}-resources-tab" data-bs-toggle="pill" data-bs-target="#{{ id }}-resources" type="button" role="tab">
+            <span>Resources</span>
+            <span id="{{id}}-resources-tab-warning" class="d-flex invisible">
+              {{ svg.warning_svg | safe }}
+              <span class="visually-hidden">settings changed</span>
+            </span>
+          </button>
+          <button class="nav-link {{ nav_tab_margins }}" id="{{ id }}-modules-tab" data-bs-toggle="pill" data-bs-target="#{{ id }}-modules" type="button" role="tab">
+            <span>Kernels and Extensions</span>
+            <span id="{{id}}-modules-tab-warning" class="d-flex invisible">
+              {{ svg.warning_svg | safe }}
+              <span class="visually-hidden">settings changed</span>
+            </span>
+          </button>
+          {%- if id != new_lab_id %}
+          <button class="nav-link {{ nav_tab_margins }}" id="{{ id }}-logs-tab" data-bs-toggle="pill" data-bs-target="#{{ id }}-logs" type="button" role="tab">Logs</button>
+          {%- endif %}
+        </div>
+        {#- TAB NAV CONTENT -#}
+        {#- We only create empty elements here as they will be filled via JS #}
+        <div class="tab-content w-100" id="{{ id }}-tabContent">
+          {#- Lab Config #}
+          <div class="tab-pane fade show active" id="{{ id }}-config" role="tabpanel">
+            <form id="{{id}}-lab-config-form">
+              {{ inputs.create_text_input(id, "name", placeholder="Give your lab a name") }}
+              {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
+              <hr>
+              {{ inputs.create_select(id, "system") }}
+              {{ inputs.create_select(id, "flavor") }}
+              <div id="{{id}}-flavor-legend-div" class="row align-items-center g-0 mt-4">
+                <span class="col-4 fw-bold">Available Flavors</span>
+                <div class="col d-flex align-items-center ms-2">
+                  {%- set box_style = "height: 15px; width: 15px; border-radius: 0.25rem;"%}
+                  <div style="{{box_style}} background-color: #023d6b;"></div>
+                  <span class="ms-1">= Used</span>
+                  <span class="mx-2"></span>
+                  <div style="{{box_style}} background-color: #198754;"></div>
+                  <span class="ms-1">= Free</span>
+                </div>
+              </div>
+              <div id="{{id}}-flavor-info-div" class="mb-3"></div>
+              {{ inputs.create_select(id, "account") }}
+              {{ inputs.create_select(id, "project") }}
+              {{ inputs.create_select(id, "partition") }}
+              <hr id="{{id}}-reservation-hr">
+              {{ inputs.create_select(id, "reservation") }}
+              <div id="{{id}}-reservation-info-div" class="row mb-3">
+                {%- set reservation_info_classes = "col-4 fw-bold"%}
+                <div id="{{id}}-reservation-info" class="col-8 offset-4">
+                  <div class="row">
+                    <span class="{{ reservation_info_classes }}">Start Time:</span>
+                    <span id="{{id}}-reservation-start" class="col-auto"></span>
+                  </div>
+                  <div class="row">
+                    <span class="{{ reservation_info_classes }}">End Time:</span>
+                    <span id="{{id}}-reservation-end" class="col-auto"></span>
+                  </div>
+                  <div class="row">
+                    <span class="{{ reservation_info_classes }}">State:</span>
+                    <span id="{{id}}-reservation-state" class="col-auto"></span>
+                  </div>
+                  <div class="mt-1">
+                    <details>
+                      <summary class="fw-bold">Detailed reservation information:</summary>
+                      <pre id="{{id}}-reservation-details"></pre>
+                      {#- TODO: Fix horizontal width upon expanding the detail #}
+                    </details>
+                  </div>
+                </div>
+              </div>
+            </form>
+            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+          </div>
+          {#- Lab Resources #}
+          <div class="tab-pane fade" id="{{ id }}-resources" role="tabpanel">
+            <form id="{{id}}-resources-form">
+              {{ inputs.create_number_input(id, "nodes") }}
+              {{ inputs.create_number_input(id, "gpus", "GPUs") }}
+              {{ inputs.create_number_input(id, "runtime", "Runtime (minutes)") }}
+              {{ inputs.create_checkbox_input(id, "xcbserver", "Activate XServer")}}
+              {{ inputs.create_number_input(id, "xserver", "Use XServer GPU Index") }}
+            </form>
+            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+          </div>
+          {#- User-selected Modules #}
+          <div class="tab-pane fade" id="{{ id }}-modules" role="tabpanel">
+            <form id="{{id}}-modules-form">
+              {%- for module_set in custom_config.get("userModules", {}).keys() %}
+              <div id="{{id}}-{{module_set}}-div">
+                <h4>{{ module_set | title}}</h4>
+                <div id="{{id}}-{{module_set}}-checkboxes-div" class="row g-0"></div>
+              </div>
+              {%- endfor %}
+            </form>
+            <hr>
+            <div id="{{id}}-modules-selector-div" class="row g-0">
+              {%- set module_cols = "col-sm-6 col-md-4 col-lg-3" %}
+              <div class="form-check {{module_cols}}">
+                <input class="form-check-input module-selector" type="checkbox" id="{{id}}-modules-select-all">
+                <label class="form-check-label" for="{{id}}-modules-select-all">Select all</label>
+              </div>
+              <div class="form-check {{module_cols}}">
+                <input class="form-check-input module-selector" type="checkbox" id="{{id}}-modules-select-none">
+                <label class="form-check-label" for="{{id}}-modules-select-none">Deselect all</label>
+              </div>
+            </div>
+            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+          </div>
+          {#- Lab Logs #}
+          <div class="tab-pane fade" id="{{ id }}-logs" role="tabpanel">
+              {{ inputs.create_select(id, "log") }}
+              <div id="{{id}}-log" class="card card-body"></div>
+              {{ create_lab_config_buttons(id, id == new_lab_id) }}
+          </div>
+        </div> {#- End of tab content #}
+      </div> {#- End of d-flex #}
+    </div> {#- End of collapse #}
+  </td>
+</tr>
 {%- endmacro -%}
 
 {%- macro create_lab_config_buttons(id, start_button_only=false) -%}
