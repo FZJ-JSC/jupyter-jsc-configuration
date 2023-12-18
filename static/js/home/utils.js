@@ -1,6 +1,38 @@
-
 define(["jquery"], function ($) {
   "use strict";
+
+  const progressStates = {
+    "running": {
+      "text": "running",
+      "background": "bg-success",
+      "width": 100
+    },
+    "stop_failed": {
+      "text": "running (stop failed)",
+      "background": "bg-success",
+      "width": 100
+    },
+    "cancelling": {
+      "text": "cancelling...",
+      "background": "bg-danger",
+      "width": 100
+    },
+    "stopping": {
+      "text": "stopping...",
+      "background": "bg-danger",
+      "width": 100
+    },
+    "failed": {
+      "text": "last spawn failed",
+      "background": "bg-danger",
+      "width": 100
+    },
+    "reset": {
+      "text": "",
+      "background": "",
+      "width": 0
+    }
+  }
 
   var parseJSON = function (inputString) {
     try {
@@ -24,28 +56,25 @@ define(["jquery"], function ($) {
   }
 
   var resetInputElement = function (element, required = true) {
-    element.html("");
-    element.val(null);
-    element.removeClass("text-muted disabled");
-    element.attr("required", required);
+    element
+      .html("")
+      .val(null)
+      .removeClass("text-muted disabled")
+      .attr("required", required);
   }
 
   var updateProgressPercentage = function (id, text, progress) {
-    var progressBar = $(`#${id}-progress-bar`);
-    var progressInfo = $(`#${id}-progress-info-text`);
-    progressBar.width(100).html(`<b>${progress}%</b>`);
-    progressInfo.html(text);
+    $(`#${id}-progress-bar`).width(100).html(`<b>${progress}%</b>`);
+    $(`#${id}-progress-info-text`).html(text);
   }
 
-  var updateProgressState = function (id, text, bg) {
-    var progressBar = $(`#${id}-progress-bar`);
-    var progressInfo = $(`#${id}-progress-info-text`);
-    progressBar
-      .width(100)
+  var updateProgressState = function (id, state) {
+    $(`#${id}-progress-bar`)
+      .width(progressStates[state].width)
       .removeClass("bg-success bg-danger")
-      .addClass(bg)
+      .addClass(progressStates[state].background)
       .html("");
-    progressInfo.html(text);
+    $(`#${id}-progress-info-text`).html(progressStates[state].text);
   }
 
   var appendToLog = function (log, htmlMsg) {
@@ -71,7 +100,7 @@ define(["jquery"], function ($) {
           const startTime = startTimeMatch[0];
           // Have we already created a log entry for this time?
           let logOptions = $(`#${id}-log-select option`);
-          var logTimes = $.map(logOptions, function (option) {
+          let logTimes = $.map(logOptions, function (option) {
             return option.value;
           });
           // If yes, we do not need to do anything anymore

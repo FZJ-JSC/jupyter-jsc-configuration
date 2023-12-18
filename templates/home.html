@@ -105,7 +105,7 @@ var flavorInfo = {};
 </script>
 
 <script src='{{static_url("js/home/table-interactions.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
-<script src='{{static_url("js/handleServers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/home/handleServers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
 
 <script>
 const dropdownOptions = {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
