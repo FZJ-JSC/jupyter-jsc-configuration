@@ -77,7 +77,6 @@
 
 
 {%- block script -%}
-<script src='{{static_url("js/handleServers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
 
 <script>
 {#- Manually sets some cancel related variables -#}
@@ -105,57 +104,8 @@ var systemsHealth = {};
 var flavorInfo = {};
 </script>
 
-<script>
-{# Callbacks related to interacting with table rows -#}
-
-// Toggle the collapsible table row on table row click
-$(".summary-tr").click(function() {
-  let id = $(this).data("server-id");
-  let accordionIcon = $(this).find(".accordion-icon");
-  let collapse = $(`.collapse[id*=${id}]`);
-  let shown = collapse.hasClass("show");
-  if (shown) accordionIcon.addClass("collapsed");
-  else accordionIcon.removeClass("collapsed");
-  new bootstrap.Collapse(collapse);
-});
-// but not when the action td button are clicked
-$(".actions-td button").click(function (event) {
-  event.preventDefault();
-  event.stopPropagation();
-})
-// Hide warning icons on tab click
-$("button[role=tab]").click(function() {
-  let warning = $(this).find("[id$=tab-warning]");
-  warning.addClass("invisible");
-})
-// Toggle log tabs on log button or info text click
-$(".log-info-btn, .log-info-text").click(function() {
-  let id = $(this).parents("tr").data("server-id");
-  let accordionIcon = $(this).find(".accordion-icon");
-  let collapse = $(`.collapse[id*=${id}]`);
-  let shown = collapse.hasClass("show");
-  // Prevent collapse from closing if it is already open,
-  // but not showing the logs tab.
-  if (shown && !$(`#${id}-logs-tab`).hasClass("active")) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-  // Change to the log tab
-  var trigger = $(`#${id}-logs-tab`);
-  var tab = new bootstrap.Tab(trigger);
-  tab.show();
-});
-// Show selected logs
-$("select[id*=log-select]").change(function() {
-  const id = getId(this);
-  const val = $(this).val();
-  var log = $(`#${id}-log`);
-  log.html("");
-  for (const event of spawnEvents[id][val]) {
-    _appendToLog(event["html_message"], log);
-  }
-})
-</script>
+<script src='{{static_url("js/home/table-interactions.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/handleServers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
 
 <script>
 const dropdownOptions = {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
@@ -1104,26 +1054,35 @@ function spawnStatusChanged(event) {
     if (!(id in evtSources)) {
       // _updateSpawnEventsAndLog
       if (spawnEvents[id]["latest"].length) {
-        var re = /([0-9]+(-[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
-        for (const [index, event] of spawnEvents[id]["latest"].entries()) {
-          const startMsg = event.html_message || event.message;
-          const startTimeMatch = re.exec(startMsg);
-          if (startTimeMatch) {
-            const startTime = startTimeMatch[0];
-            spawnEvents[id][startTime] = spawnEvents[id]["latest"];
-            spawnEvents[id]["latest"] = [];
-            $(`#${id}-log-select`)
-              .append(`<option value="${startTime}">${startTime}</option>`)
-              .val("latest");
-            break;
-          }
-        }
-        // We didn't manage to find a time, so update with no timestamp
-        if ((spawnEvents[id]["latest"].length)) {
-          spawnEvents[id]["previous"] = spawnEvents[id]["latest"];
+      var re = /([0-9]+(-[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
+      for (const [_, event] of spawnEvents[id]["latest"].entries()) {
+        const startMsg = event.html_message || event.message;
+        const startTimeMatch = re.exec(startMsg);
+        if (startTimeMatch) {
+          const startTime = startTimeMatch[0];
+          // Have we already created a log entry for this time?
+          let logOptions = $(`#${id}-log-select option`);
+          var logTimes = $.map(logOptions, function (option) {
+            return option.value;
+          });
+          // If yes, we do not need to do anything anymore
+          if (logTimes.includes(startTime)) return;
+          // Otherwise, save the current events to the startTime,
+          // update the log select and reset the "latest" events.
+          spawnEvents[id][startTime] = spawnEvents[id]["latest"];
           spawnEvents[id]["latest"] = [];
+          $(`#${id}-log-select`)
+            .append(`<option value="${startTime}">${startTime}</option>`)
+            .val("latest");
+          break;
         }
       }
+      // We didn't manage to find a time, so update with no timestamp
+      if ((spawnEvents[id]["latest"].length)) {
+        spawnEvents[id]["previous"] = spawnEvents[id]["latest"];
+        spawnEvents[id]["latest"] = [];
+      }
+    }
         
       let progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
       evtSources[id] = new EventSource(progressUrl);

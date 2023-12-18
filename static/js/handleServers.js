@@ -1,10 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "jhapi", "utils"], function (
+require(["jquery", "jhapi", "utils", "home/utils"], function (
   $,
   JHAPI,
   utils,
+  home
 ) {
   "use strict";
 
@@ -101,7 +102,7 @@ require(["jquery", "jhapi", "utils"], function (
       data: JSON.stringify(options),
       success: function () {
         // Save latest log to time stamp and empty it
-        _updateSpawnEventsAndLog(id);
+        home.updateSpawnEvents(window.spawnEvents, id);
         // Update global user options
         userOptions[id] = options;
         // Open the spawn url in the new tab
@@ -433,30 +434,5 @@ require(["jquery", "jhapi", "utils"], function (
     }
     ["system", "flavor", "partition", "project",
       "runtime", "nodes", "gpus"].forEach(key => _updateTd(key));
-  }
-
-  function _updateSpawnEventsAndLog(id) {
-    if (spawnEvents[id]["latest"].length) {
-      var re = /([0-9]+(-[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
-      for (const [index, event] of spawnEvents[id]["latest"].entries()) {
-        const startMsg = event.html_message || event.message;
-        const startTimeMatch = re.exec(startMsg);
-        if (startTimeMatch) {
-          const startTime = startTimeMatch[0];
-          spawnEvents[id][startTime] = spawnEvents[id]["latest"];
-          spawnEvents[id]["latest"] = [];
-          $(`#${id}-log-select`)
-            .append(`<option value="${startTime}">${startTime}</option>`)
-            .val("latest");
-          break;
-        }
-      }
-      // We didn't manage to find a time, so update with no timestamp
-      if ((spawnEvents[id]["latest"].length)) {
-        spawnEvents[id]["previous"] = spawnEvents[id]["latest"];
-        spawnEvents[id]["latest"] = [];
-      }
-    }
-
   }
 });
