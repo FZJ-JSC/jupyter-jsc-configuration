@@ -106,6 +106,7 @@ var flavorInfo = {};
 
 
 <script>
+/* (Mostly) Jinja dependent functions */
 function getDropdownOptions() {
   return {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
 }
@@ -135,6 +136,103 @@ function getResourceInfo() {
 
 function getModuleInfo() {
   return {{custom_config.get("userModules", {}) | tojson}} || {};
+}
+
+function onEvtMessage(event, id) {
+  var tr = $(`.summary-tr[data-server-id=${id}]`);
+  var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
+  var cancelBtn = tr.find(".btn-cancel-lab");
+  var collapseBtns = collapsibleTr.find("button").not(".nav-link");
+
+  var evt = JSON.parse(event.data);
+  spawnEvents[id]["latest"].push(evt);
+  if (evt.progress !== undefined && evt.progress != 0) {
+    if (evt.progress == 100) {  // Spawn finished
+      evtSources[id].close();
+      delete evtSources[id];
+      if (evt.failed) {  // Spawn failed
+        $(`#${id}-progress-bar`)
+          .width(100)
+          .removeClass("bg-success")
+          .addClass("bg-danger")
+          .html("");
+        $(`#${id}-progress-info-text`).html("last spawn failed");
+        // Change buttons to start or N/A
+        var na = tr.find(".na-status").text() || 0;
+        if (na != "0") {
+          tr.find(".btn-na-lab").removeClass("d-none")
+          tr.find(".btn-start-lab").addClass("d-none");
+        } 
+        else {
+          tr.find(".btn-na-lab").addClass("d-none");
+          tr.find(".btn-start-lab").removeClass("d-none disabled");
+        }
+        tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
+        collapseBtns.removeClass("disabled");
+      }
+      else if (evt.ready) {  // Spawn successful
+        {%- for spawner in lab_spawners -%}
+        {%- set s = user.spawners[spawner.name] %}
+        if (id == "{{s.name}}") {
+          {%- if not s._stop_pending %}
+          $(`#${id}-progress-bar`)
+            .width(100)
+            .removeClass("bg-danger")
+            .addClass("bg-success")
+            .html("");
+          $(`#${id}-progress-info-text`).html("runnning");
+          cancelBtn.addClass("d-none disabled");
+          tr.find(".btn-stop-lab").removeClass("d-none disabled");
+          tr.find(".btn-open-lab").removeClass("disabled");
+          collapseBtns.removeClass("disabled");
+          {%- endif %}
+        }
+        {%- endfor %}
+      }
+    }
+    else { // Spawn in progress
+      collapseBtns.addClass("disabled");
+      if (evt.progress == {{cancel_progress_deactivation}}) {
+        $(`#${id}-progress-bar`)
+          .width(100)
+          .addClass("bg-danger")
+          .html(`<b>${evt.progress}%</b>`);
+        $(`#${id}-progress-info-text`).html("cancelling...");
+        cancelBtn.addClass("disabled");
+      }
+      else {
+        $(`#${id}-progress-bar`)
+          .width(100)
+          .html(`<b>${evt.progress}%</b>`);
+        $(`#${id}-progress-info-text`).html("spawning...");
+        if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
+          cancelBtn.removeClass("disabled");
+        }
+      }
+    }    
+  }
+
+  if (evt.html_message !== undefined) {
+    var htmlMsg = evt.html_message
+  } else if (evt.message !== undefined) {
+    var htmlMsg = evt.message;
+  }
+  if (htmlMsg) {
+    // Only append if latest log is selected
+    if ($(`#${id}-log-select`).val() == "latest") {
+      // appendToLog($(`#${id}-log`), htmlMsg);
+      try { htmlMsg = htmlMsg.replace(/&nbsp;/g, ' '); }
+      catch (e) { return; } // Not a valid htmlMsg
+      // Only append if a log message has not been appended yet
+      var exists = false;
+      $(`#${id}-log`).children().each(function (i, e) {
+        let logMsg = $(e).html();
+        if (htmlMsg == logMsg) exists = true;
+      })
+      if (!exists)
+        $(`#${id}-log`).append($('<div class="log-div">').html(htmlMsg));
+    }
+  }
 }
 </script>
 
@@ -250,7 +348,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         $(`#${id}-reservation-info-div`).hide();
         return;
       }
-      const systemReservationInfo = reservationInfo[getLabConfigSelectValues(id)["system"]] || [];
+      const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
       for (const reservationInfo of systemReservationInfo) {
         if (reservationInfo.ReservationName == value) {
           $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
@@ -339,7 +437,7 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     $.get( flavorUrl, function(data) {
       flavorInfo = data;
       for (const id of Object.keys(userOptions)) {
-        const values = getLabConfigSelectValues(id);
+        const values = utils.getLabConfigSelectValues(id);
         dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
       }
     } );
@@ -348,76 +446,6 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   /*
     Jinja dependent function definitions
   */
-  function onEvtMessage(event, id) {
-    var tr = $(`.summary-tr[data-server-id=${id}]`);
-    var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
-    var cancelBtn = tr.find(".btn-cancel-lab");
-    var collapseBtns = collapsibleTr.find("button").not(".nav-link");
-
-    var evt = JSON.parse(event.data);
-    spawnEvents[id]["latest"].push(evt);
-    if (evt.progress !== undefined && evt.progress != 0) {
-      if (evt.progress == 100) {  // Spawn finished
-        evtSources[id].close();
-        delete evtSources[id];
-        if (evt.failed) {  // Spawn failed
-          utils.updateProgressState(id, "failed");
-          // Change buttons to start or N/A
-          var na = tr.find(".na-status").text() || 0;
-          if (na != "0") {
-            tr.find(".btn-na-lab").removeClass("d-none")
-            tr.find(".btn-start-lab").addClass("d-none");
-          } 
-          else {
-            tr.find(".btn-na-lab").addClass("d-none");
-            tr.find(".btn-start-lab").removeClass("d-none disabled");
-          }
-          tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
-          collapseBtns.removeClass("disabled");
-        }
-        else if (evt.ready) {  // Spawn successful
-          {%- for spawner in lab_spawners -%}
-          {%- set s = user.spawners[spawner.name] %}
-          if (id == "{{s.name}}") {
-            {%- if not s._stop_pending %}
-            utils.updateProgressState(id, "running");
-            cancelBtn.addClass("d-none disabled");
-            tr.find(".btn-stop-lab").removeClass("d-none disabled");
-            tr.find(".btn-open-lab").removeClass("disabled");
-            collapseBtns.removeClass("disabled");
-            {%- endif %}
-          }
-          {%- endfor %}
-        }
-      }
-      else { // Spawn in progress
-        collapseBtns.addClass("disabled");
-        if (evt.progress == {{cancel_progress_deactivation}}) {
-          utils.updateProgressPercentage(id, "cancelling...", evt.progress);
-          $(`#${id}-progress-bar`).addClass("bg-danger");
-          cancelBtn.addClass("disabled");
-        }
-        else {
-          utils.updateProgressPercentage(id, "spawning...", evt.progress);
-          if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
-            cancelBtn.removeClass("disabled");
-          }
-        }
-      }    
-    }
-
-    if (evt.html_message !== undefined) {
-      var htmlMsg = evt.html_message
-    } else if (evt.message !== undefined) {
-      var htmlMsg = evt.message;
-    }
-    if (htmlMsg) {
-      // Only append if latest log is selected
-      if ($(`#${id}-log-select`).val() == "latest") 
-        utils.appendToLog($(`#${id}-log`), htmlMsg);
-    }
-  }
-
   function updateSpawnProgress() {
     {%- for spawner in lab_spawners %}
     var id = "{{spawner.name}}";

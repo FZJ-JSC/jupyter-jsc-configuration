@@ -66,11 +66,6 @@ define(["jquery"], function ($) {
     $(`#${id}-na-info`).removeClass("d-none").html(reason);
   }
 
-  var updateProgressPercentage = function (id, text, progress) {
-    $(`#${id}-progress-bar`).width(100).html(`<b>${progress}%</b>`);
-    $(`#${id}-progress-info-text`).html(text);
-  }
-
   var updateProgressState = function (id, state) {
     $(`#${id}-progress-bar`)
       .width(progressStates[state].width)
@@ -131,7 +126,6 @@ define(["jquery"], function ($) {
     getId: getId,
     getLabConfigSelectValues: getLabConfigSelectValues,
     setLabAsNA: setLabAsNA,
-    updateProgressPercentage: updateProgressPercentage,
     updateProgressState: updateProgressState,
     appendToLog: appendToLog,
     updateSpawnEvents: updateSpawnEvents,
