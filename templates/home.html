@@ -77,7 +77,6 @@
 
 
 {%- block script -%}
-
 <script>
 {#- Manually sets some cancel related variables -#}
 {%- set cancel_progress_activation = 0 -%}
@@ -91,7 +90,7 @@ var userOptions = {};
 var spawnEvents = {};
 {%- for spawner in lab_spawners -%}
   {%- set userOptions = spawner.user_options -%}
-userOptions["{{spawner.name}}"] = {{ userOptions | tojson }}
+userOptions["{{spawner.name}}"] = {{ userOptions | tojson }};
   {%- if spawner.state and spawner.state.get("events") %}
 spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
   {%- else -%}
@@ -104,469 +103,11 @@ var systemsHealth = {};
 var flavorInfo = {};
 </script>
 
-<script src='{{static_url("js/home/table-interactions.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
-<script src='{{static_url("js/home/handleServers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+
 
 <script>
-const dropdownOptions = {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
-
-function resetInputElement(element, required=true) {
-  element.html("");
-  element.val(null);
-  element.removeClass("text-muted disabled");
-  element.attr("required", required);
-}
-
-function updateLabConfigSelect(select, value, lastSelected) {
-  // For some systems, e.g. cloud, some options are not available
-  if (select.html() == "") {
-    select.append("<option disabled>Not available</option>");
-    select.addClass("text-muted").removeAttr("required");
-  }
-  // If there is only one option, we disable the dropdown
-  const numberOfOptions = select.children().length
-  if (numberOfOptions == 1) {
-    select.addClass("disabled");
-  }
-  if (value) select.val(value);
-  else {
-    // Check if the last value is contained in the new options,
-    // otherwise just select the first value.
-    var index = 0;
-    select.children().each(function (i, option) {
-      if ($(option).val() == lastSelected) {
-        index = i;
-        /* Although index should be used to set the value and
-          avoid the (index == 0) query, indices don't work directly
-          when there are optiongroups in the select. So we set
-          it via the .val() function regardless. */
-        select.val(lastSelected);
-        return;
-      }
-    })
-    if (index == 0) select.prop("selectedIndex", index);
-  }
-  select[0].dispatchEvent(new Event("change"));
-}
-
-function updateLabConfigInput(input, value, lastSelected, min, max, defaultValue) {
-  input.attr({ "min": min, "max": max});
-  input.attr("required", true);
-  // Set message for invalid feedback
-  input.siblings(".invalid-feedback")
-    .text(`Please choose a number between ${min} and ${max}.`);
-  if (value) {
-    input.val(value);
-  }
-  // Check if we can keep the old value
-  else if (lastSelected != "" && lastSelected >= min && lastSelected <= max) {
-    input.val(lastSelected);
-  }
-  else {
-    input.val(defaultValue);
-  }
-}
-
-function updateService(id, value) {
-  const serviceInfos = {{custom_config.get("services") | tojson}};
-
-  let select = $(`select#${id}-version-select`);
-  const currentVal = select.val();
-  resetInputElement(select);
-  for (const service of Object.keys(dropdownOptions).sort().reverse())  {
-    var serviceName = (serviceInfos.JupyterLab.options[service] || {}).name || service;
-    select.append(`<option value="${service}">${serviceName}</option>`);
-  }
-  if (!value) value = serviceInfos.JupyterLab.defaultOption;
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateSystems(id, service, value) {
-  const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-
-  let select = $(`select#${id}-system-select`);
-  const currentVal = select.val();
-  resetInputElement(select);
-
-  const systemsAllowed = dropdownOptions[service] || {};
-  for (const system of Object.keys(systemInfos).sort((a,b) => (systemInfos[a]["weight"] || 99) < (systemInfos[b]["weight"] || 99) ? -1 : 1)) {
-    if (system in systemsAllowed) select.append(`<option value="${system}">${system}</option>`);
-  }
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateFlavors(id, service, system, value) {
-  const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-
-  let select = $(`select#${id}-flavor-select`);
-  const currentVal = select.val();
- 
-  let systemFlavors = flavorInfo[system] || {};
-  resetInputElement(select);
-  $(`#${id}-flavor-info-div`).html("");
-
-  // Sort systemFlavors by flavor weights
-  for (const [flavor, description] of Object.entries(systemFlavors).sort(([,a],[,b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
-    var current = description.current;
-    var max_allowed = description.max;
-    // Flavor not valid, so skip
-    if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
-    select.append(`<option value="${flavor}">${description.display_name}</option>`);
-
-    // Infinite allowed
-    if (max_allowed == -1) {
-      var progress_tooltip = `${current} used`;
-      var max_allowed_label = '∞';
-      if (current == 0) {
-        var current_width = 0;
-        var max_allowed_width = 100;
-      } 
-      else {
-        var current_width = 20;
-        var max_allowed_width = 80;
-      }
-    }
-    else {
-      var progress_tooltip = `${current} out of ${max_allowed} used`;
-      var max_allowed_label = max_allowed - current;
-      var current_width = current/max_allowed * 100 || 0;
-      var max_allowed_width = max_allowed_label/max_allowed * 100 || 100;
-    }
-
-    var diagramHtml = `
-      <div class="row align-items-center g-0 mt-4">
-        <div class="col-4">
-          <span>${description.display_name}</span>
-          <a class="lh-1 ms-3" style="padding-top: 1px;" 
-            data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
-            {{ svg.info_svg | safe }}
-          </a>
-        </div>
-        <div class="progress col ms-2 fw-bold" style="height: 20px;"
-          data-bs-toggle="tooltip" data-bs-placement="top" title="${progress_tooltip}">
-          <div class="progress-bar" role="progressbar" style="width: ${current_width}%">${current}</div>
-          <div class="progress-bar bg-success" role="progressbar" style="width: ${max_allowed_width}%">${max_allowed_label}</div>
-        </div>
-      </div>
-    `        
-    $(`#${id}-flavor-info-div`).append(diagramHtml);
-  }
-  enableTooltips();  {# Defined in page.html #}
-  Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).removeClass("d-none");
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateAccounts(id, service, system, value) {
-  let select = $(`select#${id}-account-select`);
-  const currentVal = select.val();
-  resetInputElement(select);
-
-  const accountsAllowed = (dropdownOptions[service] || {})[system] || {};
-  for (const account of Object.keys(accountsAllowed).sort()) {
-    select.append(`<option value="${account}">${account}</option>`);
-  }
-  Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).addClass("d-none") : $(`#${id}-account-select-div`).removeClass("d-none");
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateProjects(id, service, system, account, value) {
-  let select = $(`select#${id}-project-select`);
-  const currentVal = select.val();
-  resetInputElement(select);
-
-  const projectsAllowed = ( (dropdownOptions[service] || {}) [system] || {}) [account] || {};
-  for (const project of Object.keys(projectsAllowed).sort()) {
-    select.append(`<option value="${project}">${project}</option>`);
-  }
-  Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).addClass("d-none") : $(`#${id}-project-select-div`).removeClass("d-none");
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updatePartitions(id, service, system, account, project, value) {
-  const systemInfos = {{custom_config.get("systems") | tojson}};
-
-  let select = $(`select#${id}-partition-select`);
-  const currentVal = select.val();
-  resetInputElement(select);
-  // Distinguish between login and compute nodes
-  var loginNodes = [];
-  var computeNodes = [];
-  const partitionsAllowed = ( ( (dropdownOptions[service] || {}) [system] || {}) [account] || {}) [project] || {};
-  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || {};
-  for (const partition of Object.keys(partitionsAllowed).sort()) {
-    if ( interactivePartitions.includes(partition) ) loginNodes.push(partition);
-    else computeNodes.push(partition);
-  }
-  // Append options to select in groups
-  if (loginNodes.length > 0) {
-    select.append('<optgroup label="Login Nodes">');
-    loginNodes.forEach((x) => select.append(`<option value="${x}">${x}</option>`))
-    select.append('</optgroup>');
-  }
-  if (computeNodes.length > 0) {
-    select.append('<optgroup label="Compute Nodes">');
-    const systemUpper = system.replace('-', '').toUpperCase();
-    if ((systemsHealth[systemUpper] || 0) >= (systemsHealth.compute_threshold || 40) ) {
-      computeNodes.forEach((x) => select.append(`<option value="${x}" disabled>${x} (in maintenance)</option>`));
-    } 
-    else {
-      computeNodes.forEach((x) => select.append(`<option value="${x}">${x}</option>`));
-    }
-    select.append('</optgroup>');
-  }
-  Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).addClass("d-none") : $(`#${id}-partition-select-div`).removeClass("d-none");
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateReservation(id, service, system, account, project, partition, value) {
-  const reservationInfos = {{auth_state.get("options_form").get("reservations") | tojson}} || {};
-
-  let select = $(`select#${id}-reservation-select`);
-  const currentVal = select.val();
-  resetInputElement(select, required=false);
-
-  const reservationsAllowed = ( ( ( (dropdownOptions[service] || {}) [system] || {}) [account] || {}) [project] || {}) [partition] || {};
-  if (reservationsAllowed.length > 0 && JSON.stringify(reservationsAllowed) !== JSON.stringify(["None"])) {
-    for (const reservation of reservationsAllowed) {
-      if (reservation == "None") select.append(`<option value="${reservation}">${reservation}</option>`);
-      else {
-        const reservationName = reservation.ReservationName;
-        const systemReservationInfos = reservationInfos[system] || {};
-        for (const reservationInfo of systemReservationInfos) {
-          if (reservationInfo.ReservationName == reservationName) {
-            if (reservationInfo.State == "ACTIVE") select.append(`<option value="${reservationName}">${reservationName}</option>`);
-            else select.append(`<option value="${reservationName}" disabled style="color: #6c757d;">${reservationName} [INACTIVE]</option>`);
-          }
-        }
-      }
-    }
-    select.attr("required", true);
-    $(`#${id}-reservation-select-div`).show();
-    $(`#${id}-reservation-hr`).show();
-  }
-  else {
-    $(`#${id}-reservation-select-div`).hide();
-    $(`#${id}-reservation-hr`).hide();
-  }
-  updateLabConfigSelect(select, value, currentVal);
-}
-
-function updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver) {
-  const resourceInfos = {{auth_state.get("options_form").get("resources") | tojson}} || {};
-  let nodesInput = $(`input#${id}-nodes-input`);
-  let gpusInput = $(`input#${id}-gpus-input`);
-  let runtimeInput = $(`input#${id}-runtime-input`);
-  let xserverCheckboxInput = $(`input#${id}-xcbserver-input`);
-  let xserverInput = $(`input#${id}-xserver-input`);
-  let tabWarning = $(`#${id}-resources-tab-warning`);
-  const currentNodeVal = nodesInput.val();
-  const currentGpusVal = gpusInput.val();
-  const currentRuntimeVal = runtimeInput.val();
-  const currentXserverCbVal = xserverCheckboxInput[0].checked;
-  const currentXserverVal = xserverInput.val();
-  [nodesInput, gpusInput, runtimeInput, xserverInput].forEach( input => resetInputElement(input, required=false));
-  xserverCheckboxInput[0].checked = false;
-
-  const systemResources = (resourceInfos[service] || {})[system] || {};
-  if ($.isEmptyObject(systemResources)) {
-    $(`#${id}-resources-tab`).addClass("disabled");
-    tabWarning.addClass("invisible");
-  }
-  else {
-    const partitionResources = systemResources[partition];
-    if ($.isEmptyObject(partitionResources)) {
-      $(`#${id}-resources-tab`).addClass("disabled");
-      tabWarning.addClass("invisible");
-    }
-    else {
-      $(`#${id}-resources-tab`).removeClass("disabled");
-      if ("nodes" in partitionResources) {
-        let min = (partitionResources.nodes.minmax || [0,1])[0];
-        let max = (partitionResources.nodes.minmax || [0,1])[1];
-        $(`label[for*=${id}-nodes-input]`).text("Nodes [" + min + "," + max + "]");
-        let defaultNodes = partitionResources.nodes.default || 0;
-        updateLabConfigInput(nodesInput, nodes, currentNodeVal, min, max, defaultNodes);
-        $(`#${id}-nodes-input-div`).show();
-        if (!currentNodeVal) tabWarning.removeClass("invisible");
-      }
-      else {
-        $(`#${id}-nodes-input-div`).hide();
-        if (currentNodeVal) tabWarning.removeClass("invisible");
-      }
-
-      if ("gpus" in partitionResources) {
-        let min = (partitionResources.gpus.minmax || [0,1])[0];
-        let max = (partitionResources.gpus.minmax || [0,1])[1];
-        $(`label[for*=${id}-gpus-input]`).text("GPUs [" + min + "," + max + "]");
-        let defaultGpus = partitionResources.gpus.default || 0;
-        updateLabConfigInput(gpusInput, gpus, currentGpusVal, min, max, defaultGpus);
-        $(`#${id}-gpus-input-div`).show();
-        if (!currentGpusVal) tabWarning.removeClass("invisible");
-      }
-      else {
-        $(`#${id}-gpus-input-div`).hide();
-        if (currentGpusVal) tabWarning.removeClass("invisible");
-      }
-
-      if ("runtime" in partitionResources) {
-        let min = (partitionResources.runtime.minmax || [0,1])[0];
-        let max = (partitionResources.runtime.minmax || [0,1])[1];
-        $(`label[for*=${id}-runtime-input]`).text("Runtime (minutes) [" + min + "," + max + "]");
-        let defaultRuntime = partitionResources.runtime.default || 0;
-        updateLabConfigInput(runtimeInput, runtime, currentRuntimeVal, min, max, defaultRuntime);
-        $(`#${id}-runtime-input-div`).show();
-        if (!currentRuntimeVal) tabWarning.removeClass("invisible");
-      }
-      else {
-        $(`#${id}-runtime-input-div`).hide();
-        if (currentRuntimeVal) tabWarning.removeClass("invisible");
-      }
-
-      if ("xserver" in partitionResources) {
-        let cblabel = partitionResources.xserver.cblabel || "Activate XServer";
-        $(`label[for*=${id}-xcbserver-input]`).text(cblabel);
-        var min = (partitionResources.xserver.minmax || [0,1])[0];
-        var max = (partitionResources.xserver.minmax || [0,1])[1];
-        let label = partitionResources.xserver.label || "Use XServer GPU Index";
-        $(`label[for*=${id}-xserver-input]`).text(label + " [" + min + "," + max + "]");
-
-        if (xserver) { xserverCheckboxInput[0].checked = true; }
-        else {
-          xserver = partitionResources.xserver.default || 0;
-          if (!currentXserverVal) tabWarning.removeClass("invisible");
-          {#- Determine if XServer checkbox should be shown #}
-          if (partitionResources.xserver.checkbox || false) {
-            $(`#${id}-xcbserver-input-div`).show();
-            if (currentXserverCbVal) xserverCheckboxInput[0].checked = true;
-            else {
-              if (partitionResources.xserver.default_checkbox || false)
-                xserverCheckboxInput[0].checked = true;
-              else xserverCheckboxInput[0].checked = false;
-            }
-            if (!currentXserverCbVal && xserverCheckboxInput[0].checked) tabWarning.removeClass("invisible");
-          }
-          else {
-            $(`#${id}-xcbserver-input-div`).hide();
-            xserverCheckboxInput[0].checked = true;
-            if (!currentXserverCbVal) tabWarning.removeClass("invisible");
-          }
-        }
-        updateLabConfigInput(xserverInput, xserver, currentXserverVal, min, max);
-        if (xserverCheckboxInput[0].checked) $(`#${id}-xserver-input-div`).show();
-        else $(`#${id}-xserver-input-div`).hide();
-      }
-      else {
-        $(`#${id}-xcbserver-input-div`).hide();
-        $(`#${id}-xserver-input-div`).hide();
-        if (currentXserverCbVal || currentXserverVal) tabWarning.removeClass("invisible");
-      }
-    }
-  }
-}
-
-function updateModules(id, service, system, account, project, partition, values) {
-  const moduleInfos = {{custom_config.get("userModules", {}) | tojson}} || {};
-  const systemInfos = {{custom_config.get("systems") | tojson}};
-  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || {}; 
-
-  const form = $(`#${id}-modules-form`);
-  var tabWarning = $(`#${id}-modules-tab-warning`);
-  var currentOptions = [];
-  $(`#${id}-modules-form`).find(`input[type=checkbox]`).each(function () {
-    currentOptions.push($(this).val());
-  })
-  
-  var defaultOptions = [];
-  var enableModulesTab = false;
-
-  for (const [moduleSet, modules] of Object.entries(moduleInfos)) {
-    $(`#${id}-${moduleSet}-div`).addClass("d-none");
-    var insertIndex = -1;
-    for (const [module, moduleInfo] of Object.entries(modules)) {
-      if (moduleInfo.sets.includes(service)) {
-        if (moduleInfo.allowedSystems && !moduleInfo.allowedSystems.includes(system)) {
-          // Module not in allowed systems, so do nothing.
-        }
-        else {
-          if (moduleInfo.compute_only && interactivePartitions.includes(partition) ) {
-            // Module is compute only, but partition is interactive, so do nothing.
-          }
-          else {
-            $(`#${id}-${moduleSet}-div`).removeClass("d-none");
-            enableModulesTab = true;
-            defaultOptions.push(module);
-            // If checkbox already exists, do nothing
-            // Else create it and set the default value
-            if (!currentOptions.includes(module)) {
-              let parent = $(`#${id}-${moduleSet}-checkboxes-div`);
-              let checked = moduleInfo.default ? "checked" : "";
-              {%- set module_cols = "col-sm-6 col-md-4 col-lg-3" %}
-              let cbHtml = `
-                <div id="${id}-${module}-cb-div" class="form-check {{module_cols}}">
-                  <input type="checkbox" class="form-check-input" id="${id}-${module}-check" value="${module}" ${checked}>
-                    <label class="form-check-label" for="${id}-${module}-check">
-                      <span class="align-middle">${moduleInfo.displayName}</span>
-                      <a href="${moduleInfo.href}" target="_blank" class="module-info text-muted ms-3">
-                        <span>{{ svg.info_svg | safe }}</span>
-                          <div class="module-info-link-div d-inline-block">
-                            <span class="module-info-link" id="${module}-info-link">
-                              {{ svg.link_svg | safe }}
-                            </span>
-                          </div>
-                      </a>
-                    </label>
-                  </input>
-                </div>
-              `
-              // No checkboxes exist yet, so we can simply append to the parent div
-              if (parent.children().length == 0) {
-                parent.append(cbHtml);
-              } 
-              // Otherwise, we need to determine where to insert the new checkbox
-              else {
-                // Get the current element at index
-                var target = parent.children().eq(insertIndex);
-                target.before(cbHtml);
-              }
-              // Show tab warning to indicate changes in checkbox options
-              tabWarning.removeClass("invisible");
-            }
-            insertIndex++;
-          }
-        }
-      }
-    }
-  }
-  // Remove checkboxes which still exist but should not anymore
-  var shouldRemove = currentOptions.filter(x => !defaultOptions.includes(x));
-  for (const module of shouldRemove) {
-    $(`#${id}-${module}-cb-div`).remove();
-    // Show tab warning to indicate changes in checkbox options
-    tabWarning.removeClass("invisible");
-  }
-
-  // Set values according to previous values.
-  if (values) {
-    // Loop through all checkboxes and only check those in values.
-    $(`#${id}-modules`).find("input[type=checkbox]").each((i, cb) => {
-     if (values.includes(cb.value)) cb.checked = true;
-     else cb.checked = false;
-    })
-  }
-  
-  if (enableModulesTab) $(`#${id}-modules-tab`).removeClass("disabled");
-  else {
-    $(`#${id}-modules-tab`).addClass("disabled");
-    tabWarning.addClass("invisible");
-  }
-}
-</script>
-
-<script>
-function getId(element, slice_index = -2) {
-  let id_array = $(element).attr("id").split('-');
-  let id = id_array.slice(0, slice_index).join('-');
-  return id;
+function getDropdownOptions() {
+  return {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
 }
 
 function getService(options) {
@@ -576,701 +117,367 @@ function getService(options) {
     return options["service"].split('/')[1];
 }
 
-function getLabConfigSelectValues(id) {
-  return {
-    "service": $(`select#${id}-version-select`).val(),
-    "system": $(`select#${id}-system-select`).val(),
-    "flavor": $(`select#${id}-flavor-select`).val(),
-    "account": $(`select#${id}-account-select`).val(),
-    "project": $(`select#${id}-project-select`).val(),
-    "partition": $(`select#${id}-partition-select`).val(),
-  }
+function getServiceInfo() {
+  return {{custom_config.get("services") | tojson}} || {};
 }
 
-$("select[id*=version]").change(function() {
-  const id = getId(this);
-  const values = getLabConfigSelectValues(id);
-  if (!$(this).hasClass("no-update")) {
-    try { 
-      updateSystems(id, values.service);
-    }
-    catch (e) { 
-      setLabAsNA(id, "due to a JS error");
-      console.log(e);
-    }
-  }
-});
-$("select[id*=system]").change(function() {
-  const id = getId(this);
-  const values = getLabConfigSelectValues(id);
-  if (!$(this).hasClass("no-update")) {
-    try { 
-      updateFlavors(id, values.service, values.system);
-      updateAccounts(id, values.service, values.system);
-    }
-    catch (e) { 
-      setLabAsNA(id, "due to a JS error");
-      console.log(e);
-    }
-  }
+function getSystemInfo() {
+  return {{custom_config.get("systems") | tojson}} || {};
+}
 
-  // Check if the chosen version is deprecated for the system
-  const serviceInfos = {{custom_config.get("services") | tojson}};
-  const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-  // First check for system specific default option, then for general one
-  var defaultOption = ((systemInfos[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfos.JupyterLab.defaultOption;
-  if (defaultOption && values.service != defaultOption) {
-    // Not using default/latest version, show a warning message
-    let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
-    $(`#${id}-spawner-info`).removeClass("d-none").html(reason);
-  }
-  else {
-    $(`#${id}-spawner-info`).addClass("d-none").html("");
-  }
-});
-$("select[id*=account]").change(function() {
-  const id = getId(this);
-  const values = getLabConfigSelectValues(id);
-  if (!$(this).hasClass("no-update")) {
-    try { 
-      updateProjects(id, values.service, values.system, values.account);
-    }
-    catch (e) {
-      setLabAsNA(id, "due to a JS error");
-      console.log(e);
-    }
-  }
-});
-$("select[id*=project]").change(function() {
-  const id = getId(this);
-  const values = getLabConfigSelectValues(id);
-  if (!$(this).hasClass("no-update")) {
-    try { 
-      updatePartitions(id, values.service, values.system, values.account, values.project);
-    }
-    catch (e) {
-      setLabAsNA(id, "due to a JS error");
-      console.log(e);
-    }
-  }
-});
-$("select[id*=partition]").change(function() {
-  const id = getId(this);
-  const values = getLabConfigSelectValues(id);
-  if (!$(this).hasClass("no-update")) {
-    try { 
-      updateReservation(id, values.service, values.system, values.account, values.project, values.partition);
-      updateResources(id, values.service, values.system, values.account, values.project, values.partition);
-      updateModules(id, values.service, values.system, values.account, values.project, values.partition);    }
-    catch (e) {
-      setLabAsNA(id, "due to a JS error");
-      console.log(e);
-    }
-  }
-});
-$("input[id*=xcbserver-input]").change(function() {
-  const id = getId(this);
-  const showXServer = $(`input#${id}-xcbserver-input`)[0].checked;
-  if (showXServer) {
-    $(`#${id}-xserver-input-div`).show();
-  } else {
-    $(`#${id}-xserver-input-div`).hide();
-  }
-});
-$("select[id*=reservation]").change(function() {
-  const reservationInfos = {{auth_state.get("options_form").get("reservations") | tojson}} || {};
+function getReservationInfo() {
+  return {{auth_state.get("options_form").get("reservations") | tojson}} || {};
+}
 
-  const id = getId(this);
-  const value = $(this).val();
-  if (value) {
-    if (value == "None") {
-      $(`#${id}-reservation-info-div`).hide();
-      return;
-    }
-    const systemReservationInfos = reservationInfos[getLabConfigSelectValues(id)["system"]] || [];
-    for (const reservationInfo of systemReservationInfos) {
-      if (reservationInfo.ReservationName == value) {
-        $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
-        $(`#${id}-reservation-end`).html(reservationInfo.EndTime);
-        $(`#${id}-reservation-state`).html(reservationInfo.State);
-        $(`#${id}-reservation-details`).html(
-          JSON.stringify(reservationInfo, null, 2));
+function getResourceInfo() {
+  return {{auth_state.get("options_form").get("resources") | tojson}} || {};
+}
+
+function getModuleInfo() {
+  return {{custom_config.get("userModules", {}) | tojson}} || {};
+}
+</script>
+
+<script>
+require(["jquery", "home/utils", "home/dropdown-options"], function (
+  $,
+  utils,
+  dropdowns
+) {
+  $("select[id*=version]").change(function() {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try { 
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) { 
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
       }
     }
-    $(`#${id}-reservation-info-div`).show();
-  }
-  else {
-    $(`#${id}-reservation-info-div`).hide();
-  }
-});
-$("input.module-selector").click(function() {
-  const id = getId(this, slice_index=1);
-  const allOrNone = $(this).attr("id").includes("select-all") ? "all" : "none";
-  var checkboxes = $(`#${id}-modules-form`).find("input[type=checkbox]");
-  if (allOrNone == "all") {
-    $(`#${id}-modules-select-none`)[0].checked = false;
-    checkboxes.each((i, cb) => { cb.checked = true; });
-  }
-  else if (allOrNone == "none") {
-    $(`#${id}-modules-select-all`)[0].checked = false;
-    checkboxes.each((i, cb) => { cb.checked = false; });
-  }
+  });
+
+  $("select[id*=system]").change(function() {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try { 
+        dropdowns.updateFlavors(id, values.service, values.system);
+        dropdowns.updateAccounts(id, values.service, values.system);
+      }
+      catch (e) { 
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+
+    // Check if the chosen version is deprecated for the system
+    const serviceInfo = getServiceInfo();
+    const systemInfo = getSystemInfo();
+    // First check for system specific default option, then for general one
+    var defaultOption = ((systemInfo[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfo.JupyterLab.defaultOption;
+    if (defaultOption && values.service != defaultOption) {
+      // Not using default/latest version, show a warning message
+      let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
+      $(`#${id}-spawner-info`).removeClass("d-none").html(reason);
+    }
+    else {
+      $(`#${id}-spawner-info`).addClass("d-none").html("");
+    }
+  });
+
+  $("select[id*=account]").change(function() {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try { 
+        dropdowns.updateProjects(id, values.service, values.system, values.account);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+  });
+
+  $("select[id*=project]").change(function() {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try { 
+        dropdowns.updatePartitions(id, values.service, values.system, values.account, values.project);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+  });
+
+  $("select[id*=partition]").change(function() {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try { 
+        dropdowns.updateReservation(id, values.service, values.system, values.account, values.project, values.partition);
+        dropdowns.updateResources(id, values.service, values.system, values.account, values.project, values.partition);
+        dropdowns.updateModules(id, values.service, values.system, values.account, values.project, values.partition);    }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+  });
+
+  $("input[id*=xcbserver-input]").change(function() {
+    const id = utils.getId(this);
+    const showXServer = $(`input#${id}-xcbserver-input`)[0].checked;
+    if (showXServer) {
+      $(`#${id}-xserver-input-div`).show();
+    } else {
+      $(`#${id}-xserver-input-div`).hide();
+    }
+  });
+
+  $("select[id*=reservation]").change(function() {
+    const reservationInfo = getReservationInfo();
+
+    const id = utils.getId(this);
+    const value = $(this).val();
+    if (value) {
+      if (value == "None") {
+        $(`#${id}-reservation-info-div`).hide();
+        return;
+      }
+      const systemReservationInfo = reservationInfo[getLabConfigSelectValues(id)["system"]] || [];
+      for (const reservationInfo of systemReservationInfo) {
+        if (reservationInfo.ReservationName == value) {
+          $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
+          $(`#${id}-reservation-end`).html(reservationInfo.EndTime);
+          $(`#${id}-reservation-state`).html(reservationInfo.State);
+          $(`#${id}-reservation-details`).html(
+            JSON.stringify(reservationInfo, null, 2));
+        }
+      }
+      $(`#${id}-reservation-info-div`).show();
+    }
+    else {
+      $(`#${id}-reservation-info-div`).hide();
+    }
+  });
+
+  $("input.module-selector").click(function() {
+    const id = utils.getId(this, slice_index=1);
+    const allOrNone = $(this).attr("id").includes("select-all") ? "all" : "none";
+    var checkboxes = $(`#${id}-modules-form`).find("input[type=checkbox]");
+    if (allOrNone == "all") {
+      $(`#${id}-modules-select-none`)[0].checked = false;
+      checkboxes.each((i, cb) => { cb.checked = true; });
+    }
+    else if (allOrNone == "none") {
+      $(`#${id}-modules-select-all`)[0].checked = false;
+      checkboxes.each((i, cb) => { cb.checked = false; });
+    }
+  });
 })
 </script>
 
 <script>
-function _appendToLog(htmlMsg, log) {
-  try { htmlMsg = htmlMsg.replace(/&nbsp;/g, ' '); }
-  catch (e) {
-    // Not a valid htmlMsg
-    return;
-  }
-  var exists = false;
-  log.children().each( function (i, e) {
-    let logMsg = $(e).html();
-    if (htmlMsg == logMsg) exists = true;
-  })
-  if (!exists) log.append($('<div class="log-div">').html(htmlMsg));
-}
+require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], function (
+  $,
+  utils,
+  dropdowns,
+  lab
+) {
+  /*
+    On page load
+  */
+  (async () => {
+    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+    flavorInfo = await $.get(flavorUrl);
 
-function _updateProgressPercentage(id, text, progress) {
-  var progressBar = $(`#${id}-progress-bar`);
-  var progressInfo = $(`#${id}-progress-info-text`);
-  progressBar.width(100).html(`<b>${progress}%</b>`);
-  progressInfo.html(text);
-}
-
-function _updateProgressState(id, text, bg) {
-  var progressBar = $(`#${id}-progress-bar`);
-  var progressInfo = $(`#${id}-progress-info-text`);
-  progressBar
-    .width(100)
-    .removeClass("bg-success bg-danger")
-    .addClass(bg)
-    .html("");
-  progressInfo.html(text);
-}
-
-function checkComputeMaintenance(system, partition) {
-  const systemInfos = {{custom_config.get("systems") | tojson}} || {};
-  const interactivePartitions = (systemInfos[system] || {}).interactivePartitions || [];
-  if (!interactivePartitions.includes(partition)) {
-    const systemUpper = system.replace('-', '').toUpperCase();
-    if ((systemsHealth[systemUpper] || 0) >= (systemsHealth.compute_threshold || 40)) return true;
-    else return false;
-  }
-}
-
-async function setSystemsHealth() {
-  var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
-  var data = await $.get( incidentUrl );
-  
-  for (const entry in data) {
-    {#- Thresholds #}
-    if (entry.includes("threshold")) {
-      systemsHealth[entry] = data[entry];
-    } 
-    {#- Systems #}
-    else {
-      systemsHealth[entry] = data[entry].health;
-    }
-  }
-  return data;
-}
-
-function checkIfAvailable(id, options) {
-  var reason = "due to ";
-  var reason_broken_lab = "This lab is broken.\nPlease delete and recreate.";
-  
-  // Check if system is not available due to incident
-  const systemUpper = options["system"].replace('-', '').toUpperCase();
-  if ((systemsHealth[systemUpper] || 0) >= (systemsHealth.interactive_threshold || 50)) {
-    reason += "maintenance";
-    setLabAsNA(id, reason);
-    return false;
-  }
-
-  // Check if system is not available due to groups
-  const service = getService(options);
-  const system = options["system"];
-  const account = options["account"];
-  const project = options["project"];
-  const partition = options["partition"];
-  const reservation = options["reservation"];
-  const nodes = options["nodes"];
-  const runtime = options["runtime"];
-  const gpus = options["gpus"];
-  const xserver = options["xserver"];
-
-  if (service == undefined) {
-    setLabAsNA(id, reason_broken_lab);
-    return false;
-  }
-  if (!(service in dropdownOptions)) {
-    reason += "service version";
-    setLabAsNA(id, reason);
-    return false;
-  }
-  if (system !== undefined) {
-    if (dropdownOptions[service] == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    if (!(system in dropdownOptions[service])) {
-      reason += "system";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (account !== undefined) {
-    if (dropdownOptions[service][system] == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    if (!(account in dropdownOptions[service][system])) {
-      reason += "account";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (project !== undefined) {
-    if (dropdownOptions[service][system][account] == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    if (!(project in dropdownOptions[service][system][account])) {
-      reason += "project";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (partition !== undefined) {
-    if (dropdownOptions[service][system][account][project] == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    if (!(partition in dropdownOptions[service][system][account][project])) {
-      reason += "partition";
-      setLabAsNA(id, reason);
-      return false;
-    }
-    // Only compute nodes are not available during rolling updates
-    if (checkComputeMaintenance(system, partition)) {
-      reason += "maintenance";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (reservation !== undefined && reservation != "None") {
-    if (dropdownOptions[service][system][account][project][partition] == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    setFalse = true;
-    for (const reservation_dict of dropdownOptions[service][system][account][project][partition]){
-      if (reservation == reservation_dict.ReservationName)  {
-        if (reservation_dict.State == "ACTIVE") {
-          setFalse = false;
-          break;
-        }
+    var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
+    var incidentData = await $.get( incidentUrl );
+    for (const entry in incidentData) {
+      {#- Update thresholds #}
+      if (entry.includes("threshold")) {
+        systemsHealth[entry] = data[entry];
+      } 
+      {#- Update systems health #}
+      else {
+        systemsHealth[entry] = data[entry].health;
       }
     }
-    if (setFalse) {
-      reason += "reservation";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  // Resources
-  const resourceInfos = {{auth_state.get("options_form").get("resources") | tojson}} || {};
-  const partitionResources = ( (resourceInfos[service] || {}) [system] || {}) [partition] || {};
-  if (nodes !== undefined) {
-    if (partitionResources.nodes == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    let min = (partitionResources.nodes.minmax || [0,1])[0];
-    let max = (partitionResources.nodes.minmax || [0,1])[1];
-    if (nodes < min || nodes > max) {
-      reason += "number of nodes";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (gpus !== undefined) {
-    if (partitionResources.gpus == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    let min = (partitionResources.gpus.minmax || [0,1])[0];
-    let max = (partitionResources.gpus.minmax || [0,1])[1];
-    if (gpus < min || gpus > max) {
-      reason += "number of GPUs";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (runtime !== undefined) {
-    if (partitionResources.runtime == undefined) {
-      setLabAsNA(id, reason_broken_lab);
-      return false;
-    }
-    let min = (partitionResources.runtime.minmax || [0,1])[0];
-    let max = (partitionResources.runtime.minmax || [0,1])[1];
-    if (runtime < min || runtime > max) {
-      reason += "runtime";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
-  if (xserver !== undefined) {
-    if (!("xserver" in partitionResources)) {
-      reason += "XServer";
-      setLabAsNA(id, reason);
-      return false;
-    }
-  }
 
-  return true;
-}
-
-function setLabAsNA(id, reason) {
-  $(`#${id}-start-btn, #${id}-open-btn, #${id}-cancel-btn, #${id}-stop-btn`).addClass("d-none disabled");
-  $(`#${id}-na-btn`).removeClass("d-none");
-  $(`#${id}-na-status`).html(1);
-  $(`#${id}-na-info`).removeClass("d-none").html(reason);
-}
-
-function setUserOptions(id, options, available) {
-  const name = options["name"];
-  const service = getService(options);
-  const system = options["system"];
-  const flavor = options["flavor"];
-  const account = options["account"];
-  const project = options["project"];
-  const partition = options["partition"];
-  const reservation = options["reservation"];
-  const nodes = options["nodes"];
-  const runtime = options["runtime"];
-  const gpus = options["gpus"];
-  const xserver = options["xserver"];
-  const modules = options["userModules"];
-
-  $(`#${id}-name-input`).val(name);
-  if (available) {
-    {#- Set allowed values. Do not rely on change events here as without
-        passing a value explicitely, the first allowed option would be 
-        chosen regardless of the user option value. #}
-    try {
-      updateService(id, service);
-      updateSystems(id, service, system);
-      updateFlavors(id, service, system, flavor);
-      updateAccounts(id, service, system, account);
-      updateProjects(id, service, system, account, project);
-      updatePartitions(id, service, system, account, project, partition);
-      updateReservation(id, service, system, account, project, partition, reservation);
-      updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
-      updateModules(id, service, system, account, project, partition, modules);
+    for  (const id of Object.keys(userOptions)) {
+      let available = lab.checkIfAvailable(id, userOptions[id]);
+      lab.setUserOptions(id, userOptions[id], available);
     }
-    catch (e) { setLabAsNA(id, "due to a JS error"); }
-  }
-  else {
-    function _setSelectOption(key, value) {
-      if (value) $(`#${id}-${key}-select`).append(`<option value="${value}">${value}</option>`);
-      updateLabConfigSelect($(`#${id}-${key}-select`), value);
-    }
+    updateSpawnProgress();
 
-    function _setInputValue(key, value) {
-      if (value) $(`#${id}-${key}-input`).val(value);
-      else $(`#${id}-${key}-input-div`).hide();
-    }
+    {#- For new labs, only the first option has to be 
+    updated manually. All other updates will be triggered
+    via onChange and set default values. #}
+    dropdowns.updateService("{{ new }}");
+    $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
 
-    $(`input[id*=${id}], select[id*=${id}]`).addClass("no-update");
+    // Remove all tab warnings since initial changes shouldn't cause warnings
+    $("[id$=tab-warning]").addClass("invisible");
+  })();
 
-    const serviceInfos = {{custom_config.get("services") | tojson}};
-    var serviceName = (serviceInfos.JupyterLab.options[service] || {}).name || service;
-    // Selects which are always visible
-    $(`#${id}-version-select`).append(`<option value="${service}">${serviceName}</option>`);
-    _setSelectOption("system", system);
-    _setSelectOption("account", account);
-    _setSelectOption("project", project);
-    let maintenance = checkComputeMaintenance(system, partition);
-    _setSelectOption("partition", maintenance ? `${partition} (in maintenance)` : partition);
-    // Reservation
-    var hasReservationInfo = false;
-    if (reservation) {
-      const systemReservationInfos = {{auth_state.get("options_form").get("reservations") | tojson}}[system] || [];
-      for (const reservationInfo of systemReservationInfos) {
-        if (reservationInfo.ReservationName == reservation) {
-          hasReservationInfo = true;
-          var inactive = reservationInfo.State == "INACTIVE";
-          if (inactive) {
-            $(`#${id}-reservation-select`).append(`<option value="${reservation}">${reservation} [INACTIVE]</option>`);
-          }
+  // Add event source for user spawner events
+  let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+  let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
+  spawnStatusChangedEvtSource.onmessage = lab.spawnStatusChanged;
+
+  // Test general spawn event notifications
+  let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+  let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
+  spawnStartStopEvtSource.onmessage = (e) => {
+    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+    $.get( flavorUrl, function(data) {
+      flavorInfo = data;
+      for (const id of Object.keys(userOptions)) {
+        const values = getLabConfigSelectValues(id);
+        dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
+      }
+    } );
+  };
+
+  /*
+    Jinja dependent function definitions
+  */
+  function onEvtMessage(event, id) {
+    var tr = $(`.summary-tr[data-server-id=${id}]`);
+    var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
+    var cancelBtn = tr.find(".btn-cancel-lab");
+    var collapseBtns = collapsibleTr.find("button").not(".nav-link");
+
+    var evt = JSON.parse(event.data);
+    spawnEvents[id]["latest"].push(evt);
+    if (evt.progress !== undefined && evt.progress != 0) {
+      if (evt.progress == 100) {  // Spawn finished
+        evtSources[id].close();
+        delete evtSources[id];
+        if (evt.failed) {  // Spawn failed
+          utils.updateProgressState(id, "failed");
+          // Change buttons to start or N/A
+          var na = tr.find(".na-status").text() || 0;
+          if (na != "0") {
+            tr.find(".btn-na-lab").removeClass("d-none")
+            tr.find(".btn-start-lab").addClass("d-none");
+          } 
           else {
-            $(`#${id}-reservation-select`).append(`<option value="${reservation}">${reservation}</option>`);
+            tr.find(".btn-na-lab").addClass("d-none");
+            tr.find(".btn-start-lab").removeClass("d-none disabled");
           }
-          $(`#${id}-reservation-select`).trigger("change");
+          tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
+          collapseBtns.removeClass("disabled");
+        }
+        else if (evt.ready) {  // Spawn successful
+          {%- for spawner in lab_spawners -%}
+          {%- set s = user.spawners[spawner.name] %}
+          if (id == "{{s.name}}") {
+            {%- if not s._stop_pending %}
+            utils.updateProgressState(id, "running");
+            cancelBtn.addClass("d-none disabled");
+            tr.find(".btn-stop-lab").removeClass("d-none disabled");
+            tr.find(".btn-open-lab").removeClass("disabled");
+            collapseBtns.removeClass("disabled");
+            {%- endif %}
+          }
+          {%- endfor %}
         }
       }
-      if (!hasReservationInfo) $(`#${id}-reservation-select`).append(`<option value="${reservation}">${reservation}</option>`);
+      else { // Spawn in progress
+        collapseBtns.addClass("disabled");
+        if (evt.progress == {{cancel_progress_deactivation}}) {
+          utils.updateProgressPercentage(id, "cancelling...", evt.progress);
+          $(`#${id}-progress-bar`).addClass("bg-danger");
+          cancelBtn.addClass("disabled");
+        }
+        else {
+          utils.updateProgressPercentage(id, "spawning...", evt.progress);
+          if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
+            cancelBtn.removeClass("disabled");
+          }
+        }
+      }    
+    }
 
+    if (evt.html_message !== undefined) {
+      var htmlMsg = evt.html_message
+    } else if (evt.message !== undefined) {
+      var htmlMsg = evt.message;
     }
-    else {
-      $(`#${id}-reservation-select-div`).hide();
-      $(`#${id}-reservation-hr`).hide();
+    if (htmlMsg) {
+      // Only append if latest log is selected
+      if ($(`#${id}-log-select`).val() == "latest") 
+        utils.appendToLog($(`#${id}-log`), htmlMsg);
     }
-    if (hasReservationInfo) $(`#${id}-reservation-info-div`).show()
-    else $(`#${id}-reservation-info-div`).hide();
-    // Resources
-    if ((nodes || runtime || gpus || xserver) !== undefined) {
-      _setInputValue("nodes", nodes);
-      _setInputValue("runtime", runtime);
-      _setInputValue("gpus", gpus);
-      {#- Don't have info about resources, so just never show the xserver checkbox #}
-      _setInputValue("xserver", xserver);
-
-    }
-    else {
-      $(`#${id}-resources-tab`).addClass("disabled");
-    }
-    // Modules
-    updateModules(id, service, system, account, project, partition, modules);
-
-    // Disable all user input elements if N/A
-    $(`input[id*=${id}]`).attr("disabled", true);
-    $(`select[id*=${id}]`).not("[id*=log]").addClass("disabled");
   }
-}
 
-function spawnStatusChanged(event) {
-  const data = JSON.parse(event.data);
-
-  // Create eventListeners for new labs if they don't exist
-  for (const [id, pending] of Object.entries(data)) {
-    if (!(id in spawnEvents)) {
-      spawnEvents[id] = {"latest": []};
+  function updateSpawnProgress() {
+    {%- for spawner in lab_spawners %}
+    var id = "{{spawner.name}}";
+    var latestEvents = spawnEvents[id]["latest"] || [];
+    // Append log messages
+    for (const event of latestEvents) {
+      utils.appendToLog($(`#${id}-log`), event["html_message"]);
     }
-    if (!(id in evtSources)) {
-      // _updateSpawnEventsAndLog
-      if (spawnEvents[id]["latest"].length) {
-      var re = /([0-9]+(-[0-9]+)+).*[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?/;
-      for (const [_, event] of spawnEvents[id]["latest"].entries()) {
-        const startMsg = event.html_message || event.message;
-        const startTimeMatch = re.exec(startMsg);
-        if (startTimeMatch) {
-          const startTime = startTimeMatch[0];
-          // Have we already created a log entry for this time?
-          let logOptions = $(`#${id}-log-select option`);
-          var logTimes = $.map(logOptions, function (option) {
-            return option.value;
-          });
-          // If yes, we do not need to do anything anymore
-          if (logTimes.includes(startTime)) return;
-          // Otherwise, save the current events to the startTime,
-          // update the log select and reset the "latest" events.
-          spawnEvents[id][startTime] = spawnEvents[id]["latest"];
-          spawnEvents[id]["latest"] = [];
-          $(`#${id}-log-select`)
-            .append(`<option value="${startTime}">${startTime}</option>`)
-            .val("latest");
-          break;
-        }
-      }
-      // We didn't manage to find a time, so update with no timestamp
-      if ((spawnEvents[id]["latest"].length)) {
-        spawnEvents[id]["previous"] = spawnEvents[id]["latest"];
-        spawnEvents[id]["latest"] = [];
-      }
+    // Add options to log select and select the latest log by default
+    var logSelect = $(`#${id}-log-select`);
+    for (const log in spawnEvents[id]) {
+      if (log == "latest") logSelect.prepend(`<option value="${log}">${log}</option>`);
+      else logSelect.append(`<option value="${log}">${log}</option>`);
     }
-        
-      let progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
+    logSelect.val("latest");
+    
+    {%- set s = user.spawners[spawner.name] -%}
+    {%- if s.active -%}
+      {%- if s.ready %}
+      utils.updateProgressState(id, "running");
+      {%- elif not s._stop_pending %}
+      var tr = $(`#${id}.summary-tr`);
+      tr.find(".btn-open-lab").addClass("disabled");
+      var currentProgress = 0;
+      if (latestEvents.length > 0) {
+        let lastEvent = latestEvents.slice(-1)[0];
+        currentProgress = lastEvent.progress;
+      }
+      if (currentProgress < {{cancel_progress_activation}}
+        || currentProgress >= {{cancel_progress_deactivation}}) {
+        tr.find(".stop, .cancel").addClass("disabled");
+      }
+      // Disable the delete button during the spawn process.
+      var collapse = $(`.collapsible-tr[data-server-id=${id}]`);
+      collapse.find(".btn-delete-lab").addClass("disabled");
+      // Update progress with percentage also
+      utils.updateProgressPercentage(id, "spawning...", currentProgress);
+      // Add an event listener to catch and display updates.
+      var progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
       evtSources[id] = new EventSource(progressUrl);
+      {%- endif %}
+    {%- elif s._failed or s._cancel_event_yielded %}
+    var id = "{{s.name | safe}}";
+    utils.updateProgressState(id, "failed");
+    {%- endif -%}
+
+    {%- endfor %}
+
+    for (const id in evtSources) {
       evtSources[id].onmessage = function (e) {
         onEvtMessage(e, id);
       }
-      // Reset progress bar and log for new spawns
-      $(`#${id}-progress-bar`)
-        .width(0).html("")
-        .removeClass("bg-danger bg-success");
-      $(`#${id}-progress-info-text`).html("");
-      $(`#${id}-log`).html("");
-      // Update buttons to reflect pending state
-      let tr = $(`tr.summary-tr[data-server-id=${id}]`);
-      // _enableTrButtonsRunning
-      tr.find(".btn-na-lab, .btn-start-lab").addClass("d-none");
-      tr.find(".btn-open-lab, .btn-cancel-lab").removeClass("d-none").addClass("disabled");
-      }
-  }
-}
-
-function onEvtMessage(event, id) {
-  var tr = $(`.summary-tr[data-server-id=${id}]`);
-  var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
-  var cancelBtn = tr.find(".btn-cancel-lab");
-  var collapseBtns = collapsibleTr.find("button").not(".nav-link");
-
-  var evt = JSON.parse(event.data);
-  spawnEvents[id]["latest"].push(evt);
-  if (evt.progress !== undefined && evt.progress != 0) {
-    if (evt.progress == 100) {  // Spawn finished
-      evtSources[id].close();
-      delete evtSources[id];
-      if (evt.failed) {  // Spawn failed
-        _updateProgressState(id, "last spawn failed", "bg-danger");
-        // Change buttons to start or N/A
-        var na = tr.find(".na-status").text() || 0;
-        if (na != "0") {
-          tr.find(".btn-na-lab").removeClass("d-none")
-          tr.find(".btn-start-lab").addClass("d-none");
-        } 
-        else {
-          tr.find(".btn-na-lab").addClass("d-none");
-          tr.find(".btn-start-lab").removeClass("d-none disabled");
-        }
-        tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
-        collapseBtns.removeClass("disabled");
-      }
-      else if (evt.ready) {  // Spawn successful
-        {%- for spawner in lab_spawners -%}
-        {%- set s = user.spawners[spawner.name] %}
-        if (id == "{{s.name}}") {
-          {%- if not s._stop_pending %}
-          _updateProgressState(id, "running", "bg-success");
-          cancelBtn.addClass("d-none disabled");
-          tr.find(".btn-stop-lab").removeClass("d-none disabled");
-          tr.find(".btn-open-lab").removeClass("disabled");
-          collapseBtns.removeClass("disabled");
-          {%- endif %}
-        }
-        {%- endfor %}
-      }
-    }
-    else { // Spawn in progress
-      collapseBtns.addClass("disabled");
-      if (evt.progress == {{cancel_progress_deactivation}}) {
-        _updateProgressPercentage(id, "cancelling...", evt.progress);
-        $(`#${id}-progress-bar`).addClass("bg-danger");
-        cancelBtn.addClass("disabled");
-      }
-      else {
-        _updateProgressPercentage(id, "spawning...", evt.progress);
-        if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
-          cancelBtn.removeClass("disabled");
-        }
-      }
-    }    
-  }
-
-  if (evt.html_message !== undefined) {
-    var htmlMsg = evt.html_message
-  } else if (evt.message !== undefined) {
-    var htmlMsg = evt.message;
-  }
-  if (htmlMsg) {
-    // Only append if latest log is selected
-    if ($(`#${id}-log-select`).val() == "latest")
-      _appendToLog(htmlMsg, $(`#${id}-log`));
-  }
-}
-
-function updateSpawnProgress() {
-  {%- for spawner in lab_spawners %}
-  var id = "{{spawner.name}}";
-  var latestEvents = spawnEvents[id]["latest"] || [];
-  // Append log messages
-  for (const event of latestEvents) {
-    _appendToLog(event["html_message"], $(`#${id}-log`));
-  }
-  // Add options to log select and select the latest log by default
-  var logSelect = $(`#${id}-log-select`);
-  for (const log in spawnEvents[id]) {
-    if (log == "latest") logSelect.prepend(`<option value="${log}">${log}</option>`);
-    else logSelect.append(`<option value="${log}">${log}</option>`);
-  }
-  logSelect.val("latest");
-  
-  {%- set s = user.spawners[spawner.name] -%}
-  {%- if s.active -%}
-    {%- if s.ready %}
-    _updateProgressState(id, "running", "bg-success");
-    {%- elif not s._stop_pending %}
-    var tr = $(`#${id}.summary-tr`);
-    tr.find(".btn-open-lab").addClass("disabled");
-    var currentProgress = 0;
-    if (latestEvents.length > 0) {
-      let lastEvent = latestEvents.slice(-1)[0];
-      currentProgress = lastEvent.progress;
-    }
-    if (currentProgress < {{cancel_progress_activation}}
-      || currentProgress >= {{cancel_progress_deactivation}}) {
-      tr.find(".stop, .cancel").addClass("disabled");
-    }
-    // Disable the delete button during the spawn process.
-    var collapse = $(`.collapsible-tr[data-server-id=${id}]`);
-    collapse.find(".btn-delete-lab").addClass("disabled");
-    // Update progress with percentage also
-    _updateProgressPercentage(id, "spawning...", currentProgress);
-    // Add an event listener to catch and display updates.
-    var progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
-    evtSources[id] = new EventSource(progressUrl);
-    {%- endif %}
-  {%- elif s._failed or s._cancel_event_yielded %}
-  var id = "{{s.name | safe}}";
-  _updateProgressState(id, "last spawn failed", "bg-danger")
-  {%- endif -%}
-
-  {%- endfor %}
-
-  for (const id in evtSources) {
-    evtSources[id].onmessage = function (e) {
-      onEvtMessage(e, id);
     }
   }
-}
 
-(async () => {
-  var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-  flavorInfo = await $.get(flavorUrl);
-
-  await setSystemsHealth();
-  for  (const id of Object.keys(userOptions)) {
-    let available = checkIfAvailable(id, userOptions[id]);
-    setUserOptions(id, userOptions[id], available);
-  }
-  updateSpawnProgress();
-
-  {#- For new labs, only the first option has to be 
-  updated manually. All other updates will be triggered
-  via onChange and set default values. #}
-  updateService("{{ new }}");
-  $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
-})();
-
-// Remove all tab warnings since initial changes shouldn't cause warnings
-$("[id$=tab-warning]").addClass("invisible");
-
-// Add event source for user spawner events
-let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
-spawnStatusChangedEvtSource.onmessage = spawnStatusChanged;
-
-// Test general spawn event notifications
-let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
-spawnStartStopEvtSource.onmessage = (e) => {
-  var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-  $.get( flavorUrl, function(data) {
-    flavorInfo = data;
-    for (const id of Object.keys(userOptions)) {
-      const values = getLabConfigSelectValues(id);
-      updateFlavors(id, values.service, values.system, values.flavor);
-    }
-  } );
-};
-
+})
 </script>
 
+<script src='{{static_url("js/home/table-interactions.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/home/handle-servers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
 <script>
 $("nav [id$=nav-item]").removeClass("active");
 $("#start-nav-item, #collapse-start-nav-item").addClass("active");

@@ -48,19 +48,22 @@ define(["jquery"], function ($) {
     return id;
   }
 
-  var getService = function (options) {
-    if ("profile" in options)
-      return options["profile"].split('/')[1];
-    else
-      return options["service"].split('/')[1];
+  var getLabConfigSelectValues = function (id) {
+    return {
+      "service": $(`select#${id}-version-select`).val(),
+      "system": $(`select#${id}-system-select`).val(),
+      "flavor": $(`select#${id}-flavor-select`).val(),
+      "account": $(`select#${id}-account-select`).val(),
+      "project": $(`select#${id}-project-select`).val(),
+      "partition": $(`select#${id}-partition-select`).val(),
+    }
   }
 
-  var resetInputElement = function (element, required = true) {
-    element
-      .html("")
-      .val(null)
-      .removeClass("text-muted disabled")
-      .attr("required", required);
+  var setLabAsNA = function (id, reason) {
+    $(`#${id}-start-btn, #${id}-open-btn, #${id}-cancel-btn, #${id}-stop-btn`).addClass("d-none disabled");
+    $(`#${id}-na-btn`).removeClass("d-none");
+    $(`#${id}-na-status`).html(1);
+    $(`#${id}-na-info`).removeClass("d-none").html(reason);
   }
 
   var updateProgressPercentage = function (id, text, progress) {
@@ -126,8 +129,8 @@ define(["jquery"], function ($) {
   var utils = {
     parseJSON: parseJSON,
     getId: getId,
-    getService: getService,
-    resetInputElement: resetInputElement,
+    getLabConfigSelectValues: getLabConfigSelectValues,
+    setLabAsNA: setLabAsNA,
     updateProgressPercentage: updateProgressPercentage,
     updateProgressState: updateProgressState,
     appendToLog: appendToLog,
