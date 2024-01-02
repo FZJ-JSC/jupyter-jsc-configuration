@@ -349,7 +349,7 @@ define(["jquery"], function ($) {
                           <span>${getInfoSvg()}</span>
                             <div class="module-info-link-div d-inline-block">
                               <span class="module-info-link" id="${module}-info-link">
-                                {{ svg.link_svg | safe }}
+                                ${getLinkSvg()}
                               </span>
                             </div>
                         </a>

@@ -142,6 +142,10 @@ function getInfoSvg() {
   return `{{ svg.info_svg | safe }}`;
 }
 
+function getLinkSvg() {
+  return `{{ svg.link_svg | safe }}`;
+}
+
 function onEvtMessage(event, id) {
   var tr = $(`.summary-tr[data-server-id=${id}]`);
   var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
