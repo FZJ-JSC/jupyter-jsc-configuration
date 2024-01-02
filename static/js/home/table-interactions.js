@@ -49,7 +49,7 @@ require(["jquery", "home/utils"], function (
 
   // Show selected logs.
   $("select[id*=log-select]").change(function () {
-    const id = getId(this);
+    const id = utils.getId(this);
     const val = $(this).val();
     var log = $(`#${id}-log`);
     log.html("");
