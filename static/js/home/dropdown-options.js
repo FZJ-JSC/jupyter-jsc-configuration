@@ -73,7 +73,7 @@ define(["jquery"], function ($) {
             <span>${description.display_name}</span>
             <a class="lh-1 ms-3" style="padding-top: 1px;" 
               data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
-              {{ svg.info_svg | safe }}
+              ${getInfoSvg()}
             </a>
           </div>
           <div class="progress col ms-2 fw-bold" style="height: 20px;"
@@ -346,7 +346,7 @@ define(["jquery"], function ($) {
                       <label class="form-check-label" for="${id}-${module}-check">
                         <span class="align-middle">${moduleInfo.displayName}</span>
                         <a href="${moduleInfo.href}" target="_blank" class="module-info text-muted ms-3">
-                          <span>{{ svg.info_svg | safe }}</span>
+                          <span>${getInfoSvg()}</span>
                             <div class="module-info-link-div d-inline-block">
                               <span class="module-info-link" id="${module}-info-link">
                                 {{ svg.link_svg | safe }}
