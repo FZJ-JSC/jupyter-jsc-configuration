@@ -139,7 +139,7 @@ function getModuleInfo() {
 }
 
 function getInfoSvg() {
-  return {{ svg.info_svg | safe }};
+  return "{{ svg.info_svg | safe }}";
 }
 
 function onEvtMessage(event, id) {
