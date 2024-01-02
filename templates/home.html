@@ -490,7 +490,10 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
       var collapse = $(`.collapsible-tr[data-server-id=${id}]`);
       collapse.find(".btn-delete-lab").addClass("disabled");
       // Update progress with percentage also
-      utils.updateProgressPercentage(id, "spawning...", currentProgress);
+      $(`#${id}-progress-bar`)
+          .width(100)
+          .html(`<b>${currentProgress}%</b>`);
+      $(`#${id}-progress-info-text`).html("spawning...");
       // Add an event listener to catch and display updates.
       var progressUrl = `${jhdata.base_url}api/users/${jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
       evtSources[id] = new EventSource(progressUrl);
