@@ -131,7 +131,7 @@ define(["jquery"], function ($) {
     var loginNodes = [];
     var computeNodes = [];
     const partitionsAllowed = (((dropdownOptions[service] || {})[system] || {})[account] || {})[project] || {};
-    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || {};
+    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
     for (const partition of Object.keys(partitionsAllowed).sort()) {
       if (interactivePartitions.includes(partition)) loginNodes.push(partition);
       else computeNodes.push(partition);
@@ -307,7 +307,7 @@ define(["jquery"], function ($) {
   var updateModules = function updateModules(id, service, system, account, project, partition, values) {
     const moduleInfo = getModuleInfo();
     const systemInfo = getSystemInfo();
-    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || {};
+    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
 
     var tabWarning = $(`#${id}-modules-tab-warning`);
     var currentOptions = [];
