@@ -51,13 +51,40 @@
 {%- block footer -%}
 <footer class="navbar mt-auto p-0">
   <div id="footer-top" class="container-fluid justify-content-evenly p-4">
-    {{ ampel("JUPYTER", "https://status.jsc.fz-juelich.de/services/40") }}
+    <div id="footerSystemsCarousel" class="carousel carousel-dark slide w-100" data-bs-ride="carousel" data-bs-interval="10000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="d-flex justify-content-around">
+            {{ ampel("JUPYTER", "https://status.jsc.fz-juelich.de/services/40") }}
+            {{ ampel("JUWELS", "https://status.jsc.fz-juelich.de/services/13") }}
+            {{ ampel("JURECA", "https://status.jsc.fz-juelich.de/services/1") }}
+            {{ ampel("JUSUF", "https://status.jsc.fz-juelich.de/services/30") }}
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="d-flex justify-content-around">
+            {{ ampel("DEEP", "https://status.jsc.fz-juelich.de/services/43") }}
+            {{ ampel("HDFML", "https://status.jsc.fz-juelich.de/services/21") }}
+            {{ ampel("JSCCLOUD", "https://status.jsc.fz-juelich.de/services/44") }}
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#footerSystemsCarousel" data-bs-slide="prev" style="width: unset;">
+        <span class="carousel-control-prev-icon"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#footerSystemsCarousel" data-bs-slide="next" style="width: unset;">
+        <span class="carousel-control-next-icon"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    {# {{ ampel("JUPYTER", "https://status.jsc.fz-juelich.de/services/40") }}
     {{ ampel("JUWELS", "https://status.jsc.fz-juelich.de/services/13") }}
     {{ ampel("JURECA", "https://status.jsc.fz-juelich.de/services/1") }}
     {{ ampel("JUSUF", "https://status.jsc.fz-juelich.de/services/30") }}
     {{ ampel("DEEP", "https://status.jsc.fz-juelich.de/services/43") }}
     {{ ampel("HDFML", "https://status.jsc.fz-juelich.de/services/21") }}
-    {{ ampel("JSCCLOUD", "https://status.jsc.fz-juelich.de/services/44") }}
+    {{ ampel("JSCCLOUD", "https://status.jsc.fz-juelich.de/services/44") }} #}
   </div>
   <div id="footer-bottom" class="container-fluid justify-content-center">
     {%- set logo_width = "220px" -%}
