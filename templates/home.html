@@ -419,11 +419,11 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     for (const entry in incidentData) {
       {#- Update thresholds #}
       if (entry.includes("threshold")) {
-        systemsHealth[entry] = data[entry];
+        systemsHealth[entry] = incidentData[entry];
       } 
       {#- Update systems health #}
       else {
-        systemsHealth[entry] = data[entry].health;
+        systemsHealth[entry] = incidentData[entry].health;
       }
     }
 
