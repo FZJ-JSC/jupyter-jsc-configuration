@@ -175,6 +175,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
   var setUserOptions = function (id, options, available) {
     const name = options["name"];
     const service = getService(options);
+    const image = options["image"];
     const system = options["system"];
     const flavor = options["flavor"];
     const account = options["account"];
@@ -208,6 +209,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     else {
       function _setSelectOption(key, value) {
         if (value) $(`#${id}-${key}-select`).append(`<option value="${value}">${value}</option>`);
+        else $(`#${id}-${key}-select-div`).hide();
         dropdowns.updateLabConfigSelect($(`#${id}-${key}-select`), value);
       }
 
@@ -219,11 +221,13 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`input[id*=${id}], select[id*=${id}]`).addClass("no-update");
 
       const serviceInfo = getServiceInfo();
-      var serviceName = (serviceInfo.JupyterLab.options[service] || {}).name || service;
+      let serviceName = (serviceInfo.JupyterLab.options[service] || {}).name || service;
 
       // Selects which are always visible
       $(`#${id}-version-select`).append(`<option value="${service}">${serviceName}</option>`);
       _setSelectOption("system", system);
+      _setInputValue("image", image);
+      _setSelectOption("flavor", flavor);
       _setSelectOption("account", account);
       _setSelectOption("project", project);
       let maintenance = checkComputeMaintenance(system, partition);
@@ -308,8 +312,8 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         // Update buttons to reflect pending state
         let tr = $(`tr.summary-tr[data-server-id=${id}]`);
         // _enableTrButtonsRunning
-        tr.find(".btn-na-lab, .btn-start-lab").addClass("d-none");
-        tr.find(".btn-open-lab, .btn-cancel-lab").removeClass("d-none").addClass("disabled");
+        tr.find(".btn-na-lab, .btn-start-lab").hide();
+        tr.find(".btn-open-lab, .btn-cancel-lab").show().addClass("disabled");
       }
     }
   }

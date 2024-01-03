@@ -86,7 +86,7 @@ define(["jquery"], function ($) {
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
     enableTooltips();  // Defined in page.html
-    Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).addClass("d-none") : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).removeClass("d-none");
+    Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -101,7 +101,7 @@ define(["jquery"], function ($) {
     for (const account of Object.keys(accountsAllowed).sort()) {
       select.append(`<option value="${account}">${account}</option>`);
     }
-    Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).addClass("d-none") : $(`#${id}-account-select-div`).removeClass("d-none");
+    Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).hide() : $(`#${id}-account-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -116,7 +116,7 @@ define(["jquery"], function ($) {
     for (const project of Object.keys(projectsAllowed).sort()) {
       select.append(`<option value="${project}">${project}</option>`);
     }
-    Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).addClass("d-none") : $(`#${id}-project-select-div`).removeClass("d-none");
+    Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).hide() : $(`#${id}-project-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -153,7 +153,7 @@ define(["jquery"], function ($) {
       }
       select.append('</optgroup>');
     }
-    Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).addClass("d-none") : $(`#${id}-partition-select-div`).removeClass("d-none");
+    Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).hide() : $(`#${id}-partition-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -319,7 +319,7 @@ define(["jquery"], function ($) {
     var enableModulesTab = false;
 
     for (const [moduleSet, modules] of Object.entries(moduleInfo)) {
-      $(`#${id}-${moduleSet}-div`).addClass("d-none");
+      $(`#${id}-${moduleSet}-div`).hide();
       var insertIndex = -1;
       for (const [module, moduleInfo] of Object.entries(modules)) {
         if (moduleInfo.sets.includes(service)) {
@@ -331,7 +331,7 @@ define(["jquery"], function ($) {
               // Module is compute only, but partition is interactive, so do nothing.
             }
             else {
-              $(`#${id}-${moduleSet}-div`).removeClass("d-none");
+              $(`#${id}-${moduleSet}-div`).show();
               enableModulesTab = true;
               defaultOptions.push(module);
               // If checkbox already exists, do nothing

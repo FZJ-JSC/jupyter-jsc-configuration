@@ -61,9 +61,9 @@ define(["jquery"], function ($) {
 
   var setLabAsNA = function (id, reason) {
     $(`#${id}-start-btn, #${id}-open-btn, #${id}-cancel-btn, #${id}-stop-btn`).addClass("d-none disabled");
-    $(`#${id}-na-btn`).removeClass("d-none");
+    $(`#${id}-na-btn`).show();
     $(`#${id}-na-status`).html(1);
-    $(`#${id}-na-info`).removeClass("d-none").html(reason);
+    $(`#${id}-na-info`).show().html(reason);
   }
 
   var updateProgressState = function (id, state) {

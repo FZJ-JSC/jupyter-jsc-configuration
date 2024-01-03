@@ -86,7 +86,7 @@
   <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none {{button_margin}}">
     {{ svg.na_svg | safe }} N/A
   </button>
-  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
+  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller; white-space: nowrap;"></div>
   <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {%if s.active and not s._stop_pending-%}d-none{%-endif%} {{button_margin}}">
     {{ svg.start_svg | safe }} Start
   </button>

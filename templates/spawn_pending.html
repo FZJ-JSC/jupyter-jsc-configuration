@@ -206,8 +206,8 @@ require(["jquery", "jhapi", "utils"], function (
     api.start_named_server(user, "{{spawner.name}}", {
       data: JSON.stringify({{spawner.user_options | safe}}),
       success: function () {
-        $("#retry").addClass("d-none");
-        $("#cancel").attr("disabled", true).removeClass("d-none");
+        $("#retry").hide();
+        $("#cancel").attr("disabled", true).show();
         $("#progress-bar").removeClass("bg-danger");
         $("#progress-info-text").html("spawning...");
         $("#log").html("");
@@ -261,8 +261,8 @@ require(["jquery", "jhapi", "utils"], function (
                 if (event["failed"]) {
                   $(`#progress-bar`).html("").addClass("bg-danger");
                   $("#progress-info-text").html("last spawn failed");
-                  $("#retry").removeAttr("disabled").removeClass("d-none");
-                  $("#cancel").addClass("d-none");
+                  $("#retry").removeAttr("disabled").show();
+                  $("#cancel").hide();
                   clearTimeout(timeout);
                 } else {
                   window.location.reload();

@@ -321,8 +321,8 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
   function _enableTrButtons(tr, running) {
     if (running) {
       // Show open/cancel for starting labs
-      tr.find(".btn-na-lab, .btn-start-lab").addClass("d-none");
-      tr.find(".btn-open-lab, .btn-cancel-lab").removeClass("d-none");
+      tr.find(".btn-na-lab, .btn-start-lab").hide();
+      tr.find(".btn-open-lab, .btn-cancel-lab").show();
       // Disable until fitting event received from EventSource
       tr.find(".btn-open-lab, .btn-cancel-lab").addClass("disabled");
     }
@@ -331,13 +331,13 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
       var na = tr.find(".na-status").text() || 0;
       if (na != "0") {
         tr.find(".btn-na-lab").removeClass("d-none disabled");
-        tr.find(".btn-start-lab").addClass("d-none");
+        tr.find(".btn-start-lab").hide();
       }
       else {
-        tr.find(".btn-na-lab").addClass("d-none")
+        tr.find(".btn-na-lab").hide()
         tr.find(".btn-start-lab").removeClass("d-none disabled");
       }
-      tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab").addClass("d-none");
+      tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab").hide();
     }
   }
 
@@ -354,8 +354,8 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
     tr.find(".name-td").text(options.name);
     function _updateTd(key) {
       let configTdDiv = tr.find(`#${id}-config-td-div-${key}`);
-      if (options[key]) configTdDiv.removeClass("d-none");
-      else configTdDiv.addClass("d-none");
+      if (options[key]) configTdDiv.show();
+      else configTdDiv.hide();
       let configDiv = tr.find(`#${id}-config-td-${key}`);
       configDiv.text(options[key]);
     }

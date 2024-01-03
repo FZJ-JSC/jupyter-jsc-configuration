@@ -168,11 +168,11 @@ function onEvtMessage(event, id) {
         // Change buttons to start or N/A
         var na = tr.find(".na-status").text() || 0;
         if (na != "0") {
-          tr.find(".btn-na-lab").removeClass("d-none")
-          tr.find(".btn-start-lab").addClass("d-none");
+          tr.find(".btn-na-lab").show()
+          tr.find(".btn-start-lab").hide();
         } 
         else {
-          tr.find(".btn-na-lab").addClass("d-none");
+          tr.find(".btn-na-lab").hide();
           tr.find(".btn-start-lab").removeClass("d-none disabled");
         }
         tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
@@ -268,10 +268,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var imageRequired = serviceInfo.JupyterLab.options[values.service].userInputRequired || false;
     if (!imageRequired) {
       dropdowns.resetInputElement(customImageInput, false);
-      $(`#${id}-image-input-div`).addClass("d-none");
+      $(`#${id}-image-input-div`).hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
-      $(`#${id}-image-input-div`).removeClass("d-none");
+      $(`#${id}-image-input-div`).show();
     }
   });
 
@@ -297,10 +297,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if (defaultOption && values.service != defaultOption) {
       // Not using default/latest version, show a warning message
       let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
-      $(`#${id}-spawner-info`).removeClass("d-none").html(reason);
+      $(`#${id}-spawner-info`).show().html(reason);
     }
     else {
-      $(`#${id}-spawner-info`).addClass("d-none").html("");
+      $(`#${id}-spawner-info`).hide().html("");
     }
   });
 
