@@ -73,7 +73,7 @@
   min-height: 500px;
 }
 
-.carousel-inner {
+main .carousel-inner {
   background-color: rgb(255, 255, 255, 0.7);
   /* background-color: rgb(255, 255, 255, 1); */
   color: black;
@@ -83,20 +83,21 @@
   width: auto;
 }
 
-.carousel-item a {
+main .carousel-item a {
   color: #023d6b;
 }
-.carousel-item h3 {
+
+main .carousel-item h3 {
   background: url("/hub/static/images/pages/login/blue_line.png") no-repeat 0 100%;
   padding-bottom: 15px;
 }
 
-.carousel-item div.text-small ul {
+main .carousel-item div.text-small ul {
   list-style-position: inside;
   padding-left: 0px;
 }
 
-.carousel-indicators button {
+main .carousel-indicators button {
   border: 2px solid white !important;
   background-color: #adbde3 !important;
   border-radius: 50%;
@@ -105,29 +106,16 @@
   margin: 0 0.5rem;
 }
 
-.carousel-indicators button:hover {
+main .carousel-indicators button:hover {
   background-color: #002036 !important;
 }
 
-.carousel-indicators button.active {
+main .carousel-indicators button.active {
   background-color: #023d6b !important;
 }
 
-.carousel-control-prev,
-.carousel-control-next {
+main .carousel-control-prev,
+main .carousel-control-next {
   width: 5%;
   opacity: 1;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: #fff;
-}
-
-.carousel-control-prev-icon {
-  background-image: url("/hub/static/images/pages/login/left_whitebg_arrow.svg");
-}
-
-.carousel-control-next-icon {
-  background-image: url("/hub/static/images/pages/login/right_whitebg_arrow.svg");
 }
