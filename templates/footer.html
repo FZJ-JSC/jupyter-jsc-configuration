@@ -1,5 +1,16 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
+{#- Use list since dictionaries are unordered -#}
+{%- set systems_default_order = [
+  ["JUPYTER", 40], 
+  ["JUWELS", 13], 
+  ["JURECA", 1], 
+  ["JUSUF", 30], 
+  ["DEEP", 43], 
+  ["HDFML", 21], 
+  ["JSCCLOUD", 44]
+] -%}
+
 {%- macro random_int(len) -%}
   {%- for _ in range(len) -%}
       {{ range(10) | random }}
@@ -30,11 +41,11 @@
 </a>
 {%- endmacro -%}
 
-{%- macro ampel(system, href) -%}
+{%- macro ampel(system, system_id) -%}
 {%- set system_lower = system.lower() %}
 <div id="ampel-{{system_lower}}" class="text-center">
   <img class="ampel-img" src='{{static_url( "images/footer/systems/" + system_lower + ".svg?v=" + random_int(10) )}}' />
-  <a id="ampel-{{system_lower}}-tooltip" href="{{href}}" target="_blank" class="align-middle" data-bs-toggle="tooltip" data-bs-placement="top">
+  <a id="ampel-{{system_lower}}-tooltip" href="https://status.jsc.fz-juelich.de/services/{{system_id}}" target="_blank" class="align-middle" data-bs-toggle="tooltip" data-bs-placement="top">
     {%- if system == "JUPYTER" -%}
     Jupyter-JSC
     {%- elif system == "JSCCLOUD" -%}
@@ -47,6 +58,15 @@
 </div>
 {%- endmacro -%}
 
+{%- macro create_carousel_systems(start_index, length) -%}
+{%- set end_index = start_index + length -%}
+{%- for system_config in systems_default_order %}
+  {%- if loop.index0 >= start_index and loop.index0 < end_index %}
+{{ ampel(system_config[0], +system_config[1]) }}
+  {%- endif -%}
+{%- endfor -%}
+{%- endmacro -%}
+
 
 {%- block footer -%}
 <footer class="navbar mt-auto p-0">
@@ -54,18 +74,13 @@
     <div id="footerSystemsCarousel" class="carousel carousel-dark slide w-100" data-bs-ride="carousel" data-bs-interval="10000">
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <div class="d-flex justify-content-around">
-            {{ ampel("JUPYTER", "https://status.jsc.fz-juelich.de/services/40") }}
-            {{ ampel("JUWELS", "https://status.jsc.fz-juelich.de/services/13") }}
-            {{ ampel("JURECA", "https://status.jsc.fz-juelich.de/services/1") }}
-            {{ ampel("JUSUF", "https://status.jsc.fz-juelich.de/services/30") }}
+          <div id="systems-page-1" class="d-flex justify-content-around">
+            {{ create_carousel_systems(0, 4) }}
           </div>
         </div>
         <div class="carousel-item">
-          <div class="d-flex justify-content-around">
-            {{ ampel("DEEP", "https://status.jsc.fz-juelich.de/services/43") }}
-            {{ ampel("HDFML", "https://status.jsc.fz-juelich.de/services/21") }}
-            {{ ampel("JSCCLOUD", "https://status.jsc.fz-juelich.de/services/44") }}
+          <div id="systems-page-2" class="d-flex justify-content-around">
+            {{ create_carousel_systems(4, 4) }}
           </div>
         </div>
       </div>
@@ -111,6 +126,39 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
   var base_url = window.jhdata.base_url;
   var api = new JHAPI(base_url);
 
+  function reorderSystems(incidentsData) {
+    const systemsDefaultOrder = {{ systems_default_order | tojson}};
+    // Create copy of data and filter it
+    var systemsFiltered = { ...incidentsData };
+    for (let key in systemsFiltered) {
+      if (key.includes("threshold") || systemsFiltered[key].health < 30) delete systemsFiltered[key];
+    }
+    delete systemsFiltered["JUPYTER"]; // Jupyter should always be first
+
+    var systemsFilteredandSortedBySeverity = Object.keys(systemsFiltered).sort((a, b) => systemsFiltered[a]["health"] < systemsFiltered[b]["health"]);
+    console.log(systemsFilteredandSortedBySeverity)
+
+    // Finally, create sorted list with all systems
+    var systemsSorted = ["JUPYTER"];
+    systemsFilteredandSortedBySeverity.forEach((system) => {
+        systemsSorted.push(system);
+    });
+    for (let key in incidentsData) {
+      if (!key.includes("threshold") && !systemsSorted.includes(key)) {
+        systemsSorted.push(key);
+      }
+    }
+    console.log(systemsSorted);
+
+    // Recreate footer with systems in the sorted order
+    for (const [index, system] of systemsSorted.entries()) { 
+      let ampel = $(`#ampel-${system.toLowerCase()}`);
+      ampel.remove();
+      if (index < 4) $("#systems-page-1").append(ampel);
+      else $("#systems-page-2").append(ampel);
+    }
+  }
+
   function updateSystemHoverTooltips() {
     api.api_request( "incidents", {
       success: function(data) {
@@ -121,6 +169,7 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
               .attr('data-bs-original-title', systemInfo.incident);
           }
         }
+        reorderSystems(data);
       }
     })
   }
