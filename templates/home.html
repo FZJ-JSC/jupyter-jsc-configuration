@@ -262,6 +262,17 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         console.log(e);
       }
     }
+
+    const serviceInfo = getServiceInfo();
+    var customImageInput = $(`input#${id}-image-input`);
+    var imageRequired = serviceInfo.JupyterLab.options[values.service].userInputRequired || false;
+    if (!imageRequired) {
+      dropdowns.resetInputElement(customImageInput, false);
+      $(`#${id}-image-input-div`).addClass("d-none");
+    } else {
+      dropdowns.resetInputElement(customImageInput, true);
+      $(`#${id}-image-input-div`).removeClass("d-none");
+    }
   });
 
   $("select[id*=system]").change(function() {

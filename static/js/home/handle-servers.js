@@ -399,7 +399,7 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
 
     ["version", "system", "flavor", "account",
       "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+    ["image", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }
