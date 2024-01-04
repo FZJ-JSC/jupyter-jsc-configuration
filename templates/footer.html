@@ -136,7 +136,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
     delete systemsFiltered["JUPYTER"]; // Jupyter should always be first
 
     var systemsFilteredandSortedBySeverity = Object.keys(systemsFiltered).sort((a, b) => systemsFiltered[a]["health"] < systemsFiltered[b]["health"]);
-    console.log(systemsFilteredandSortedBySeverity)
 
     // Finally, create sorted list with all systems
     var systemsSorted = ["JUPYTER"];
@@ -148,7 +147,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         systemsSorted.push(key);
       }
     }
-    console.log(systemsSorted);
 
     // Recreate footer with systems in the sorted order
     for (const [index, system] of systemsSorted.entries()) { 
