@@ -195,6 +195,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
           chosen regardless of the user option value. */
       try {
         dropdowns.updateService(id, service);
+        if (image) $(`#${id}-image-input`).val(image);
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);

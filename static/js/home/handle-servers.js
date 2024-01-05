@@ -1,11 +1,12 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "jhapi", "utils", "home/utils"], function (
+require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function (
   $,
   JHAPI,
   utils,
-  custom_utils
+  custom_utils,
+  lab
 ) {
   "use strict";
 
@@ -264,7 +265,7 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
   }
 
   function revertChanges() {
-    const id = getId(this);
+    const id = custom_utils.getId(this);
     var alert = $(this).siblings(".alert");
 
     const options = userOptions[id];
@@ -275,8 +276,8 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
       success: function () {
         $(`#${id}-name-input`).val(options["name"]);
         // Reset all user inputs to the values saved in the global user options
-        let available = checkIfAvailable(id, options);
-        setUserOptions(id, options, available);
+        let available = lab.checkIfAvailable(id, options);
+        lab.setUserOptions(id, options, available);
         // Remove all tab warnings since manual changes shouldn't cause warnings
         $("[id$=tab-warning]").addClass("invisible");
         // Show first tab after resetting values
@@ -290,7 +291,7 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
           .addClass("alert-success show p-1");
       },
       error: function (xhr) {
-        _showErrorAlert(alert, displayName, xhr.responseText);
+        _showErrorAlert(alert, name, xhr.responseText);
       }
     });
   }
