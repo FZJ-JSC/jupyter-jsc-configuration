@@ -145,9 +145,9 @@
                 <label for="{{id}}-image-input" class="col-4 col-form-label">Docker Image</label>
                 <div class="col-8">
                   <input type="text" class="form-control" id="{{id}}-image-input" 
-                    placeholder="e.g. jupyter/datascience-notebook" required>
+                    placeholder="e.g. jupyter/datascience-notebook" pattern="(([A-Za-z0-9][\-A-Za-z0-9_.]*)?[A-Za-z0-9])?" required>
                   <div class="invalid-feedback">
-                    Must specify a docker image starting a single-user server.
+                    A valid docker image must consist of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character.
                   </div>
                   <div class="text-muted pt-1" style="font-size: smaller;">
                     A public registry docker image starting a single-user notebook server.
