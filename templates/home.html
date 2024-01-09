@@ -265,7 +265,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     const serviceInfo = getServiceInfo();
     var customImageInput = $(`input#${id}-image-input`);
-    var imageRequired = serviceInfo.JupyterLab.options[values.service].userInputRequired || false;
+    var imageRequired = (serviceInfo.JupyterLab.options[values.service] || {}).userInputRequired || false;
     if (!imageRequired) {
       dropdowns.resetInputElement(customImageInput, false);
       $(`#${id}-image-input-div`).hide();
@@ -293,7 +293,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const serviceInfo = getServiceInfo();
     const systemInfo = getSystemInfo();
     // First check for system specific default option, then for general one
-    var defaultOption = ((systemInfo[values.system].services || {}).JupyterLab || {}).defaultOption || serviceInfo.JupyterLab.defaultOption;
+	  var defaultOption = (((systemInfo[values.system] || {}).services || {}).JupyterLab || {}).defaultOption || serviceInfo.JupyterLab.defaultOption;
     if (defaultOption && values.service != defaultOption) {
       // Not using default/latest version, show a warning message
       let reason = "<span style=\"color:darkorange;\">uses deprecated version</span>";
