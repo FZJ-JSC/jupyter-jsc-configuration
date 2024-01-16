@@ -33,7 +33,8 @@
       {%- if not key %} {% set key = label.lower() %} {% endif -%}
       {%- set breakpoints = "col-12 col-lg-4" %}
       <div id="{{id}}-config-td-div-{{key}}"
-        class="col text-lg-{{alignment}} {{breakpoints}} {% if not value %}d-none{% endif %}">
+        class="col text-lg-{{alignment}} {{breakpoints}}"
+        {% if not value %}style="display: none;"{% endif %}>
         <span class="text-muted" style="font-size: smaller;">{{ label }}</span><br>
         <span id="{{id}}-config-td-{{key}}">{{ value }}</span>
       </div>
@@ -83,20 +84,26 @@
   {#- Save N/A status to page #}
   <span id="{{id}}-na-status" class="na-status d-none">0</span>  
   {#- Create and show appropriate buttons #}
-  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none {{button_margin}}">
+  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled {{button_margin}}" style="display: none;">
     {{ svg.na_svg | safe }} N/A
   </button>
-  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller; white-space: nowrap;"></div>
-  <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {%if s.active and not s._stop_pending-%}d-none{%-endif%} {{button_margin}}">
+  <div id="{{id}}-na-info" class="text-muted" style="display: none; font-size: smaller; white-space: nowrap;"></div>
+  <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {{button_margin}}" 
+    {% if s.active and not s._stop_pending -%} style="display: none;" {%- endif %}>
     {{ svg.start_svg | safe }} Start
   </button>
-  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {{button_margin}}" href='/user/{{s.user.name}}/{{id}}' target="_blank">
+  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {{button_margin}}" href='/user/{{s.user.name}}/{{id}}' target="_blank"
+    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %} >
     {{ svg.open_svg | safe }} Open
   </a>
-  <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending == None-%}d-none{%-endif-%}">
+  <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab"
+    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %}
+    {% if s.active and s.pending == None -%} style="display: none;" {%- endif -%}>
     {{ svg.stop_svg | safe }} Cancel
   </button>
-  <button type="button" id="{{id}}-stop-btn" class="btn btn-danger btn-stop-lab {%if not s.active or s._stop_pending-%}d-none{%-endif%} {%if s.active and s.pending != None-%}d-none{%-endif-%}">
+  <button type="button" id="{{id}}-stop-btn" class="btn btn-danger btn-stop-lab"
+    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %} 
+    {% if s.active and s.pending != None -%} style="display: none;" {%- endif -%}>
     {{ svg.stop_svg | safe }} Stop
   </button>
 </td>
@@ -255,10 +262,10 @@
 <div class="d-flex">
   {%- if start_button_only %}
   <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
-  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled d-none ms-auto me-2">
+  <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled ms-auto me-2" style="display: none;">
       {{ svg.na_svg | safe }} N/A
   </button>
-  <div id="{{id}}-na-info" class="d-none d-inline-block text-muted" style="font-size: smaller;"></div>
+  <div id="{{id}}-na-info" class="text-muted" style="display: none; font-size: smaller;"></div>
   {%- else %}
   <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
   <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>

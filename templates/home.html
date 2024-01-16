@@ -173,9 +173,9 @@ function onEvtMessage(event, id) {
         } 
         else {
           tr.find(".btn-na-lab").hide();
-          tr.find(".btn-start-lab").removeClass("d-none disabled");
+          tr.find(".btn-start-lab").removeClass("disabled").show();
         }
-        tr.find(".btn-open-lab, .btn-cancel-lab").addClass("d-none disabled");
+        tr.find(".btn-open-lab, .btn-cancel-lab").addClass("disabled").hide();
         collapseBtns.removeClass("disabled");
       }
       else if (evt.ready) {  // Spawn successful
@@ -189,8 +189,8 @@ function onEvtMessage(event, id) {
             .addClass("bg-success")
             .html("");
           $(`#${id}-progress-info-text`).html("runnning");
-          cancelBtn.addClass("d-none disabled");
-          tr.find(".btn-stop-lab").removeClass("d-none disabled");
+          cancelBtn.addClass("disabled").hide();
+          tr.find(".btn-stop-lab").removeClass("disabled").show();
           tr.find(".btn-open-lab").removeClass("disabled");
           collapseBtns.removeClass("disabled");
           {%- endif %}

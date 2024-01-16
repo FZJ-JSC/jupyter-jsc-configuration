@@ -331,12 +331,12 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       // Show start or na for non-running labs
       var na = tr.find(".na-status").text() || 0;
       if (na != "0") {
-        tr.find(".btn-na-lab").removeClass("d-none disabled");
+        tr.find(".btn-na-lab").removeClass("disabled").show();
         tr.find(".btn-start-lab").hide();
       }
       else {
         tr.find(".btn-na-lab").hide()
-        tr.find(".btn-start-lab").removeClass("d-none disabled");
+        tr.find(".btn-start-lab").removeClass("disabled").show();
       }
       tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab").hide();
     }

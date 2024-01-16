@@ -166,7 +166,7 @@
         <div id="progress-info-text" class="text-center text-muted my-auto w-100" style="font-size: smaller;">spawning...</div>
       </div>
       <button id="cancel" type="button" class="btn btn-danger ms-4" disabled>{{ svg.stop_svg | safe }} Cancel </button>
-      <button id="retry" type="button" class="btn btn-primary ms-4 d-none" disabled>{{ svg.retry_svg | safe }} Retry </button>
+      <button id="retry" type="button" class="btn btn-primary ms-4" style="display: none;" disabled>{{ svg.retry_svg | safe }} Retry </button>
     </div>
     <div class="card-body text-black">
       <div id="log"></div>
