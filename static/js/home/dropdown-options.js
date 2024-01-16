@@ -196,7 +196,7 @@ define(["jquery"], function ($) {
     let nodesInput = $(`input#${id}-nodes-input`);
     let gpusInput = $(`input#${id}-gpus-input`);
     let runtimeInput = $(`input#${id}-runtime-input`);
-    let xserverCheckboxInput = $(`input#${id}-xcbserver-input`);
+    let xserverCheckboxInput = $(`input#${id}-xserver-cb-input`);
     let xserverInput = $(`input#${id}-xserver-input`);
     let tabWarning = $(`#${id}-resources-tab-warning`);
     const currentNodeVal = nodesInput.val();
@@ -264,7 +264,7 @@ define(["jquery"], function ($) {
 
         if ("xserver" in partitionResources) {
           let cblabel = partitionResources.xserver.cblabel || "Activate XServer";
-          $(`label[for*=${id}-xcbserver-input]`).text(cblabel);
+          $(`label[for*=${id}-xserver-cb-input]`).text(cblabel);
           var min = (partitionResources.xserver.minmax || [0, 1])[0];
           var max = (partitionResources.xserver.minmax || [0, 1])[1];
           let label = partitionResources.xserver.label || "Use XServer GPU Index";
@@ -276,7 +276,7 @@ define(["jquery"], function ($) {
             if (!currentXserverVal) tabWarning.removeClass("invisible");
             // Determine if XServer checkbox should be shown
             if (partitionResources.xserver.checkbox || false) {
-              $(`#${id}-xcbserver-input-div`).show();
+              $(`#${id}-xserver-cb-input-div`).show();
               if (currentXserverCbVal) xserverCheckboxInput[0].checked = true;
               else {
                 if (partitionResources.xserver.default_checkbox || false)
@@ -286,7 +286,7 @@ define(["jquery"], function ($) {
               if (!currentXserverCbVal && xserverCheckboxInput[0].checked) tabWarning.removeClass("invisible");
             }
             else {
-              $(`#${id}-xcbserver-input-div`).hide();
+              $(`#${id}-xserver-cb-input-div`).hide();
               xserverCheckboxInput[0].checked = true;
               if (!currentXserverCbVal) tabWarning.removeClass("invisible");
             }
@@ -296,7 +296,7 @@ define(["jquery"], function ($) {
           else $(`#${id}-xserver-input-div`).hide();
         }
         else {
-          $(`#${id}-xcbserver-input-div`).hide();
+          $(`#${id}-xserver-cb-input-div`).hide();
           $(`#${id}-xserver-input-div`).hide();
           if (currentXserverCbVal || currentXserverVal) tabWarning.removeClass("invisible");
         }

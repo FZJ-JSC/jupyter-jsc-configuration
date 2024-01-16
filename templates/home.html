@@ -24,7 +24,7 @@
   {%- endif -%}
 {%- endfor -%}
 {%- set custom_config = auth_state.get("custom_config", {}) -%}
-{%- set new = "new_jupyterlab" -%}  {# id for new jupyterlabs. Cannot contain "-" #}
+{%- set new = "new-jupyterlab" -%}  {# id for new jupyterlabs #}
 
 {%- block main -%}
 <div class="container-fluid p-4">
@@ -250,6 +250,17 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   utils,
   dropdowns
 ) {
+  function _toggle_show_input(id, key) {
+    const showMount = $(`input#${id}-${key}-cb-input`)[0].checked;
+    if (showMount) {
+      $(`#${id}-${key}-input-div`).show();
+      $(`#${id}-${key}-input`).attr("required", true);
+    } else {
+      $(`#${id}-${key}-input-div`).hide();
+      $(`#${id}-${key}-input`).removeAttr("required");
+    }
+  }
+
   $("select[id*=version]").change(function() {
     const id = utils.getId(this);
     const values = utils.getLabConfigSelectValues(id);
@@ -264,15 +275,25 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
 
     const serviceInfo = getServiceInfo();
+    const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     var customImageInput = $(`input#${id}-image-input`);
-    var imageRequired = (serviceInfo.JupyterLab.options[values.service] || {}).userInputRequired || false;
-    if (!imageRequired) {
+    var customMountInput = $(`#${id}-image-mount-input`);
+    var inputRequired = userInputInfo.required || false;
+    if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
-      $(`#${id}-image-input-div`).hide();
+      $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div`).hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
-      $(`#${id}-image-input-div`).show();
+      $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div`).show();
+      // Enable user data mount by default
+      $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
+      customMountInput.val(userInputInfo.defaultMountPath || "/home/jovyan");
     }
+  });
+
+  $("input[id*=image-mount-cb-input]").change(function() {
+    const id = utils.getId(this, -4);
+    _toggle_show_input(id, "image-mount");
   });
 
   $("select[id*=system]").change(function() {
@@ -347,16 +368,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   });
 
-  $("input[id*=xcbserver-input]").change(function() {
+  $("input[id*=xserver-cb-input]").change(function() {
     const id = utils.getId(this);
-    const showXServer = $(`input#${id}-xcbserver-input`)[0].checked;
-    if (showXServer) {
-      $(`#${id}-xserver-input-div`).show();
-      $(`#${id}-xserver-input`).attr("required", true);
-    } else {
-      $(`#${id}-xserver-input-div`).hide();
-      $(`#${id}-xserver-input`).removeAttr("required");
-    }
+    _toggle_show_input(id, "xserver");
   });
 
   $("select[id*=reservation]").change(function() {

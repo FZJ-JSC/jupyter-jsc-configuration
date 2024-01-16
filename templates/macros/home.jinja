@@ -109,7 +109,7 @@
 </td>
 {%- endmacro -%}
 
-{%- macro create_collapsible_tr(s, user_options, custom_config, new_lab_id="new_jupyterlab") -%}
+{%- macro create_collapsible_tr(s, user_options, custom_config, new_lab_id="new-jupyterlab") -%}
 {%- if s %} {%- set id = s.name -%}
 {%- else %} {%- set id = new_lab_id -%}
 {%- endif -%}
@@ -148,20 +148,16 @@
             <form id="{{id}}-lab-config-form">
               {{ inputs.create_text_input(id, "name", placeholder="Give your lab a name") }}
               {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
-              <div id="{{id}}-image-input-div"  class="row mb-3">
-                <label for="{{id}}-image-input" class="col-4 col-form-label">Docker Image</label>
-                <div class="col-8">
-                  <input type="text" class="form-control" id="{{id}}-image-input" 
-                    placeholder="e.g. jupyter/datascience-notebook" pattern="(([A-Za-z0-9][\-A-Za-z0-9_.]*)?[A-Za-z0-9])?" required>
-                  <div class="invalid-feedback">
-                    A valid docker image must consist of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character.
-                  </div>
-                  <div class="text-muted pt-1" style="font-size: smaller;">
-                    A public registry docker image starting a single-user notebook server.
-                    <a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html" target="_blank">Examples.</a>
-                  </div>
-                </div>
-              </div>
+              {%- call inputs.create_text_input(id, "image", 
+                placeholder="e.g. jupyter/datascience-notebook",
+                pattern="(([A-Za-z0-9][\-A-Za-z0-9_.]*)?[A-Za-z0-9])?") %}
+                A public registry docker image starting a single-user notebook server.
+                <a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html" target="_blank">Examples.</a>
+              {%- endcall %}
+              {{ inputs.create_checkbox_input(id, "image-mount-cb", "Mount user data")}}
+              {%- call inputs.create_text_input(id, "image-mount", "User data path") %}
+                Path to which your persistent user data will be mounted
+              {%- endcall %}
               <hr>
               {{ inputs.create_select(id, "system") }}
               {{ inputs.create_select(id, "flavor") }}
@@ -215,7 +211,7 @@
               {{ inputs.create_number_input(id, "nodes") }}
               {{ inputs.create_number_input(id, "gpus", "GPUs") }}
               {{ inputs.create_number_input(id, "runtime", "Runtime (minutes)") }}
-              {{ inputs.create_checkbox_input(id, "xcbserver", "Activate XServer")}}
+              {{ inputs.create_checkbox_input(id, "xserver-cb", "Activate XServer")}}
               {{ inputs.create_number_input(id, "xserver", "Use XServer GPU Index") }}
             </form>
             {{ create_lab_config_buttons(id, id == new_lab_id) }}
