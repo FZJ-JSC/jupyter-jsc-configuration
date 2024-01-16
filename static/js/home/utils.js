@@ -63,7 +63,7 @@ define(["jquery"], function ($) {
     $(`#${id}-start-btn, #${id}-open-btn, #${id}-cancel-btn, #${id}-stop-btn`).addClass("disabled").hide();
     $(`#${id}-na-btn`).show();
     $(`#${id}-na-status`).html(1);
-    $(`#${id}-na-info`).html(reason).css("display", "inline-block");
+    $(`#${id}-na-info`).html(reason).show();
   }
 
   var updateProgressState = function (id, state) {
