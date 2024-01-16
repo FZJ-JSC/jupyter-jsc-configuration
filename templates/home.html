@@ -351,9 +351,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const id = utils.getId(this);
     const showXServer = $(`input#${id}-xcbserver-input`)[0].checked;
     if (showXServer) {
-      $(`#${id}-xserver-input-div`).prop("required", true).show();
+      $(`#${id}-xserver-input-div`).attr("required", "required").show();
     } else {
-      $(`#${id}-xserver-input-div`).prop("required", false).hide();
+      $(`#${id}-xserver-input-div`).removeAttr("required").hide();
     }
   });
 
