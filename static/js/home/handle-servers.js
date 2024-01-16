@@ -372,7 +372,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       var select = collapsibleTr.find(`select[id*=${param}]`);
       var value = select.val();
       if (param == "version") {
-        param = "profile"
+        param = "profile";
         value = "JupyterLab/" + value;
       }
       if (value) options[param] = value;
@@ -383,6 +383,10 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       var value = input.val();
       if (param == "xserver") {
         if (!collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
+      }
+      else if (param == "image-mount") {
+        if (!collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
+        param = "userdata_path";
       }
       if (value) options[param] = value;
     }
@@ -400,7 +404,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
     ["version", "system", "flavor", "account",
       "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["image", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+    ["image", "image-mount", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }

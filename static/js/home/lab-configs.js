@@ -176,6 +176,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const name = options["name"];
     const service = getService(options);
     const image = options["image"];
+    const userdata_path = options["userdata_path"];
     const system = options["system"];
     const flavor = options["flavor"];
     const account = options["account"];
@@ -196,6 +197,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       try {
         dropdowns.updateService(id, service);
         if (image) $(`#${id}-image-input`).val(image);
+        if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);
@@ -228,6 +230,15 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-version-select`).append(`<option value="${service}">${serviceName}</option>`);
       _setSelectOption("system", system);
       _setInputValue("image", image);
+      if (userdata_path) {
+        $(`#${id}-image-mount-cb-input-div`)[0].checked = true;
+        $(`#${id}-image-mount-cb-input-div`).show();
+      }
+      else {
+        $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
+        $(`#${id}-image-mount-cb-input-div`).hide();
+      }
+      _setInputValue("image-mount", userdata_path);
       _setSelectOption("flavor", flavor);
       _setSelectOption("account", account);
       _setSelectOption("project", project);

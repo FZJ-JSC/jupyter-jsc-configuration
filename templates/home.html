@@ -287,7 +287,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div`).show();
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
-      customMountInput.val(userInputInfo.defaultMountPath || "/home/jovyan");
+      customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
     }
   });
 
