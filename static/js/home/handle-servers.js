@@ -379,7 +379,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     }
 
     function _addInputValue(param) {
-      var input = collapsibleTr.find(`input[id*=${param}]`);
+      var input = collapsibleTr.find(`input[id*=${param}]`).not(`[type=checkbox]`);
       var value = input.val();
       if (param == "xserver") {
         if (!collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
