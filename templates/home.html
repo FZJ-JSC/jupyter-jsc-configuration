@@ -278,13 +278,16 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     var customImageInput = $(`input#${id}-image-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+    
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
-      $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div`).hide();
+      dropdowns.resetInputElement(customMountInput, false);
+      allUserInputDivs.hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
-      $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div`).show();
+      allUserInputDivs.show();
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
@@ -369,7 +372,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   });
 
   $("input[id*=xserver-cb-input]").change(function() {
-    const id = utils.getId(this);
+    const id = utils.getId(this, -3);
     _toggle_show_input(id, "xserver");
   });
 
