@@ -59,7 +59,7 @@ Footer */
   text-align: start;
 }
 
-tooltip-inner a {
+.tooltip-inner a {
   color: white !important;
   text-decoration: underline;
 }
