@@ -150,13 +150,15 @@
               {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
-                pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?") %}
+                pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?",
+                warning="Please input a valid docker image, e.g. jupyter/datascience-notebook") %}
                 A public registry docker image starting a single-user notebook server.
-                <a href="https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html" target="_blank">Examples.</a>
+                <a href='https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html' target='_blank' style='color: white !important;'>Examples.</a>
               {%- endcall %}
               {{ inputs.create_checkbox_input(id, "image-mount-cb", "Mount user data")}}
               {%- call inputs.create_text_input(id, "image-mount", "User data path",
-                pattern="^\/[A-Za-z0-9\-\/]+") %}
+                pattern="^\/[A-Za-z0-9\-\/]+",
+                warning="Please input a valid Unix-style path, e.g. /mnt/userdata") %}
                 Path to which your persistent user data will be mounted
               {%- endcall %}
               <hr>

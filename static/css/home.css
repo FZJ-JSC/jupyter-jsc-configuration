@@ -1,14 +1,7 @@
-td h6 {
-  font-size: .75rem;
-}
-
 tr.summary-tr {
   height: 73px
 }
 
-tr.collapsible-tr {
-  height: unset;
-}
 
 .new-spawner-tr {
   --bs-table-bg: #fff;
@@ -21,20 +14,6 @@ tr.collapsible-tr {
   color: #000;
   text-transform: uppercase
 }
-
-
-/*
-Info icon
-*/
-
-.progress-log-btn {
-  color: #023d6b;
-}
-
-.progress-log-btn:hover {
-  color: #225f8d;
-}
-
 
 /* 
 Collapse up and down icon

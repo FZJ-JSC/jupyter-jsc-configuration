@@ -59,6 +59,11 @@ Footer */
   text-align: start;
 }
 
+tooltip-inner a {
+  color: white !important;
+  text-decoration: underline;
+}
+
 .tooltip .tooltip-arrow::before {
   border-color: transparent;
 }

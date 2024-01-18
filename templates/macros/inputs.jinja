@@ -1,19 +1,23 @@
+{%- import "macros/svgs.jinja" as svg -%}
+
 {%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="") -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 <div id="{{id}}-{{key}}-input-div"  class="row mb-3">
   <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">
-  {{ label if label else key.capitalize() }}
+    {{ label if label else key.capitalize() }}
+    {% if caller -%}
+    <button type="button" class="btn"
+      data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
+      title="{{ caller() }}">
+      {{ svg.info_svg | safe }}
+    </button>
+    {%- endif %}
   </label>
   <div class="col-8">
     <input type="text" class="form-control" id="{{id}}-{{key}}-input" 
       placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
-    <div class="invalid-feedback">{{ warning }}</div>
-    {% if caller -%}
-    <div class="text-muted pt-1" style="font-size: smaller;">
-      {{ caller() }}
-    </div>
-    {%- endif %}
+    <div class="invalid-feedback">{{ warning }}</div>    
   </div>
 </div>
 {%- endmacro -%}
