@@ -269,12 +269,14 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     var alert = $(this).siblings(".alert");
 
     const options = userOptions[id];
-    var name = options["name"];
+    const name = options.name;
+    // Do not send start_id when updating lab config
+    delete options.start_id;
 
     api.update_named_server(user, id, {
       data: JSON.stringify(options),
       success: function () {
-        $(`#${id}-name-input`).val(options["name"]);
+        $(`#${id}-name-input`).val(name);
         // Reset all user inputs to the values saved in the global user options
         let available = lab.checkIfAvailable(id, options);
         lab.setUserOptions(id, options, available);
@@ -366,7 +368,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
   function _createDataDict(collapsibleTr) {
     var options = {}
-    options["name"] = _getDisplayName(collapsibleTr);
+    options.name = _getDisplayName(collapsibleTr);
 
     function _addSelectValue(param) {
       var select = collapsibleTr.find(`select[id*=${param}]`);
