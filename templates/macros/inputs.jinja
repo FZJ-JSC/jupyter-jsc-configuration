@@ -1,6 +1,6 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="") -%}
+{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 {#- We use a different margin than the other input elements 
@@ -9,11 +9,19 @@ since the warning  text will already create a margin.#}
   <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">
     {{ label if label else key.capitalize() }}
     {% if caller -%}
+    {% if persistent_hover -%}
     <button type="button" class="btn"
       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
       title="{{ caller() }}">
       {{ svg.info_svg | safe }}
     </button>
+    {%- else %}
+    <a class="lh-1 ms-3" style="padding-top: 1px;" 
+      data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
+      title="{{ caller() }}">
+      {{ svg.info_svg | safe }}
+    </a>
+    {%- endif %}
     {%- endif %}
   </label>
   <div class="col-8">
