@@ -250,14 +250,15 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   utils,
   dropdowns
 ) {
-  function _toggle_show_input(id, key) {
+  function _toggle_show_input(id, key, pattern) {
     const showMount = $(`input#${id}-${key}-cb-input`)[0].checked;
     if (showMount) {
       $(`#${id}-${key}-input-div`).show();
       $(`#${id}-${key}-input`).attr("required", true);
+      if (pattern) $(`#${id}-${key}-input`).attr("pattern", pattern);
     } else {
       $(`#${id}-${key}-input-div`).hide();
-      $(`#${id}-${key}-input`).removeAttr("required");
+      $(`#${id}-${key}-input`).removeAttr("required pattern");
     }
   }
 
@@ -296,7 +297,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=image-mount-cb-input]").change(function() {
     const id = utils.getId(this, -4);
-    _toggle_show_input(id, "image-mount");
+    const pattern_check = "^\\/[A-Za-z0-9\\-\\/]+";
+    _toggle_show_input(id, "image-mount", pattern_check);
   });
 
   $("select[id*=system]").change(function() {
