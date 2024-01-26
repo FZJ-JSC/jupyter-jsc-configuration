@@ -131,7 +131,7 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
     // Create copy of data and filter it
     var systemsFiltered = { ...incidentsData };
     for (let key in systemsFiltered) {
-      if (key.includes("threshold") || systemsFiltered[key].health < 30) delete systemsFiltered[key];
+      if (systemsFiltered[key].health < 30) delete systemsFiltered[key];
     }
     delete systemsFiltered["JUPYTER"]; // Jupyter should always be first
 
@@ -143,7 +143,7 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         systemsSorted.push(system);
     });
     for (let key in incidentsData) {
-      if (!key.includes("threshold") && !systemsSorted.includes(key)) {
+      if (!systemsSorted.includes(key)) {
         systemsSorted.push(key);
       }
     }
@@ -160,7 +160,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
   function updateSystemHoverTooltips() {
     api.api_request( "incidents", {
       success: function(data) {
-        const threshold = data.threshold;
         for (const [system, systemInfo] of Object.entries(data)) {
           if (systemInfo.incident) {
             $(`#ampel-${system.toLowerCase()}-tooltip`)

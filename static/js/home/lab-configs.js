@@ -10,7 +10,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
     if (!interactivePartitions.includes(partition)) {
       const systemUpper = system.replace('-', '').toUpperCase();
-      if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.compute_threshold || 40)) return true;
+      if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.threshold.compute || 40)) return true;
       else return false;
     }
   }
@@ -21,7 +21,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
 
     // Check if system is not available due to incident
     const systemUpper = options["system"].replace('-', '').toUpperCase();
-    if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.interactive_threshold || 50)) {
+    if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.threshold.interactive || 50)) {
       reason += "maintenance";
       utils.setLabAsNA(id, reason);
       return false;

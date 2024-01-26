@@ -99,7 +99,12 @@ spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
 spawnEvents["{{spawner.name}}"] = {"latest": []};
   {%- endif -%}
 {%- endfor %}
-var systemsHealth = {};
+var systemsHealth = {
+threshold: {
+    interactive: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("interactive", 50) | int}}, 
+    compute: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("compute", 40) | int}}
+  }
+};
 var flavorInfo = {};
 </script>
 
@@ -438,14 +443,7 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
     var incidentData = await $.get( incidentUrl );
     for (const entry in incidentData) {
-      {#- Update thresholds #}
-      if (entry.includes("threshold")) {
-        systemsHealth[entry] = incidentData[entry];
-      } 
-      {#- Update systems health #}
-      else {
         systemsHealth[entry] = incidentData[entry].health;
-      }
     }
 
     for  (const id of Object.keys(userOptions)) {

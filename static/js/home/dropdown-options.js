@@ -145,7 +145,7 @@ define(["jquery"], function ($) {
     if (computeNodes.length > 0) {
       select.append('<optgroup label="Compute Nodes">');
       const systemUpper = system.replace('-', '').toUpperCase();
-      if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.compute_threshold || 40)) {
+      if ((window.systemsHealth[systemUpper] || 0) >= (window.systemsHealth.threshold.compute || 40)) {
         computeNodes.forEach((x) => select.append(`<option value="${x}" disabled>${x} (in maintenance)</option>`));
       }
       else {
