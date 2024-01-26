@@ -1,15 +1,17 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{#- Use list since dictionaries are unordered -#}
-{%- set systems_default_order = [
-  ["JUPYTER", 40], 
-  ["JUWELS", 13], 
-  ["JURECA", 1], 
-  ["JUSUF", 30], 
-  ["DEEP", 43], 
-  ["HDFML", 21], 
-  ["JSCCLOUD", 44]
-] -%}
+{%- set jupyter_name = "Jupyter-JSC" -%}
+
+{#- Get all systems configured for this hub,
+    sort them by weight and assign status ids -#}
+{#- Jupyter should always be first -#}
+{%- set incident_services = auth_state.get("custom_config", {}).get("incidentCheck", {}).get("services", {}) -%}
+{%- set systems_default_order = [["JUPYTER", incident_services.get("JUPYTER", 40)]] -%}
+{%- for system in auth_state.get("custom_config", {}).get("systems", {}) | sort(attribute='weight') -%}
+  {%- set system = system.upper().replace("-", '') -%}
+  {%- set status_id = incident_services.get(system, 0) -%}
+  {%- do systems_default_order.append([system, status_id]) -%}
+{%- endfor -%}
 
 {%- macro random_int(len) -%}
   {%- for _ in range(len) -%}
@@ -47,7 +49,7 @@
   <img class="ampel-img" src='{{static_url( "images/footer/systems/" + system_lower + ".svg?v=" + random_int(10) )}}' />
   <a id="ampel-{{system_lower}}-tooltip" href="https://status.jsc.fz-juelich.de/services/{{system_id}}" target="_blank" class="align-middle" data-bs-toggle="tooltip" data-bs-placement="top">
     {%- if system == "JUPYTER" -%}
-    Jupyter-JSC
+    {{ jupyter_name }}
     {%- elif system == "JSCCLOUD" -%}
     JSC-Cloud
     {%- else -%}
@@ -62,7 +64,7 @@
 {%- set end_index = start_index + length -%}
 {%- for system_config in systems_default_order %}
   {%- if loop.index0 >= start_index and loop.index0 < end_index %}
-{{ ampel(system_config[0], +system_config[1]) }}
+{{ ampel(system_config[0], system_config[1]) }}
   {%- endif -%}
 {%- endfor -%}
 {%- endmacro -%}
@@ -71,15 +73,17 @@
 {%- block footer -%}
 <footer class="navbar mt-auto p-0">
   <div id="footer-top" class="container-fluid justify-content-evenly p-4">
+    {%- if systems_default_order | length > 5 -%} 
+    {#- We create a carousel to be able to show all systems in the footer #}
     <div id="footerSystemsCarousel" class="carousel carousel-dark slide w-100" data-bs-ride="carousel" data-bs-interval="10000">
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <div id="systems-page-1" class="d-flex justify-content-around">
+          <div id="systems-page-1" class="d-flex justify-content-evenly">
             {{ create_carousel_systems(0, 4) }}
           </div>
         </div>
         <div class="carousel-item">
-          <div id="systems-page-2" class="d-flex justify-content-around">
+          <div id="systems-page-2" class="d-flex justify-content-evenly">
             {{ create_carousel_systems(4, 4) }}
           </div>
         </div>
@@ -93,6 +97,14 @@
         <span class="visually-hidden">Next</span>
       </button>
     </div>
+    {%- else -%}
+    {#- We only have a few systems and do not need a carousel to display them #}
+    <div id="systems-page-1" class="d-flex justify-content-evenly w-100">
+      {%- for system_config in systems_default_order %}
+        {{ ampel(system_config[0], system_config[1]) }}
+      {%- endfor %}
+    </div>
+    {%- endif %}
   </div>
   <div id="footer-bottom" class="container-fluid justify-content-center">
     {%- set logo_width = "220px" -%}
@@ -148,12 +160,18 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
       }
     }
 
+    var carousel_exists = $("#footerSystemsCarousel").length;
     // Recreate footer with systems in the sorted order
-    for (const [index, system] of systemsSorted.entries()) { 
+    for (const [index, system] of systemsSorted.entries()) {
       let ampel = $(`#ampel-${system.toLowerCase()}`);
       ampel.remove();
-      if (index < 4) $("#systems-page-1").append(ampel);
-      else $("#systems-page-2").append(ampel);
+      if (!carousel_exists) {
+        $("#systems-page-1").append(ampel);
+      }
+      else {
+        if (index < 4) $("#systems-page-1").append(ampel);
+        else $("#systems-page-2").append(ampel);
+      }
     }
   }
 
