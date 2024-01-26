@@ -5,9 +5,9 @@
 {#- Get all systems configured for this hub,
     sort them by weight and assign status ids -#}
 {#- Jupyter should always be first -#}
-{%- set incident_services = auth_state.get("custom_config", {}).get("incidentCheck", {}).get("services", {}) -%}
+{%- set incident_services = custom_config.get("incidentCheck", {}).get("services", {}) -%}
 {%- set systems_default_order = [["JUPYTER", incident_services.get("JUPYTER", 40)]] -%}
-{%- for system in auth_state.get("custom_config", {}).get("systems", {}) | sort(attribute='weight') -%}
+{%- for system in custom_config.get("systems", {}) | sort(attribute='weight') -%}
   {%- set system = system.upper().replace("-", '') -%}
   {%- set status_id = incident_services.get(system, 0) -%}
   {%- do systems_default_order.append([system, status_id]) -%}
