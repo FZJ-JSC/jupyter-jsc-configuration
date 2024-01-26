@@ -154,11 +154,13 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
     systemsFilteredandSortedBySeverity.forEach((system) => {
         systemsSorted.push(system);
     });
-    for (let key in incidentsData) {
-      if (!systemsSorted.includes(key)) {
-        systemsSorted.push(key);
+    systemsDefaultOrder.forEach(systemConfig => {
+      var system = systemConfig[0];
+      if (!systemsSorted.includes(system)) {
+        systemsSorted.push(system);
+        console.log(systemsSorted)
       }
-    }
+    }) 
 
     var carousel_exists = $("#footerSystemsCarousel").length;
     // Recreate footer with systems in the sorted order
