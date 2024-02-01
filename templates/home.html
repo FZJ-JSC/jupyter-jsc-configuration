@@ -255,8 +255,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   dropdowns
 ) {
   function _toggle_show_input(id, key, pattern) {
-    const showMount = $(`input#${id}-${key}-cb-input`)[0].checked;
-    if (showMount) {
+    const showInput = $(`input#${id}-${key}-cb-input`)[0].checked;
+    if (showInput) {
       $(`#${id}-${key}-input-div`).show();
       $(`#${id}-${key}-input`).attr("required", true);
       if (pattern) $(`#${id}-${key}-input`).attr("pattern", pattern);

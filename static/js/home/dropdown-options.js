@@ -291,7 +291,7 @@ define(["jquery"], function ($) {
               if (!currentXserverCbVal) tabWarning.removeClass("invisible");
             }
           }
-          updateLabConfigInput(xserverInput, xserver, currentXserverVal, min, max);
+          updateLabConfigInput(xserverInput, xserver, currentXserverVal, min, max, min, false);
           if (xserverCheckboxInput[0].checked) $(`#${id}-xserver-input-div`).show();
           else $(`#${id}-xserver-input-div`).hide();
         }
@@ -442,9 +442,10 @@ define(["jquery"], function ($) {
     select[0].dispatchEvent(new Event("change"));
   }
 
-  var updateLabConfigInput = function (input, value, lastSelected, min, max, defaultValue) {
+  var updateLabConfigInput = function (input, value, lastSelected, min, max, defaultValue, required = true) {
     input.attr({ "min": min, "max": max });
-    input.attr("required", true);
+    if (required) input.attr("required", required);
+    else input.removeAttr("required");
     // Set message for invalid feedback
     input.siblings(".invalid-feedback")
       .text(`Please choose a number between ${min} and ${max}.`);
