@@ -41,7 +41,7 @@ define(["jquery"], function ($) {
 
     // Sort systemFlavors by flavor weights
     for (const [flavor, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
-      var current = description.current;
+      var current = description.current || 0;
       var max_allowed = description.max;
       // Flavor not valid, so skip
       if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
