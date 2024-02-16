@@ -493,7 +493,8 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
         const values = utils.getLabConfigSelectValues(id);
         dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
       }
-      dropdowns.updateFlavors("new-jupyterlab");
+      const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
+      dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
     } );
   };
 
