@@ -70,7 +70,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       }
       let flavorDescription = systemFlavors[flavor];
       let spawnerState = window.spawnActive[id];
-      if (!flavorDescription.max == -1 && (flavorDescription.current || 0) >= flavorDescription.max && !spawnerState) {
+      if (flavorDescription.max != -1 && (flavorDescription.current || 0) >= flavorDescription.max && !spawnerState) {
         reason += "flavor limits";
         utils.setLabAsNA(id, reason);
         return false;
