@@ -73,7 +73,7 @@ define(["jquery", "home/utils"], function (
       }
       else {
         // Show info text and disable start
-        select.append(`<option disabled">No flavors currently available</option>`);
+        select.append(`<option disabled value="">No flavors currently available</option>`);
         utils.setLabAsNA(id, "due to flavor limits");
       }
 
