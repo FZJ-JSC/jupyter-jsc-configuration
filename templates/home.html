@@ -101,7 +101,13 @@ spawnEvents["{{spawner.name}}"] = {"latest": []};
 var spawnActive = {};
 {% for spawner in user.spawners.values() -%}
   {% if spawner.name -%}
-  spawnActive["{{spawner.name}}"] = {{spawner.active | tojson}};
+    {% if spawner.pending -%}
+      spawnActive["{{spawner.name}}"] = "pending";
+    {% elif spawner.ready -%}
+      spawnActive["{{spawner.name}}"] = "ready";
+    {% else -%}
+      spawnActive["{{spawner.name}}"] = false;
+    {%- endif %}
   {%- endif %}
 {%- endfor %}
 
@@ -170,6 +176,7 @@ function onEvtMessage(event, id) {
       evtSources[id].close();
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
+        spawnActive[id] = false;
         $(`#${id}-progress-bar`)
           .width(100)
           .removeClass("bg-success")
@@ -207,9 +214,11 @@ function onEvtMessage(event, id) {
           {%- endif %}
         }
         {%- endfor %}
+        spawnActive[id] = "ready";
       }
     }
     else { // Spawn in progress
+      spawnActive[id] = "pending";
       collapseBtns.addClass("disabled");
       if (evt.progress == {{cancel_progress_deactivation}}) {
         $(`#${id}-progress-bar`)

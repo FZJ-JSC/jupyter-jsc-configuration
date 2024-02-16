@@ -128,7 +128,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         }
         // Successfully sent request to start the lab, enable row again
         let running = true;
-        custom_utils.setSpawnActive(id, running);
+        custom_utils.setSpawnActive(id, "pending");
         _enableTrButtons(tr, running);
       },
       error: function (xhr) {
