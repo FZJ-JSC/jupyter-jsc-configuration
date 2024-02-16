@@ -38,20 +38,48 @@ define(["jquery", "home/utils"], function (
     let select = $(`select#${id}-flavor-select`);
     const currentVal = select.val();
 
-    let systemFlavors = window.flavorInfo[system] || {};
     resetInputElement(select);
-    $(`#${id}-flavor-info-div`).html("");
+    $(`#${id}-na-btn`).hide();
+    $(`#${id}-na-info`).empty().hide();
+    if (!window.spawnActive[id])
+      $(`#${id}-start-btn`).removeClass("disabled").show();
+
+    let systemFlavors = window.flavorInfo[system];
+    if (!systemFlavors) {
+      $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide();
+      updateLabConfigSelect(select, value, currentVal);
+      return;
+    };
 
     // Sort systemFlavors by flavor weights
     for (const [flavor, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
       // Flavor not valid, so skip
       if (description.max == 0 || description.current < 0 || description.max == null || description.current == null) continue;
-      select.append(`<option value="${flavor}">${description.display_name}</option>`);
+      if (description.current < description.max)
+        select.append(`<option value="${flavor}">${description.display_name}</option>`);
     }
     utils.createFlavorInfo(id, system);
     enableTooltips();  // Defined in page.html
     Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
 
+    if (select.html() == "") {
+      if (window.spawnActive[id]) {
+        // Lab is active, so we should still append the current flavor to the select
+        const flavor = window.userOptions[id].flavor;
+        const description = (systemFlavors[system] || {})[flavor] || {};
+        if (flavor) {
+          select.append(`<option disabled value="${flavor}">${description.display_name || flavor}</option>`);
+        }
+      }
+      else {
+        // Show info text and disable start
+        select.append(`<option disabled">No flavors currently available</option>`);
+        utils.setLabAsNA(id, "due to flavor limits");
+      }
+
+      select.addClass("disabled");
+      select.prop("selectedIndex", 0);
+    }
     updateLabConfigSelect(select, value, currentVal);
   }
 
