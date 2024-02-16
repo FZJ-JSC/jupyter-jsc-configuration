@@ -42,29 +42,36 @@ define(["jquery"], function ($) {
     // Sort systemFlavors by flavor weights
     for (const [flavor, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
       var current = description.current || 0;
-      var max_allowed = description.max;
+      var maxAllowed = description.max;
       // Flavor not valid, so skip
-      if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
+      if (maxAllowed == 0 || current < 0 || maxAllowed == null || current == null) continue;
       select.append(`<option value="${flavor}">${description.display_name}</option>`);
 
+      var bgColor = "bg-primary";
       // Infinite allowed
-      if (max_allowed == -1) {
-        var progress_tooltip = `${current} used`;
-        var max_allowed_label = '∞';
+      if (maxAllowed == -1) {
+        var progressTooltip = `${current} used`;
+        var maxAllowedLabel = '∞';
         if (current == 0) {
-          var current_width = 0;
-          var max_allowed_width = 100;
+          var currentWidth = 0;
+          var maxAllowedWidth = 100;
         }
         else {
-          var current_width = 20;
-          var max_allowed_width = 80;
+          var currentWidth = 20;
+          var maxAllowedWidth = 80;
         }
       }
       else {
-        var progress_tooltip = `${current} out of ${max_allowed} used`;
-        var max_allowed_label = max_allowed - current;
-        var current_width = current / max_allowed * 100 || 0;
-        var max_allowed_width = max_allowed_label / max_allowed * 100 || 100;
+        var progressTooltip = `${current} out of ${maxAllowed} used`;
+        var maxAllowedLabel = maxAllowed - current;
+        var currentWidth = current / maxAllowed * 100;
+        var maxAllowedWidth = maxAllowedLabel / maxAllowed * 100;
+
+        if (maxAllowedLabel < 0) {
+          maxAllowedLabel = 0;
+          maxAllowedWidth = 0;
+          bgColor = "bg-danger";
+        }
       }
 
       var diagramHtml = `
@@ -77,9 +84,9 @@ define(["jquery"], function ($) {
             </a>
           </div>
           <div class="progress col ms-2 fw-bold" style="height: 20px;"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="${progress_tooltip}">
-            <div class="progress-bar" role="progressbar" style="width: ${current_width}%">${current}</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${max_allowed_width}%">${max_allowed_label}</div>
+            data-bs-toggle="tooltip" data-bs-placement="top" title="${progressTooltip}">
+            <div class="progress-bar ${bgColor}" role="progressbar" style="width: ${currentWidth}%">${current}</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${maxAllowedWidth}%">${maxAllowedLabel}</div>
           </div>
         </div>
       `
@@ -87,6 +94,7 @@ define(["jquery"], function ($) {
     }
     enableTooltips();  // Defined in page.html
     Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
+
     updateLabConfigSelect(select, value, currentVal);
   }
 
