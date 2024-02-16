@@ -55,7 +55,7 @@ define(["jquery", "home/utils"], function (
     for (const [flavor, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
       // Flavor not valid, so skip
       if (description.max == 0 || description.current < 0 || description.max == null || description.current == null) continue;
-      if (description.current < description.max)
+      if (description.max != -1 && description.current < description.max)
         select.append(`<option value="${flavor}">${description.display_name}</option>`);
     }
     utils.createFlavorInfo(id, system);
