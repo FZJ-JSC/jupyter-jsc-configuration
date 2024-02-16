@@ -126,6 +126,8 @@ define(["jquery"], function ($) {
   }
 
   var createFlavorInfo = function (id, system) {
+    $(`#${id}-flavor-info-div`).empty();
+
     const systemFlavors = window.flavorInfo[system] || {};
     for (const [_, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
       var current = description.current || 0;

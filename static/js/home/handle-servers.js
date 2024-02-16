@@ -21,6 +21,13 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       success: function () {
         console.log("cancel success");
         custom_utils.setSpawnActive(id, false);
+        var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+        $.get(flavorUrl, function (data) {
+          window.flavorInfo = data;
+          const options = window.userOptions[id];
+          let available = lab.checkIfAvailable(id, options);
+          lab.setUserOptions(id, options, available);
+        });
       },
       error: function () {
         console.log("cancel error");
@@ -43,7 +50,9 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
         $.get(flavorUrl, function (data) {
           window.flavorInfo = data;
-          lab.checkIfAvailable(id, window.userOptions[id]);
+          const options = window.userOptions[id];
+          let available = lab.checkIfAvailable(id, options);
+          lab.setUserOptions(id, options, available);
         });
       },
       error: function (xhr) {
