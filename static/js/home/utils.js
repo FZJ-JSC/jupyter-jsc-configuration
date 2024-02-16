@@ -66,6 +66,10 @@ define(["jquery"], function ($) {
     $(`#${id}-na-info`).html(reason).show();
   }
 
+  var setSpawnActive = function (id, active) {
+    window.spawnActive[id] = active;
+  }
+
   var updateProgressState = function (id, state) {
     $(`#${id}-progress-bar`)
       .width(progressStates[state].width)
@@ -121,14 +125,71 @@ define(["jquery"], function ($) {
     }
   }
 
+  var createFlavorInfo = function (id, system) {
+    const systemFlavors = window.flavorInfo[system] || {};
+    for (const [_, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
+      var current = description.current || 0;
+      var maxAllowed = description.max;
+      // Flavor not valid, so skip
+      if (maxAllowed == 0 || current < 0 || maxAllowed == null || current == null) continue;
+
+      var bgColor = "bg-primary";
+      // Infinite allowed
+      if (maxAllowed == -1) {
+        var progressTooltip = `${current} used`;
+        var maxAllowedLabel = '∞';
+        if (current == 0) {
+          var currentWidth = 0;
+          var maxAllowedWidth = 100;
+        }
+        else {
+          var currentWidth = 20;
+          var maxAllowedWidth = 80;
+        }
+      }
+      else {
+        var progressTooltip = `${current} out of ${maxAllowed} used`;
+        var maxAllowedLabel = maxAllowed - current;
+        var currentWidth = current / maxAllowed * 100;
+        var maxAllowedWidth = maxAllowedLabel / maxAllowed * 100;
+
+        if (maxAllowedLabel < 0) {
+          maxAllowedLabel = 0;
+          maxAllowedWidth = 0;
+          bgColor = "bg-danger";
+        }
+      }
+
+      var diagramHtml = `
+        <div class="row align-items-center g-0 mt-4">
+          <div class="col-4">
+            <span>${description.display_name}</span>
+            <a class="lh-1 ms-3" style="padding-top: 1px;" 
+              data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
+              ${getInfoSvg()}
+            </a>
+          </div>
+          <div class="progress col ms-2 fw-bold" style="height: 20px;"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="${progressTooltip}">
+            <div class="progress-bar ${bgColor}" role="progressbar" style="width: ${currentWidth}%">${current}</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${maxAllowedWidth}%">${maxAllowedLabel}</div>
+          </div>
+        </div>
+      `
+      $(`#${id}-flavor-info-div`).append(diagramHtml);
+    }
+  }
+
   var utils = {
     parseJSON: parseJSON,
     getId: getId,
     getLabConfigSelectValues: getLabConfigSelectValues,
     setLabAsNA: setLabAsNA,
+    setSpawnActive: setSpawnActive,
     updateProgressState: updateProgressState,
     appendToLog: appendToLog,
     updateSpawnEvents: updateSpawnEvents,
+    createFlavorInfo: createFlavorInfo,
   };
 
   return utils;

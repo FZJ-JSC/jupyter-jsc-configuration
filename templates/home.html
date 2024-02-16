@@ -98,6 +98,13 @@ spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
 spawnEvents["{{spawner.name}}"] = {"latest": []};
   {%- endif -%}
 {%- endfor %}
+var spawnActive = {};
+{% for spawner in user.spawners.values() -%}
+  {% if spawner.name -%}
+  spawnActive["{{spawner.name}}"] = {{spawner.active | tojson}};
+  {%- endif %}
+{%- endfor %}
+
 var systemsHealth = {
 threshold: {
     interactive: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("interactive", 50) | int}}, 

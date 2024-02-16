@@ -31,6 +31,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const dropdownOptions = getDropdownOptions();
     const service = getService(options);
     const system = options["system"];
+    const flavor = options["flavor"];
     const account = options["account"];
     const project = options["project"];
     const partition = options["partition"];
@@ -56,6 +57,21 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       }
       if (!(system in dropdownOptions[service])) {
         reason += "system";
+        utils.setLabAsNA(id, reason);
+        return false;
+      }
+    }
+    if (flavor !== undefined) {
+      let systemFlavors = window.flavorInfo[system] || {};
+      if (!(flavor in systemFlavors)) {
+        reason += "flavor";
+        utils.setLabAsNA(id, reason);
+        return false;
+      }
+      let flavorDescription = systemFlavors[flavor];
+      let spawnerState = window.spawnActive[id];
+      if ((flavorDescription.current || 0) >= flavorDescription.max && !spawnerState) {
+        reason += "flavor limits";
         utils.setLabAsNA(id, reason);
         return false;
       }
@@ -210,8 +226,9 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       catch (e) { utils.setLabAsNA(id, "due to a JS error"); }
     }
     else {
-      function _setSelectOption(key, value) {
-        if (value) $(`#${id}-${key}-select`).append(`<option value="${value}">${value}</option>`);
+      function _setSelectOption(key, value, displayValue) {
+        if (!displayValue) displayValue = value;
+        if (value) $(`#${id}-${key}-select`).append(`<option value="${value}">${displayValue}</option>`);
         else $(`#${id}-${key}-select-div`).hide();
         dropdowns.updateLabConfigSelect($(`#${id}-${key}-select`), value);
       }
@@ -239,7 +256,8 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         $(`#${id}-image-mount-cb-input-div`).hide();
       }
       _setInputValue("image-mount", userdata_path);
-      _setSelectOption("flavor", flavor);
+      _setSelectOption("flavor", flavor, ((window.flavorInfo[system] || {})[flavor] || {}).display_name);
+      utils.createFlavorInfo(id, system);
       _setSelectOption("account", account);
       _setSelectOption("project", project);
       let maintenance = checkComputeMaintenance(system, partition);

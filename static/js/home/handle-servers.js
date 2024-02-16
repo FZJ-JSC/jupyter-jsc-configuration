@@ -20,6 +20,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     api.cancel_named_server(user, id, {
       success: function () {
         console.log("cancel success");
+        custom_utils.setSpawnActive(id, false);
       },
       error: function () {
         console.log("cancel error");
@@ -38,6 +39,12 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         _enableTrButtons(tr, running);
         // Reset progress
         custom_utils.updateProgressState(id, "reset");
+        custom_utils.setSpawnActive(id, false);
+        var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+        $.get(flavorUrl, function (data) {
+          window.flavorInfo = data;
+          lab.checkIfAvailable(id, window.userOptions[id]);
+        });
       },
       error: function (xhr) {
         console.log("stop error");
@@ -58,7 +65,8 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       success: function () {
         $(`tr[data-server-id=${id}]`).each(function () {
           $(this).remove();
-        })
+        });
+        custom_utils.setSpawnActive(id, false);
       },
       error: function (xhr) {
         var alert = that.siblings(".alert");
@@ -111,6 +119,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         }
         // Successfully sent request to start the lab, enable row again
         let running = true;
+        custom_utils.setSpawnActive(id, running);
         _enableTrButtons(tr, running);
       },
       error: function (xhr) {
@@ -251,7 +260,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       success: function () {
         _updateTr(tr, id, options);
         // Update global user options
-        userOptions[id] = options;
+        window.userOptions[id] = options;
         alert.children("span")
           .text(`Successfully updated ${displayName}.`);
         alert
@@ -268,7 +277,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     const id = custom_utils.getId(this);
     var alert = $(this).siblings(".alert");
 
-    const options = userOptions[id];
+    const options = window.userOptions[id];
     const name = options.name;
     // Do not send start_id when updating lab config
     delete options.start_id;
