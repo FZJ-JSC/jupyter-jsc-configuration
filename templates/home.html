@@ -453,10 +453,10 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   */
   (async () => {
     var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    flavorInfo = await $.get(flavorUrl);
+    flavorInfo = $.get(flavorUrl);
 
     var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
-    var incidentData = await $.get( incidentUrl );
+    var incidentData = $.get( incidentUrl );
     for (const entry in incidentData) {
         systemsHealth[entry] = incidentData[entry].health;
     }
