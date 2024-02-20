@@ -117,6 +117,11 @@ threshold: {
     compute: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("compute", 40) | int}}
   }
 };
+{%- for system, system_info in incidents.items() %}
+systemsHealth["{{system}}"] = {{ system_info.health }};
+{%- endfor %}
+
+{#- Flavors are user specific and it is easier to get them via an api call #}
 var flavorInfo = {};
 </script>
 
@@ -452,14 +457,9 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     On page load
   */
   (async () => {
+    // Set flavor info via api call
     let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    let incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
-    let incidentData;
-    [window.flavorInfo, incidentData] = await Promise.all([$.get(flavorUrl), $.get(incidentUrl)]);
-
-    for (const entry in incidentData) {
-        systemsHealth[entry] = incidentData[entry].health;
-    }
+    window.flavorInfo = await $.get(flavorUrl);
 
     for  (const id of Object.keys(userOptions)) {
       let available = lab.checkIfAvailable(id, userOptions[id]);
@@ -467,9 +467,9 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     }
     updateSpawnProgress();
 
-    {#- For new labs, only the first option has to be 
+    {# For new labs, only the first option has to be 
     updated manually. All other updates will be triggered
-    via onChange and set default values. #}
+    via onChange and set default values. -#}
     dropdowns.updateService("{{ new }}");
     $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
 

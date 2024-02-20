@@ -177,17 +177,14 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
   }
 
   function updateSystemHoverTooltips() {
-    api.api_request( "incidents", {
-      success: function(data) {
-        for (const [system, systemInfo] of Object.entries(data)) {
-          if (systemInfo.incident) {
-            $(`#ampel-${system.toLowerCase()}-tooltip`)
-              .attr('data-bs-original-title', systemInfo.incident);
-          }
-        }
-        reorderSystems(data);
+    const incidents = {{ incidents | tojson }};
+    for (const [system, systemInfo] of Object.entries(incidents)) {
+      if (systemInfo.incident) {
+        $(`#ampel-${system.toLowerCase()}-tooltip`)
+          .attr('data-bs-original-title', systemInfo.incident);
       }
-    })
+    }
+    reorderSystems(incidents);
   }
 
   function updateNumberOfUsers() {
