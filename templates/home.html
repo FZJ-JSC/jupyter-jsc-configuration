@@ -452,11 +452,11 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
     On page load
   */
   (async () => {
-    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    flavorInfo = $.get(flavorUrl);
+    let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+    let incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
+    let incidentData;
+    [window.flavorInfo, incidentData] = await Promise.all([$.get(flavorUrl), $.get(incidentUrl)]);
 
-    var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
-    var incidentData = $.get( incidentUrl );
     for (const entry in incidentData) {
         systemsHealth[entry] = incidentData[entry].health;
     }
