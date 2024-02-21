@@ -2,6 +2,9 @@ tr.summary-tr {
   height: 73px
 }
 
+tr.pointer-tr {
+  cursor: pointer;
+}
 
 .new-spawner-tr {
   --bs-table-bg: #fff;
