@@ -456,26 +456,32 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   /*
     On page load
   */
-  (async () => {
-    // Set flavor info via api call
-    let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    window.flavorInfo = await $.get(flavorUrl);
+  // Dropdown flavors need flavor info, so get that first
+  // and do  everything else in dependency
+  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+  $.ajax({
+    url: flavorUrl,
+    timeout: 5000,
+    success: function(data) {
+      window.flavorInfo = data;
+    },
+    complete: function() {
+      for  (const id of Object.keys(userOptions)) {
+        let available = lab.checkIfAvailable(id, userOptions[id]);
+        lab.setUserOptions(id, userOptions[id], available);
+      }
+      updateSpawnProgress();
 
-    for  (const id of Object.keys(userOptions)) {
-      let available = lab.checkIfAvailable(id, userOptions[id]);
-      lab.setUserOptions(id, userOptions[id], available);
+      {# For new labs, only the first option has to be 
+      updated manually. All other updates will be triggered
+      via onChange and set default values. -#}
+      dropdowns.updateService("{{ new }}");
+      $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
+
+      // Remove all tab warnings since initial changes shouldn't cause warnings
+      $("[id$=tab-warning]").addClass("invisible");
     }
-    updateSpawnProgress();
-
-    {# For new labs, only the first option has to be 
-    updated manually. All other updates will be triggered
-    via onChange and set default values. -#}
-    dropdowns.updateService("{{ new }}");
-    $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
-
-    // Remove all tab warnings since initial changes shouldn't cause warnings
-    $("[id$=tab-warning]").addClass("invisible");
-  })();
+  });
 
   // Add event source for user spawner events
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
@@ -486,7 +492,7 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
   let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
   spawnStartStopEvtSource.onmessage = (e) => {
-    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+    let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
     $.get( flavorUrl, function(data) {
       flavorInfo = data;
       for (const id of Object.keys(userOptions)) {
