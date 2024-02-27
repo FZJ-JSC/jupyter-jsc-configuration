@@ -35,6 +35,9 @@ define(["jquery", "home/utils"], function (
   }
 
   var updateFlavors = function (id, service, system, value) {
+    const systemInfo = getSystemInfo();
+    const backendInfo = getBackendServiceInfo();
+
     let select = $(`select#${id}-flavor-select`);
     const currentVal = select.val();
 
@@ -46,7 +49,18 @@ define(["jquery", "home/utils"], function (
 
     let systemFlavors = window.flavorInfo[system];
     if (!systemFlavors) {
-      $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide();
+      // Check if system should have flavor info but doesn't first
+      let backend = systemInfo[system].backendService;
+      if (backendInfo[backend].flavorsRequired || backendInfo[backend].userflavors) {
+        // If so, we still want to create the flavor info to show the error message
+        utils.createFlavorInfo(id, system);
+        utils.setLabAsNA(id, "due to flavor");
+        $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
+      }
+      else {
+        // Otherwise, we can just skip showing the flavor info entirely
+        $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide();
+      }
       updateLabConfigSelect(select, value, currentVal);
       return;
     };

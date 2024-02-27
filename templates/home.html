@@ -125,8 +125,6 @@ systemsHealth["{{system}}"] = {{ system_info.health }};
 var flavorInfo = {};
 </script>
 
-
-
 <script>
 /* (Mostly) Jinja dependent functions */
 function getDropdownOptions() {
@@ -142,6 +140,10 @@ function getService(options) {
 
 function getServiceInfo() {
   return {{custom_config.get("services") | tojson}} || {};
+}
+
+function getBackendServiceInfo() {
+  return {{custom_config.get("backendServices") | tojson}} || {};
 }
 
 function getSystemInfo() {
