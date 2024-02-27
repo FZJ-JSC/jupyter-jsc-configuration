@@ -1,4 +1,7 @@
-define(["jquery"], function ($) {
+define(["jquery", "home/utils"], function (
+  $,
+  utils
+) {
   "use strict";
 
   var updateService = function (id, value) {
@@ -35,58 +38,48 @@ define(["jquery"], function ($) {
     let select = $(`select#${id}-flavor-select`);
     const currentVal = select.val();
 
-    let systemFlavors = window.flavorInfo[system] || {};
     resetInputElement(select);
-    $(`#${id}-flavor-info-div`).html("");
+    $(`#${id}-na-btn`).hide();
+    $(`#${id}-na-info`).empty().hide();
+    if (!window.spawnActive[id])
+      $(`#${id}-start-btn`).removeClass("disabled").show();
+
+    let systemFlavors = window.flavorInfo[system];
+    if (!systemFlavors) {
+      $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide();
+      updateLabConfigSelect(select, value, currentVal);
+      return;
+    };
 
     // Sort systemFlavors by flavor weights
     for (const [flavor, description] of Object.entries(systemFlavors).sort(([, a], [, b]) => (a["weight"] || 99) < (b["weight"] || 99) ? 1 : -1)) {
-      var current = description.current || 0;
-      var max_allowed = description.max;
       // Flavor not valid, so skip
-      if (max_allowed == 0 || current < 0 || max_allowed == null || current == null) continue;
-      select.append(`<option value="${flavor}">${description.display_name}</option>`);
+      if (description.max == 0 || description.current < 0 || description.max == null || description.current == null) continue;
+      if (description.max == -1 || description.current < description.max)
+        select.append(`<option value="${flavor}">${description.display_name}</option>`);
+    }
+    utils.createFlavorInfo(id, system);
+    enableTooltips();  // Defined in page.html
+    $.isEmptyObject(systemFlavors) ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
 
-      // Infinite allowed
-      if (max_allowed == -1) {
-        var progress_tooltip = `${current} used`;
-        var max_allowed_label = '∞';
-        if (current == 0) {
-          var current_width = 0;
-          var max_allowed_width = 100;
-        }
-        else {
-          var current_width = 20;
-          var max_allowed_width = 80;
+    if (select.html() == "") {
+      if (window.spawnActive[id]) {
+        // Lab is active, so we should still append the current flavor to the select
+        const flavor = window.userOptions[id].flavor;
+        const description = (systemFlavors[system] || {})[flavor] || {};
+        if (flavor) {
+          select.append(`<option disabled value="${flavor}">${description.display_name || flavor}</option>`);
         }
       }
       else {
-        var progress_tooltip = `${current} out of ${max_allowed} used`;
-        var max_allowed_label = max_allowed - current;
-        var current_width = current / max_allowed * 100 || 0;
-        var max_allowed_width = max_allowed_label / max_allowed * 100 || 100;
+        // Show info text and disable start
+        select.append(`<option disabled value="">No flavors currently available</option>`);
+        utils.setLabAsNA(id, "due to flavor limits");
       }
 
-      var diagramHtml = `
-        <div class="row align-items-center g-0 mt-4">
-          <div class="col-4">
-            <span>${description.display_name}</span>
-            <a class="lh-1 ms-3" style="padding-top: 1px;" 
-              data-bs-toggle="tooltip" data-bs-placement="right" title="${description.description}">
-              ${getInfoSvg()}
-            </a>
-          </div>
-          <div class="progress col ms-2 fw-bold" style="height: 20px;"
-            data-bs-toggle="tooltip" data-bs-placement="top" title="${progress_tooltip}">
-            <div class="progress-bar" role="progressbar" style="width: ${current_width}%">${current}</div>
-            <div class="progress-bar bg-success" role="progressbar" style="width: ${max_allowed_width}%">${max_allowed_label}</div>
-          </div>
-        </div>
-      `
-      $(`#${id}-flavor-info-div`).append(diagramHtml);
+      select.addClass("disabled");
+      select.prop("selectedIndex", 0);
     }
-    enableTooltips();  // Defined in page.html
-    Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -101,7 +94,7 @@ define(["jquery"], function ($) {
     for (const account of Object.keys(accountsAllowed).sort()) {
       select.append(`<option value="${account}">${account}</option>`);
     }
-    Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).hide() : $(`#${id}-account-select-div`).show();
+    $.isEmptyObject(accountsAllowed) ? $(`#${id}-account-select-div`).hide() : $(`#${id}-account-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -116,7 +109,7 @@ define(["jquery"], function ($) {
     for (const project of Object.keys(projectsAllowed).sort()) {
       select.append(`<option value="${project}">${project}</option>`);
     }
-    Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).hide() : $(`#${id}-project-select-div`).show();
+    $.isEmptyObject(projectsAllowed) ? $(`#${id}-project-select-div`).hide() : $(`#${id}-project-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -153,7 +146,7 @@ define(["jquery"], function ($) {
       }
       select.append('</optgroup>');
     }
-    Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).hide() : $(`#${id}-partition-select-div`).show();
+    $.isEmptyObject(partitionsAllowed) ? $(`#${id}-partition-select-div`).hide() : $(`#${id}-partition-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 

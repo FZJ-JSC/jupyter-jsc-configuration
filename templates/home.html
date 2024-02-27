@@ -98,12 +98,30 @@ spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
 spawnEvents["{{spawner.name}}"] = {"latest": []};
   {%- endif -%}
 {%- endfor %}
+var spawnActive = {};
+{% for spawner in user.spawners.values() -%}
+  {% if spawner.name -%}
+    {% if spawner.pending -%}
+      spawnActive["{{spawner.name}}"] = "pending";
+    {% elif spawner.ready -%}
+      spawnActive["{{spawner.name}}"] = "ready";
+    {% else -%}
+      spawnActive["{{spawner.name}}"] = false;
+    {%- endif %}
+  {%- endif %}
+{%- endfor %}
+
 var systemsHealth = {
 threshold: {
     interactive: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("interactive", 50) | int}}, 
     compute: {{custom_config.get("incidentCheck", {}).get("healthThreshold", {}).get("compute", 40) | int}}
   }
 };
+{%- for system, system_info in incidents.items() %}
+systemsHealth["{{system}}"] = {{ system_info.health }};
+{%- endfor %}
+
+{#- Flavors are user specific and it is easier to get them via an api call #}
 var flavorInfo = {};
 </script>
 
@@ -163,6 +181,7 @@ function onEvtMessage(event, id) {
       evtSources[id].close();
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
+        spawnActive[id] = false;
         $(`#${id}-progress-bar`)
           .width(100)
           .removeClass("bg-success")
@@ -200,9 +219,11 @@ function onEvtMessage(event, id) {
           {%- endif %}
         }
         {%- endfor %}
+        spawnActive[id] = "ready";
       }
     }
     else { // Spawn in progress
+      spawnActive[id] = "pending";
       collapseBtns.addClass("disabled");
       if (evt.progress == {{cancel_progress_deactivation}}) {
         $(`#${id}-progress-bar`)
@@ -435,31 +456,32 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   /*
     On page load
   */
-  (async () => {
-    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    flavorInfo = await $.get(flavorUrl);
+  // Dropdown flavors need flavor info, so get that first
+  // and do  everything else in dependency
+  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+  $.ajax({
+    url: flavorUrl,
+    timeout: 5000,
+    success: function(data) {
+      window.flavorInfo = data;
+    },
+    complete: function() {
+      for  (const id of Object.keys(userOptions)) {
+        let available = lab.checkIfAvailable(id, userOptions[id]);
+        lab.setUserOptions(id, userOptions[id], available);
+      }
+      updateSpawnProgress();
 
-    var incidentUrl = location.origin + window.jhdata.base_url + "api/incidents";
-    var incidentData = await $.get( incidentUrl );
-    for (const entry in incidentData) {
-        systemsHealth[entry] = incidentData[entry].health;
+      {# For new labs, only the first option has to be 
+      updated manually. All other updates will be triggered
+      via onChange and set default values. -#}
+      dropdowns.updateService("{{ new }}");
+      $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
+
+      // Remove all tab warnings since initial changes shouldn't cause warnings
+      $("[id$=tab-warning]").addClass("invisible");
     }
-
-    for  (const id of Object.keys(userOptions)) {
-      let available = lab.checkIfAvailable(id, userOptions[id]);
-      lab.setUserOptions(id, userOptions[id], available);
-    }
-    updateSpawnProgress();
-
-    {#- For new labs, only the first option has to be 
-    updated manually. All other updates will be triggered
-    via onChange and set default values. #}
-    dropdowns.updateService("{{ new }}");
-    $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
-
-    // Remove all tab warnings since initial changes shouldn't cause warnings
-    $("[id$=tab-warning]").addClass("invisible");
-  })();
+  });
 
   // Add event source for user spawner events
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
@@ -470,13 +492,15 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
   let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
   spawnStartStopEvtSource.onmessage = (e) => {
-    var flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
+    let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
     $.get( flavorUrl, function(data) {
       flavorInfo = data;
       for (const id of Object.keys(userOptions)) {
         const values = utils.getLabConfigSelectValues(id);
         dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
       }
+      const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
+      dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
     } );
   };
 
