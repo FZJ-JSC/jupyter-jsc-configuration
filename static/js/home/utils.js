@@ -180,6 +180,17 @@ define(["jquery"], function ($) {
       `
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
+
+    // The lab has a flavor configured, but we could not get any flavor information
+    if ($.isEmptyObject(systemFlavors) && window.userOptions[id].flavor) {
+      var noFlavorsHtml = `
+      <div class="row g-0 mt-3">
+        <div class="col-4"></div>
+        <div class="col ms-2 fw-bold text-danger">No flavors could be fetched. Try logging out and back in to fix the issue.</div>
+      </div>
+      `;
+      $(`#${id}-flavor-info-div`).append(noFlavorsHtml);
+    }
   }
 
   var utils = {

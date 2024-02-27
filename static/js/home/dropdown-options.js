@@ -60,7 +60,7 @@ define(["jquery", "home/utils"], function (
     }
     utils.createFlavorInfo(id, system);
     enableTooltips();  // Defined in page.html
-    Object.keys(systemFlavors).length == 0 ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
+    $.isEmptyObject(systemFlavors) ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
 
     if (select.html() == "") {
       if (window.spawnActive[id]) {
@@ -94,7 +94,7 @@ define(["jquery", "home/utils"], function (
     for (const account of Object.keys(accountsAllowed).sort()) {
       select.append(`<option value="${account}">${account}</option>`);
     }
-    Object.keys(accountsAllowed).length == 0 ? $(`#${id}-account-select-div`).hide() : $(`#${id}-account-select-div`).show();
+    $.isEmptyObject(accountsAllowed) ? $(`#${id}-account-select-div`).hide() : $(`#${id}-account-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -109,7 +109,7 @@ define(["jquery", "home/utils"], function (
     for (const project of Object.keys(projectsAllowed).sort()) {
       select.append(`<option value="${project}">${project}</option>`);
     }
-    Object.keys(projectsAllowed).length == 0 ? $(`#${id}-project-select-div`).hide() : $(`#${id}-project-select-div`).show();
+    $.isEmptyObject(projectsAllowed) ? $(`#${id}-project-select-div`).hide() : $(`#${id}-project-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -146,7 +146,7 @@ define(["jquery", "home/utils"], function (
       }
       select.append('</optgroup>');
     }
-    Object.keys(partitionsAllowed).length == 0 ? $(`#${id}-partition-select-div`).hide() : $(`#${id}-partition-select-div`).show();
+    $.isEmptyObject(partitionsAllowed) ? $(`#${id}-partition-select-div`).hide() : $(`#${id}-partition-select-div`).show();
     updateLabConfigSelect(select, value, currentVal);
   }
 
