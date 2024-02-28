@@ -211,7 +211,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
           passing a value explicitely, the first allowed option would be 
           chosen regardless of the user option value. */
       try {
-        dropdowns.updateService(id, service);
+        dropdowns.updateServices(id, service);
         if (image) $(`#${id}-image-input`).val(image);
         if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
         dropdowns.updateSystems(id, service, system);

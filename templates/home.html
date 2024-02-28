@@ -300,7 +300,7 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
       {# For new labs, only the first option has to be 
       updated manually. All other updates will be triggered
       via onChange and set default values. -#}
-      dropdowns.updateService("{{ new }}");
+      dropdowns.updateServices("{{ new }}");
       $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
 
       // Remove all tab warnings since initial changes shouldn't cause warnings
