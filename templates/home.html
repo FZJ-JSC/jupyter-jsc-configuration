@@ -311,7 +311,37 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   // Add event source for user spawner events
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
   let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
-  spawnStatusChangedEvtSource.onmessage = lab.spawnStatusChanged;
+  spawnStatusChangedEvtSource.onmessage = (e) => {
+    const data = JSON.parse(e.data);
+    var spawnEvents = window.spawnEvents;
+
+    // Create eventListeners for new labs if they don't exist
+    for (const [id, _] of Object.entries(data)) {
+      if (!(id in spawnEvents)) {
+        spawnEvents[id] = { "latest": [] };
+      }
+      if (!(id in evtSources)) {
+        utils.updateSpawnEvents(spawnEvents, id);
+
+        let progressUrl = `${window.jhdata.base_url}api/users/${window.jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
+        evtSources[id] = new EventSource(progressUrl);
+        evtSources[id].onmessage = function (e) {
+          onEvtMessage(e, id);
+        }
+        // Reset progress bar and log for new spawns
+        $(`#${id}-progress-bar`)
+          .width(0).html("")
+          .removeClass("bg-danger bg-success");
+        $(`#${id}-progress-info-text`).html("");
+        $(`#${id}-log`).html("");
+        // Update buttons to reflect pending state
+        let tr = $(`tr.summary-tr[data-server-id=${id}]`);
+        // _enableTrButtonsRunning
+        tr.find(".btn-na-lab, .btn-start-lab").hide();
+        tr.find(".btn-open-lab, .btn-cancel-lab").show().addClass("disabled");
+      }
+    }
+  };
 
   // Test general spawn event notifications
   let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;

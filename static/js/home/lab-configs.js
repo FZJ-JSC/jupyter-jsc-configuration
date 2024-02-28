@@ -316,43 +316,10 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   }
 
-  var spawnStatusChanged = function (event) {
-    const data = JSON.parse(event.data);
-    var spawnEvents = window.spawnEvents;
-
-    // Create eventListeners for new labs if they don't exist
-    for (const [id, _] of Object.entries(data)) {
-      if (!(id in spawnEvents)) {
-        spawnEvents[id] = { "latest": [] };
-      }
-      if (!(id in evtSources)) {
-        utils.updateSpawnEvents(spawnEvents, id);
-
-        let progressUrl = `${window.jhdata.base_url}api/users/${window.jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
-        evtSources[id] = new EventSource(progressUrl);
-        evtSources[id].onmessage = function (e) {
-          onEvtMessage(e, id);
-        }
-        // Reset progress bar and log for new spawns
-        $(`#${id}-progress-bar`)
-          .width(0).html("")
-          .removeClass("bg-danger bg-success");
-        $(`#${id}-progress-info-text`).html("");
-        $(`#${id}-log`).html("");
-        // Update buttons to reflect pending state
-        let tr = $(`tr.summary-tr[data-server-id=${id}]`);
-        // _enableTrButtonsRunning
-        tr.find(".btn-na-lab, .btn-start-lab").hide();
-        tr.find(".btn-open-lab, .btn-cancel-lab").show().addClass("disabled");
-      }
-    }
-  }
-
   var labConfigs = {
     checkComputeMaintenance: checkComputeMaintenance,
     checkIfAvailable: checkIfAvailable,
     setUserOptions: setUserOptions,
-    spawnStatusChanged: spawnStatusChanged,
   }
 
   return labConfigs;
