@@ -272,21 +272,24 @@ function onEvtMessage(event, id) {
 </script>
 
 <script>
-require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], function (
+require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-configs"], function (
   $,
+  JHAPI,
   utils,
   dropdowns,
   lab
 ) {
+  "use strict";
+
+  var base_url = window.jhdata.base_url;
+  var api = new JHAPI(base_url);
+
   /*
     On page load
   */
   // Dropdown flavors need flavor info, so get that first
   // and do  everything else in dependency
-  let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-  $.ajax({
-    url: flavorUrl,
-    timeout: 5000,
+  api.api_request("outpostflavor", {
     success: function(data) {
       window.flavorInfo = data;
     },
@@ -348,15 +351,17 @@ require(["jquery", "home/utils", "home/dropdown-options", "home/lab-configs"], f
   let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
   spawnStartStopEvtSource.onmessage = (e) => {
     let flavorUrl = location.origin + window.jhdata.base_url + "api/outpostflavors";
-    $.get( flavorUrl, function(data) {
-      flavorInfo = data;
-      for (const id of Object.keys(userOptions)) {
-        const values = utils.getLabConfigSelectValues(id);
-        dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
+    api.api_request("outpostflavor", {
+      success: function(data) {
+        flavorInfo = data;
+        for (const id of Object.keys(userOptions)) {
+          const values = utils.getLabConfigSelectValues(id);
+          dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
+        }
+        const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
+        dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
       }
-      const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
-      dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
-    } );
+    });
   };
 
   /*
