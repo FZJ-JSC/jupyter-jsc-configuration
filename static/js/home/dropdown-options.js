@@ -4,7 +4,7 @@ define(["jquery", "home/utils"], function (
 ) {
   "use strict";
 
-  var updateService = function (id, value) {
+  var updateServices = function (id, value) {
     const dropdownOptions = getDropdownOptions();
     const serviceInfo = getServiceInfo();
 
@@ -164,7 +164,7 @@ define(["jquery", "home/utils"], function (
     updateLabConfigSelect(select, value, currentVal);
   }
 
-  var updateReservation = function (id, service, system, account, project, partition, value) {
+  var updateReservations = function (id, service, system, account, project, partition, value) {
     const dropdownOptions = getDropdownOptions();
     const reservationInfo = getReservationInfo();
 
@@ -469,13 +469,13 @@ define(["jquery", "home/utils"], function (
   }
 
   var updateDropdowns = {
-    updateService: updateService,
+    updateServices: updateServices,
     updateSystems: updateSystems,
     updateFlavors: updateFlavors,
     updateAccounts: updateAccounts,
     updateProjects: updateProjects,
     updatePartitions: updatePartitions,
-    updateReservation: updateReservation,
+    updateReservations: updateReservations,
     updateResources: updateResources,
     updateModules: updateModules,
     resetInputElement: resetInputElement,

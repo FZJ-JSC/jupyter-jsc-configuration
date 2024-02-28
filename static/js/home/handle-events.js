@@ -181,7 +181,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const values = utils.getLabConfigSelectValues(id);
     if (!$(this).hasClass("no-update")) {
       try {
-        dropdowns.updateReservation(id, values.service, values.system, values.account, values.project, values.partition);
+        dropdowns.updateReservations(id, values.service, values.system, values.account, values.project, values.partition);
         dropdowns.updateResources(id, values.service, values.system, values.account, values.project, values.partition);
         dropdowns.updateModules(id, values.service, values.system, values.account, values.project, values.partition);
       }

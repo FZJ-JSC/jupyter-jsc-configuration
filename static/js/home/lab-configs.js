@@ -219,7 +219,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateAccounts(id, service, system, account);
         dropdowns.updateProjects(id, service, system, account, project);
         dropdowns.updatePartitions(id, service, system, account, project, partition);
-        dropdowns.updateReservation(id, service, system, account, project, partition, reservation);
+        dropdowns.updateReservations(id, service, system, account, project, partition, reservation);
         dropdowns.updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
         dropdowns.updateModules(id, service, system, account, project, partition, modules);
       }
