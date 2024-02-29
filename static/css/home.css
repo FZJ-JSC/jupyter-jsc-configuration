@@ -1,8 +1,5 @@
 tr.summary-tr {
-  height: 73px
-}
-
-tr.pointer-tr {
+  height: 73px;
   cursor: pointer;
 }
 
