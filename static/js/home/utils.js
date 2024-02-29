@@ -181,8 +181,8 @@ define(["jquery"], function ($) {
       $(`#${id}-flavor-info-div`).append(diagramHtml);
     }
 
-    // The lab has a flavor configured, but we could not get any flavor information
-    if ($.isEmptyObject(systemFlavors) && window.userOptions[id].flavor) {
+    // The lab has a flavor configured or is a new lab, but we could not get any flavor information
+    if (((window.userOptions[id] || {}).flavor || id == "new-jupyterlab") && $.isEmptyObject(systemFlavors)) {
       var noFlavorsHtml = `
       <div class="row g-0 mt-3">
         <div class="col-4"></div>
