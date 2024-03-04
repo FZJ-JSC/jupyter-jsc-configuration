@@ -156,16 +156,15 @@
                 A public registry docker image starting a single-user notebook server.
                 <a href='https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html' target='_blank' style='color: white !important;'>Examples.</a>
               {%- endcall %}
-              {{ inputs.create_checkbox_input(id, "test-cb", "testTest")}}
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private")}}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
                 Username for the private docker repository
               {%- endcall %}
-              {%- call inputs.create_password_input(id, "image-private-pass", "Password",
-                placeholder="Please enter your password") %}
-                Password for the private docker repository
-              {%- endcall %}
+              {#- {%- call inputs.create_password_input(id, "image-private-pass", "Password", #}
+               {#-  placeholder="Please enter your password") %} #}
+               {#-  Password for the private docker repository #}
+              {#- {%- endcall %} #}
               {{ inputs.create_checkbox_input(id, "image-mount-cb", "Mount user data")}}
               {%- call inputs.create_text_input(id, "image-mount", "User data path",
                 pattern="^\/[A-Za-z0-9\-\/]+",
