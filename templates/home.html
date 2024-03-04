@@ -121,8 +121,7 @@ threshold: {
 systemsHealth["{{system}}"] = {{ system_info.health }};
 {%- endfor %}
 
-{#- Flavors are user specific and it is easier to get them via an api call #}
-var flavorInfo = {};
+var flavorInfo = {{ outpostflavors | tojson }};
 </script>
 
 <script>
@@ -287,29 +286,22 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
   /*
     On page load
   */
-  // Dropdown flavors need flavor info, so get that first
-  // and do  everything else in dependency
-  api.api_request("outpostflavors", {
-    success: function(data) {
-      window.flavorInfo = data;
-    },
-    complete: function() {
-      for  (const id of Object.keys(userOptions)) {
-        let available = lab.checkIfAvailable(id, userOptions[id]);
-        lab.setUserOptions(id, userOptions[id], available);
-      }
-      updateSpawnProgress();
-
-      {# For new labs, only the first option has to be 
-      updated manually. All other updates will be triggered
-      via onChange and set default values. -#}
-      dropdowns.updateServices("{{ new }}");
-      $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
-
-      // Remove all tab warnings since initial changes shouldn't cause warnings
-      $("[id$=tab-warning]").addClass("invisible");
+  $(document).ready(function() {
+    for  (const id of Object.keys(userOptions)) {
+      let available = lab.checkIfAvailable(id, userOptions[id]);
+      lab.setUserOptions(id, userOptions[id], available);
     }
-  });
+    updateSpawnProgress();
+
+    {# For new labs, only the first option has to be 
+    updated manually. All other updates will be triggered
+    via onChange and set default values. -#}
+    dropdowns.updateServices("{{ new }}");
+    $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
+
+    // Remove all tab warnings since initial changes shouldn't cause warnings
+    $("[id$=tab-warning]").addClass("invisible");
+  })
 
   // Add event source for user spawner events
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
