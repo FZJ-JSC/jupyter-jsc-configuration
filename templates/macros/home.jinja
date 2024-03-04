@@ -159,7 +159,11 @@
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private")}}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
-                Username for the private docker user repository
+                Username for the private docker repository
+              {%- endcall %}
+              {%- call inputs.create_password_input(id, "image-private-pass", "Password",
+                placeholder="Please enter your password") %}
+                Password for the private docker repository
               {%- endcall %}
               {{ inputs.create_checkbox_input(id, "image-mount-cb", "Mount user data")}}
               {%- call inputs.create_text_input(id, "image-mount", "User data path",
