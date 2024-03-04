@@ -308,10 +308,12 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
   let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
   spawnStatusChangedEvtSource.onmessage = (e) => {
     const data = JSON.parse(e.data);
+    const spawners = data.spawners || [];
     var spawnEvents = window.spawnEvents;
 
     // Create eventListeners for new labs if they don't exist
-    for (const [id, _] of Object.entries(data)) {
+    for (const id of spawners) {
+      utils.setSpawnActive(id, "pending");
       if (!(id in spawnEvents)) {
         spawnEvents[id] = { "latest": [] };
       }
@@ -336,23 +338,15 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
         tr.find(".btn-open-lab, .btn-cancel-lab").show().addClass("disabled");
       }
     }
-  };
 
-  // Test general spawn event notifications
-  let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-  let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
-  spawnStartStopEvtSource.onmessage = (e) => {
-    api.api_request("outpostflavors", {
-      success: function(data) {
-        flavorInfo = data;
-        for (const id of Object.keys(userOptions)) {
-          const values = utils.getLabConfigSelectValues(id);
-          dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
-        }
-        const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
-        dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
-      }
-    });
+    // We have updated flavor information, check if we need to update any flavor UI elements
+    window.flavorInfo = data.outpostflavors || window.flavorInfo;
+    for (const id of Object.keys(userOptions)) {
+      const values = utils.getLabConfigSelectValues(id);
+      dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
+    }
+    const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
+    dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
   };
 
   /*
