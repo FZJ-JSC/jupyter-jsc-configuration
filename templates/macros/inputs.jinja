@@ -33,9 +33,9 @@ since the warning  text will already create a margin.#}
 {%- endmacro -%}
 
 {%- macro create_password_input(id, key, label="", tooltip="") -%}
-{%- call create_text_input({{id}}, {{key}}, {{label}}, type="password") %}
+{%- call create_text_input(id, key, label, type="password") %}
 {#- {% if tooltip -%} -#}
-  {{tooltip}}
+  tooltip
   {#- {% endif -%} -#}
 {%- endcall %}
 {%- endmacro -%}
