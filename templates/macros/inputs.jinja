@@ -1,6 +1,6 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
+{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False, type="text") -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 {#- We use a different margin than the other input elements 
@@ -25,23 +25,19 @@ since the warning  text will already create a margin.#}
     {%- endif %}
   </label>
   <div class="col-8">
-    <input type="text" class="form-control" id="{{id}}-{{key}}-input" 
+    <input type="{{type}}" class="form-control" id="{{id}}-{{key}}-input" 
       placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
     <div class="invalid-feedback">{{ warning }}</div>    
   </div>
 </div>
 {%- endmacro -%}
 
-{%- macro create_password_input(id, key, label="", placeholder="") -%}
-{%- set key = key.lower() %}
-<div id="{{id}}-{{key}}-input-div" class="row mb-3">  {# style="display: none; #}
-  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">{{ label if label else key.capitalize() }}</label>
-  <div class="col-8">
-    <input type="password" id="{{id}}-{{key}}-input" class="form-control" value="-1">
-    {#- Set the warning message via JS for different min max values. #}
-    {#- div class="invalid-feedback"></div> #}
-  </div>
-</div>
+{%- macro create_password_input(id, key, label="", tooltip="") -%}
+{%- call create_text_input({{id}}, {{key}}, {{label}}, type="password") %}
+{#- {% if tooltip -%} -#}
+  {{tooltip}}
+  {#- {% endif -%} -#}
+{%- endcall %}
 {%- endmacro -%}
 
 {%- macro create_select(id, key, label="") -%}
