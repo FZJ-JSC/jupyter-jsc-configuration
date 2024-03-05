@@ -50,8 +50,8 @@ define(["jquery", "home/utils"], function (
     let systemFlavors = window.flavorInfo[system];
     if (!systemFlavors) {
       // Check if system should have flavor info but doesn't first
-      let backend = (systemInfo[system] || {}).backendService;
-      if ((backendInfo[backend] || {}).flavorsRequired || (backendInfo[backend] || {}).userflavors) {
+      let backend = systemInfo[system].backendService;
+      if (backendInfo[backend].flavorsRequired || backendInfo[backend].userflavors) {
         // If so, we still want to create the flavor info to show the error message
         utils.createFlavorInfo(id, system);
         utils.setLabAsNA(id, "due to flavor");
