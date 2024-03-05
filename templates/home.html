@@ -175,7 +175,7 @@ function onEvtMessage(event, id) {
   var cancelBtn = tr.find(".btn-cancel-lab");
   var collapseBtns = collapsibleTr.find("button").not(".nav-link");
 
-  var evt = JSON.parse(event.data);
+  const evt = JSON.parse(event.data);
   spawnEvents[id]["latest"].push(evt);
   if (evt.progress !== undefined && evt.progress != 0) {
     if (evt.progress == 100) {  // Spawn finished
