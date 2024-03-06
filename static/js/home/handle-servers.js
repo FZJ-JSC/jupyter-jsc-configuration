@@ -328,7 +328,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
   function _enableTrButtons(tr, running) {
     if (running) {
       // Show open/cancel for starting labs
-      tr.find(".btn-na-lab, .btn-start-lab").hide();
+      tr.find(".btn-na-lab, .btn-start-lab").addClass("disabled").hide();
       tr.find(".btn-open-lab, .btn-cancel-lab").show();
       // Disable until fitting event received from EventSource
       tr.find(".btn-open-lab, .btn-cancel-lab").addClass("disabled");
@@ -338,13 +338,14 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       var na = tr.find(".na-status").text() || 0;
       if (na != "0") {
         tr.find(".btn-na-lab").removeClass("disabled").show();
-        tr.find(".btn-start-lab").hide();
+        tr.find(".btn-start-lab").addClass("disabled").hide();
       }
       else {
-        tr.find(".btn-na-lab").hide()
+        tr.find(".btn-na-lab").addClass("disabled").hide();
         tr.find(".btn-start-lab").removeClass("disabled").show();
       }
-      tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab").hide();
+      tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab")
+        .addClass("disabled").hide();
     }
   }
 

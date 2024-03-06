@@ -195,15 +195,7 @@ require(["jquery", "jhapi", "utils"], function (
   // Cancel server spawn on click
   $("#cancel").click(function (event) {
     $("#cancel").attr("disabled", true);
-    api.cancel_named_server(user, "{{spawner.name}}", {
-      success: function() {
-        console.log("cancel success");
-      },
-      error: function (xhr, textStatus, errorThrown) {
-        console.log("cancel error");
-        console.log(xhr, textStatus, errorThrown);
-      }
-    });
+    api.cancel_named_server(user, "{{spawner.name}}");
     clearTimeout(timeout);
   });
 
@@ -246,10 +238,8 @@ require(["jquery", "jhapi", "utils"], function (
           delete evtSource;
           
           if (evt.failed) {
-            $(`#progress-bar`).html("").addClass("bg-danger");
-            $("#progress-info-text").html("last spawn failed");
-            $("#retry").removeAttr("disabled").show();
-            $("#cancel").hide();
+            // Update UI via spawnStatusChangedEvtSource so that 
+            // it happens after the stop has finished in the backend
             clearTimeout(timeout);
           }
           else {
@@ -297,6 +287,20 @@ require(["jquery", "jhapi", "utils"], function (
 
   $( document ).ready(function() {
     updateStatus();
+    
+    let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+    let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
+    spawnStatusChangedEvtSource.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      for (const id of data.stopped || []) {
+        if (id == "{{spawner.name}}") {
+          $(`#progress-bar`).html("").addClass("bg-danger");
+          $("#progress-info-text").html("last spawn failed");
+          $("#retry").removeAttr("disabled").show();
+          $("#cancel").hide();
+        }
+      }
+    }
   });
 });
 </script>

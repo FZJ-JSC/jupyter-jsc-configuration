@@ -170,77 +170,47 @@ function getLinkSvg() {
 }
 
 function onEvtMessage(event, id) {
-  var tr = $(`.summary-tr[data-server-id=${id}]`);
-  var collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`)
-  var cancelBtn = tr.find(".btn-cancel-lab");
-  var collapseBtns = collapsibleTr.find("button").not(".nav-link");
+  function _updateProgress(infoText, background="", html="") {
+    $(`#${id}-progress-bar`)
+      .width(100)
+      .removeClass("bg-success bg-danger")
+      .addClass(background)
+      .html(html);
+    $(`#${id}-progress-info-text`).html(infoText);
+  }
 
   const evt = JSON.parse(event.data);
   spawnEvents[id]["latest"].push(evt);
+  let tr = $(`.summary-tr[data-server-id=${id}]`);
   if (evt.progress !== undefined && evt.progress != 0) {
     if (evt.progress == 100) {  // Spawn finished
       evtSources[id].close();
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
         spawnActive[id] = false;
-        $(`#${id}-progress-bar`)
-          .width(100)
-          .removeClass("bg-success")
-          .addClass("bg-danger")
-          .html("");
-        $(`#${id}-progress-info-text`).html("last spawn failed");
-        // Change buttons to start or N/A
-        var na = tr.find(".na-status").text() || 0;
-        if (na != "0") {
-          tr.find(".btn-na-lab").show()
-          tr.find(".btn-start-lab").hide();
-        } 
-        else {
-          tr.find(".btn-na-lab").hide();
-          tr.find(".btn-start-lab").removeClass("disabled").show();
-        }
-        tr.find(".btn-open-lab, .btn-cancel-lab").addClass("disabled").hide();
-        collapseBtns.removeClass("disabled");
+        // All other UI updates all handled by the spawnStatusChangedEvtSource
+        // so that they happend after the stop has finished in the backend
       }
       else if (evt.ready) {  // Spawn successful
-        {%- for spawner in lab_spawners -%}
-        {%- set s = user.spawners[spawner.name] %}
-        if (id == "{{s.name}}") {
-          {%- if not s._stop_pending %}
-          $(`#${id}-progress-bar`)
-            .width(100)
-            .removeClass("bg-danger")
-            .addClass("bg-success")
-            .html("");
-          $(`#${id}-progress-info-text`).html("runnning");
-          cancelBtn.addClass("disabled").hide();
-          tr.find(".btn-stop-lab").removeClass("disabled").show();
-          tr.find(".btn-open-lab").removeClass("disabled");
-          collapseBtns.removeClass("disabled");
-          {%- endif %}
-        }
-        {%- endfor %}
         spawnActive[id] = "ready";
+        _updateProgress("running", "bg-success");
+        _updateLabButtons(id, true);
       }
     }
     else { // Spawn in progress
       spawnActive[id] = "pending";
+      let collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`);
+      let collapseBtns = collapsibleTr.find("button").not(".nav-link");
       collapseBtns.addClass("disabled");
       if (evt.progress == {{cancel_progress_deactivation}}) {
-        $(`#${id}-progress-bar`)
-          .width(100)
-          .addClass("bg-danger")
-          .html(`<b>${evt.progress}%</b>`);
-        $(`#${id}-progress-info-text`).html("cancelling...");
-        cancelBtn.addClass("disabled");
+        _updateProgress("cancelling...", "bg-danger", `<b>${evt.progress}%</b>`)
+        tr.find(".btn-cancel-lab").addClass("disabled");
       }
       else {
-        $(`#${id}-progress-bar`)
-          .width(100)
-          .html(`<b>${evt.progress}%</b>`);
-        $(`#${id}-progress-info-text`).html("spawning...");
-        if (evt.progress >= {{cancel_progress_activation}} && evt.progress < {{cancel_progress_deactivation}}) {
-          cancelBtn.removeClass("disabled");
+        _updateProgress("spawning...", "", `<b>${evt.progress}%</b>`)
+        if (evt.progress >= {{cancel_progress_activation}} 
+          && evt.progress < {{cancel_progress_deactivation}}) {
+          tr.find(".btn-cancel-lab").removeClass("disabled");
         }
       }
     }    
@@ -267,6 +237,36 @@ function onEvtMessage(event, id) {
         $(`#${id}-log`).append($('<div class="log-div">').html(htmlMsg));
     }
   }
+}
+
+function _updateLabButtons(id, running) {
+  let tr = $(`.summary-tr[data-server-id=${id}]`);
+  let collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`);
+  let collapseBtns = collapsibleTr.find("button").not(".nav-link");
+  if (running) {
+    // Show open/cancel for starting labs
+    tr.find(".btn-na-lab, .btn-start-lab, .btn-cancel-lab")
+      .addClass("disabled")
+      .hide();
+    tr.find(".btn-open-lab, .btn-stop-lab")
+      .removeClass("disabled")
+      .show(); 
+  }
+  else {
+    // Show start or na for non-running labs
+    var na = tr.find(".na-status").text() || 0;
+    if (na != "0") {
+      tr.find(".btn-na-lab").removeClass("disabled").show();
+      tr.find(".btn-start-lab").addClass("disabled").hide();
+    }
+    else {
+      tr.find(".btn-na-lab").hide()
+      tr.find(".btn-start-lab").removeClass("disabled").show();
+    }
+    tr.find(".btn-open-lab, .btn-cancel-lab, .btn-stop-lab")
+      .addClass("disabled").hide();
+  }
+  collapseBtns.removeClass("disabled");
 }
 </script>
 
@@ -308,11 +308,12 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
   let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
   spawnStatusChangedEvtSource.onmessage = (e) => {
     const data = JSON.parse(e.data);
-    const spawners = data.spawners || [];
+    const spawning = data.spawning || [];
+    const stopped = data.stopped || [];
     var spawnEvents = window.spawnEvents;
 
     // Create eventListeners for new labs if they don't exist
-    for (const id of spawners) {
+    for (const id of spawning) {
       utils.setSpawnActive(id, "pending");
       if (!(id in spawnEvents)) {
         spawnEvents[id] = { "latest": [] };
@@ -339,6 +340,12 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
       }
     }
 
+    for (const id of stopped) {
+      if (!id) continue; // Filter out labs with no name
+      utils.updateProgressState(id, "failed");
+      // Change buttons to start or N/A
+      _updateLabButtons(id, false);
+    }
     // We have updated flavor information, check if we need to update any flavor UI elements
     window.flavorInfo = data.outpostflavors || window.flavorInfo;
     for (const id of Object.keys(userOptions)) {
