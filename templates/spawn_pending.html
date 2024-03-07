@@ -289,9 +289,10 @@ require(["jquery", "jhapi", "utils"], function (
     updateStatus();
     
     let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-    let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
-    spawnStatusChangedEvtSource.onmessage = (e) => {
+    evtSourcesGlobal["pending"] = new EventSource(userSpawnerNotificationUrl);
+    evtSourcesGlobal["pending"].onmessage = (e) => {
       const data = JSON.parse(e.data);
+      console.log(data);
       for (const id of data.stopped || []) {
         if (id == "{{spawner.name}}") {
           $(`#progress-bar`).html("").addClass("bg-danger");

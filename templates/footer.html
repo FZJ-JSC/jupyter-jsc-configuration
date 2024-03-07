@@ -239,8 +239,8 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
   })
 
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-  let spawnStartStopEvtSource = new EventSource(userSpawnerNotificationUrl);
-  spawnStartStopEvtSource.onmessage = (e) => {
+  evtSourcesGlobal["footer"] = new EventSource(userSpawnerNotificationUrl);
+  evtSourcesGlobal["footer"].onmessage = (e) => {
     updateNumberOfUsers();
   };
 })

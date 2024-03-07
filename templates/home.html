@@ -188,7 +188,7 @@ function onEvtMessage(event, id) {
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
         spawnActive[id] = false;
-        // All other UI updates all handled by the spawnStatusChangedEvtSource
+        // All other UI updates all handled by the evtSourcesGlobal["home"]
         // so that they happend after the stop has finished in the backend
       }
       else if (evt.ready) {  // Spawn successful
@@ -305,11 +305,12 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
 
   // Add event source for user spawner events
   let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-  let spawnStatusChangedEvtSource = new EventSource(userSpawnerNotificationUrl);
-  spawnStatusChangedEvtSource.onmessage = (e) => {
+  evtSourcesGlobal["home"] = new EventSource(userSpawnerNotificationUrl);
+  evtSourcesGlobal["home"].onmessage = (e) => {
     const data = JSON.parse(e.data);
+    console.log(data);
     const spawning = data.spawning || [];
-    const stopped = data.stopped || [];
+    const stopped = data.stoppedall || [];
     var spawnEvents = window.spawnEvents;
 
     // Create eventListeners for new labs if they don't exist

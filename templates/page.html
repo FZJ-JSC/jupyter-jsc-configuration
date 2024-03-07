@@ -35,6 +35,7 @@
   {% block scripts -%}
   {%- endblock %}
   <script>
+    var evtSourcesGlobal = {};
     require.config({
       {%- if version_hash -%}
       urlArgs: "v={{version_hash}}",
@@ -120,5 +121,14 @@
   </script>
   {% block script -%}
   {%- endblock %}
+  <script>
+  window.onbeforeunload = function() {
+    if (typeof evtSourcesGlobal !== 'undefined') {
+        for (const [key, value] of Object.entries(evtSourcesGlobal)) {
+            value.close();
+        }
+    }
+  }
+  </script>
 </body>
 </html>
