@@ -1,5 +1,10 @@
-define(["jquery"], function ($) {
+define(["jquery", "jhapi",], function (
+  $,
+  JHAPI
+) {
   "use strict";
+  var base_url = window.jhdata.base_url;
+  var api = new JHAPI(base_url);
 
   const progressStates = {
     "running": {
@@ -193,6 +198,52 @@ define(["jquery"], function ($) {
     }
   }
 
+  // Updates number of users in ther footer
+  var updateNumberOfUsers = function () {
+    api.api_request("usercount", {
+      success: function (data) {
+        // Get all systems from footer and track if updated
+        var systems = {};
+        $("div[id^='ampel'").each((i, e) => {
+          let system = $(e).attr("id").split('-')[1];
+          systems[system] = false;
+        })
+        // Update systems with info from request
+        for (const [system, usercount] of Object.entries(data)) {
+          switch (system) {
+            case 'jupyterhub':
+              $("#jupyter-users").html(usercount);
+              systems['jupyter'] = true;
+              break;
+            case 'JSC-Cloud':
+              $(`#jsccloud-users`).html(usercount['total']);
+              systems['jsccloud'] = true;
+              break;
+            default:
+              $(`#${system.toLowerCase()}-users`).html(usercount['total']);
+              systems[`${system.toLowerCase()}`] = true;
+              var partitionInfos = "";
+              for (const [partition, users] of Object.entries(usercount['partitions'])) {
+                partitionInfos += `\n${partition}: ${users}`;
+              }
+              $(`#${system.toLowerCase()}-users`)
+                .parents("[data-bs-toggle]")
+                .attr("data-bs-original-title", `Number of active servers${partitionInfos}`);
+          }
+        }
+        // If there was no info about a system, set running labs to 0 and reset tooltip
+        for (const [system, systemInfo] of Object.entries(systems)) {
+          if (systemInfo == false) {
+            $(`#${system}-users`).html(0);
+            $(`#${system.toLowerCase()}-users`)
+              .parents("[data-toggle]")
+              .attr("data-bs-original-title", `Number of active servers`);
+          }
+        }
+      }
+    })
+  }
+
   var utils = {
     parseJSON: parseJSON,
     getId: getId,
@@ -203,6 +254,7 @@ define(["jquery"], function ($) {
     appendToLog: appendToLog,
     updateSpawnEvents: updateSpawnEvents,
     createFlavorInfo: createFlavorInfo,
+    updateNumberOfUsers: updateNumberOfUsers,
   };
 
   return utils;
