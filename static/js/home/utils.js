@@ -68,7 +68,7 @@ define(["jquery"], function ($) {
 
   var getSpawnActive = function (id = "") {
     let spawnActive = JSON.parse(localStorage.getItem("spawnActive"));
-    if (id) return spawnActive.id;
+    if (id) return spawnActive[id];
     else return spawnActive;
   }
 

@@ -95,6 +95,9 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       data: JSON.stringify(options),
       success: function () {
         window.userOptions[id] = options;
+        // Set spawnActive here so that the new tab will have
+        // the correct information without waiting for the SSE
+        custom_utils.setSpawnActive(id, "pending");
         // Open the spawn url in the new tab
         newTab.location.href = utils.url_path_join(base_url, "spawn", user, id);
         // Successfully sent request to start the lab, enable row again

@@ -195,7 +195,7 @@ function onEvtMessage(event, id) {
       else if (evt.ready) {  // Spawn successful
         let spawnActive = JSON.parse(localStorage.getItem("spawnActive"));
         spawnActive[id] = "ready";
-        localStorage.setItem(JSON.stringify(spawnActive));
+        localStorage.setItem("spawnActive", JSON.stringify(spawnActive));
         _updateProgress("running", "bg-success");
         _updateLabButtons(id, true);
       }
