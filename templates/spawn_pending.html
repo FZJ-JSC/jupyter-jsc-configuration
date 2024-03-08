@@ -255,10 +255,11 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
               if (htmlMsg) {
                 $("#log").append($('<div class="log-div">').html(htmlMsg));
               }
-              if (perc >= {{ cancel_progress_activation }}) {
+              if (perc >= {{ cancel_progress_activation }} 
+                && perc < {{ cancel_progress_deactivation }}) {
                 $("#cancel").removeAttr("disabled");
               }
-              if (perc == {{ cancel_progress_deactivation }}) {
+              if (perc >= {{ cancel_progress_deactivation }}) {
                 $("#cancel").attr("disabled", true);
                 $(`#progress-bar`).addClass("bg-danger");
                 $("#progress-info-text").html("cancelling...");
