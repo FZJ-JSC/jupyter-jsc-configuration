@@ -308,10 +308,10 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
   evtSourcesGlobal["home"] = new EventSource(userSpawnerNotificationUrl);
   evtSourcesGlobal["home"].onmessage = (e) => {
     const data = JSON.parse(e.data);
-    console.log(data);
     const spawning = data.spawning || [];
     const stopped = data.stoppedall || [];
     var spawnEvents = window.spawnEvents;
+    utils.updateNumberOfUsers();
 
     // Create eventListeners for new labs if they don't exist
     for (const id of spawning) {

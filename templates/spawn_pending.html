@@ -182,7 +182,7 @@
 {%- set cancel_progress_deactivation = 99 -%}
 
 <script>
-require(["jquery", "jhapi", "utils"], function (
+require(["jquery", "jhapi", "home/utils"], function (
   $,
   JHAPI,
   utils
@@ -292,7 +292,7 @@ require(["jquery", "jhapi", "utils"], function (
     evtSourcesGlobal["pending"] = new EventSource(userSpawnerNotificationUrl);
     evtSourcesGlobal["pending"].onmessage = (e) => {
       const data = JSON.parse(e.data);
-      console.log(data);
+      utils.updateNumberOfUsers();
       for (const id of data.stopped || []) {
         if (id == "{{spawner.name}}") {
           $(`#progress-bar`).html("").addClass("bg-danger");
