@@ -231,7 +231,7 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
     var interv = setInterval(_updateStatus, {{ cancel_progress_refresh_rate }});
     var logged = [];
 
-    function _updateStatus() {
+    function _enableRetry() {
       // Clear interval not depending on evt.progress, 
       // but if the spawner has been set to non active via home.html
       const spawnActive = custom_utils.getSpawnActive("{{ spawner.name }}");
@@ -239,15 +239,13 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
         clearInterval(interv);
         $("#retry").removeAttr("disabled").show();
         $("#cancel").hide();
-        console.log("cleared Interval")
       }
-      if (spawnActive == "ready") {
-        window.location.reload();
-      }
+    }
 
+    function _updateStatus() {
       api.api_request(`/users/progress/events/${user}/{{spawner.name}}`, {
         success: function (data) {
-          data["events"].forEach(function (event) {
+          data.events.forEach(function (event) {
             const perc = event["progress"];
             const htmlMsg = event["html_message"];
 
@@ -280,10 +278,17 @@ require(["jquery", "jhapi", "utils", "home/utils"], function (
                 }
               }
             }
+
+            if (perc == 100) {
+              // Check if we can enable the retry button already
+              _enableRetry();
+            }
           })
+          // After spawn has stopped, events is an empty array
+          if (!Object(data.events).length) _enableRetry();
         },
         error: function () {
-          clearInterval(interv);
+          _enableRetry();
         }
       })
     }
