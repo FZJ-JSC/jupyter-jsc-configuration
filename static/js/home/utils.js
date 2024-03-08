@@ -75,7 +75,7 @@ define(["jquery"], function ($) {
   var setSpawnActive = function (id, active) {
     let spawnActive = getSpawnActive();
     spawnActive[id] = active;
-    localStorage.setItem(JSON.stringify(spawnActive));
+    localStorage.setItem("spawnActive", JSON.stringify(spawnActive));
   }
 
   var updateProgressState = function (id, state) {
