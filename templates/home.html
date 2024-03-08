@@ -110,8 +110,6 @@ var spawnActive = {};
     {%- endif %}
   {%- endif %}
 {%- endfor %}
-// Make spawnActive available for the whole domain
-localStorage.setItem("spawnActive", JSON.stringify(spawnActive))
 
 var systemsHealth = {
 threshold: {
@@ -189,18 +187,18 @@ function onEvtMessage(event, id) {
       evtSources[id].close();
       delete evtSources[id];
       if (evt.failed) {  // Spawn failed
-        // All updates all handled by the evtSourcesGlobal["home"]
+        spawnActive[id] = false;
+        // All other UI updates all handled by the evtSourcesGlobal["home"]
         // so that they happend after the stop has finished in the backend
       }
       else if (evt.ready) {  // Spawn successful
-        let spawnActive = JSON.parse(localStorage.getItem("spawnActive"));
         spawnActive[id] = "ready";
-        localStorage.setItem("spawnActive", JSON.stringify(spawnActive));
         _updateProgress("running", "bg-success");
         _updateLabButtons(id, true);
       }
     }
     else { // Spawn in progress
+      spawnActive[id] = "pending";
       let collapsibleTr = $(`.collapsible-tr[data-server-id=${id}]`);
       let collapseBtns = collapsibleTr.find("button").not(".nav-link");
       collapseBtns.addClass("disabled");
@@ -345,7 +343,6 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
 
     for (const id of stopped) {
       if (!id) continue; // Filter out labs with no name
-      utils.setSpawnActive(id, false);
       utils.updateProgressState(id, "failed");
       // Change buttons to start or N/A
       _updateLabButtons(id, false);

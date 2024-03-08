@@ -66,16 +66,8 @@ define(["jquery"], function ($) {
     $(`#${id}-na-info`).html(reason).show();
   }
 
-  var getSpawnActive = function (id = "") {
-    let spawnActive = JSON.parse(localStorage.getItem("spawnActive"));
-    if (id) return spawnActive[id];
-    else return spawnActive;
-  }
-
   var setSpawnActive = function (id, active) {
-    let spawnActive = getSpawnActive();
-    spawnActive[id] = active;
-    localStorage.setItem("spawnActive", JSON.stringify(spawnActive));
+    window.spawnActive[id] = active;
   }
 
   var updateProgressState = function (id, state) {
@@ -206,7 +198,6 @@ define(["jquery"], function ($) {
     getId: getId,
     getLabConfigSelectValues: getLabConfigSelectValues,
     setLabAsNA: setLabAsNA,
-    getSpawnActive: getSpawnActive,
     setSpawnActive: setSpawnActive,
     updateProgressState: updateProgressState,
     appendToLog: appendToLog,

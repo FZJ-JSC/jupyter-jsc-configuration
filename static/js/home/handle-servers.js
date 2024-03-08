@@ -20,6 +20,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     api.cancel_named_server(user, id, {
       success: function () {
         console.log("cancel success");
+        custom_utils.setSpawnActive(id, false);
       },
       error: function () {
         console.log("cancel error");
@@ -38,6 +39,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         _enableTrButtons(tr, running);
         // Reset progress
         custom_utils.updateProgressState(id, "reset");
+        custom_utils.setSpawnActive(id, false);
       },
       error: function (xhr) {
         console.log("stop error");
@@ -59,6 +61,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         $(`tr[data-server-id=${id}]`).each(function () {
           $(this).remove();
         });
+        custom_utils.setSpawnActive(id, false);
       },
       error: function (xhr) {
         var alert = that.siblings(".alert");
@@ -94,14 +97,24 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     api.start_named_server(user, id, {
       data: JSON.stringify(options),
       success: function () {
+        // Save latest log to time stamp and empty it
+        custom_utils.updateSpawnEvents(window.spawnEvents, id);
         window.userOptions[id] = options;
-        // Set spawnActive here so that the new tab will have
-        // the correct information without waiting for the SSE
-        custom_utils.setSpawnActive(id, "pending");
         // Open the spawn url in the new tab
         newTab.location.href = utils.url_path_join(base_url, "spawn", user, id);
+        // Hook up event-stream for progress
+        var evtSources = window.evtSources;
+        if (!(id in evtSources)) {
+          var progressUrl = utils.url_path_join(jhdata.base_url, "api/users", jhdata.user, "servers", id, "progress");
+          progressUrl = progressUrl + "?_xsrf=" + window.jhdata.xsrf_token;
+          evtSources[id] = new EventSource(progressUrl);
+          evtSources[id].onmessage = function (e) {
+            onEvtMessage(e, id);
+          }
+        }
         // Successfully sent request to start the lab, enable row again
         let running = true;
+        custom_utils.setSpawnActive(id, "pending");
         _enableTrButtons(tr, running);
       },
       error: function (xhr) {

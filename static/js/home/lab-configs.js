@@ -61,7 +61,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         utils.setLabAsNA(id, reason);
         return false;
       }
-      if (!(system in systemInfo)) {
+      if (!(system in systemInfo)){
         reason += "system";
         utils.setLabAsNA(id, reason);
         return false;
@@ -75,7 +75,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         return false;
       }
       let flavorDescription = systemFlavors[flavor];
-      let spawnerState = utils.getSpawnActive(id);
+      let spawnerState = window.spawnActive[id];
       if (flavorDescription.max != -1 && (flavorDescription.current || 0) >= flavorDescription.max && !spawnerState) {
         reason += "flavor limits";
         utils.setLabAsNA(id, reason);

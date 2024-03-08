@@ -44,7 +44,7 @@ define(["jquery", "home/utils"], function (
     resetInputElement(select);
     $(`#${id}-na-btn`).hide();
     $(`#${id}-na-info`).empty().hide();
-    if (utils.getSpawnActive(id))
+    if (!window.spawnActive[id])
       $(`#${id}-start-btn`).removeClass("disabled").show();
 
     let systemFlavors = window.flavorInfo[system];
@@ -77,7 +77,7 @@ define(["jquery", "home/utils"], function (
     $.isEmptyObject(systemFlavors) ? $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).hide() : $(`#${id}-flavor-select-div, #${id}-flavor-legend-div, #${id}-flavor-info-div`).show();
 
     if (select.html() == "") {
-      if (utils.getSpawnActive(id)) {
+      if (window.spawnActive[id]) {
         // Lab is active, so we should still append the current flavor to the select
         const flavor = window.userOptions[id].flavor;
         const description = (systemFlavors[system] || {})[flavor] || {};
