@@ -192,7 +192,8 @@ require(["jquery", "home/utils"], function (
     utils.updateNumberOfUsers();
   })
 
-  if (!window.location.pathname.endsWith("home")) {
+  if (!(window.location.pathname.endsWith("home") || window.location.pathname.includes("spawn-pending"))) {
+    console.log("setup SSE")
     let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
     evtSourcesGlobal["footer"] = new EventSource(userSpawnerNotificationUrl);
     evtSourcesGlobal["footer"].onmessage = (e) => {
