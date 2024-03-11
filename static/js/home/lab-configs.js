@@ -30,6 +30,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     // Check if system is not available due to groups
     const dropdownOptions = getDropdownOptions();
     const service = getService(options);
+    const systemInfo = getSystemInfo();
     const system = options["system"];
     const flavor = options["flavor"];
     const account = options["account"];
@@ -56,6 +57,11 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         return false;
       }
       if (!(system in dropdownOptions[service])) {
+        reason += "system";
+        utils.setLabAsNA(id, reason);
+        return false;
+      }
+      if (!(system in systemInfo)){
         reason += "system";
         utils.setLabAsNA(id, reason);
         return false;
