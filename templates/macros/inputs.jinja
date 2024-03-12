@@ -14,6 +14,7 @@ since the warning  text will already create a margin.#}
       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"
       title="{{ caller() }}">
       {{ svg.info_svg | safe }}
+      <span class="text-muted" style="font-size: smaller">(click me)</span>
     </button>
     {%- else %}
     <a class="lh-1 ms-3" style="padding-top: 1px;" 
