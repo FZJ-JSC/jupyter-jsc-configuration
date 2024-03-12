@@ -343,7 +343,7 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
 
     for (const id of stopped) {
       if (!id) continue; // Filter out labs with no name
-      utils.updateProgressState(id, "failed");
+      utils.updateProgressState(id, "reset");
       // Change buttons to start or N/A
       _updateLabButtons(id, false);
     }
