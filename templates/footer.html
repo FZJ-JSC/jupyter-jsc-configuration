@@ -132,11 +132,11 @@
 
 {%- block script -%}
 <script type="text/javascript">
-require(["jquery", "jhapi"], function ($, JHAPI) {
+require(["jquery", "home/utils"], function (
+  $, 
+  utils
+) {
   "use strict";
-
-  var base_url = window.jhdata.base_url;
-  var api = new JHAPI(base_url);
 
   function reorderSystems(incidentsData) {
     const systemsDefaultOrder = {{ systems_default_order | tojson}};
@@ -187,62 +187,20 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
     reorderSystems(incidents);
   }
 
-  function updateNumberOfUsers() {
-    api.api_request("usercount", {
-      success: function(data) {
-        // Get all systems from footer and track if updated
-        var systems = {};
-        $("div[id^='ampel'").each((i, e) => {
-          let system = $(e).attr("id").split('-')[1];
-          systems[system] = false;
-        }) 
-        // Update systems with info from request
-        for (const [system, usercount] of Object.entries(data)) {
-          switch (system) {
-            case 'jupyterhub':
-              $("#jupyter-users").html(usercount);
-              systems['jupyter'] = true;
-              break;
-            case 'JSC-Cloud':
-              $(`#jsccloud-users`).html(usercount['total']);
-              systems['jsccloud'] = true;
-              break;
-            default:
-              $(`#${system.toLowerCase()}-users`).html(usercount['total']);
-              systems[`${system.toLowerCase()}`] = true;
-              var partitionInfos = "";
-              for (const [partition, users] of Object.entries(usercount['partitions']))
-              {
-                partitionInfos += `\n${partition}: ${users}`;
-              }
-              $(`#${system.toLowerCase()}-users`)
-                .parents("[data-bs-toggle]")
-                .attr("data-bs-original-title", `Number of active servers${partitionInfos}`);
-          }
-        }
-        // If there was no info about a system, set running labs to 0 and reset tooltip
-        for (const [system, systemInfo] of Object.entries(systems)) {
-          if (systemInfo == false) {
-            $(`#${system}-users`).html(0);
-            $(`#${system.toLowerCase()}-users`)
-              .parents("[data-toggle]")
-              .attr("data-bs-original-title", `Number of active servers`);
-          }
-        }
-      }
-    })
-  }
-
   $(document).ready(function() {
     updateSystemHoverTooltips();
-    updateNumberOfUsers();
+    utils.updateNumberOfUsers();
   })
 
-  let generalSpawnUpdateNotificationUrl = `${jhdata.base_url}api/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
-  let spawnStartStopEvtSource = new EventSource(generalSpawnUpdateNotificationUrl);
-  spawnStartStopEvtSource.onmessage = (e) => {
-    updateNumberOfUsers();
-  };
+  if (!(window.location.pathname.endsWith("home") || window.location.pathname.includes("spawn-pending"))) {
+    console.log("setup SSE")
+    let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+    evtSourcesGlobal["footer"] = new EventSource(userSpawnerNotificationUrl);
+    evtSourcesGlobal["footer"].onmessage = (e) => {
+      utils.updateNumberOfUsers();
+    };
+  }
+  
 })
 </script>
 {%- endblock -%}
