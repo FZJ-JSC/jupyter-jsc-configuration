@@ -96,12 +96,16 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const serviceInfo = getServiceInfo();
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     var customImageInput = $(`input#${id}-image-input`);
+    var privateImageUsrInput = $(`input#${id}-image-private-user-input`);
+    var privateImagePassInput = $(`input#${id}-image-private-pass-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
-    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-private-user-input-div, #${id}-image-private-pass-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
+      dropdowns.resetInputElement(privateImageUsrInput, false);
+      dropdowns.resetInputElement(privateImagePassInput, false);
       dropdowns.resetInputElement(customMountInput, false);
       allUserInputDivs.hide();
     } else {
@@ -111,6 +115,13 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
     }
+  });
+
+  $("input[id*=image-private-cb-input]").change(function () {
+    const id = utils.getId(this, -4);
+
+    _toggle_show_input(id, "image-private-user", "");
+    _toggle_show_input(id, "image-private-pass", "");
   });
 
   $("input[id*=image-mount-cb-input]").change(function () {
