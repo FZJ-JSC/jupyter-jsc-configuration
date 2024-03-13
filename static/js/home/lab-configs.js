@@ -250,11 +250,13 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       if (userdata_path) {
         $(`#${id}-image-mount-cb-input-div`)[0].checked = true;
         $(`#${id}-image-mount-cb-input-div`).show();
+        $(`#${id}-image-private-cb-input-div`)[0].checked = true;
         $(`#${id}-image-private-cb-input-div`).show();
       }
       else {
         $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
         $(`#${id}-image-mount-cb-input-div`).hide();
+        $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
         $(`#${id}-image-private-cb-input-div`).hide();
       }
       _setInputValue("image-mount", userdata_path);
