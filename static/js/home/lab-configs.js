@@ -61,7 +61,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         utils.setLabAsNA(id, reason);
         return false;
       }
-      if (!(system in systemInfo)){
+      if (!(system in systemInfo)) {
         reason += "system";
         utils.setLabAsNA(id, reason);
         return false;
@@ -126,7 +126,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         utils.setLabAsNA(id, reason_broken_lab);
         return false;
       }
-      setFalse = true;
+      let setFalse = true;
       for (const reservation_dict of dropdownOptions[service][system][account][project][partition]) {
         if (reservation == reservation_dict.ReservationName) {
           if (reservation_dict.State == "ACTIVE") {
