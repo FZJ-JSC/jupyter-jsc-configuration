@@ -42,10 +42,12 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
 
     resetInputElement(select);
-    $(`#${id}-na-btn`).hide();
-    $(`#${id}-na-info`).empty().hide();
-    if (!window.spawnActive[id])
-      $(`#${id}-start-btn`).removeClass("disabled").show();
+    if ($(`#${id}-na-info`).html().includes("flavor")) {
+      $(`#${id}-na-btn`).hide();
+      $(`#${id}-na-info`).empty().hide();
+      if (!window.spawnActive[id])
+        $(`#${id}-start-btn`).removeClass("disabled").show();
+    }
 
     let systemFlavors = window.flavorInfo[system];
     if (!systemFlavors) {
