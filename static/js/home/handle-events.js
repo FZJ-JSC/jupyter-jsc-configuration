@@ -68,8 +68,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   /* LAB CONFIG      */
   /* *************** */
 
-  function _toggle_show_input(id, key, pattern) {
-    const showInput = $(`input#${id}-${key}-cb-input`)[0].checked;
+  function _toggle_show_input(id, key, showInput, pattern) {
     if (showInput) {
       $(`#${id}-${key}-input-div`).show();
       $(`#${id}-${key}-input`).attr("required", true);
@@ -99,7 +98,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var privateImageUsrInput = $(`input#${id}-image-private-user-input`);
     var privateImagePassInput = $(`input#${id}-image-private-pass-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
-    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-private-user-input-div, #${id}-image-private-pass-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+    var privateUserInputDivs = (`#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
@@ -107,6 +107,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       dropdowns.resetInputElement(privateImageUsrInput, false);
       dropdowns.resetInputElement(privateImagePassInput, false);
       dropdowns.resetInputElement(customMountInput, false);
+      privateUserInputDivs.hide();
       allUserInputDivs.hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
@@ -123,15 +124,15 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=image-private-cb-input]").change(function () {
     const id = utils.getId(this, -4);
-
-    _toggle_show_input(id, "image-private-user", "");
-    _toggle_show_input(id, "image-private-pass", "");
+    const showInput = this.checked;
+    _toggle_show_input(id, "image-private-user", showInput);
+    _toggle_show_input(id, "image-private-pass", showInput);
   });
 
   $("input[id*=image-mount-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const pattern_check = "^\\/[A-Za-z0-9\\-\\/]+";
-    _toggle_show_input(id, "image-mount", pattern_check);
+    _toggle_show_input(id, "image-mount", this.checked, pattern_check);
   });
 
   $("select[id*=system]").change(function () {
@@ -209,7 +210,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=xserver-cb-input]").change(function () {
     const id = utils.getId(this, -3);
-    _toggle_show_input(id, "xserver");
+    _toggle_show_input(id, "xserver", this.checked);
   });
 
   $("select[id*=reservation]").change(function () {
