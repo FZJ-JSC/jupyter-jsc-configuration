@@ -182,7 +182,7 @@
 {%- set cancel_progress_deactivation = 99 -%}
 
 <script>
-require(["jquery", "jhapi", "utils"], function (
+require(["jquery", "jhapi", "home/utils"], function (
   $,
   JHAPI,
   utils
@@ -227,59 +227,81 @@ require(["jquery", "jhapi", "utils"], function (
   });
 
   function updateStatus() {
-    var interv = setInterval(_updateStatus, {{ cancel_progress_refresh_rate }});
-    var logged = [];
-
-    function _updateStatus() {
-      api.api_request(`/users/progress/events/${user}/{{spawner.name}}`, {
-        success: function (data) {
-          data["events"].forEach(function (event) {
-            const perc = event["progress"];
-            const htmlMsg = event["html_message"];
-
-            if (Number(perc) && !(logged.includes(htmlMsg))) {
-              logged.push(htmlMsg);
-              $("#progress-bar").html('<b>' + perc + '%</b>');
-              if (htmlMsg) {
-                $("#log").append($('<div class="log-div">').html(htmlMsg));
-              }
-              if (perc >= {{ cancel_progress_activation }}) {
-                $("#cancel").removeAttr("disabled");
-              }
-              if (perc == {{ cancel_progress_deactivation }}) {
-                $("#cancel").attr("disabled", true);
-                $(`#progress-bar`).addClass("bg-danger");
-                $("#progress-info-text").html("cancelling...");
-              }
-              if (perc == 95) {
-                // Refresh if stuck on 95%
-                timeout = setTimeout(() => window.location.reload(), 120000);
-              }
-              // Clear interval on 100%
-              if (perc == 100) {
-                clearInterval(interv);
-                if (event["failed"]) {
-                  $(`#progress-bar`).html("").addClass("bg-danger");
-                  $("#progress-info-text").html("last spawn failed");
-                  $("#retry").removeAttr("disabled").show();
-                  $("#cancel").hide();
-                  clearTimeout(timeout);
-                } else {
-                  window.location.reload();
-                }
-              }
-            }
-          })
-        },
-        error: function () {
-          clearInterval(interv);
+    let id = "{{ spawner.name }}";
+    let progressUrl = `${window.jhdata.base_url}api/users/${window.jhdata.user}/servers/${id}/progress?_xsrf=${window.jhdata.xsrf_token}`;
+    let evtSource = new EventSource(progressUrl);
+    evtSource.onmessage = (e) => {
+      const evt = JSON.parse(e.data);
+      if (evt.progress !== undefined && evt.progress != 0) {
+        if (evt.progress == 100) {
+          evtSource.close();
+          delete evtSource;
+          
+          if (evt.failed) {
+            // Update UI via spawnStatusChangedEvtSource so that 
+            // it happens after the stop has finished in the backend
+            clearTimeout(timeout);
+          }
+          else {
+            $(`#progress-bar`).removeClass("bg-danger").addClass("bg-success");
+            $("#progress-info-text").html("redirecting...");
+            window.location.reload();
+          }
         }
-      })
+        else {
+          $("#progress-bar").html('<b>' + evt.progress + '%</b>');
+          if (evt.progress >= {{ cancel_progress_activation }}) {
+            $("#cancel").removeAttr("disabled");
+          }
+          if (evt.progress == {{ cancel_progress_deactivation }}) {
+            $("#cancel").attr("disabled", true);
+            $(`#progress-bar`).addClass("bg-danger");
+            $("#progress-info-text").html("cancelling...");
+          }
+          if (evt.progress == 95) {
+            // Refresh if stuck on 95%
+            timeout = setTimeout(() => window.location.reload(), 120000);
+          }
+        }
+      }
+
+      if (evt.html_message !== undefined) {
+        var htmlMsg = evt.html_message
+      } else if (evt.message !== undefined) {
+        var htmlMsg = evt.message;
+      }
+      if (htmlMsg) {
+        try { htmlMsg = htmlMsg.replace(/&nbsp;/g, ' '); }
+        catch (e) { return; }
+        // Only append if a log message has not been appended yet
+        var exists = false;
+        $("#log").children().each(function (i, e) {
+          let logMsg = $(e).html();
+          if (htmlMsg == logMsg) exists = true;
+        })
+        if (!exists)
+          $("#log").append($('<div class="log-div">').html(htmlMsg));
+        }
     }
   }
 
   $( document ).ready(function() {
     updateStatus();
+    
+    let userSpawnerNotificationUrl = `${jhdata.base_url}api/users/${jhdata.user}/notifications/spawners?_xsrf=${window.jhdata.xsrf_token}`;
+    evtSourcesGlobal["pending"] = new EventSource(userSpawnerNotificationUrl);
+    evtSourcesGlobal["pending"].onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      utils.updateNumberOfUsers();
+      for (const id of data.stopped || []) {
+        if (id == "{{spawner.name}}") {
+          $(`#progress-bar`).html("").addClass("bg-danger");
+          $("#progress-info-text").html("last spawn failed");
+          $("#retry").removeAttr("disabled").show();
+          $("#cancel").hide();
+        }
+      }
+    }
   });
 });
 </script>
