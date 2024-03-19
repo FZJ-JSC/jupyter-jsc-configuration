@@ -110,9 +110,11 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       allUserInputDivs.hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
+      dropdowns.resetInputElement(privateImageUsrInput, true);
+      dropdowns.resetInputElement(privateImagePassInput, true);
       allUserInputDivs.show();
-      // TODO adjust userInputInfo for the private images!!!!
-      $(`#${id}-image-private-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || false;;
+
+      $(`#${id}-image-private-cb-input`)[0].checked = false;
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
