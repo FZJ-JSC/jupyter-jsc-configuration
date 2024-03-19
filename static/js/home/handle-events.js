@@ -98,7 +98,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var privateImageUsrInput = $(`input#${id}-image-private-user-input`);
     var privateImagePassInput = $(`input#${id}-image-private-pass-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
-    var privateUserInputDivs = (`#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
+    var privateUserInputDivs = $(`#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
     var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
     var inputRequired = userInputInfo.required || false;
