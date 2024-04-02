@@ -391,6 +391,18 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       if (param == "xserver") {
         if (!collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
       }
+      else if (param == "image-private") {
+        if (!collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
+        param = "image_private_credentials";
+
+        if(input.length < 2) return;
+        // Encode user credentials for the private docker repository in base64
+        const user = input[0].value;
+        const pass = input[1].value; 
+        const credentials = `${user}:${pass}`;
+        value = btoa(credentials);
+        alert(param + ": " + value)
+      }
       else if (param == "image-mount") {
         if (!collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
         param = "userdata_path";
@@ -411,7 +423,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
     ["version", "system", "flavor", "account",
       "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["image", "image-mount", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }
