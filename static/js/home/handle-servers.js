@@ -401,7 +401,6 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         const pass = input[1].value; 
         const credentials = `${user}:${pass}`;
         value = btoa(credentials);
-        alert(param + ": " + value)
       }
       else if (param == "image-mount") {
         if (!collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
