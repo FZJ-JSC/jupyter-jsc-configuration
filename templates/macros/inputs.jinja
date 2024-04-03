@@ -28,6 +28,11 @@ since the warning  text will already create a margin.#}
   <div class="col-8">
     <input type="{{type}}" class="form-control" id="{{id}}-{{key}}-input" 
       placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
+    {% if {{type}} == "password" -%}
+    <button class="btn btn-outline-secondary" type="button" id="view-hide-password">
+      <i class="fas fa-eye"></i>
+    </button>
+    {%- endif %} 
     <div class="invalid-feedback">{{ warning }}</div>    
   </div>
 </div>
