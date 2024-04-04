@@ -125,6 +125,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   $("input[id*=image-private-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const showInput = this.checked;
+    _toggle_show_input(id, "image-private-url", showInput);
     _toggle_show_input(id, "image-private-user", showInput);
     _toggle_show_input(id, "image-private-pass", showInput);
   });

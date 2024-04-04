@@ -393,13 +393,29 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       }
       else if (param == "image-private") {
         if (!collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
-        param = "image_private_credentials";
+        param = "dockerregistry";
 
-        if(input.length < 2) return;
+        if(input.length < 3) return;
         // Encode user credentials for the private docker repository in base64
-        const user = input[0].value;
-        const pass = input[1].value; 
-        const credentials = `${user}:${pass}`;
+        const docker_url = "";
+        const user = "";
+        const pass = "";
+        for(let i in input) {
+          if(i.id.indexOf("url") !== -1){ 
+            docker_url = i.valueOf();
+            break;
+          }
+          if(i.id.indexOf("user") !== -1){
+            user = i.valueOf();
+            break;
+          }
+          if(i.id.indexOf("pass") !== -1){
+            pass = i.valueOf(); 
+            break;
+          }  
+        }
+        // const credentials = `${user}:${pass}`;
+        const credentials = `{"auths":{${docker_url}:{"username":${user},"password":${pass}}}}`
         value = btoa(credentials);
       }
       else if (param == "image-mount") {

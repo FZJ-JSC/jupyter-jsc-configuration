@@ -198,6 +198,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const name = options["name"];
     const service = getService(options);
     const image = options["image"];
+    //TODO add private image repo info
     const userdata_path = options["userdata_path"];
     const system = options["system"];
     const flavor = options["flavor"];
@@ -262,7 +263,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       else {
         $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
         $(`#${id}-image-mount-cb-input-div`).hide();
-        $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
+        $(`#${id}-image-private-cb-input-div`)[0].checked = false;
         $(`#${id}-image-private-cb-input-div`).hide();
       }
       _setInputValue("image-mount", userdata_path);
