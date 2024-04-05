@@ -400,20 +400,20 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         const registry_url = "";
         const credentials = {}
 
-        for(let i in input) {
-          if(i.id.indexOf("private-url") !== -1){
+        input.forEach(function(element) { 
+          if(element.id.indexOf("private-url") !== -1){
             registry_url = i.valueOf();
-            break;
+            return;
           }
-          if(i.id.indexOf("user") !== -1){
+          if(element.id.indexOf("user") !== -1){
             credentials["username"] = i.valueOf();
-            break;
+            return;
           }
-          if(i.id.indexOf("pass") !== -1){
+          if(element.id.indexOf("pass") !== -1){
             credentials["password"] = i.valueOf();
-            break;
+            return;
           }  
-        }
+        })
         const auths = {"auths" : {
           registry_url : credentials
           }

@@ -158,10 +158,7 @@
               {%- endcall %}
               {#- Fields for private docker repository #}
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
-              {%- call inputs.create_text_input(id, "image-private-url", "URL",
-                placeholder="URL for your image registry"") %}
-                Private docker repository
-              {%- endcall %}
+              {{ inputs.create_text_input(id, "image-private-url", "Image Repository", placeholder="URL for your image registry")}}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
                 Username for the private docker repository
