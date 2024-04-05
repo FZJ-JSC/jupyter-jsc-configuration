@@ -66,7 +66,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   $("#view-password").on("click", function (event) {
     let id = $(this).data("server-id");
     let passInput = $(`#${id}-image-private-pass-input`)
-    let eye = $('#id="password-eye')
+    let eye = $('#password-eye')
     if (passInput.type === 'password') {
       passInput.type = 'text';
       eye.classList.remove('fa-eye');
