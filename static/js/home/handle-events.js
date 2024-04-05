@@ -64,17 +64,16 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   });
 
   $("#view-password").on("click", function (event) {
-    let id = $(this).data("server-id");
-    let passInput = $(`#${id}-image-private-pass-input`)
-    let eye = $('#password-eye')
+    const passInput = $(this).prev('input')
+    const eye = $('#password-eye')
     if (passInput.type === 'password') {
       passInput.type = 'text';
-      eye.classList.remove('fa-eye');
-      eye.classList.add('fa-eye-slash');
+      eye.removeClass('fa-eye');
+      eye.addClass('fa-eye-slash');
     } else {
       passInput.type = 'password';
-      eye.classList.add('fa-eye');
-      eye.classList.remove('fa-eye-slash');
+      eye.addClass('fa-eye');
+      eye.removeClass('fa-eye-slash');
     }
   });
 
