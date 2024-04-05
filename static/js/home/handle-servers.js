@@ -394,30 +394,26 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       else if (param == "image-private") {
         if (!collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
         param = "dockerregistry";
-
-        if(input.length < 3) return;
        
-        const registry_url = "";
+        let registry_url = "";
         const credentials = {}
 
-        input.forEach(function(element) { 
-          if(element.id.indexOf("private-url") !== -1){
-            registry_url = i.valueOf();
-            return;
+        for(let i = 0; i < input.length; i++) {
+          let el = input[i]
+          if(el.id.indexOf("private-url") !== -1){
+            registry_url = el.value;
           }
-          if(element.id.indexOf("user") !== -1){
-            credentials["username"] = i.valueOf();
-            return;
+          if(el.id.indexOf("user") !== -1){
+            credentials["username"] = el.value;
           }
-          if(element.id.indexOf("pass") !== -1){
-            credentials["password"] = i.valueOf();
-            return;
+          if(el.id.indexOf("pass") !== -1){
+            credentials["password"] = el.value;
           }  
-        })
-        const auths = {"auths" : {
-          registry_url : credentials
-          }
         }
+        const auth_values = {}
+        auth_values[registry_url] = credentials
+        const auths = {"auths" : auth_values }
+        alert(JSON.stringify(auths));
         // Encode user credentials for the private docker repository in base64
         value = btoa(JSON.stringify(auths));
       }
