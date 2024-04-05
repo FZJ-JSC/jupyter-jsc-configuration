@@ -63,6 +63,20 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   });
 
+  $("#view-password").on("click", function (event) {
+    let id = $(this).data("server-id");
+    let passInput = $(`#${id}-image-private-pass-input`)
+    let eye = $('#id="password-eye')
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      eye.classList.remove('fa-eye');
+      eye.classList.add('fa-eye-slash');
+    } else {
+      passInput.type = 'password';
+      eye.classList.add('fa-eye');
+      eye.classList.remove('fa-eye-slash');
+    }
+  });
 
   /* *************** */
   /* LAB CONFIG      */
