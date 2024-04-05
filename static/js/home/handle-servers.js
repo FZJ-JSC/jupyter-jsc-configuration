@@ -413,7 +413,6 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         const auth_values = {}
         auth_values[registry_url] = credentials
         const auths = {"auths" : auth_values }
-        alert(JSON.stringify(auths));
         // Encode user credentials for the private docker repository in base64
         value = btoa(JSON.stringify(auths));
       }

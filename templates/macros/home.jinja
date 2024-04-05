@@ -158,7 +158,14 @@
               {%- endcall %}
               {#- Fields for private docker repository #}
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
-              {{ inputs.create_text_input(id, "image-private-url", "Image Repository", placeholder="URL for your image registry")}}
+              {%- call inputs.create_text_input(id, "image-private-url", "Image Repository",
+                placeholder="URL for your image registry",
+                pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$",
+                warning="Please input a valid docker URL",
+                persistent_hover=True) %}
+                A public registry docker image starting a single-user notebook server.
+                <a href='https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html' target='_blank' style='color: white !important;'>Examples.</a>
+              {%- endcall %}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
                 Username for the private docker repository
