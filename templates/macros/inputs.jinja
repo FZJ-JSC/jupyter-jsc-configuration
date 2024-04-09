@@ -1,11 +1,11 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False, type="text") -%}
+{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 {#- We use a different margin than the other input elements 
 since the warning  text will already create a margin.#}
-<div id="{{id}}-{{key}}-input-div"  class="row mb-1">  
+<div id="{{id}}-{{key}}-input-div"  class="row mb-1">
   <label for="{{id}}-{{key}}-input" class="col-4 col-form-label">
     {{ label if label else key.capitalize() }}
     {% if caller -%}
@@ -26,22 +26,34 @@ since the warning  text will already create a margin.#}
     {%- endif %}
   </label>
   <div class="col-8">
-    <input type="{{type}}" class="form-control" id="{{id}}-{{key}}-input" 
-      placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
-    {% if type == "password" -%}
-    <button class="btn btn-light" type="button" id="view-password">
-      <i id="password-eye" class="fa fa-eye" aria-hidden="true"></i>
-    </button>
-    {%- endif %} 
-    <div class="invalid-feedback">{{ warning }}</div>    
+    <input type="text" class="form-control" id="{{id}}-{{key}}-input"
+     placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
+    <div class="invalid-feedback">{{ warning }}</div>
   </div>
 </div>
 {%- endmacro -%}
 
-{%- macro create_password_input(id, key, label="", placeholder="", tooltip="") -%}
-{%- call create_text_input(id, key, label, placeholder, type="password") %}
-  {{tooltip}}
-{%- endcall %}
+
+{%- macro create_password_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
+{#- Macro to create a password input field #}
+{%- set key = key.lower() %}
+<div id="{{id}}-{{key}}-input-div"  class="row mb-1">
+  <label for="{{id}}-{{key}}-input" class="col-4 col-form-label"> 
+    {{ label if label else key.capitalize() }}
+  </label>
+  <div class="col-8">
+    <div class="input-group">
+      <input type="password" class="form-control" id="{{id}}-{{key}}-input"
+       placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
+      <span class="input-group-append">
+        <button class="btn btn-light" type="button" id="view-password">
+          <i id="password-eye" class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+      </span>
+      <div class="invalid-feedback">{{ warning }}</div>
+    </div>
+  </div>
+</div>
 {%- endmacro -%}
 
 {%- macro create_select(id, key, label="") -%}
