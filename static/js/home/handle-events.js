@@ -64,16 +64,16 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   });
 
   $("#view-password").on("click", function (event) {
-    const passInput = $(this).prev('input')
-    const eye = $('#password-eye')
+    const passInput = $(this).prev('input')[0]
+    const eye = $('#password-eye')[0]
     if (passInput.type === 'password') {
       passInput.type = 'text';
-      eye.removeClass('fa-eye');
-      eye.addClass('fa-eye-slash');
+      eye.classList.remove('fa-eye');
+      eye.classList.add('fa-eye-slash');
     } else {
       passInput.type = 'password';
-      eye.addClass('fa-eye');
-      eye.removeClass('fa-eye-slash');
+      eye.classList.add('fa-eye');
+      eye.classList.remove('fa-eye-slash');
     }
   });
 
