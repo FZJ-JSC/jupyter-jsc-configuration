@@ -244,7 +244,9 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
         dropdowns.updateModules(id, service, system, account, project, partition, modules);
       }
-      catch (e) { utils.setLabAsNA(id, "due to a JS error"); }
+      catch (e) { utils.setLabAsNA(id, "due to a JS error");
+        console.log(e)
+      }
     }
     else {
       function _setSelectOption(key, value, displayValue) {

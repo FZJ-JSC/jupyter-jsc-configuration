@@ -90,8 +90,9 @@
 var evtSources = {};
 var userOptions = {};
 var spawnEvents = {};
+
 {%- for spawner in lab_spawners -%}
-  {%- set userOptions = spawner.user_options -%}
+  {%- set userOptions = decrypted_user_options[spawner.name] -%}
 userOptions["{{spawner.name}}"] = {{ userOptions | tojson }};
   {%- if spawner.state and spawner.state.get("events") %}
 spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
