@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
+/*
+* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be send to the backend
+*/
 require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function (
   $,
   JHAPI,

@@ -199,6 +199,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const service = getService(options);
     const image = options["image"];
     //TODO add private image repo info
+    const dockerregistry = options["dockerregistry"];
     const userdata_path = options["userdata_path"];
     const system = options["system"];
     const flavor = options["flavor"];
@@ -212,6 +213,18 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const xserver = options["xserver"];
     const modules = options["userModules"];
 
+    function _updateDockerRegistryFields(id, value){
+      $(`#${id}-image-private-cb-input-div`)[0].checked = true;
+      // Decode the value of the dockerRegistry. It comes encoded in base64 from the backend
+      let privateRegistryString = atob(value);
+      let privateRegistry = JSON.parse(privateRegistryString);
+      let auths = Object.values(privateRegistry)[0]; // returns a dictionary in the form of {"registry_url" : {"username": <username>, "password": <password>}}
+      let url = Object.keys(auths)[0];
+      $(`#${id}-image-private-url-input`).val(url);
+      $(`#${id}-image-private-user-input`).val(auths[url]["username"]);
+      $(`#${id}-image-private-pass-input`).val(auths[url]["password"]);
+    }
+
     $(`#${id}-name-input`).val(name);
     if (available) {
       /* Set allowed values. Do not rely on change events here as without
@@ -221,6 +234,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateServices(id, service);
         if (image) $(`#${id}-image-input`).val(image);
         if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
+        if (dockerregistry) _updateDockerRegistryFields(id, dockerregistry);
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);
@@ -257,15 +271,20 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       if (userdata_path) {
         $(`#${id}-image-mount-cb-input-div`)[0].checked = true;
         $(`#${id}-image-mount-cb-input-div`).show();
-        $(`#${id}-image-private-cb-input-div`)[0].checked = true;
-        $(`#${id}-image-private-cb-input-div`).show();
       }
       else {
         $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
         $(`#${id}-image-mount-cb-input-div`).hide();
+      }
+      if (dockerregistry) {
+        $(`#${id}-image-private-cb-input-div`)[0].checked = true;
+        $(`#${id}-image-private-cb-input-div`).show();
+      }
+      else {
         $(`#${id}-image-private-cb-input-div`)[0].checked = false;
         $(`#${id}-image-private-cb-input-div`).hide();
       }
+      _updateDockerRegistryFields(id, dockerregistry);
       _setInputValue("image-mount", userdata_path);
       _setSelectOption("flavor", flavor, ((window.flavorInfo[system] || {})[flavor] || {}).display_name);
       utils.createFlavorInfo(id, system);

@@ -1,4 +1,6 @@
-// Callbacks related to interacting with table rows
+/*
+* Callbacks related to interacting with table rows
+*/
 require(["jquery", "home/utils", "home/dropdown-options"], function (
   $,
   utils,
