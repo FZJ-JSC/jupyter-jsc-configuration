@@ -214,7 +214,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const modules = options["userModules"];
 
     function _updateDockerRegistryFields(id, value){
-      $(`#${id}-image-private-cb-input-div`)[0].checked = true;
+      $(`#${id}-image-private-cb-input`)[0].checked = true;
       // Decode the value of the dockerRegistry. It comes encoded in base64 from the backend
       let privateRegistryString = atob(value);
       let privateRegistry = JSON.parse(privateRegistryString);
@@ -281,12 +281,13 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       if (dockerregistry) {
         $(`#${id}-image-private-cb-input-div`)[0].checked = true;
         $(`#${id}-image-private-cb-input-div`).show();
+        _updateDockerRegistryFields(id, dockerregistry);
       }
       else {
         $(`#${id}-image-private-cb-input-div`)[0].checked = false;
         $(`#${id}-image-private-cb-input-div`).hide();
       }
-      _updateDockerRegistryFields(id, dockerregistry);
+
       _setInputValue("image-mount", userdata_path);
       _setSelectOption("flavor", flavor, ((window.flavorInfo[system] || {})[flavor] || {}).display_name);
       utils.createFlavorInfo(id, system);

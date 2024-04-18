@@ -110,8 +110,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const serviceInfo = getServiceInfo();
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     var customImageInput = $(`input#${id}-image-input`);
-    var privateImageUsrInput = $(`input#${id}-image-private-user-input`);
-    var privateImagePassInput = $(`input#${id}-image-private-pass-input`);
+    var registryAuths = $(`input#${id}-image-private-url-input, input#${id}-image-private-user-input, input#${id}-image-private-pass-input`);
+    // var privateImageUsrInput = $(`input#${id}-image-private-user-input`);
+    // var privateImagePassInput = $(`input#${id}-image-private-pass-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
     var privateImgInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
     var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
@@ -119,18 +120,25 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
-      dropdowns.resetInputElement(privateImageUsrInput, false);
-      dropdowns.resetInputElement(privateImagePassInput, false);
+      // dropdowns.resetInputElement(privateImageUsrInput, false);
+      // dropdowns.resetInputElement(privateImagePassInput, false);
       dropdowns.resetInputElement(customMountInput, false);
+      registryAuths.forEach(element => {
+        dropdowns.resetInputElement(element, false);
+      });
       privateImgInputDivs.hide();
       allUserInputDivs.hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
-      dropdowns.resetInputElement(privateImageUsrInput, true);
-      dropdowns.resetInputElement(privateImagePassInput, true);
+      // dropdowns.resetInputElement(privateImageUsrInput, true);
+      // dropdowns.resetInputElement(privateImagePassInput, true);
+      // Set default values for the private docker registry authentications to false => fields are hidden and not required
+      $(`#${id}-image-private-cb-input`)[0].checked = false;
+      registryAuths.forEach(element => {
+        dropdowns.resetInputElement(element, false);
+      });
       allUserInputDivs.show();
 
-      $(`#${id}-image-private-cb-input`)[0].checked = false;
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
