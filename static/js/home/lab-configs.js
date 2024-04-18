@@ -226,6 +226,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     }
 
     $(`#${id}-name-input`).val(name);
+    let registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`);
     if (available) {
       /* Set allowed values. Do not rely on change events here as without
           passing a value explicitely, the first allowed option would be 
@@ -234,7 +235,12 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateServices(id, service);
         if (image) $(`#${id}-image-input`).val(image);
         if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
-        if (dockerregistry) _updateDockerRegistryFields(id, dockerregistry);
+        if (dockerregistry){
+           _updateDockerRegistryFields(id, dockerregistry);
+        }
+        else {
+          registryAuthsInputDivs.hide();
+        }
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);
@@ -285,7 +291,8 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       }
       else {
         $(`#${id}-image-private-cb-input-div`)[0].checked = false;
-        $(`#${id}-image-private-cb-input-div`).hide();
+        // $(`#${id}-image-private-cb-input-div`).hide();
+        registryAuthsInputDivs.hide();
       }
 
       _setInputValue("image-mount", userdata_path);
