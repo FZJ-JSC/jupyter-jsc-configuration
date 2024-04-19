@@ -46,8 +46,8 @@ since the warning  text will already create a margin.#}
       <input type="password" class="form-control" id="{{id}}-{{key}}-input"
        placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
       <span class="input-group-append">
-        <button class="btn btn-light" type="button" id="view-password">
-          <i id="password-eye" class="fa fa-eye" aria-hidden="true"></i>
+        <button class="btn btn-light" type="button" id="{{id}}-view-password">
+          <i id="{{id}}-password-eye" class="fa fa-eye" aria-hidden="true"></i>
         </button>
       </span>
       <div class="invalid-feedback">{{ warning }}</div>

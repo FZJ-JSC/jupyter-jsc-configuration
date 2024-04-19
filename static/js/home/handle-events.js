@@ -65,9 +65,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   });
 
-  $("#view-password").on("click", function (event) {
-    const passInput = $("input[id*=image-private-pass-input]")[0]
-    const eye = $('#password-eye')[0]
+  $("button[id*=view-password]").on("click", function (event) {
+    const id = utils.getId(this);
+    const passInput = $(`#${id}-image-private-pass-input]`)[0]
+    const eye = $(`#${id}-password-eye`)[0]
     if (passInput.type === 'password') {
       passInput.type = 'text';
       eye.classList.remove('fa-eye');
