@@ -34,6 +34,10 @@
 
   {#- TABLE #}
   <p>You can configure your existing JupyterLabs by expanding the corresponding table row.</p>
+  {%- for name, uo in decrypted_user_options.items() -%}
+    <p>{{ name }}: {{ uo }}</p>
+  {%- endfor -%}
+
   <div class="table-responsive-md">
     <table id="jupyterlabs-table" class="table table-bordered table-striped table-hover table-light align-middle">
     {#- TABLE HEAD #}
@@ -87,8 +91,9 @@
 var evtSources = {};
 var userOptions = {};
 var spawnEvents = {};
+
 {%- for spawner in lab_spawners -%}
-  {%- set userOptions = spawner.user_options -%}
+  {%- set userOptions = decrypted_user_options[spawner.name] or {} -%}
 userOptions["{{spawner.name}}"] = {{ userOptions | tojson }};
   {%- if spawner.state and spawner.state.get("events") %}
 spawnEvents["{{spawner.name}}"] = {{ spawner.state.get("events") | tojson }};
@@ -125,7 +130,9 @@ var flavorInfo = {{ outpostflavors | tojson }};
 </script>
 
 <script>
-/* (Mostly) Jinja dependent functions */
+/* (Mostly) Jinja dependent functions:
+ * Define get funtions to enable the use of jinja variables (supplied by the backend) within the JavaScript classes (otherwise they are not reachable)
+ */
 function getDropdownOptions() {
   return {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
 }
