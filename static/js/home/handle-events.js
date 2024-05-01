@@ -230,7 +230,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const id = utils.getId(this, -3);
     _toggle_show_input(id, "xserver", this.checked);
   });
-//TODO if the reservation selection is checked, control the runtime values
+
   $("select[id*=reservation]").change(function () {
     const reservationInfo = getReservationInfo();
 
@@ -239,6 +239,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if (value) {
       if (value == "None") {
         $(`#${id}-reservation-info-div`).hide();
+        // $(`#${id}-runtime-input`).trigger("change");
         return;
       }
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
@@ -252,20 +253,22 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         }
       }
       $(`#${id}-reservation-info-div`).show();
+      $(`#${id}-runtime-input`).trigger("change");
     }
     else {
       $(`#${id}-reservation-info-div`).hide();
     }
   });
-//TODO if the runtime value is checked - see if it exceeds the runtime
+
   $("input[id*=runtime-input").change(function () {
 
     function _getTimeInMinutes(start, end){
-      const startTime = new Date(start).getTime();
+      const now = Date.now();
+      const reservStart = new Date(start).getTime();
+      const startTime = (reservStart > now)? reservStart : now;
       const endTime = new Date(end).getTime();
       
       const elapsedTime = endTime - startTime;
-      
       const elapsedSeconds = elapsedTime / 1000; // Convert milliseconds to seconds
       const elapsedMinutes = elapsedSeconds / 60; // Convert seconds to minutes
       
@@ -273,35 +276,34 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     };
 
     const reservationInfo = getReservationInfo();
-
     const id = utils.getId(this);
     
     if (reservationInfo) {
       const currentReservation = $(`#${id}-reservation-select`).val();
 
       if (currentReservation == "None") {
+        tabWarning.addClass("invisible");
+        $(this).removeClass("is-invalid");
         return;
       }
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
-      let resStart = $(`#${id}-reservation-start`).text()
-      let resEnd = $(`#${id}-reservation-end`).text();
+      const resStart = $(`#${id}-reservation-start`).text()
+      const resEnd = $(`#${id}-reservation-end`).text();
 
       var reservationTime = _getTimeInMinutes(resStart, resEnd);
       var currentRuntimeVal = $(this)[0].value;
       let tabWarning = $(`#${id}-resources-tab-warning`);
+
       if(currentRuntimeVal > reservationTime){
-        $(this).siblings(".invalid-feedback").text(`The selected runtime exceeds your reservation time ${reservationTime}.`);
-        $(this).siblings(".invalid-feedback").show();
-        // $(this).addClass("invalid-feedback");
-        // var updateLabConfigInput = function (input, value, lastSelected, min, max, defaultValue, required = true, msg = "") {
+        
+        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${reservationTime} minutes.`);
+        $(this).addClass("is-invalid");
         
         tabWarning.removeClass("invisible");
-        // let runtimeInput = $(`input#${id}-runtime-input`);
-        // let r = $(this);
-        // dropdowns.updateLabConfigInput(runtimeInput, currentRuntimeVal, currentRuntimeVal, 0, reservationTime, currentRuntimeVal, true, "my random message");
       }
       else {
         tabWarning.addClass("invisible");
+        $(this).removeClass("is-invalid");
       }
     }
   });
