@@ -263,12 +263,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=runtime-input").change(function () {
 
-    function _getTimeInMinutes(start, end){
-      const now = Date.now();
-      const reservStart = new Date(start).getTime();
-      const startTime = (reservStart > now)? reservStart : now;
-      const endTime = new Date(end).getTime();
-      
+    function _getTimeInMinutes(startTime, endTime){
       const elapsedTime = endTime - startTime;
       const elapsedSeconds = elapsedTime / 1000; // Convert milliseconds to seconds
       const elapsedMinutes = elapsedSeconds / 60; // Convert seconds to minutes
@@ -291,11 +286,18 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       const resStart = $(`#${id}-reservation-start`).text()
       const resEnd = $(`#${id}-reservation-end`).text();
 
-      var reservationTime = _getTimeInMinutes(resStart, resEnd);
+      const now = Date.now();
+      const reservStart = new Date(resStart).getTime();
+      const startTime = (reservStart > now)? reservStart : now;
+      const endTime = new Date(resEnd).getTime();
+
+      var reservationTime = _getTimeInMinutes(startTime, endTime);
       var currentRuntimeVal = $(this)[0].value;
 
       if(currentRuntimeVal > reservationTime){
-        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${reservationTime.toFixed(2)} minutes.`);
+        let buffer = 10; // have a buffer of 10 minutes for the error message
+        const timeLeft = (reservationTime - buffer).toFixed(2);
+        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${timeLeft} minutes.`);
         $(this).addClass("is-invalid");
         
         tabWarning.removeClass("invisible");
