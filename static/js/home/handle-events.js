@@ -239,7 +239,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if (value) {
       if (value == "None") {
         $(`#${id}-reservation-info-div`).hide();
-        // $(`#${id}-runtime-input`).trigger("change");
+        $(`#${id}-runtime-input`).trigger("change");
+        // }
         return;
       }
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
@@ -277,6 +278,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     const reservationInfo = getReservationInfo();
     const id = utils.getId(this);
+    var tabWarning = $(`#${id}-resources-tab-warning`);
     
     if (reservationInfo) {
       const currentReservation = $(`#${id}-reservation-select`).val();
@@ -286,16 +288,13 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         $(this).removeClass("is-invalid");
         return;
       }
-      const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
       const resStart = $(`#${id}-reservation-start`).text()
       const resEnd = $(`#${id}-reservation-end`).text();
 
       var reservationTime = _getTimeInMinutes(resStart, resEnd);
       var currentRuntimeVal = $(this)[0].value;
-      let tabWarning = $(`#${id}-resources-tab-warning`);
 
       if(currentRuntimeVal > reservationTime){
-        
         $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${reservationTime} minutes.`);
         $(this).addClass("is-invalid");
         
