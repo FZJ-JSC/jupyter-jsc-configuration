@@ -295,7 +295,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       var currentRuntimeVal = $(this)[0].value;
 
       if(currentRuntimeVal > reservationTime){
-        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${reservationTime} minutes.`);
+        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${reservationTime.toFixed(2)} minutes.`);
         $(this).addClass("is-invalid");
         
         tabWarning.removeClass("invisible");
