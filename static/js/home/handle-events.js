@@ -271,6 +271,20 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       return elapsedMinutes;
     };
 
+    function _resetErrors(id, element) {
+
+      var resourceInfo = getResourceInfo();
+      const values = utils.getLabConfigSelectValues(id);
+      const partitionResources = ((resourceInfo[values.service] || {})[values.system] || {})[values.partition] || {};
+      if (partitionResources.runtime != undefined) {
+        let min = (partitionResources.runtime.minmax || [0, 1])[0];
+        let max = (partitionResources.runtime.minmax || [0, 1])[1];
+        element.siblings(".invalid-feedback").text(`Please choose a number between ${min} and ${max}.`);
+      }
+      tabWarning.addClass("invisible");
+      element.removeClass("is-invalid");
+    }
+
     const reservationInfo = getReservationInfo();
     const id = utils.getId(this);
     var tabWarning = $(`#${id}-resources-tab-warning`);
@@ -279,8 +293,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       const currentReservation = $(`#${id}-reservation-select`).val();
 
       if (currentReservation == "None") {
-        tabWarning.addClass("invisible");
-        $(this).removeClass("is-invalid");
+        _resetErrors(id, $(this));
         return;
       }
       const resStart = $(`#${id}-reservation-start`).text()
@@ -296,15 +309,14 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
       if(currentRuntimeVal > reservationTime){
         let buffer = 10; // have a buffer of 10 minutes for the error message
-        const timeLeft = (reservationTime - buffer).toFixed(2);
+        const timeLeft = Math.floor(reservationTime - buffer);
         $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${timeLeft} minutes.`);
         $(this).addClass("is-invalid");
         
         tabWarning.removeClass("invisible");
       }
       else {
-        tabWarning.addClass("invisible");
-        $(this).removeClass("is-invalid");
+        _resetErrors(id, $(this));
       }
     }
   });
