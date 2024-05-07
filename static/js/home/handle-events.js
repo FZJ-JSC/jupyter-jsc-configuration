@@ -246,8 +246,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
       for (const reservationInfo of systemReservationInfo) {
         if (reservationInfo.ReservationName == value) {
-          $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
-          $(`#${id}-reservation-end`).html(reservationInfo.EndTime);
+          $(`#${id}-reservation-start`).html(`${reservationInfo.StartTime} (Europe/Berlin)`);
+          $(`#${id}-reservation-end`).html(`${reservationInfo.EndTime} (Europe/Berlin)`);
           $(`#${id}-reservation-state`).html(reservationInfo.State);
           $(`#${id}-reservation-details`).html(
             JSON.stringify(reservationInfo, null, 2));
@@ -285,8 +285,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       element.removeClass("is-invalid");
     }
 
-    const reservationInfo = getReservationInfo();
     const id = utils.getId(this);
+    const reservationInfo = getReservationInfo();
+    const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
     var tabWarning = $(`#${id}-resources-tab-warning`);
     
     if (reservationInfo) {
@@ -296,27 +297,33 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         _resetErrors(id, $(this));
         return;
       }
-      const resStart = $(`#${id}-reservation-start`).text()
-      const resEnd = $(`#${id}-reservation-end`).text();
+      for (const reservationInfo of systemReservationInfo) {
+        if (reservationInfo.ReservationName == currentReservation) {
+          const resStart = reservationInfo.StartTime;
+          const resEnd = reservationInfo.EndTime;
 
-      const now = Date.now();
-      const reservStart = new Date(resStart).getTime();
-      const startTime = (reservStart > now)? reservStart : now;
-      const endTime = new Date(resEnd).getTime();
+          const nowString = Date().toLocaleString("en-US", {timeZone: "Europe/Berlin"});
+          const now = new Date(nowString).getTime();
+          const reservStart = new Date(resStart).getTime();
+          const startTime = (reservStart > now)? reservStart : now;
+          const endTime = new Date(resEnd).getTime();
 
-      var reservationTime = _getTimeInMinutes(startTime, endTime);
-      var currentRuntimeVal = $(this)[0].value;
+          var reservationTime = _getTimeInMinutes(startTime, endTime);
+          var currentRuntimeVal = $(this)[0].value;
 
-      if(currentRuntimeVal > reservationTime){
-        let buffer = 10; // have a buffer of 10 minutes for the error message
-        const timeLeft = Math.floor(reservationTime - buffer);
-        $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit: ${timeLeft} minutes.`);
-        $(this).addClass("is-invalid");
-        
-        tabWarning.removeClass("invisible");
-      }
-      else {
-        _resetErrors(id, $(this));
+          if(currentRuntimeVal > reservationTime){
+            // a buffer of 10 minutes, which is used only for the error message to avoid users copy-pasting the maximum time and their job landing in the queue forever
+            let buffer = 10;
+            const timeLeft = Math.floor(reservationTime - buffer);
+            $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit, e.g., ${timeLeft} minutes.`);
+            $(this).addClass("is-invalid");
+
+            tabWarning.removeClass("invisible");
+          }
+          else {
+            _resetErrors(id, $(this));
+          }
+        }
       }
     }
   });
