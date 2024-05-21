@@ -198,7 +198,6 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const name = options["name"];
     const service = getService(options);
     const image = options["image"];
-    //TODO add private image repo info
     const dockerregistry = options["dockerregistry"];
     const userdata_path = options["userdata_path"];
     const system = options["system"];
