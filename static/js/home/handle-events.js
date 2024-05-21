@@ -239,22 +239,92 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if (value) {
       if (value == "None") {
         $(`#${id}-reservation-info-div`).hide();
+        $(`#${id}-runtime-input`).trigger("change");
+        // }
         return;
       }
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
       for (const reservationInfo of systemReservationInfo) {
         if (reservationInfo.ReservationName == value) {
-          $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
-          $(`#${id}-reservation-end`).html(reservationInfo.EndTime);
+          $(`#${id}-reservation-start`).html(`${reservationInfo.StartTime} (Europe/Berlin)`);
+          $(`#${id}-reservation-end`).html(`${reservationInfo.EndTime} (Europe/Berlin)`);
           $(`#${id}-reservation-state`).html(reservationInfo.State);
           $(`#${id}-reservation-details`).html(
             JSON.stringify(reservationInfo, null, 2));
         }
       }
       $(`#${id}-reservation-info-div`).show();
+      $(`#${id}-runtime-input`).trigger("change");
     }
     else {
       $(`#${id}-reservation-info-div`).hide();
+    }
+  });
+
+  $("input[id*=runtime-input").change(function () {
+
+    function _getTimeInMinutes(startTime, endTime){
+      const elapsedTime = endTime - startTime;
+      const elapsedSeconds = elapsedTime / 1000; // Convert milliseconds to seconds
+      const elapsedMinutes = elapsedSeconds / 60; // Convert seconds to minutes
+      
+      return elapsedMinutes;
+    };
+
+    function _resetErrors(id, element) {
+
+      var resourceInfo = getResourceInfo();
+      const values = utils.getLabConfigSelectValues(id);
+      const partitionResources = ((resourceInfo[values.service] || {})[values.system] || {})[values.partition] || {};
+      if (partitionResources.runtime != undefined) {
+        let min = (partitionResources.runtime.minmax || [0, 1])[0];
+        let max = (partitionResources.runtime.minmax || [0, 1])[1];
+        element.siblings(".invalid-feedback").text(`Please choose a number between ${min} and ${max}.`);
+      }
+      tabWarning.addClass("invisible");
+      element.removeClass("is-invalid");
+    }
+
+    const id = utils.getId(this);
+    const reservationInfo = getReservationInfo();
+    const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
+    var tabWarning = $(`#${id}-resources-tab-warning`);
+    
+    if (reservationInfo) {
+      const currentReservation = $(`#${id}-reservation-select`).val();
+
+      if (currentReservation == "None") {
+        _resetErrors(id, $(this));
+        return;
+      }
+      for (const reservationInfo of systemReservationInfo) {
+        if (reservationInfo.ReservationName == currentReservation) {
+          const resStart = reservationInfo.StartTime;
+          const resEnd = reservationInfo.EndTime;
+
+          const nowString = Date().toLocaleString("en-US", {timeZone: "Europe/Berlin"});
+          const now = new Date(nowString).getTime();
+          const reservStart = new Date(resStart).getTime();
+          const startTime = (reservStart > now)? reservStart : now;
+          const endTime = new Date(resEnd).getTime();
+
+          var reservationTime = _getTimeInMinutes(startTime, endTime);
+          var currentRuntimeVal = $(this)[0].value;
+
+          if(currentRuntimeVal > reservationTime){
+            // a buffer of 10 minutes, which is used only for the error message to avoid users copy-pasting the maximum time and their job landing in the queue forever
+            let buffer = 10;
+            const timeLeft = Math.floor(reservationTime - buffer);
+            $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit, e.g., ${timeLeft} minutes.`);
+            $(this).addClass("is-invalid");
+
+            tabWarning.removeClass("invisible");
+          }
+          else {
+            _resetErrors(id, $(this));
+          }
+        }
+      }
     }
   });
 
