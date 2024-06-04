@@ -198,6 +198,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const name = options["name"];
     const service = getService(options);
     const image = options["image"];
+    const dockerregistry = options["dockerregistry"];
     const userdata_path = options["userdata_path"];
     const system = options["system"];
     const flavor = options["flavor"];
@@ -211,7 +212,20 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const xserver = options["xserver"];
     const modules = options["userModules"];
 
+    function _updateDockerRegistryFields(id, value){
+      $(`#${id}-image-private-cb-input`)[0].checked = true;
+      // Decode the value of the dockerRegistry. It comes encoded in base64 from the backend
+      let privateRegistryString = atob(value);
+      let privateRegistry = JSON.parse(privateRegistryString);
+      let auths = Object.values(privateRegistry)[0]; // returns a dictionary in the form of {"registry_url" : {"username": <username>, "password": <password>}}
+      let url = Object.keys(auths)[0];
+      $(`#${id}-image-private-url-input`).val(url);
+      $(`#${id}-image-private-user-input`).val(auths[url]["username"]);
+      $(`#${id}-image-private-pass-input`).val(auths[url]["password"]);
+    }
+
     $(`#${id}-name-input`).val(name);
+    let registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`);
     if (available) {
       /* Set allowed values. Do not rely on change events here as without
           passing a value explicitely, the first allowed option would be 
@@ -220,6 +234,12 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateServices(id, service);
         if (image) $(`#${id}-image-input`).val(image);
         if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
+        if (dockerregistry){
+           _updateDockerRegistryFields(id, dockerregistry);
+        }
+        else {
+          registryAuthsInputDivs.hide();
+        }
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);
@@ -229,7 +249,9 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
         dropdowns.updateModules(id, service, system, account, project, partition, modules);
       }
-      catch (e) { utils.setLabAsNA(id, "due to a JS error"); }
+      catch (e) { utils.setLabAsNA(id, "due to a JS error");
+        console.log(e)
+      }
     }
     else {
       function _setSelectOption(key, value, displayValue) {
@@ -261,6 +283,17 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         $(`#${id}-image-mount-cb-input-div`)[0].checked = false;
         $(`#${id}-image-mount-cb-input-div`).hide();
       }
+      if (dockerregistry) {
+        $(`#${id}-image-private-cb-input-div`)[0].checked = true;
+        $(`#${id}-image-private-cb-input-div`).show();
+        _updateDockerRegistryFields(id, dockerregistry);
+      }
+      else {
+        $(`#${id}-image-private-cb-input-div`)[0].checked = false;
+        // $(`#${id}-image-private-cb-input-div`).hide();
+        registryAuthsInputDivs.hide();
+      }
+
       _setInputValue("image-mount", userdata_path);
       _setSelectOption("flavor", flavor, ((window.flavorInfo[system] || {})[flavor] || {}).display_name);
       utils.createFlavorInfo(id, system);
