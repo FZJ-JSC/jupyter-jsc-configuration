@@ -69,7 +69,7 @@ define(["jquery", "utils"], function ($, utils) {
     options = options || {};
     options = update(options, { type: "POST", dataType: null });
     this.api_request(
-      utils.url_path_join("users", user, "encryptedservers", server_name),
+      utils.url_path_join("users", user, "servers", server_name),
       options
     );
   };

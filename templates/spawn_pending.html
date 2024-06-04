@@ -51,7 +51,6 @@
 {%- set service_name = custom_config.get("services").get(service).get("options").get(option).get("name") -%}
 {%- set version = user_options.get("options", "JupyterLab") -%}
 {%- set system = user_options.get("system", None) -%}
-{%- set image = user_options.get("image", None) -%}
 {%- set flavor = user_options.get("flavor", None) -%}
 {%- set account = user_options.get("account", None) -%}
 {%- set project = user_options.get("project", None) -%}
@@ -97,7 +96,6 @@
               <div class="tab-pane fade show active" id="config-info" role="tabpanel">
                 {{ create_text_input("Name", name) }}
                 {{ create_text_input("Version", service_name) }}
-                {{ create_text_input("Image", image) }}
                 <hr>
                 {{ create_text_input("System", system) }}
                 {{ create_text_input("Flavor", flavor) }}
