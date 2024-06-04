@@ -14,12 +14,9 @@ define(["jquery", "home/utils"], function (
     let select = $(`select#${id}-version-select`);
     const currentVal = select.val();
     resetInputElement(select);
-    var valueName = (serviceInfo.JupyterLab.options[value] || {}).name || "new-jupyterlab";
     for (const service of Object.keys(dropdownOptions).sort().reverse()) {
       var serviceName = (serviceInfo.JupyterLab.options[service] || {}).name || service;
-      if ( valueName.includes("deprecated") || ! serviceName.includes("deprecated")) {
-        select.append(`<option value="${service}">${serviceName}</option>`);
-      }
+      select.append(`<option value="${service}">${serviceName}</option>`);
     }
     if (!value) value = serviceInfo.JupyterLab.defaultOption;
     updateLabConfigSelect(select, value, currentVal);
