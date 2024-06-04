@@ -14,8 +14,6 @@ define(["jquery", "home/utils"], function (
     var valueName = (serviceInfo.JupyterLab.options[value] || {}).name || "new-jupyterlab";
     for (const service of Object.keys(dropdownOptions).sort().reverse()) {
       var serviceName = (serviceInfo.JupyterLab.options[service] || {}).name || service;
-      // When filling the service dropdown, we only add deprecated versions,
-      // if the current value is already deprecated
       if ( valueName.includes("deprecated") || ! serviceName.includes("deprecated")) {
         select.append(`<option value="${service}">${serviceName}</option>`);
       }
