@@ -1,4 +1,6 @@
-// Callbacks related to interacting with table rows
+/*
+* Callbacks related to interacting with table rows
+*/
 require(["jquery", "home/utils", "home/dropdown-options"], function (
   $,
   utils,
@@ -63,13 +65,26 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   });
 
+  $("button[id*=view-password]").on("click", function (event) {
+    const id = utils.getId(this);
+    const passInput = $(`#${id}-image-private-pass-input`)[0]
+    const eye = $(`#${id}-password-eye`)[0]
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      eye.classList.remove('fa-eye');
+      eye.classList.add('fa-eye-slash');
+    } else {
+      passInput.type = 'password';
+      eye.classList.add('fa-eye');
+      eye.classList.remove('fa-eye-slash');
+    }
+  });
 
   /* *************** */
   /* LAB CONFIG      */
   /* *************** */
 
-  function _toggle_show_input(id, key, pattern) {
-    const showInput = $(`input#${id}-${key}-cb-input`)[0].checked;
+  function _toggle_show_input(id, key, showInput, pattern) {
     if (showInput) {
       $(`#${id}-${key}-input-div`).show();
       $(`#${id}-${key}-input`).attr("required", true);
@@ -97,26 +112,45 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     var customImageInput = $(`input#${id}-image-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
-    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+    var registryAuthsInputs = $(`#${id}-image-private-url-input, #${id}-image-private-user-input, #${id}-image-private-pass-input`);
+
+    var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
       dropdowns.resetInputElement(customMountInput, false);
+      dropdowns.resetInputElement(registryAuthsInputs, false);
+
+      registryAuthsInputDivs.hide();
       allUserInputDivs.hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
+
+      // Set default values for the private docker registry authentications to false => fields are hidden and not required
+      $(`#${id}-image-private-cb-input`)[0].checked = false;
+      dropdowns.resetInputElement(registryAuthsInputs, false);
       allUserInputDivs.show();
+
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
     }
   });
 
+  $("input[id*=image-private-cb-input]").change(function () {
+    const id = utils.getId(this, -4);
+    const showInput = this.checked;
+    _toggle_show_input(id, "image-private-url", showInput);
+    _toggle_show_input(id, "image-private-user", showInput);
+    _toggle_show_input(id, "image-private-pass", showInput);
+  });
+
   $("input[id*=image-mount-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const pattern_check = "^\\/[A-Za-z0-9\\-\\/]+";
-    _toggle_show_input(id, "image-mount", pattern_check);
+    _toggle_show_input(id, "image-mount", this.checked, pattern_check);
   });
 
   $("select[id*=system]").change(function () {
@@ -194,7 +228,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=xserver-cb-input]").change(function () {
     const id = utils.getId(this, -3);
-    _toggle_show_input(id, "xserver");
+    _toggle_show_input(id, "xserver", this.checked);
   });
 
   $("select[id*=reservation]").change(function () {
@@ -205,22 +239,92 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if (value) {
       if (value == "None") {
         $(`#${id}-reservation-info-div`).hide();
+        $(`#${id}-runtime-input`).trigger("change");
+        // }
         return;
       }
       const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
       for (const reservationInfo of systemReservationInfo) {
         if (reservationInfo.ReservationName == value) {
-          $(`#${id}-reservation-start`).html(reservationInfo.StartTime);
-          $(`#${id}-reservation-end`).html(reservationInfo.EndTime);
+          $(`#${id}-reservation-start`).html(`${reservationInfo.StartTime} (Europe/Berlin)`);
+          $(`#${id}-reservation-end`).html(`${reservationInfo.EndTime} (Europe/Berlin)`);
           $(`#${id}-reservation-state`).html(reservationInfo.State);
           $(`#${id}-reservation-details`).html(
             JSON.stringify(reservationInfo, null, 2));
         }
       }
       $(`#${id}-reservation-info-div`).show();
+      $(`#${id}-runtime-input`).trigger("change");
     }
     else {
       $(`#${id}-reservation-info-div`).hide();
+    }
+  });
+
+  $("input[id*=runtime-input").change(function () {
+
+    function _getTimeInMinutes(startTime, endTime){
+      const elapsedTime = endTime - startTime;
+      const elapsedSeconds = elapsedTime / 1000; // Convert milliseconds to seconds
+      const elapsedMinutes = elapsedSeconds / 60; // Convert seconds to minutes
+      
+      return elapsedMinutes;
+    };
+
+    function _resetErrors(id, element) {
+
+      var resourceInfo = getResourceInfo();
+      const values = utils.getLabConfigSelectValues(id);
+      const partitionResources = ((resourceInfo[values.service] || {})[values.system] || {})[values.partition] || {};
+      if (partitionResources.runtime != undefined) {
+        let min = (partitionResources.runtime.minmax || [0, 1])[0];
+        let max = (partitionResources.runtime.minmax || [0, 1])[1];
+        element.siblings(".invalid-feedback").text(`Please choose a number between ${min} and ${max}.`);
+      }
+      tabWarning.addClass("invisible");
+      element.removeClass("is-invalid");
+    }
+
+    const id = utils.getId(this);
+    const reservationInfo = getReservationInfo();
+    const systemReservationInfo = reservationInfo[utils.getLabConfigSelectValues(id)["system"]] || [];
+    var tabWarning = $(`#${id}-resources-tab-warning`);
+    
+    if (reservationInfo) {
+      const currentReservation = $(`#${id}-reservation-select`).val();
+
+      if (currentReservation == "None") {
+        _resetErrors(id, $(this));
+        return;
+      }
+      for (const reservationInfo of systemReservationInfo) {
+        if (reservationInfo.ReservationName == currentReservation) {
+          const resStart = reservationInfo.StartTime;
+          const resEnd = reservationInfo.EndTime;
+
+          const nowString = Date().toLocaleString("en-US", {timeZone: "Europe/Berlin"});
+          const now = new Date(nowString).getTime();
+          const reservStart = new Date(resStart).getTime();
+          const startTime = (reservStart > now)? reservStart : now;
+          const endTime = new Date(resEnd).getTime();
+
+          var reservationTime = _getTimeInMinutes(startTime, endTime);
+          var currentRuntimeVal = $(this)[0].value;
+
+          if(currentRuntimeVal > reservationTime){
+            // a buffer of 10 minutes, which is used only for the error message to avoid users copy-pasting the maximum time and their job landing in the queue forever
+            let buffer = 10;
+            const timeLeft = Math.floor(reservationTime - buffer);
+            $(this).siblings(".invalid-feedback").text(`Your reservation ends on ${resEnd}. Do not set a runtime which exceeds this limit, e.g., ${timeLeft} minutes.`);
+            $(this).addClass("is-invalid");
+
+            tabWarning.removeClass("invisible");
+          }
+          else {
+            _resetErrors(id, $(this));
+          }
+        }
+      }
     }
   });
 

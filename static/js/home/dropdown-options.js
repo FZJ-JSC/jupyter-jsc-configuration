@@ -1,3 +1,6 @@
+/*
+* This module takes care of updating the user options, which are received from the backend and shown on the UI
+*/
 define(["jquery", "home/utils"], function (
   $,
   utils
@@ -170,12 +173,32 @@ define(["jquery", "home/utils"], function (
   }
 
   var updateReservations = function (id, service, system, account, project, partition, value) {
+
+    function _toggle_show_reservation(show) {
+      if (show) {
+        $(`#${id}-reservation-select-div`).show();
+        $(`#${id}-reservation-hr`).show();
+      }
+      else {
+        $(`#${id}-reservation-select-div`).hide();
+        $(`#${id}-reservation-hr`).hide();
+      }
+    }
+
     const dropdownOptions = getDropdownOptions();
     const reservationInfo = getReservationInfo();
+    const systemInfo = getSystemInfo();
 
     let select = $(`select#${id}-reservation-select`);
     const currentVal = select.val();
     resetInputElement(select, false);
+
+    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
+    if (interactivePartitions.includes(partition)){
+      _toggle_show_reservation(false);
+      updateLabConfigSelect(select, value, currentVal);
+      return;
+    }
 
     const reservationsAllowed = ((((dropdownOptions[service] || {})[system] || {})[account] || {})[project] || {})[partition] || {};
     if (reservationsAllowed.length > 0 && JSON.stringify(reservationsAllowed) !== JSON.stringify(["None"])) {
@@ -193,12 +216,10 @@ define(["jquery", "home/utils"], function (
         }
       }
       select.attr("required", true);
-      $(`#${id}-reservation-select-div`).show();
-      $(`#${id}-reservation-hr`).show();
+      _toggle_show_reservation(true);
     }
     else {
-      $(`#${id}-reservation-select-div`).hide();
-      $(`#${id}-reservation-hr`).hide();
+      _toggle_show_reservation(false);
     }
     updateLabConfigSelect(select, value, currentVal);
   }

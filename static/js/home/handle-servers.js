@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
+/*
+* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be send to the backend
+*/
 require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function (
   $,
   JHAPI,
@@ -391,6 +393,31 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       if (param == "xserver") {
         if (!collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
       }
+      else if (param == "image-private") {
+        if (!collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
+        param = "dockerregistry";
+       
+        let registry_url = "";
+        const credentials = {}
+
+        for(let i = 0; i < input.length; i++) {
+          let el = input[i]
+          if(el.id.indexOf("private-url") !== -1){
+            registry_url = el.value;
+          }
+          if(el.id.indexOf("user") !== -1){
+            credentials["username"] = el.value;
+          }
+          if(el.id.indexOf("pass") !== -1){
+            credentials["password"] = el.value;
+          }  
+        }
+        const auth_values = {}
+        auth_values[registry_url] = credentials
+        const auths = {"auths" : auth_values }
+        // Encode user credentials for the private docker repository in base64
+        value = btoa(JSON.stringify(auths));
+      }
       else if (param == "image-mount") {
         if (!collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
         param = "userdata_path";
@@ -411,7 +438,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
     ["version", "system", "flavor", "account",
       "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["image", "image-mount", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }
