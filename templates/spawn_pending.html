@@ -2,8 +2,8 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
 {%- block stylesheet -%}
-  <link rel="stylesheet" href='{{ static_url("css/home.css", include_version=False) }}' type="text/css"/>
-  <link rel="stylesheet" href='{{ static_url("css/spawn.css", include_version=False) }}' type="text/css"/>
+  <link rel="stylesheet" href='{{ static_url("css/home.css", include_version=True) }}' type="text/css"/>
+  <link rel="stylesheet" href='{{ static_url("css/spawn.css", include_version=True) }}' type="text/css"/>
 {%- endblock -%}
 
 {%- macro create_text_input(label, value) -%}
