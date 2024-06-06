@@ -46,7 +46,7 @@
         <div class="d-flex justify-content-center align-items-center mx-auto p-4">
             <a id="btn-login" class="btn btn-primary" role="button">Login</a>
             <div class="white-line"></div>
-            <img src='{{static_url("images/pages/login/User.svg", include_version=False) }}' />
+            <img src='{{static_url("images/pages/login/User.svg", include_version=True) }}' />
             <div class="white-line"></div>
             <a id="btn-register" class="btn btn-primary" role="button" 
               href="https://judoor.fz-juelich.de">Register</a>
@@ -106,7 +106,7 @@
 {%- endblock -%}
 
 {%- block script -%}
-<script src='{{static_url("js/login.js", include_version=False) }}'></script>
+<script src='{{static_url("js/login.js", include_version=True) }}'></script>
 
 <script>
 $("nav [id$=nav-item]").removeClass("active");
