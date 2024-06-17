@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 /*
-* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be send to the backend
+* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be sent to the backend
 */
 require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function (
   $,
@@ -204,12 +204,40 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     });
   }
 
+  function shareLab() {
+
+    function _uuidv4hex() {
+      return ([1e7, 1e3, 4e3, 8e3, 1e11].join('')).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    }
+
+    const uuid = _uuidv4hex();
+    var shareUrluuid = utils.url_path_join(jhdata.base_url, uuid);
+    console.log(`Sharing uuid URL: ${shareUrluuid}`)
+
+
+    // Start button is in collapsible tr for new labs
+    var [collapsibleTr, id] = _getTrAndId(this);
+    // _disableTrButtons(collapsibleTr);
+
+    var options = _createDataDict(collapsibleTr);
+
+    var data = JSON.stringify(options);
+    var shareUrlOptions = utils.url_path_join(base_url, "share?");
+    for(var name in data) {
+      shareUrlOptions = utils.url_path_join(shareUrlOptions, "&", name, "=", data[name]);
+    }
+
+    alert(`Sharing uuid URL: ${shareUrlOptions}`);
+
+  }
+  
   $(".btn-start-lab").click(startServer);
   $(".btn-start-new-lab").click(startNewServer);
   $(".btn-cancel-lab").click(cancelServer);
   $(".btn-stop-lab").click(stopServer);
   $(".btn-delete-lab").click(deleteServer);
-
+  $(".btn-share-lab").click(shareLab);
 
   /*
   Validate form before starting a new lab

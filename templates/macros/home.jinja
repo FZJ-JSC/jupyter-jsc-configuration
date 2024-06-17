@@ -277,14 +277,17 @@
 <hr>
 <div class="d-flex">
   {%- if start_button_only %}
+  <button type="button" id="{{id}}-share-btn" class="btn btn-share-lab">{{ svg.share_svg | safe }} Share </button>
   <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
   <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled ms-auto me-2" style="display: none;">
       {{ svg.na_svg | safe }} N/A
   </button>
   <div id="{{id}}-na-info" class="text-muted my-auto" style="display: none; font-size: smaller;"></div>
   {%- else %}
+  <button id="{{ id }}-share-btn" type="button" class="btn btn-share-lab me-2">{{ svg.share_svg | safe }} Share </button>
   <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
   <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>
+
   <div class="alert fade p-0 m-0" role="alert">
     <span class="align-middle"></span>
     <button type="button" class="btn-close align-middle" onClick="$(this).parent().removeClass('show p-1').addClass('p-0');"></button>
