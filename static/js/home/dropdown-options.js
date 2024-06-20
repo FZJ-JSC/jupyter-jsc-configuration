@@ -1,3 +1,6 @@
+/*
+* This module takes care of updating the user options, which are received from the backend and shown on the UI
+*/
 define(["jquery", "home/utils"], function (
   $,
   utils
