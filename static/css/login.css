@@ -39,6 +39,19 @@
   width: 10%;
 }
 
+.logo {
+  max-height: 64px;
+}
+
+.btn-large-md {
+  width: 200px !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  height: 100px !important;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.8em;
+}
 
 /* Links */
 
