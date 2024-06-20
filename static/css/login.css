@@ -30,7 +30,8 @@
 #lower-login-div img {
   border-radius: 50%;
   border: 0.25vh solid white;
-  height: 90px;
+  margin: .3em !important;
+  height: 50px;
 }
 
 .white-line {
@@ -53,7 +54,7 @@
   font-size: 1.8em;
 } */
 
-btn-large-md {
+.btn-large-md {
   background-image: url("/hub/static/images/pages/login/User.svg"); /* 16px x 16px */
   background-color: transparent; /* make the button transparent */
   background-repeat: no-repeat;  /* make the background image appear only once */
@@ -63,6 +64,7 @@ btn-large-md {
   height: 16px;           /* make this the size of your image */
   padding-left: 16px;     /* make text start to the right of the image */
   vertical-align: middle; /* align the text vertically centered */
+  font-size: 1.5em;
 }
 
 /* Links */
