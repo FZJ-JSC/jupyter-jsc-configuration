@@ -40,10 +40,10 @@
 }
 
 .logo {
-  max-height: 64px;
+  max-height: 40px;
 }
 
-.btn-large-md {
+/* .btn-large-md {
   width: 200px !important;
   max-width: 100% !important;
   max-height: 100% !important;
@@ -51,6 +51,18 @@
   text-align: center;
   padding: 15px;
   font-size: 1.8em;
+} */
+
+btn-large-md {
+  background-image: url("/hub/static/images/pages/login/User.svg"); /* 16px x 16px */
+  background-color: transparent; /* make the button transparent */
+  background-repeat: no-repeat;  /* make the background image appear only once */
+  background-position: 0px 0px;  /* equivalent to 'top left' */
+  border: none;           /* assuming we don't want any borders */
+  cursor: pointer;        /* make the cursor like hovering over an <a> element */
+  height: 16px;           /* make this the size of your image */
+  padding-left: 16px;     /* make text start to the right of the image */
+  vertical-align: middle; /* align the text vertically centered */
 }
 
 /* Links */
