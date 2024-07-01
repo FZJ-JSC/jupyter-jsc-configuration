@@ -1,8 +1,9 @@
 /* Login div */
 
-#login-div h2, 
-#login-div h4 {
-  color: #023d6b;
+#title h1 {
+  font-size: 5em;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 #upper-login-div {
