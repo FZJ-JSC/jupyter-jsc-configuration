@@ -237,19 +237,23 @@ define(["jquery", "home/utils"], function (
     [nodesInput, gpusInput, runtimeInput, xserverInput].forEach(input => resetInputElement(input, false));
     xserverCheckboxInput[0].checked = false;
 
+    $(`#${id}-resources-tab`).show();
     const systemResources = (resourceInfo[service] || {})[system] || {};
     if ($.isEmptyObject(systemResources)) {
       $(`#${id}-resources-tab`).addClass("disabled");
+      $(`#${id}-resources-tab`).hide();
       tabWarning.addClass("invisible");
     }
     else {
       const partitionResources = systemResources[partition];
       if ($.isEmptyObject(partitionResources)) {
         $(`#${id}-resources-tab`).addClass("disabled");
+        $(`#${id}-resources-tab`).hide();
         tabWarning.addClass("invisible");
       }
       else {
         $(`#${id}-resources-tab`).removeClass("disabled");
+        $(`#${id}-resources-tab`).show();
         if ("nodes" in partitionResources) {
           let min = (partitionResources.nodes.minmax || [0, 1])[0];
           let max = (partitionResources.nodes.minmax || [0, 1])[1];
