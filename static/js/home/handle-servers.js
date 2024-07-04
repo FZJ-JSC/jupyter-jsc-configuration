@@ -206,15 +206,16 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
   function shareLab() {
 
-    function _uuidv4hex() {
-      return ([1e7, 1e3, 4e3, 8e3, 1e11].join('')).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    function _uuid8digits() {
+      const randomInt = crypto.getRandomValues(new Uint32Array(1))[0];
+      // Convert the integer to a hexadecimal string and pad with zeros if necessary
+      const uuid = randomInt.toString(16).padStart(8, '0');
+      
+      return uuid.slice(0, 8);
     }
 
-    const uuid = _uuidv4hex();
-    var shareUrluuid = utils.url_path_join(jhdata.base_url, uuid);
-    console.log(`Sharing uuid URL: ${shareUrluuid}`)
-
+    const share_uuid = _uuid8digits();
+    console.log(`Sharing uuid URL: ${share_uuid}`)
 
     // Start button is in collapsible tr for new labs
     var [collapsibleTr, id] = _getTrAndId(this);
@@ -222,14 +223,46 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
 
     var options = _createDataDict(collapsibleTr);
 
-    var data = JSON.stringify(options);
-    var shareUrlOptions = utils.url_path_join(base_url, "share?");
-    for(var name in data) {
-      shareUrlOptions = utils.url_path_join(shareUrlOptions, "&", name, "=", data[name]);
-    }
 
-    alert(`Sharing uuid URL: ${shareUrlOptions}`);
-
+    //---------------------------------------------------
+  
+    
+      // Open a new tab for spawn_pending.html
+      // Need to create it here for JS context reasons
+      // var newTab = window.open("about:blank");
+      let protocol = window.location.protocol;
+      let urlStr = utils.url_path_join(protocol, getHostname(), base_url, "share", share_uuid);
+      api.share_server(share_uuid, {
+        data: JSON.stringify(options),
+        success: function () {
+          // url = utils.url_path_join(base_url, "share", share_uuid);
+          // newTab.location.href = url;
+          
+          // Reload page to add spawner to table
+          // location.reload();
+        },
+        error: function (xhr) {
+          // newTab.close();
+          // If cookie is not valid anymore, refresh the page.
+          // This should redirect the user to the login page.
+          if (xhr.status == 403) {
+            document.location.reload();
+            return;
+          }
+          // Show information about why the start failed
+          let details = $("<details>")
+            .append($("<summary>")
+              .html(`Failed to create a share link for this lab. Error: ${xhr.responseText}`))
+            .append($("<pre>")
+              .html(custom_utils.parseJSON(xhr.responseText)));
+          $(`#${id}-log`).append(
+            $("<div>").addClass("log-div").html(details)
+          );
+          collapsibleTr.find("button").removeClass("disabled");
+        }
+      });
+      let url = new URL(urlStr)
+      alert(`Sharing uuid URL: ${url}`);
   }
   
   $(".btn-start-lab").click(startServer);
