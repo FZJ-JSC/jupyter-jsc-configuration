@@ -277,14 +277,14 @@
 <hr>
 <div class="d-flex">
   {%- if start_button_only %}
-  <button type="button" id="{{id}}-share-btn" class="btn btn-share-lab">{{ svg.share_svg | safe }} Share </button>
+  <button type="button" id="{{id}}-share-btn" class="btn btn-share-lab"  data-toggle="modal" data-target="#{{ id }}-share-link">{{ svg.share_svg | safe }} Share </button>
   <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
   <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled ms-auto me-2" style="display: none;">
       {{ svg.na_svg | safe }} N/A
   </button>
   <div id="{{id}}-na-info" class="text-muted my-auto" style="display: none; font-size: smaller;"></div>
   {%- else %}
-  <button id="{{ id }}-share-btn" type="button" class="btn btn-share-lab me-2">{{ svg.share_svg | safe }} Share </button>
+  <button id="{{ id }}-share-btn" type="button" class="btn btn-share-lab me-2"  data-toggle="modal" data-target="#{{ id }}-share-link">{{ svg.share_svg | safe }} Share </button>
   <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
   <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>
 
@@ -294,5 +294,27 @@
   </div>
   <button type="button" id="{{id}}-delete-btn" class="btn btn-danger btn-delete-lab ms-auto"> {{ svg.delete_svg | safe }} Delete </button>
   {%- endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="{{ id }}-share-link" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Share Lab</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </div>
+        <div class="modal-body">
+          <p>Share your lab via URL</p>
+          <a href=""></a>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="{{id}}-copy-btn" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">Copy</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 {%- endmacro -%}

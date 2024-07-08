@@ -261,8 +261,25 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
           collapsibleTr.find("button").removeClass("disabled");
         }
       });
+
+      $(`#${id}-copy-btn`).click(function() {
+
+        const shareUrl = $(`#${id}-share-link .modal-body a`).attr('href');
+        navigator.clipboard.writeText(shareUrl).then(function() {
+
+          $(`#${id}-copy-btn`).tooltip('dispose').attr('title', 'Copied');
+          $(`#${id}-copy-btn`).tooltip('show');
+        }, function(err) {
+          console.error('Could not copy text: ', err);
+        });
+      });
+
       let url = new URL(urlStr)
-      alert(`Sharing uuid URL: ${url}`);
+      $(`#${id}-share-link .modal-title`).text(`Share Lab ${options["name"]}`);
+      $(`#${id}-share-link .modal-body a`).text(`${url}`);
+      $(`#${id}-share-link .modal-body a`).attr('href', url);
+      $(`#${id}-share-link`).modal('show');
+
   }
   
   $(".btn-start-lab").click(startServer);
