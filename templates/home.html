@@ -31,6 +31,13 @@
   {%- if custom_config.get("announcement", {}).get("show", False) %}
   {{ home.create_announcement(custom_config) }}
   {%- endif -%}
+  {#- REAUTHENTICATE #}
+  {%- if auth_state and auth_state.get("reauthenticate", False) %}
+  <div class="alert bg-info alert-dismissible fade show" style="color: #023d6b;" role="alert">
+    <span class="align-middle">  Your access to the HPC-systems was updated. <a style="text-decoration-line: underline; "href={{base_url}}reauthenticate> Please click here to reload. </a></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {%- endif -%}
 
   {#- TABLE #}
   <p>You can configure your existing JupyterLabs by expanding the corresponding table row.</p>
