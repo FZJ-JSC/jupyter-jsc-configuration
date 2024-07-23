@@ -430,9 +430,13 @@ define(["jquery", "home/utils"], function (
       })
     }
 
-    if (enableModulesTab) $(`#${id}-modules-tab`).removeClass("disabled");
+    if (enableModulesTab) {
+      $(`#${id}-modules-tab`).removeClass("disabled");
+      $(`#${id}-modules-tab`).show();
+    }
     else {
       $(`#${id}-modules-tab`).addClass("disabled");
+      $(`#${id}-modules-tab`).hide();
       tabWarning.addClass("invisible");
     }
   }
