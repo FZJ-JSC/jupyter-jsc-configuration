@@ -150,6 +150,7 @@
               {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
+                pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?",
                 warning="Please input a valid docker image, e.g. jupyter/datascience-notebook",
                 persistent_hover=True) %}
                 A public registry docker image starting a single-user notebook server.
@@ -159,6 +160,7 @@
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
               {%- call inputs.create_text_input(id, "image-private-url", "Image Repository",
                 placeholder="URL for your image registry",
+                pattern="^(([a-zA-Z0-9.-]+)(:[0-9]+)?/)?([a-zA-Z0-9._-]+/)*[a-zA-Z0-9._-]+(:[a-zA-Z0-9._-]+|@[A-Fa-f0-9]+(:[A-Fa-f0-9]+)*)?$",
                 warning="Please input a valid docker URL") %}
               {%- endcall %}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
