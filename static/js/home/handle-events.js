@@ -329,7 +329,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   });
 
   $("input.module-selector").click(function () {
-    const id = utils.getId(this, slice_index = 1);
+    const id = utils.getId(this, -3);
     const allOrNone = $(this).attr("id").includes("select-all") ? "all" : "none";
     var checkboxes = $(`#${id}-modules-form`).find("input[type=checkbox]");
     if (allOrNone == "all") {

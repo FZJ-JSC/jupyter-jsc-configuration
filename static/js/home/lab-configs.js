@@ -344,6 +344,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
       }
       else {
         $(`#${id}-resources-tab`).addClass("disabled");
+        $(`#${id}-resources-tab`).hide();
       }
 
       // Modules
