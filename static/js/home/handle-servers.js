@@ -225,10 +225,15 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         });
       });
 
-      let shareableURL = new URL(url)
+      let shareableURL = url;
+
       $(`#${id}-share-link .modal-title`).text(`Share Lab ${options["name"]}`);
       $(`#${id}-share-link .modal-body a`).text(`${shareableURL}`);
-      $(`#${id}-share-link .modal-body a`).attr('href', shareableURL);
+      try {
+        shareableURL = new URL(url);
+        $(`#${id}-share-link .modal-body a`).attr('href', shareableURL);
+      } catch (error) {}
+
       $(`#${id}-share-link`).modal('show');
     }
     //---------------------------------------------------
@@ -252,16 +257,9 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
           document.location.reload();
           return;
         }
-        // Show information about why the start failed
-        let details = $("<details>")
-          .append($("<summary>")
-            .html(`Failed to create a share link for this lab. Error: ${xhr.responseText}`))
-          .append($("<pre>")
-            .html(custom_utils.parseJSON(xhr.responseText)));
-        $(`#${id}-log`).append(
-          $("<div>").addClass("log-div").html(details)
-        );
-        collapsibleTr.find("button").removeClass("disabled");
+
+        let err = `Failed to create a share link for this lab. Error: ${xhr.responseText}`;
+        showShareDialogue(err);
       }
     });
   }
