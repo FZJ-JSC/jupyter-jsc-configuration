@@ -1,6 +1,6 @@
 /* Login div */
 
-#login-div h3, 
+#login-div h2, 
 #login-div h4 {
   color: #023d6b;
 }
@@ -30,15 +30,19 @@
 #lower-login-div img {
   border-radius: 50%;
   border: 0.25vh solid white;
-  height: 90px;
+  margin: .3em !important;
+  height: 50px;
 }
 
 .white-line {
   border-bottom: 0.25vh solid white;
   margin-bottom: -0.15vh;
-  width: 10%;
+  width: 100%;
 }
 
+.logo {
+  max-height: 40px;
+}
 
 /* Links */
 
