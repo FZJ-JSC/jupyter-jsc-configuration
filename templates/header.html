@@ -41,7 +41,7 @@
     <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}login">Login</a></li>
     {%- endif %}
     <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
-    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.jupyter.jsc.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
     <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}links">More Links</a></li>
   </div>
 </ul>
@@ -51,7 +51,7 @@
 <nav class="navbar navbar-light navbar-expand-lg bg-white pb-0">
   <div class="container-fluid">
     <a class="navbar-brand" href="https://fz-juelich.de/jsc/en" target="_blank">
-      <img id="jsc-logo" class="p-3" width="335px" title="https://fz-juelich.de/jsc/en" alt='JSC' src='{{ static_url("images/header/jsc.png", include_version=False) }}' />
+      <img id="jsc-logo" class="p-3" width="335px" title="https://fz-juelich.de/jsc/en" alt='JSC' src='{{ static_url("images/header/jsc.png", include_version=True) }}' />
     </a>
     {#- Button that toggles the navigation. Is visible on medium screens and smaller. #}
     <button class="navbar-toggler mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapsibleContent">
@@ -63,7 +63,7 @@
     </div>
     <div class="d-flex flex-column align-items-end ms-auto">
       <a class="navbar-brand" href="/">
-        <img id="jupyter-logo" src='{{ static_url("images/header/jupyterjsc.png", include_version=False) }}' height="60px" alt="Jupyter-JSC" title="{{hostname}}{{ base_url|default('', true) }}">
+        <img id="jupyter-logo" src='{{ static_url("images/header/jupyterjsc.png", include_version=True) }}' height="60px" alt="Jupyter-JSC" title="{{hostname}}{{ base_url|default('', true) }}">
       </a>
       {{ create_user_widget() }}
     </div>

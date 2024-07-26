@@ -14,9 +14,12 @@ define(["jquery", "home/utils"], function (
     let select = $(`select#${id}-version-select`);
     const currentVal = select.val();
     resetInputElement(select);
+    var valueName = (serviceInfo.JupyterLab.options[value] || {}).name || "new-jupyterlab";
     for (const service of Object.keys(dropdownOptions).sort().reverse()) {
       var serviceName = (serviceInfo.JupyterLab.options[service] || {}).name || service;
-      select.append(`<option value="${service}">${serviceName}</option>`);
+      if ( valueName.includes("deprecated") || ! serviceName.includes("deprecated")) {
+        select.append(`<option value="${service}">${serviceName}</option>`);
+      }
     }
     if (!value) value = serviceInfo.JupyterLab.defaultOption;
     updateLabConfigSelect(select, value, currentVal);
@@ -170,12 +173,32 @@ define(["jquery", "home/utils"], function (
   }
 
   var updateReservations = function (id, service, system, account, project, partition, value) {
+
+    function _toggle_show_reservation(show) {
+      if (show) {
+        $(`#${id}-reservation-select-div`).show();
+        $(`#${id}-reservation-hr`).show();
+      }
+      else {
+        $(`#${id}-reservation-select-div`).hide();
+        $(`#${id}-reservation-hr`).hide();
+      }
+    }
+
     const dropdownOptions = getDropdownOptions();
     const reservationInfo = getReservationInfo();
+    const systemInfo = getSystemInfo();
 
     let select = $(`select#${id}-reservation-select`);
     const currentVal = select.val();
     resetInputElement(select, false);
+
+    const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
+    if (interactivePartitions.includes(partition)){
+      _toggle_show_reservation(false);
+      updateLabConfigSelect(select, value, currentVal);
+      return;
+    }
 
     const reservationsAllowed = ((((dropdownOptions[service] || {})[system] || {})[account] || {})[project] || {})[partition] || {};
     if (reservationsAllowed.length > 0 && JSON.stringify(reservationsAllowed) !== JSON.stringify(["None"])) {
@@ -193,12 +216,10 @@ define(["jquery", "home/utils"], function (
         }
       }
       select.attr("required", true);
-      $(`#${id}-reservation-select-div`).show();
-      $(`#${id}-reservation-hr`).show();
+      _toggle_show_reservation(true);
     }
     else {
-      $(`#${id}-reservation-select-div`).hide();
-      $(`#${id}-reservation-hr`).hide();
+      _toggle_show_reservation(false);
     }
     updateLabConfigSelect(select, value, currentVal);
   }
@@ -219,19 +240,23 @@ define(["jquery", "home/utils"], function (
     [nodesInput, gpusInput, runtimeInput, xserverInput].forEach(input => resetInputElement(input, false));
     xserverCheckboxInput[0].checked = false;
 
+    $(`#${id}-resources-tab`).show();
     const systemResources = (resourceInfo[service] || {})[system] || {};
     if ($.isEmptyObject(systemResources)) {
       $(`#${id}-resources-tab`).addClass("disabled");
+      $(`#${id}-resources-tab`).hide();
       tabWarning.addClass("invisible");
     }
     else {
       const partitionResources = systemResources[partition];
       if ($.isEmptyObject(partitionResources)) {
         $(`#${id}-resources-tab`).addClass("disabled");
+        $(`#${id}-resources-tab`).hide();
         tabWarning.addClass("invisible");
       }
       else {
         $(`#${id}-resources-tab`).removeClass("disabled");
+        $(`#${id}-resources-tab`).show();
         if ("nodes" in partitionResources) {
           let min = (partitionResources.nodes.minmax || [0, 1])[0];
           let max = (partitionResources.nodes.minmax || [0, 1])[1];
@@ -335,12 +360,15 @@ define(["jquery", "home/utils"], function (
       var insertIndex = -1;
       for (const [module, moduleInfo] of Object.entries(modules)) {
         if (moduleInfo.sets.includes(service)) {
-          if (moduleInfo.allowedSystems && !moduleInfo.allowedSystems.includes(system)) {
+          if (moduleInfo.allowed_systems && !moduleInfo.allowed_systems.includes(system)) {
             // Module not in allowed systems, so do nothing.
           }
           else {
             if (moduleInfo.compute_only && interactivePartitions.includes(partition)) {
               // Module is compute only, but partition is interactive, so do nothing.
+            }
+            else if (moduleInfo.interactive_only && !interactivePartitions.includes(partition)) {
+              // Module is interactive only, but partition is compute, so do nothing.
             }
             else {
               $(`#${id}-${moduleSet}-div`).show();
@@ -405,9 +433,13 @@ define(["jquery", "home/utils"], function (
       })
     }
 
-    if (enableModulesTab) $(`#${id}-modules-tab`).removeClass("disabled");
+    if (enableModulesTab) {
+      $(`#${id}-modules-tab`).removeClass("disabled");
+      $(`#${id}-modules-tab`).show();
+    }
     else {
       $(`#${id}-modules-tab`).addClass("disabled");
+      $(`#${id}-modules-tab`).hide();
       tabWarning.addClass("invisible");
     }
   }

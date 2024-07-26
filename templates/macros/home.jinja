@@ -151,7 +151,7 @@
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
                 pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?",
-                warning="Please input a valid docker image, e.g. jupyter/datascience-notebook",
+                warning="Please enter a valid docker image, e.g. jupyter/datascience-notebook",
                 persistent_hover=True) %}
                 A public registry docker image starting a single-user notebook server.
                 <a href='https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html' target='_blank' style='color: white !important;'>Examples.</a>
@@ -160,8 +160,8 @@
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
               {%- call inputs.create_text_input(id, "image-private-url", "Image Repository",
                 placeholder="URL for your image registry",
-                pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$",
-                warning="Please input a valid docker URL") %}
+                pattern="^(([a-zA-Z0-9.\-]+)(:[0-9]+)?\/)?([a-zA-Z0-9._\-]+\/)*[a-zA-Z0-9._\-]+(:[a-zA-Z0-9._\-]+|@[A-Fa-f0-9]+(:[A-Fa-f0-9]+)*)?$",
+                warning="Please enter a valid docker repository URL") %}
               {%- endcall %}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
