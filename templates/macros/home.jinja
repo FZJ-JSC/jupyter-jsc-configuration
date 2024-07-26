@@ -160,7 +160,7 @@
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
               {%- call inputs.create_text_input(id, "image-private-url", "Image Repository",
                 placeholder="URL for your image registry",
-                pattern="^(([a-zA-Z0-9.-]+)(:[0-9]+)?\/)?([a-zA-Z0-9._-]+\/)*[a-zA-Z0-9._-]+(:[a-zA-Z0-9._-]+|@[A-Fa-f0-9]+(:[A-Fa-f0-9]+)*)?$",
+                pattern="^(([a-zA-Z0-9.\-]+)(:[0-9]+)?\/)?([a-zA-Z0-9._\-]+\/)*[a-zA-Z0-9._\-]+(:[a-zA-Z0-9._\-]+|@[A-Fa-f0-9]+(:[A-Fa-f0-9]+)*)?$",
                 warning="Please enter a valid docker repository URL") %}
               {%- endcall %}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
