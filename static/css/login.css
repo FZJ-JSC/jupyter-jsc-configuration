@@ -1,6 +1,6 @@
 /* Login div */
 
-#title h1 {
+#title > h1 {
   font-size: 5em;
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -43,6 +43,10 @@
 
 .logo {
   max-height: 40px;
+}
+
+main #login-div p {
+  color: black;
 }
 
 /* Links */
