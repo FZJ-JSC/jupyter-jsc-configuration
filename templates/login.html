@@ -21,7 +21,7 @@
 {%- endmacro -%}
 
 {%- macro list_item(btn_id, img, alt="") -%}
-<li class="list-group-item">
+<li class="list-group-item bg-light">
   <!--a id="{{btn_id}}" class="btn btn-outline-light" role="button"-->
   <img class="logo" src="{{ static_url(img, include_version=False) }}"  class="logo w-100 shadow-1-strong rounded mb-4" alt="{{alt}}"/>
   <!--/a-->
@@ -57,7 +57,7 @@
               </a>
               
               <!-- Logos -->
-              <ul class="list-group bullets">
+              <ul class="list-group list-group-flush bullets">
                 {{list_item("jsc-login", "images/pages/login/Logo_FZ_Juelich_jsc.png", "JSC Login")}}
 
                 {{list_item("helmholz-login", "images/pages/login/Helmholz_AAI_ID.png", "Helmholz AAI ID")}}
