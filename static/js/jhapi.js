@@ -83,11 +83,11 @@ define(["jquery", "utils"], function ($, utils) {
     );
   };
 
-  JHAPI.prototype.share_server = function (uuid, options) {
+  JHAPI.prototype.share_server = function (options) {
     options = options || {};
     options = update(options, { type: "POST", dataType: null });
     this.api_request(
-      utils.url_path_join("share", uuid),
+      utils.url_path_join("share", "user_options"),
       options
     );
   };
