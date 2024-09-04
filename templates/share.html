@@ -61,11 +61,16 @@
           {%- set s = user.spawners[spawner.name] -%}
           <span> {{s}} </span>
           {%- set user_options = spawner.user_options -%}
+          {%- set share_options = spawner.spawner_options_form_values -%}
+          {%- set share_options2 = spawner_options_form_values -%}
           {{ home.create_summary_tr(s, user_options) }}
           {{ home.create_collapsible_tr(s, user_options, custom_config) }}
         {%- endfor %}
       </tbody>
     </table>
+    <p>
+      {{spawner_options_form_values | safe}}
+    </p>
   </div>  {#- table responsive #}
   <div class="d-flex text-center h-100 p-4">
     <a href="{{ base_url }}home" class="btn btn-light m-auto" role="button">Return to Home</a>
