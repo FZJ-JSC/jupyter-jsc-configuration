@@ -151,7 +151,7 @@
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
                 pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?",
-                warning="Please input a valid docker image, e.g. jupyter/datascience-notebook",
+                warning="Please enter a valid docker image, e.g. jupyter/datascience-notebook",
                 persistent_hover=True) %}
                 A public registry docker image starting a single-user notebook server.
                 <a href='https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html' target='_blank' style='color: white !important;'>Examples.</a>
@@ -160,8 +160,8 @@
               {{ inputs.create_checkbox_input(id, "image-private-cb", "Private repository")}}
               {%- call inputs.create_text_input(id, "image-private-url", "Image Repository",
                 placeholder="URL for your image registry",
-                pattern="^(https?:\/\/)?([\da-z\.\-]+)\.([a-z\.]{2,6})([\/\w\.\-]*)*\/?$",
-                warning="Please input a valid docker URL") %}
+                pattern="^(([a-zA-Z0-9.\-]+)(:[0-9]+)?\/)?([a-zA-Z0-9._\-]+\/)*[a-zA-Z0-9._\-]+(:[a-zA-Z0-9._\-]+|@[A-Fa-f0-9]+(:[A-Fa-f0-9]+)*)?$",
+                warning="Please enter a valid docker repository URL") %}
               {%- endcall %}
               {%- call inputs.create_text_input(id, "image-private-user", "Username",
                 placeholder="Please enter your username") %}
@@ -277,19 +277,44 @@
 <hr>
 <div class="d-flex">
   {%- if start_button_only %}
+  <button type="button" id="{{id}}-share-btn" class="btn btn-share-lab"  data-toggle="modal" data-target="#{{ id }}-share-link">{{ svg.share_svg | safe }} Share </button>
   <button type="button" id="{{id}}-start-btn" class="btn btn-success btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
   <button type="button" id="{{id}}-na-btn" class="btn btn-secondary btn-na-lab disabled ms-auto me-2" style="display: none;">
       {{ svg.na_svg | safe }} N/A
   </button>
   <div id="{{id}}-na-info" class="text-muted my-auto" style="display: none; font-size: smaller;"></div>
   {%- else %}
+  <button id="{{ id }}-share-btn" type="button" class="btn btn-share-lab me-2"  data-toggle="modal" data-target="#{{ id }}-share-link">{{ svg.share_svg | safe }} Share </button>
   <button id="{{ id }}-save-btn" type="button" class="btn btn-success btn-save-lab me-2">{{ svg.save_svg | safe }} Save </button>
   <button id="{{ id }}-reset-btn" type="button" class="btn btn-danger btn-reset-lab me-2">{{ svg.reset_svg | safe }} Reset</button>
+
   <div class="alert fade p-0 m-0" role="alert">
     <span class="align-middle"></span>
     <button type="button" class="btn-close align-middle" onClick="$(this).parent().removeClass('show p-1').addClass('p-0');"></button>
   </div>
   <button type="button" id="{{id}}-delete-btn" class="btn btn-danger btn-delete-lab ms-auto"> {{ svg.delete_svg | safe }} Delete </button>
   {%- endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="{{ id }}-share-link" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Share Lab</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </div>
+        <div class="modal-body">
+          <p>Share your lab via URL</p>
+          <a href=""></a>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="{{id}}-copy-btn" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy to clipboard">Copy</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 {%- endmacro -%}

@@ -31,6 +31,13 @@
   {%- if custom_config.get("announcement", {}).get("show", False) %}
   {{ home.create_announcement(custom_config) }}
   {%- endif -%}
+  {#- REAUTHENTICATE #}
+  {%- if auth_state and auth_state.get("reauthenticate", False) %}
+  <div class="alert bg-info alert-dismissible fade show" style="color: #023d6b;" role="alert">
+    <span class="align-middle">  Your access to the HPC-systems has been updated. <a style="text-decoration-line: underline; "href={{base_url}}logout?alldevices=false&stop=false&next=oauth_login> Please click here to reload. </a></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {%- endif -%}
 
   {#- TABLE #}
   <p>You can configure your existing JupyterLabs by expanding the corresponding table row.</p>
@@ -130,6 +137,10 @@ var flavorInfo = {{ outpostflavors | tojson }};
 /* (Mostly) Jinja dependent functions:
  * Define get funtions to enable the use of jinja variables (supplied by the backend) within the JavaScript classes (otherwise they are not reachable)
  */
+function getHostname() {
+  return {{hostname | tojson}} || {};
+}
+
 function getDropdownOptions() {
   return {{auth_state.get("options_form", {}).get("dropdown_list", {}) | tojson}};
 }
@@ -425,8 +436,8 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
 })
 </script>
 
-<script src='{{static_url("js/home/handle-events.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
-<script src='{{static_url("js/home/handle-servers.js", include_version=False) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/home/handle-events.js", include_version=True) }}' type="text/javascript" charset="utf-8"></script>
+<script src='{{static_url("js/home/handle-servers.js", include_version=True) }}' type="text/javascript" charset="utf-8"></script>
 <script>
 $("nav [id$=nav-item]").removeClass("active");
 $("#start-nav-item, #collapse-start-nav-item").addClass("active");
