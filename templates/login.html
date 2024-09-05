@@ -20,88 +20,55 @@
 </div>
 {%- endmacro -%}
 
+{%- macro list_item(btn_id, img, alt="") -%}
+<li class="list-group-item list-group-item-action bg-light">
+  <a id="{{btn_id}}" class="btn btn-outline-light" role="button">
+  <img class="logo" src="{{ static_url(img, include_version=False) }}"  class="logo w-100 shadow-1-strong rounded mb-4" alt="{{alt}}"/>
+  </a>
+</li>
+{%- endmacro -%}
+
 
 {%- block main -%}
 <div class="row g-0 h-100 justify-content-center">
-  <div class="col-12 col-lg-4 order-lg-1">
-    <div id="login-div" class="d-flex flex-column bg-secondary h-100">
-      <div id="upper-login-div" class="d-flex flex-column justify-content-center mx-auto p-4">
-        <h3>Jupyter-JSC</h3>
-        <h4>Supercomputing in Your Browser</h4>
-        <p class="fs-5">
-            Jupyter-JSC starts and provides access to your Jupyter Notebook servers running on JSC
-            compute resources. These can be JUWELS, JURECA, JUSUF, HDFML or DEEP's login or compute nodes
-            or even the JSC cloud - depending on the computing resources available to you.
-            <br><br>
-            Please use your JSC account to log in or register if you have not already done so.
-            It's also possible to log in via Helmholtz AAI.
-            <a href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb" target="_blank">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
-              </svg>
+  <div id="carousel-background" class="col-12 flex-column d-flex justify-content-center align-items-center h-100">
+    <div id="title" class="d-flex justify-content-center w-50 p-3 mt-3">
+      <h1> Welcome back </h1>
+    </div>
+    <div class="container d-flex border shadow rounded-3 bg-light p-4 m-4">
+      <div class="row g-0">
+        <div id="lower-login-div" class="d-flex col justify-content-center align-items-center p-3">
+          <div class="d-flex justify-content-center align-items-center mx-auto p-4">
+            <a id="btn-login" class="btn btn-primary btn-lg" role="button">
+              <img src='{{static_url("images/pages/login/User.svg", include_version=False) }}'/>
+              Login
             </a>
-        </p>
-      </div>
-      <div id="lower-login-div" class="bg-info">
-        <div class="d-flex justify-content-center align-items-center mx-auto p-4">
-            <a id="btn-login" class="btn btn-primary" role="button">Login</a>
-            <div class="white-line"></div>
-            <img src='{{static_url("images/pages/login/User.svg", include_version=True) }}' />
-            <div class="white-line"></div>
-            <a id="btn-register" class="btn btn-primary" role="button" 
-              href="https://judoor.fz-juelich.de">Register</a>
+          </div>
+        </div>
+        <div id="login-div" class="d-flex col justify-content-center align-items-center p-3 mt-3">
+          <div class="row g-0 d-flex justify-content-center align-items-center p-3">
+            <p class="fs-5  m-3">
+              You can login to Jupyter JSC by using one of the following accounts. For more information, please click 
+              <a href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/01-Introduction/03-Login-to-Jupyter-JSC.ipynb" target="_blank">
+                here.
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+                </svg>
+              </a>
+              
+              <!-- Logos -->
+              <ul class="list-group list-group-flush bullets">
+                {{list_item("jsc-login", "images/pages/login/Logo_FZ_Juelich_jsc.png", "JSC Login")}}
+
+                {{list_item("helmholz-login", "images/pages/login/Helmholz_AAI_ID.png", "Helmholz AAI ID")}}
+              
+                {{list_item("nfdi-login", "images/pages/login/nfdi_rgb_dark.png", "NFDI Login")}}
+              </ul>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
- 
-  <div class="col-12 col-lg-8 order-lg-0">
-    <div id="carousel-background" class="d-flex align-items-center h-100">
-      <div id="login-carousel" class="carousel slide d-flex justify-content-center w-100" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-          <button type="button" data-bs-target="#login-carousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
-        </div>
-        <div class="carousel-inner">
-          {{ carousel_item("Jupyter", "https://jupyter.org", "Supercomputing in Your Browser",
-          "Jupyter-JSC is designed to provide the rich high performance computing (HPC) ecosystem 
-          to the world's most popular software: web browsers. JupyterLab is a web-based interactive 
-          development environment for Jupyter notebooks, code, and data. JupyterLab is flexible 
-          to support a wide range of workflows in data science, scientific computing, and machine learning.",
-          "active") }}
-
-          {{ carousel_item("Jupyter Notebooks", "https://jupyter-notebook.readthedocs.io/en/stable/notebook.html",
-          "Share your Workflows", "Jupyter-JSC allows you to create and share documents that contain 
-          live code, equations, visualizations and explanatory text. Uses include: data cleaning and transformation, 
-          numerical simulation, statistical modeling, machine learning and much more.")
-          }}
-
-          {{ carousel_item("JupyterLab", "https://jupyterlab.readthedocs.io", "Next-Generation Notebook Interface",
-          "Jupyter-JSC gives access to JupyterLab, a web-based interactive development environment for Jupyter 
-          notebooks, code, and data. JupyterLab is flexible: configure and arrange the user interface to support a 
-          wide range of workflows in data science, scientific computing, and machine learning. JupyterLab is extensible 
-          and modular: write plugins that add new components and integrate with existing ones.") 
-          }}
-
-          {{ carousel_item("JupyterHub", "https://jupyterhub.readthedocs.io", "Serving Jupyter Notebooks for Multiple
-          Users", "Jupyter-JSC is a JupyterHub to serve Jupyter notebooks for multiple users. It can be used in 
-          classes of students, a corporate data science group or scientific research group. It is a multi-user hub 
-          that spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server.") }}
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#login-carousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#login-carousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-    </div>
-  </div>
 </div>
 {%- endblock -%}
 

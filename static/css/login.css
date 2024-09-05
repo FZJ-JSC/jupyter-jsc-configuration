@@ -1,8 +1,19 @@
 /* Login div */
 
-#login-div h3, 
-#login-div h4 {
-  color: #023d6b;
+#title > h1 {
+  font-size: 5em;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.list-group.bullets {
+  list-style-image: url("/hub/static/images/pages/login/chevron-compact-right.svg")
+}
+
+
+.list-group.bullets .list-group-item {
+  list-style-type: none;
+  display: list-item;
 }
 
 #upper-login-div {
@@ -17,8 +28,9 @@
   border: none;
 }
 
-#lower-login-div > div {
-  /* max-width: 500px; */
+.list-group.list-with-bullets .list-group-item {
+  list-style-type: disc;
+  display: list-item;
 }
 
 #lower-login-div a,
@@ -30,15 +42,23 @@
 #lower-login-div img {
   border-radius: 50%;
   border: 0.25vh solid white;
-  height: 90px;
+  margin: .3em !important;
+  height: 50px;
 }
 
 .white-line {
   border-bottom: 0.25vh solid white;
   margin-bottom: -0.15vh;
-  width: 10%;
+  width: 100%;
 }
 
+.logo {
+  max-height: 40px;
+}
+
+main #login-div p {
+  color: black;
+}
 
 /* Links */
 
