@@ -8,6 +8,7 @@
 
 {#- Set some convenience variables -#}
 {%- set lab_spawners = [] -%}
+window.alert("Setup, start looping")
 {%- for s in spawners -%}
   {%- if s.user_options -%}
     {%- if (
@@ -38,13 +39,12 @@
           <th scope="col" width="20%">Name</th>
           <th scope="col">Configuration</th>
           <th scope="col" width="10%;">Status</th>
-          <th scope="col" width="10%;">Actions</th>
         </tr>
       </thead>
       {#- TABLE BODY #}
       <tbody>
         {#- New JupyterLab row #}
-        <tr data-server-id="{{ new }}" class="new-spawner-tr summary-tr">
+       <!-- <tr data-server-id="{{ new }}" class="new-spawner-tr summary-tr">
           <th scope="col" class="details-td">
             <div class="d-flex mx-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg m-auto" viewBox="0 0 16 16">
@@ -53,23 +53,21 @@
             </div>
           </th>
           <th scope="row" colspan="100%" class="text-center">Lab configuration</th>
-        </tr>
-        {{ home.create_collapsible_tr(None, {}, custom_config, new_lab_id=new) }}
+        </tr>-->
+        {#-  {{ home.create_collapsible_tr(None, {}, custom_config, new_lab_id=new) }}-#}
         {#- Existing JupyterLab rows -#}
         {#- By looping through lab_spawners #}
-        {%- for spawner in lab_spawners -%}
-          {%- set s = user.spawners[spawner.name] -%}
-          <span> {{s}} </span>
-          {%- set user_options = spawner.user_options -%}
-          {%- set share_options = spawner.spawner_options_form_values -%}
-          {%- set share_options2 = spawner_options_form_values -%}
-          {{ home.create_summary_tr(s, user_options) }}
-          {{ home.create_collapsible_tr(s, user_options, custom_config) }}
-        {%- endfor %}
+        {%- set shared_options = spawner_options_form_values -%}
+        {{ home.create_summary_tr(None, shared_options) }}
+        {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=shared_options.name) }}
+
       </tbody>
     </table>
     <p>
-      {{spawner_options_form_values | safe}}
+      {{shared_options}}
+      <br>
+      <br>
+      Lab spawners: {{lab_spawners}}
     </p>
   </div>  {#- table responsive #}
   <div class="d-flex text-center h-100 p-4">

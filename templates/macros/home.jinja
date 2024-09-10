@@ -13,8 +13,10 @@
 {%- endmacro -%}
 
 {%- macro create_summary_tr(s, user_options) -%}
-{%- set id = s.name -%}
 {%- set name = user_options.get("name") -%}
+{%- if s %} {%- set id = s.name -%}
+{%- else %} {%- set id = name -%}
+{%- endif -%}
 {%- set system = user_options.get("system", "") -%}
 {%- set flavor = user_options.get("flavor", "") -%}
 {%- set partition = user_options.get("partition", "") -%}
@@ -57,7 +59,7 @@
     </div>
   </td>
   {{ create_lab_progress_td(id) }}
-  {{ create_action_td(id, s) }}
+  {%- if s %} {{ create_action_td(id, s) }} {%- endif -%}
 </tr>
 {%- endmacro -%}
 
