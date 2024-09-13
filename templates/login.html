@@ -25,7 +25,10 @@
   <!-- Buttons off: the sign-in options are for now just an informational list, September 2024 -->
   <!-- <a id="{{btn_id}}" class="btn btn-outline-light" role="button"> -->
   <!-- Img for the logos -->
-  <img class="logo rounded-3 py-1 my-2" src="{{ static_url(img, include_version=False) }}" alt="{{alt}}"/>
+  <img class="logo rounded-3 py-1 my-2" 
+    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" title={{alt}}
+    src="{{ static_url(img, include_version=False) }}" 
+    alt="{{alt}}"/>
   <!-- <span class="fs-5 rounded-3 fw-bold py-2 my-2">{{alt}}<span>-->
   <!-- </a> -->
 </li>
@@ -34,13 +37,13 @@
 {%- block main -%}
 <div class="row g-0 h-100 justify-content-center">
   <div id="login-background" class="col-12 flex-column d-flex justify-content-center align-items-center h-100">
-    <div class="container d-flex border shadow rounded-3 bg-light p-5">
-      <div class="row g-0 justify-content-center">
+    <div class="container d-flex border shadow rounded-3 bg-light py-5">
+      <div class="row g-0 justify-content-center w-100">
         <!-- Left column -->
-        <div id="right-login-div" class="d-flex col-md-7 justify-content-center align-items-center">
+        <div id="accounts-login-div" class="d-flex col-md-7 justify-content-center align-items-center ps-5 pe-1">
           <div class="row g-0 w-100 d-flex justify-content-center align-items-center">
-            <p class="fs-5  my-3">
-              Sign in using one of the following accounts. 
+            <p class="fs-5 text-dark ps-3">
+              Sign in using one of the following accounts 
               <!--
               For more information click
               <a href="https://docs.{{hostname}}/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/01-Introduction/03-Login-to-Jupyter-JSC.ipynb" target="_blank">
@@ -52,19 +55,19 @@
             -->
               <!-- Logos -->
               <ul class="list-group list-group-flush my-2">
-                {{list_item("jsc-login", "images/pages/login/Logo_FZ_Juelich_jsc.png", "JSC account")}}
+                {{list_item("jsc-login", "images/pages/login/Logo_FZ_Juelich_jsc.png", alt="JSC-Account")}}
 
-                {{list_item("helmholz-login", "images/pages/login/Helmholz_AAI_ID.png", "Helmholz AAI ID")}}
+                {{list_item("helmholz-login", "images/pages/login/Helmholz_AAI_ID.png", alt="Helmholz AAI ID")}}
               
-                {#- {{list_item("nfdi-login", "images/pages/login/nfdi_rgb_dark.png", "NFDI Login")}} #}
+                {#- {{list_item("nfdi-login", "images/pages/login/nfdi_rgb_dark.png", alt="NFDI Login")}} #}
               </ul>
             </p>
           </div>
         </div>
         <!-- Right column -->
-        <div id="left-login-div" class="d-flex col h-100">
+        <div id="button-login-div" class="d-flex col h-100 px-5">
           <div class="row g-0 d-flex w-100">
-            <div class="d-flex justify-content-center align-items-center mx-auto">
+            <div class="d-flex justify-content-center align-items-center pt-5">
               <a id="btn-login" class="btn btn-primary shadow btn-lg p-4" role="button">
                 <!-- <img src='{{static_url("images/pages/login/User.svg", include_version=False) }}'/> -->
                 Sign In

@@ -6,17 +6,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.list-group.bullets {
-  list-style-image: url("/hub/static/images/pages/login/chevron-compact-right.svg")
-}
-
-
-.list-group.bullets .list-group-item {
-  list-style-type: none;
-  display: list-item;
-}
-
-#left-login-div {
+#lbutton-login-div {
   border: none;
 }
 
@@ -25,12 +15,12 @@
   display: list-item;
 }
 
-#left-login-div a,
-#left-login-div a:hover {
+#button-login-div a,
+#button-login-div a:hover {
   text-decoration: none;
 }
 
-#left-login-div img {
+#button-login-div img {
   border-radius: 50%;
   border: 0.25vh solid white;
   margin: .3em !important;
@@ -45,10 +35,6 @@
 
 .logo {
   max-height: 40px;
-}
-
-main #right-login-div p {
-  color: black;
 }
 
 /* Links */
