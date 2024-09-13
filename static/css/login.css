@@ -85,23 +85,23 @@ main #right-login-div p {
 }
 
 main #login-background .container {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 main #login-background .container-sm {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 main #login-background .container-md {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 main #login-background .container-lg {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 main #login-background .container-xl {
-  max-width: 720px;
+  max-width: 960px;
 }
 
 main .carousel-inner {
