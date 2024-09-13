@@ -27,7 +27,6 @@
 
 #left-login-div a,
 #left-login-div a:hover {
-  border: solid 0.25vh white;
   text-decoration: none;
 }
 
@@ -86,23 +85,23 @@ main #right-login-div p {
 }
 
 main #login-background .container {
-  max-width: 960px;
+  max-width: 720px;
 }
 
 main #login-background .container-sm {
-  max-width: 960px;
+  max-width: 720px;
 }
 
 main #login-background .container-md {
-  max-width: 960px;
+  max-width: 720px;
 }
 
 main #login-background .container-lg {
-  max-width: 960px;
+  max-width: 720px;
 }
 
 main #login-background .container-xl {
-  max-width: 960px;
+  max-width: 720px;
 }
 
 main .carousel-inner {
