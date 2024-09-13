@@ -85,6 +85,26 @@ main #right-login-div p {
   min-height: 500px;
 }
 
+main #login-background .container {
+  max-width: 960px;
+}
+
+main #login-background .container-sm {
+  max-width: 960px;
+}
+
+main #login-background .container-md {
+  max-width: 960px;
+}
+
+main #login-background .container-lg {
+  max-width: 960px;
+}
+
+main #login-background .container-xl {
+  max-width: 960px;
+}
+
 main .carousel-inner {
   background-color: rgb(255, 255, 255, 0.7);
   /* background-color: rgb(255, 255, 255, 1); */
