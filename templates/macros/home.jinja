@@ -112,10 +112,13 @@
 {%- endmacro -%}
 
 {%- macro create_collapsible_tr(s, user_options, custom_config, new_lab_id="new-jupyterlab") -%}
-{%- if s %} {%- set id = s.name -%}
-{%- else %} {%- set id = new_lab_id -%}
-{%- endif -%}
+
 {%- set name = user_options.get("name", "") -%}
+{%- if s %} {%- set id = s.name -%}
+{%- elif name == '' %}  {%- set id = new_lab_id -%}
+{%- else %} {%- set id = name -%}
+{%- endif -%}
+
 <tr data-server-id="{{id}}" class="collapsible-tr" style="--bs-table-accent-bg: transparent;">
   <td colspan="100%" class="p-0">  {#- Remove padding to hide td when collapsed #}
     <div class="collapse" id="{{id}}-collapse">
