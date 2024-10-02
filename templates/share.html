@@ -24,7 +24,6 @@ window.alert("Setup, start looping")
     {%- endif -%}
   {%- endif -%}
 {%- endfor -%}
-{%- set new = "new-jupyterlab" -%}  {# id for new jupyterlabs #}
 
 {%- block main -%}
 <div class="container-fluid p-4">
@@ -43,32 +42,12 @@ window.alert("Setup, start looping")
       </thead>
       {#- TABLE BODY #}
       <tbody>
-        {#- New JupyterLab row #}
-       <!-- <tr data-server-id="{{ new }}" class="new-spawner-tr summary-tr">
-          <th scope="col" class="details-td">
-            <div class="d-flex mx-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-lg m-auto" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-              </svg>
-            </div>
-          </th>
-          <th scope="row" colspan="100%" class="text-center">Lab configuration</th>
-        </tr>-->
-        {#-  {{ home.create_collapsible_tr(None, {}, custom_config, new_lab_id=new) }}-#}
-        {#- Existing JupyterLab rows -#}
-        {#- By looping through lab_spawners #}
         {%- set shared_options = spawner_options_form_values -%}
         {{ home.create_summary_tr(None, shared_options) }}
         {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=shared_options.name) }}
 
       </tbody>
     </table>
-    <p>
-      {{shared_options}}
-      <br>
-      <br>
-      Lab spawners: {{lab_spawners}}
-    </p>
   </div>  {#- table responsive #}
   <div class="d-flex text-center h-100 p-4">
     <a href="{{ base_url }}home" class="btn btn-light m-auto" role="button">Return to Home</a>

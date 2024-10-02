@@ -236,9 +236,11 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         if (userdata_path) $(`#${id}-image-mount-input`).val(userdata_path);
         if (dockerregistry){
            _updateDockerRegistryFields(id, dockerregistry);
+           $(`#${id}-share-btn`).show();
         }
         else {
           registryAuthsInputDivs.hide();
+          $(`#${id}-share-btn`).hide();
         }
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
