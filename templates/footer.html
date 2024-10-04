@@ -131,9 +131,12 @@ require(["jquery", "home/utils"], function (
     return anchorElement;
   }
 
-  function ampel(system, systemId, staticUrl) {
+  function ampel(system, systemId) {
     const systemLower = system.toLowerCase();
     const imgVersion = randomInt(10);
+
+    var base_url = window.jhdata.base_url;
+    const staticUrl = base_url + "static";
 
     let displayName;
     if (system === "JUPYTER") {
@@ -163,14 +166,12 @@ require(["jquery", "home/utils"], function (
 
   function create_carousel_systems(start, numElements) { 
     let carouselSystem = '';
-    //TODO: remove hardcoded value "static" => src=static_url( "images/footer/systems/" + system_lower + ".svg?v=" + random_int(10) )
-    const staticSrc = "static";
     const end_index = start + numElements;
     let order = {{ systems_default_order | tojson | safe  }};
 
     for (let i = start; i < start + numElements; i++) {
       let system_config = order[i];
-      carouselSystem += ampel(system_config[0], system_config[1], staticSrc);
+      carouselSystem += ampel(system_config[0], system_config[1]);
     }
     return carouselSystem;
   }
