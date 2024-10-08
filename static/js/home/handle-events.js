@@ -125,6 +125,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
       registryAuthsInputDivs.hide();
       allUserInputDivs.hide();
+      $(`#${id}-share-btn`).hide();
     } else {
       dropdowns.resetInputElement(customImageInput, true);
 
@@ -132,6 +133,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-image-private-cb-input`)[0].checked = false;
       dropdowns.resetInputElement(registryAuthsInputs, false);
       allUserInputDivs.show();
+      $(`#${id}-share-btn`).show();
 
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;

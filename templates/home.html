@@ -302,17 +302,28 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
     On page load
   */
   $(document).ready(function() {
-    for  (const id of Object.keys(userOptions)) {
-      let available = lab.checkIfAvailable(id, userOptions[id]);
-      lab.setUserOptions(id, userOptions[id], available);
+    const sharedOptions = JSON.stringify({{ spawner_options_form_values | safe }});
+    if (sharedOptions) {
+      const sharedOp = JSON.parse(sharedOptions);
+      let id = sharedOp["name"];
+      let available = lab.checkIfAvailable(id, sharedOp);
+      lab.setUserOptions(id, sharedOp, available);
     }
-    updateSpawnProgress();
+    else {
+      for  (const id of Object.keys(userOptions)) {
+        let available = lab.checkIfAvailable(id, userOptions[id]);
+        lab.setUserOptions(id, userOptions[id], available);
+      }
+      updateSpawnProgress();
 
-    {# For new labs, only the first option has to be 
-    updated manually. All other updates will be triggered
-    via onChange and set default values. -#}
-    dropdowns.updateServices("{{ new }}");
-    $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
+      {# For new labs, only the first option has to be 
+      updated manually. All other updates will be triggered
+      via onChange and set default values. -#}
+    
+      // The jinja2 variable "new" points to the id of a new JupyterLab, e.g. "new-jupyterlab"
+      dropdowns.updateServices("{{ new }}");
+      $("#{{ new }}-log-select").prepend(`<option value="latest">latest</option>`);
+    }
 
     // Remove all tab warnings since initial changes shouldn't cause warnings
     $("[id$=tab-warning]").addClass("invisible");
@@ -368,8 +379,19 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
       const values = utils.getLabConfigSelectValues(id);
       dropdowns.updateFlavors(id, values.service, values.system, values.flavor);
     }
-    const newLabValues = utils.getLabConfigSelectValues("new-jupyterlab");
-    dropdowns.updateFlavors("new-jupyterlab", newLabValues.service, newLabValues.system, newLabValues.flavor);
+
+    const sharedOptions = JSON.stringify({{ spawner_options_form_values | safe }});
+    if (sharedOptions) {
+      const sharedOp = JSON.parse(sharedOptions);
+      let id = sharedOp["name"];
+    //  const sharedValues = utils.getLabConfigSelectValues(id);
+    //  dropdowns.updateFlavors(id, sharedValues.service, sharedValues.system, sharedValues.flavor);
+    }
+    else {
+       // The jinja2 variable "new" points to the id of a new JupyterLab, e.g. "new-jupyterlab"
+      const newLabValues = utils.getLabConfigSelectValues("{{ new }}");
+      dropdowns.updateFlavors("{{ new }}", newLabValues.service, newLabValues.system, newLabValues.flavor);
+    }
   };
 
   /*

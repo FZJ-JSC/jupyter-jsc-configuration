@@ -6,25 +6,7 @@
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.list-group.bullets {
-  list-style-image: url("/hub/static/images/pages/login/chevron-compact-right.svg")
-}
-
-
-.list-group.bullets .list-group-item {
-  list-style-type: none;
-  display: list-item;
-}
-
-#upper-login-div {
-  max-width: 450px;
-  padding-top: 3rem;
-  padding-bottom: 1.5rem;
-  height: 100%;
-  /* min-height: 400px; */
-}
-
-#lower-login-div {
+#lbutton-login-div {
   border: none;
 }
 
@@ -33,13 +15,12 @@
   display: list-item;
 }
 
-#lower-login-div a,
-#lower-login-div a:hover {
-  border: solid 0.25vh white;
+#button-login-div a,
+#button-login-div a:hover {
   text-decoration: none;
 }
 
-#lower-login-div img {
+#button-login-div img {
   border-radius: 50%;
   border: 0.25vh solid white;
   margin: .3em !important;
@@ -54,10 +35,6 @@
 
 .logo {
   max-height: 40px;
-}
-
-main #login-div p {
-  color: black;
 }
 
 /* Links */
@@ -91,6 +68,26 @@ main #login-div p {
   no-repeat;
   background-size: cover;
   min-height: 500px;
+}
+
+main #login-background .container {
+  max-width: 960px;
+}
+
+main #login-background .container-sm {
+  max-width: 960px;
+}
+
+main #login-background .container-md {
+  max-width: 960px;
+}
+
+main #login-background .container-lg {
+  max-width: 960px;
+}
+
+main #login-background .container-xl {
+  max-width: 960px;
 }
 
 main .carousel-inner {
