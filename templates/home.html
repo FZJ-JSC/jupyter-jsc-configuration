@@ -156,6 +156,15 @@ function getServiceInfo() {
   return {{custom_config.get("services") | tojson}} || {};
 }
 
+function getShareInfo() {
+  return {{custom_config.get("share") | tojson}} || {};
+}
+
+function getBinderRepos() {
+  return {{custom_config.get("binderRepos") | tojson}} || {};
+}
+
+
 function getBackendServiceInfo() {
   return {{custom_config.get("backendServices") | tojson}} || {};
 }

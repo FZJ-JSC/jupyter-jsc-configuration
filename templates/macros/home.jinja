@@ -153,6 +153,7 @@
             <form id="{{id}}-lab-config-form">
               {{ inputs.create_text_input(id, "name", placeholder="Give your lab a name") }}
               {{ inputs.create_select(id, custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
+              {#- Docker images #}
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
                 pattern="(([A-Za-z0-9][A-Za-z0-9_.\-\/]*)?:?[A-Za-z0-9_.\-]+)?",
@@ -181,6 +182,17 @@
                 Path to which your persistent user data will be mounted
               {%- endcall %}
               <hr>
+              {#- Repo2Docker fields #}
+              {#- { inputs.create_select(id, custom_config.get("repositories")) } #}
+              {{ inputs.create_select(id, "Repository") }}
+              {{ inputs.create_text_input(id, "Repository URL", placeholder="GitHub repository name or URL") }}
+              {{ inputs.create_text_input(id, "Git ref (branch,tag, or commit)", placeholder="HEAD") }}
+              {{ inputs.create_text_input(id, "URL path to notebook (optional)", placeholder="URL path to notebook (optional)") }}
+              {{ inputs.create_select(id, "Type") }}
+                 {#- We actually don't need the button because that will be the start button! #}
+              {{ inputs.create_button(id, "Launch") }}
+              
+              {#- Standard HPC system fields #}
               {{ inputs.create_select(id, "system") }}
               {{ inputs.create_select(id, "flavor") }}
               <div id="{{id}}-flavor-legend-div" class="row align-items-center g-0 mt-4">
