@@ -84,15 +84,26 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   /* LAB CONFIG      */
   /* *************** */
 
-  function _toggle_show_input(id, key, showInput, pattern) {
+  function _toggle_show_element(id, key, type, showInput, pattern) {
     if (showInput) {
-      $(`#${id}-${key}-input-div`).show();
-      $(`#${id}-${key}-input`).attr("required", true);
-      if (pattern) $(`#${id}-${key}-input`).attr("pattern", pattern);
+      $(`#${id}-${key}-${type}-div`).show();
+      $(`#${id}-${key}-${type}`).attr("required", true);
+      if (pattern) $(`#${id}-${key}-${type}`).attr("pattern", pattern);
     } else {
-      $(`#${id}-${key}-input-div`).hide();
-      $(`#${id}-${key}-input`).removeAttr("required pattern");
+      $(`#${id}-${key}-${type}-div`).hide();
+      $(`#${id}-${key}-${type}`).removeAttr("required pattern");
     }
+  }
+
+  function _toggle_show_repo2Docker(id, show){
+    var repo2DockerInputs = ["repository-url", "git-ref", "url-path"];
+    var repo2DockerSelects = ["repository", "type"]
+    repo2DockerInputs.forEach(key => _toggle_show_element(id, key, "input", show));
+    repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
+  }
+
+  function _toggle_show_customDocker(){
+    
   }
 
   $("select[id*=version]").change(function () {
@@ -118,6 +129,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
     var inputRequired = userInputInfo.required || false;
+    var isRepo2Docker = userInputInfo.isRepo2Docker || false;
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
       dropdowns.resetInputElement(customMountInput, false);
@@ -139,20 +151,26 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
     }
+    if (!isRepo2Docker) {
+      _toggle_show_repo2Docker(id, false);
+    }
+    else {
+      _toggle_show_repo2Docker(id, true);
+    }
   });
 
   $("input[id*=image-private-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const showInput = this.checked;
-    _toggle_show_input(id, "image-private-url", showInput);
-    _toggle_show_input(id, "image-private-user", showInput);
-    _toggle_show_input(id, "image-private-pass", showInput);
+    _toggle_show_element(id, "image-private-url", "input", showInput);
+    _toggle_show_element(id, "image-private-user", "input", showInput);
+    _toggle_show_element(id, "image-private-pass", "input", showInput);
   });
 
   $("input[id*=image-mount-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const pattern_check = "^\\/[A-Za-z0-9\\-\\/]+";
-    _toggle_show_input(id, "image-mount", this.checked, pattern_check);
+    _toggle_show_element(id, "image-mount", "input", this.checked, pattern_check);
   });
 
   $("select[id*=system]").change(function () {
@@ -230,7 +248,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=xserver-cb-input]").change(function () {
     const id = utils.getId(this, -3);
-    _toggle_show_input(id, "xserver", this.checked);
+    _toggle_show_element(id, "xserver", "input", this.checked);
   });
 
   $("select[id*=reservation]").change(function () {
