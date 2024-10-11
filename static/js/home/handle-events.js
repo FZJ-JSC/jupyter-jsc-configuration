@@ -96,14 +96,19 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   }
 
   function _toggle_show_repo2Docker(id, show){
-    var repo2DockerInputs = ["repository-url", "git-ref", "url-path"];
+    var repo2DockerInputs = ["repo-url", "git-ref", "url-path"];
     var repo2DockerSelects = ["repository", "type"]
-    repo2DockerInputs.forEach(key => _toggle_show_element(id, key, "input", show));
+    // repo2DockerInputs.forEach(key => _toggle_show_element(id, key, "input", show));
+    for(let key of repo2DockerInputs){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element, false);
+      _toggle_show_element(id, key, "input", show);
+    }
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
   }
 
-  function _toggle_show_customDocker(){
-    
+  function _toggle_show_customImage(){
+
   }
 
   $("select[id*=version]").change(function () {
@@ -130,6 +135,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     var inputRequired = userInputInfo.required || false;
     var isRepo2Docker = userInputInfo.isRepo2Docker || false;
+    _toggle_show_repo2Docker(id, isRepo2Docker);
     if (!inputRequired) {
       dropdowns.resetInputElement(customImageInput, false);
       dropdowns.resetInputElement(customMountInput, false);
@@ -150,12 +156,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
       customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
-    }
-    if (!isRepo2Docker) {
-      _toggle_show_repo2Docker(id, false);
-    }
-    else {
-      _toggle_show_repo2Docker(id, true);
     }
   });
 
