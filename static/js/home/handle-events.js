@@ -96,9 +96,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   }
 
   function _toggle_show_repo2Docker(id, show){
-    var repo2DockerInputs = ["repo-url", "git-ref", "url-path"];
-    var repo2DockerSelects = ["repository", "type"]
-    // repo2DockerInputs.forEach(key => _toggle_show_element(id, key, "input", show));
+    var repo2DockerInputs = ["repo", "gitref", "notebook"];
+    var repo2DockerSelects = ["type", "notebook_type"]
+
+    var show = userInputInfo.isRepo2Docker || false;
     for(let key of repo2DockerInputs){
       let element = $(`#${id}-${key}-input`);
       dropdowns.resetInputElement(element, false);
@@ -107,8 +108,41 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
   }
 
-  function _toggle_show_customImage(){
+  function _toggle_show_customImage(id){
+    const serviceInfo = getServiceInfo();
+    const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
 
+    var customImageInput = $(`input#${id}-image-input`);
+    var customMountInput = $(`#${id}-image-mount-input`);
+    var registryAuthsInputs = $(`#${id}-image-private-url-input, #${id}-image-private-user-input, #${id}-image-private-pass-input`);
+
+    var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+
+    var inputRequired = userInputInfo.required || false;
+    if (!inputRequired) {
+      dropdowns.resetInputElement(customImageInput, false);
+      dropdowns.resetInputElement(customMountInput, false);
+      dropdowns.resetInputElement(registryAuthsInputs, false);
+
+      registryAuthsInputDivs.hide();
+      allUserInputDivs.hide();
+      // TODO fix the share button visibility
+      $(`#${id}-share-btn`).hide();
+    } else {
+      dropdowns.resetInputElement(customImageInput, true);
+
+      // Set default values for the private docker registry authentications to false => fields are hidden and not required
+      $(`#${id}-image-private-cb-input`)[0].checked = false;
+      dropdowns.resetInputElement(registryAuthsInputs, false);
+      allUserInputDivs.show();
+      // TODO fix the share button visibility
+      $(`#${id}-share-btn`).show();
+
+      // Enable user data mount by default
+      $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
+      customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
+    }
   }
 
   $("select[id*=version]").change(function () {
@@ -124,39 +158,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       }
     }
 
-    const serviceInfo = getServiceInfo();
-    const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
-    var customImageInput = $(`input#${id}-image-input`);
-    var customMountInput = $(`#${id}-image-mount-input`);
-    var registryAuthsInputs = $(`#${id}-image-private-url-input, #${id}-image-private-user-input, #${id}-image-private-pass-input`);
-
-    var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
-    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
-
-    var inputRequired = userInputInfo.required || false;
-    var isRepo2Docker = userInputInfo.isRepo2Docker || false;
-    _toggle_show_repo2Docker(id, isRepo2Docker);
-    if (!inputRequired) {
-      dropdowns.resetInputElement(customImageInput, false);
-      dropdowns.resetInputElement(customMountInput, false);
-      dropdowns.resetInputElement(registryAuthsInputs, false);
-
-      registryAuthsInputDivs.hide();
-      allUserInputDivs.hide();
-      $(`#${id}-share-btn`).hide();
-    } else {
-      dropdowns.resetInputElement(customImageInput, true);
-
-      // Set default values for the private docker registry authentications to false => fields are hidden and not required
-      $(`#${id}-image-private-cb-input`)[0].checked = false;
-      dropdowns.resetInputElement(registryAuthsInputs, false);
-      allUserInputDivs.show();
-      $(`#${id}-share-btn`).show();
-
-      // Enable user data mount by default
-      $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
-      customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
-    }
+    _toggle_show_customImage(id);
+    _toggle_show_repo2Docker(id);
+  
   });
 
   $("input[id*=image-private-cb-input]").change(function () {

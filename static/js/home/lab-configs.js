@@ -211,6 +211,7 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const gpus = options["gpus"];
     const xserver = options["xserver"];
     const modules = options["userModules"];
+    const binderRepoType = options["type"];
 
     function _updateDockerRegistryFields(id, value){
       $(`#${id}-image-private-cb-input`)[0].checked = true;
@@ -248,6 +249,8 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateReservations(id, service, system, account, project, partition, reservation);
         dropdowns.updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
         dropdowns.updateModules(id, service, system, account, project, partition, modules);
+        dropdowns.updateBinder(id, binderRepoType);
+        dropdowns.updateBinderValues(id);
       }
       catch (e) { utils.setLabAsNA(id, "due to a JS error");
         console.log(e)

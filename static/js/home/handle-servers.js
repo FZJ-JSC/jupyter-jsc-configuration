@@ -497,8 +497,8 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     }
 
     ["version", "system", "flavor", "account",
-      "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+      "project", "partition", "reservation", "type", "notebook_type"].forEach(key => _addSelectValue(key));
+    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver", "repo", "gitref", "notebook"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }

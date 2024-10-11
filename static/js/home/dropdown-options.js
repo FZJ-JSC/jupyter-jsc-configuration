@@ -502,6 +502,39 @@ define(["jquery", "home/utils"], function (
     }
   }
 
+  var updateBinder = function (id, value) {
+    // const dropdownOptions = getDropdownOptions();
+    const binderRepos = getBinderRepos();
+
+    let select = $(`select#${id}-type-select`);
+    const currentVal = select.val();
+    resetInputElement(select);
+
+    binderRepos.forEach(repo => select.append(`<option value="${repo}">${repo}</option>`));
+    updateLabConfigSelect(select, value, currentVal);
+  }
+
+  var updateBinderValues = function(id){
+    const dropdownOptions = getDropdownOptions();
+    const binderRepo = options["repo"];
+    const gitref = options["gitref"];
+    const notebook = options["notebook"];
+    const notebookType = options["notebook_type"];
+
+    $(`#${id}-image-repo-input`).val(binderRepo);
+    $(`#${id}-image-gitref-input`).val(gitref);
+    $(`#${id}-image-notebook-input`).val(notebook);
+
+    const notebookTypes = ["File", "URL"];
+
+    let select = $(`select#${id}-notebook_type-select`);
+    const currentVal = select.val();
+    resetInputElement(select);
+
+    notebookTypes.forEach(nb_type => select.append(`<option value="${nb_type}">${nb_type}</option>`));
+    updateLabConfigSelect(select, notebookType, currentVal);
+  }
+
   var updateDropdowns = {
     updateServices: updateServices,
     updateSystems: updateSystems,
@@ -512,6 +545,8 @@ define(["jquery", "home/utils"], function (
     updateReservations: updateReservations,
     updateResources: updateResources,
     updateModules: updateModules,
+    updateBinder : updateBinder,
+    updateBinderValues : updateBinderValues,
     resetInputElement: resetInputElement,
     updateLabConfigSelect: updateLabConfigSelect,
     updateLabConfigInput: updateLabConfigInput,
