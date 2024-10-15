@@ -108,7 +108,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
   }
 
-  function _toggle_show_customImage(id){
+  function _toggle_show_customImage(id, values){
     const serviceInfo = getServiceInfo();
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
 
@@ -158,7 +158,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       }
     }
 
-    _toggle_show_customImage(id);
+    _toggle_show_customImage(id, values);
     _toggle_show_repo2Docker(id);
   
   });

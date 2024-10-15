@@ -510,7 +510,7 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
     resetInputElement(select);
 
-    binderRepos.forEach(repo => select.append(`<option value="${repo}">${repo}</option>`));
+    binderRepos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -531,7 +531,7 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
     resetInputElement(select);
 
-    notebookTypes.forEach(nb_type => select.append(`<option value="${nb_type}">${nb_type}</option>`));
+    notebookTypes.forEach((nb_type) => select.append(`<option value="${nb_type}">${nb_type}</option>`));
     updateLabConfigSelect(select, notebookType, currentVal);
   }
 
