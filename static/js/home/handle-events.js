@@ -95,7 +95,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   }
 
-  function _toggle_show_repo2Docker(id, show){
+  function _toggle_show_repo2Docker(id, userInputInfo){
     var repo2DockerInputs = ["repo", "gitref", "notebook"];
     var repo2DockerSelects = ["type", "notebook_type"]
 
@@ -108,9 +108,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
   }
 
-  function _toggle_show_customImage(id, values){
-    const serviceInfo = getServiceInfo();
-    const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
+  function _toggle_show_customImage(id, userInputInfo){
 
     var customImageInput = $(`input#${id}-image-input`);
     var customMountInput = $(`#${id}-image-mount-input`);
@@ -158,8 +156,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       }
     }
 
-    _toggle_show_customImage(id, values);
-    _toggle_show_repo2Docker(id);
+    const serviceInfo = getServiceInfo();
+    const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
+    _toggle_show_customImage(id, userInputInfo);
+    _toggle_show_repo2Docker(id, userInputInfo);
   
   });
 
