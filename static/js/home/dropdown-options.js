@@ -378,6 +378,16 @@ define(["jquery", "home/utils"], function (
               // Else create it and set the default value
               if (!currentOptions.includes(module)) {
                 let parent = $(`#${id}-${moduleSet}-checkboxes-div`);
+                var checked = "";
+                if (typeof moduleInfo.default == "boolean") {
+                  var checked = moduleInfo.default ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && service in moduleInfo.default ) {
+                  var checked = ( moduleInfo.default[service] || false) ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && "default" in moduleInfo.default ) {
+                  var checked = moduleInfo.default.default ? "checked" : "";
+                } else {
+                  var checked = "";
+                }
                 let checked = moduleInfo.default ? "checked" : "";
                 let module_cols = "col-sm-6 col-md-4 col-lg-3";
                 let cbHtml = `
