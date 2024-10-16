@@ -380,6 +380,8 @@ define(["jquery", "home/utils"], function (
                   var checked = moduleInfo.default ? "checked" : "";
                 } else if ( typeof moduleInfo.default == "object" && service in moduleInfo.default ) {
                   var checked = ( moduleInfo.default[service] || false) ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && "default" in moduleInfo.default ) {
+                  var checked = moduleInfo.default.default ? "checked" : "";
                 } else {
                   var checked = "";
                 }
