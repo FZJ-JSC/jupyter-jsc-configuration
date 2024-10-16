@@ -375,7 +375,14 @@ define(["jquery", "home/utils"], function (
               // Else create it and set the default value
               if (!currentOptions.includes(module)) {
                 let parent = $(`#${id}-${moduleSet}-checkboxes-div`);
-                let checked = moduleInfo.default ? "checked" : "";
+                var checked = "";
+                if (typeof moduleInfo.default == "boolean") {
+                  var checked = moduleInfo.default ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && service in moduleInfo.default ) {
+                  var checked = ( moduleInfo.default[service] || false) ? "checked" : "";
+                } else {
+                  var checked = "";
+                }
                 let module_cols = "col-sm-6 col-md-4 col-lg-3";
                 let cbHtml = `
                   <div id="${id}-${module}-cb-div" class="form-check ${module_cols}">
