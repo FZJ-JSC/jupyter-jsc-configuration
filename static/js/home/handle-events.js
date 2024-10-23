@@ -143,6 +143,12 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   }
 
+  function _toggle_show_share_button(id){
+    const shareInfo = getShareInfo();
+    if(shareInfo) $(`#${id}-share-btn`).show();
+    else $(`#${id}-share-btn`).hide();
+  }
+
   $("select[id*=version]").change(function () {
     const id = utils.getId(this);
     const values = utils.getLabConfigSelectValues(id);
@@ -160,7 +166,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     _toggle_show_customImage(id, userInputInfo);
     _toggle_show_repo2Docker(id, userInputInfo);
-  
+    _toggle_show_share_button(id);
   });
 
   $("input[id*=image-private-cb-input]").change(function () {
