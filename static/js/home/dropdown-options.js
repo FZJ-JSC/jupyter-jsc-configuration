@@ -513,28 +513,28 @@ define(["jquery", "home/utils"], function (
 
   var updateBinder = function (id, value) {
     // const dropdownOptions = getDropdownOptions();
-    const binderRepos = getBinderRepos();
+    const bRepos = getBinderRepos();
 
     let select = $(`select#${id}-type-select`);
     const currentVal = select.val();
     resetInputElement(select);
 
-    binderRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+    bRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
     updateLabConfigSelect(select, value, currentVal);
   }
 
   var updateBinderValues = function(id){
     const dropdownOptions = getDropdownOptions();
-    const binderRepo = dropdownOptions["repo"];
+    const repo = dropdownOptions["repo"];
     const gitref = dropdownOptions["gitref"];
     const notebook = dropdownOptions["notebook"];
     const notebookType = dropdownOptions["notebook_type"];
 
-    $(`#${id}-image-repo-input`).val(binderRepo);
+    $(`#${id}-image-repo-input`).val(repo);
     $(`#${id}-image-gitref-input`).val(gitref);
     $(`#${id}-image-notebook-input`).val(notebook);
 
-    const notebookTypes = binderRepos.notebookTypes;
+    const notebookTypes = getBinderRepos().notebookTypes;
 
     let select = $(`select#${id}-notebook_type-select`);
     const currentVal = select.val();
