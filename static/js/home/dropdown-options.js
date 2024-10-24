@@ -519,7 +519,7 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
     resetInputElement(select);
 
-    binderRepos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+    binderRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
     updateLabConfigSelect(select, value, currentVal);
   }
 
@@ -534,7 +534,7 @@ define(["jquery", "home/utils"], function (
     $(`#${id}-image-gitref-input`).val(gitref);
     $(`#${id}-image-notebook-input`).val(notebook);
 
-    const notebookTypes = ["File", "URL"];
+    const notebookTypes = binderRepos.notebookTypes;
 
     let select = $(`select#${id}-notebook_type-select`);
     const currentVal = select.val();
