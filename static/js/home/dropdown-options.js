@@ -525,10 +525,10 @@ define(["jquery", "home/utils"], function (
 
   var updateBinderValues = function(id){
     const dropdownOptions = getDropdownOptions();
-    const binderRepo = options["repo"];
-    const gitref = options["gitref"];
-    const notebook = options["notebook"];
-    const notebookType = options["notebook_type"];
+    const binderRepo = dropdownOptions["repo"];
+    const gitref = dropdownOptions["gitref"];
+    const notebook = dropdownOptions["notebook"];
+    const notebookType = dropdownOptions["notebook_type"];
 
     $(`#${id}-image-repo-input`).val(binderRepo);
     $(`#${id}-image-gitref-input`).val(gitref);
