@@ -520,15 +520,15 @@ define(["jquery", "home/utils"], function (
     resetInputElement(select);
 
     bRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+
     updateLabConfigSelect(select, value, currentVal);
   }
 
-  var updateBinderValues = function(id){
+  var updateBinderValues = function(id, value){
     const dropdownOptions = getDropdownOptions();
     const repo = dropdownOptions["repo"];
     const gitref = dropdownOptions["gitref"];
     const notebook = dropdownOptions["notebook"];
-    const notebookType = dropdownOptions["notebook_type"];
 
     $(`#${id}-image-repo-input`).val(repo);
     $(`#${id}-image-gitref-input`).val(gitref);
@@ -540,8 +540,8 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
     resetInputElement(select);
 
-    notebookTypes.forEach((nb_type) => select.append(`<option value="${nb_type}">${nb_type}</option>`));
-    updateLabConfigSelect(select, notebookType, currentVal);
+    notebookTypes.forEach((nbType) => select.append(`<option value="${nbType}">${nbType}</option>`))
+    updateLabConfigSelect(select, value, currentVal);
   }
 
   var updateDropdowns = {

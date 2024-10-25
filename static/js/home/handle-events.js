@@ -106,6 +106,11 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       _toggle_show_element(id, key, "input", show);
     }
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
+
+    if(show){
+      dropdowns.updateBinder(id, null);
+      dropdowns.updateBinderValues(id, null);
+    }
   }
 
   function _toggle_show_customImage(id, userInputInfo){
