@@ -91,3 +91,7 @@ since the warning  text will already create a margin.#}
   </div>
 </div>
 {%- endmacro -%}
+
+{%- macro create_button(id, text) -%}
+<button id="{{ id }}-{{ text }}-btn" type="button" class="btn btn-success me-2"> {{text}} </button>
+{%- endmacro -%}

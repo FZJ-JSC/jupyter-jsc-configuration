@@ -1,0 +1,56 @@
+{%- extends "home.html" -%}
+{%- import "macros/home.jinja" as home -%}
+{%- import "macros/svgs.jinja" as svg -%}
+
+{%- block stylesheet -%}
+  <link rel="stylesheet" href='{{static_url("css/home.css")}}' type="text/css"/>
+{%- endblock -%}
+
+{#- Set some convenience variables -#}
+{%- set lab_spawners = [] -%}
+window.alert("Setup, start looping")
+{%- for s in spawners -%}
+  {%- if s.user_options -%}
+    {%- if (
+        "profile" in s.user_options 
+        and s.user_options.get("profile").startswith("JupyterLab")
+      )
+      or (
+        "service" in s.user_options
+        and s.user_options.get("service").startswith("JupyterLab")
+      )
+    -%}
+    {%- do lab_spawners.append(s) -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- block main -%}
+<div class="container-fluid p-4">
+  {#- TABLE #}
+
+  <div class="table-responsive-md">
+    <table id="jupyterlabs-table" class="table table-bordered table-striped table-hover table-light align-middle">
+    {#- TABLE HEAD #}
+      <thead class="table-secondary">
+        <tr>
+          <th scope="col" width="1%"></th>
+          <th scope="col" width="20%">Name</th>
+          <th scope="col">Configuration</th>
+          <th scope="col" width="10%;">Status</th>
+        </tr>
+      </thead>
+      {#- TABLE BODY #}
+      <tbody>
+        {%- set shared_options = spawner_options_form_values -%}
+        {{ home.create_summary_tr(None, shared_options) }}
+        {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=shared_options.name) }}
+
+      </tbody>
+    </table>
+  </div>  {#- table responsive #}
+  <div class="d-flex text-center h-100 p-4">
+    <a href="{{ base_url }}home" class="btn btn-light m-auto" role="button">Return to Home</a>
+  </div>
+</div>  {#- container fluid #}
+{%- endblock -%}

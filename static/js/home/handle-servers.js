@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 /*
-* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be send to the backend
+* This module is responsible for JupyterLab start/stop/cancel/delete etc. events. It also prepares the user options to be sent to the backend
 */
 require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function (
   $,
@@ -204,12 +204,72 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     });
   }
 
+  function shareLab() {
+    // Start button is in collapsible tr for new labs
+    var [collapsibleTr, id] = _getTrAndId(this);
+    // _disableTrButtons(collapsibleTr);
+
+    var options = _createDataDict(collapsibleTr);
+
+    function showShareDialogue(url) {
+
+      $(`#${id}-copy-btn`).click(function() {
+
+        const shareUrl = $(`#${id}-share-link .modal-body a`).attr('href');
+        navigator.clipboard.writeText(shareUrl).then(function() {
+
+          $(`#${id}-copy-btn`).tooltip('dispose').attr('title', 'Copied');
+          $(`#${id}-copy-btn`).tooltip('show');
+        }, function(err) {
+          console.error('Could not copy text: ', err);
+        });
+      });
+
+      let shareableURL = url;
+
+      $(`#${id}-share-link .modal-title`).text(`Share Lab ${options["name"]}`);
+      $(`#${id}-share-link .modal-body a`).text(`${shareableURL}`);
+      try {
+        shareableURL = new URL(url);
+        $(`#${id}-share-link .modal-body a`).attr('href', shareableURL);
+      } catch (error) {}
+
+      $(`#${id}-share-link`).modal('show');
+    }
+    //---------------------------------------------------
+
+    // Open a new tab for spawn_pending.html
+    // Need to create it here for JS context reasons
+    // var newTab = window.open("about:blank");
+    // let protocol = window.location.protocol;
+    var urlStr = utils.url_path_join(window.origin, base_url, "share");
+    api.share_server({
+      data: JSON.stringify(options),
+      success: function (resp) {
+        urlStr = utils.url_path_join(window.origin, base_url, "share", "user_options", resp, id).replace("//", "/");
+        showShareDialogue(urlStr);
+      },
+      error: function (xhr) {
+        // newTab.close();
+        // If cookie is not valid anymore, refresh the page.
+        // This should redirect the user to the login page.
+        if (xhr.status == 403) {
+          document.location.reload();
+          return;
+        }
+
+        let err = `Failed to create a share link for this lab. Error: ${xhr.responseText}`;
+        showShareDialogue(err);
+      }
+    });
+  }
+  
   $(".btn-start-lab").click(startServer);
   $(".btn-start-new-lab").click(startNewServer);
   $(".btn-cancel-lab").click(cancelServer);
   $(".btn-stop-lab").click(stopServer);
   $(".btn-delete-lab").click(deleteServer);
-
+  $(".btn-share-lab").click(shareLab);
 
   /*
   Validate form before starting a new lab
@@ -437,8 +497,8 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     }
 
     ["version", "system", "flavor", "account",
-      "project", "partition", "reservation"].forEach(key => _addSelectValue(key));
-    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver"].forEach(key => _addInputValue(key));
+      "project", "partition", "reservation", "type", "notebook_type"].forEach(key => _addSelectValue(key));
+    ["image", "image-mount", "image-private", "nodes", "gpus", "runtime", "xserver", "repo", "gitref", "notebook"].forEach(key => _addInputValue(key));
     _addCbValues("userModules");
     return options;
   }
