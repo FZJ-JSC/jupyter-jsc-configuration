@@ -360,12 +360,15 @@ define(["jquery", "home/utils"], function (
       var insertIndex = -1;
       for (const [module, moduleInfo] of Object.entries(modules)) {
         if (moduleInfo.sets.includes(service)) {
-          if (moduleInfo.allowedSystems && !moduleInfo.allowedSystems.includes(system)) {
+          if (moduleInfo.allowed_systems && !moduleInfo.allowed_systems.includes(system)) {
             // Module not in allowed systems, so do nothing.
           }
           else {
             if (moduleInfo.compute_only && interactivePartitions.includes(partition)) {
               // Module is compute only, but partition is interactive, so do nothing.
+            }
+            else if (moduleInfo.interactive_only && !interactivePartitions.includes(partition)) {
+              // Module is interactive only, but partition is compute, so do nothing.
             }
             else {
               $(`#${id}-${moduleSet}-div`).show();
@@ -385,6 +388,7 @@ define(["jquery", "home/utils"], function (
                 } else {
                   var checked = "";
                 }
+                let checked = moduleInfo.default ? "checked" : "";
                 let module_cols = "col-sm-6 col-md-4 col-lg-3";
                 let cbHtml = `
                   <div id="${id}-${module}-cb-div" class="form-check ${module_cols}">
