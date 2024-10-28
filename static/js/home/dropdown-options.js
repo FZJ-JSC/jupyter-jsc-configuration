@@ -388,7 +388,7 @@ define(["jquery", "home/utils"], function (
                 } else {
                   var checked = "";
                 }
-                let checked = moduleInfo.default ? "checked" : "";
+                // let checked = moduleInfo.default ? "checked" : "";
                 let module_cols = "col-sm-6 col-md-4 col-lg-3";
                 let cbHtml = `
                   <div id="${id}-${module}-cb-div" class="form-check ${module_cols}">
@@ -537,6 +537,7 @@ define(["jquery", "home/utils"], function (
     $(`#${id}-image-repo-input`).val(repo);
     $(`#${id}-image-gitref-input`).val(gitref);
     $(`#${id}-image-notebook-input`).val(notebook);
+    $(`#${id}-image-notebook-input`).removeAttr("required");
 
     const notebookTypes = getBinderRepos().notebookTypes;
 
