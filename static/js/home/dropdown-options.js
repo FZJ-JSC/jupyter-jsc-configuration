@@ -461,7 +461,11 @@ define(["jquery", "home/utils"], function (
     element.html("");
     element.val(null);
     element.removeClass("text-muted disabled");
-    element.attr("required", required);
+    if (required) {
+      element.attr("required", "required");
+    } else {
+      element.removeAttr("required");
+    }
   }
 
   var updateLabConfigSelect = function (select, value, lastSelected) {
@@ -537,7 +541,6 @@ define(["jquery", "home/utils"], function (
     $(`#${id}-image-repo-input`).val(repo);
     $(`#${id}-image-gitref-input`).val(gitref);
     $(`#${id}-image-notebook-input`).val(notebook);
-    $(`#${id}-image-notebook-input`).removeAttr("required");
 
     const notebookTypes = getBinderRepos().notebookTypes;
 
