@@ -85,9 +85,9 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   /* *************** */
 
   function _toggle_show_element(id, key, type, showInput, pattern) {
+    let element = $(`#${id}-${key}-${type}`);
     if (showInput) {
       $(`#${id}-${key}-${type}-div`).show();
-      let element = $(`#${id}-${key}-${type}`);
       if(element.hasClass("optional")){
         element.removeAttr("required");
       }
