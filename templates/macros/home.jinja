@@ -131,7 +131,7 @@
 
 <tr data-server-id="{{id}}" class="collapsible-tr" style="--bs-table-accent-bg: transparent;">
   <td colspan="100%" class="p-0">  {#- Remove padding to hide td when collapsed #}
-    <div class="collapse{% if share_structure -%} show {%- endif %}" id="{{id}}-collapse">
+    <div class="collapse{% if share_structure %} show {% endif %}" id="{{id}}-collapse">
       <div class="d-flex align-items-start m-3">
         {#- TAB NAV PILLS -#}
         {%- set nav_tab_margins = "mb-3" %}
