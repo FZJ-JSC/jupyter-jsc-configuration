@@ -513,19 +513,19 @@ define(["jquery", "home/utils"], function (
 
   var updateR2dType = function (id, r2dType) {
     // const dropdownOptions = getDropdownOptions();
-    const bRepos = getBinderRepos();
+    const repos = getBinderRepos().repos || [];
 
     let select = $(`select#${id}-type-select`);
     const currentVal = select.val();
     resetInputElement(select);
 
-    bRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+    repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
 
     updateLabConfigSelect(select, r2dType, currentVal);
   }
 
   var updateR2dNotebookTypes = function(id, r2dNotebookType){
-    const notebookTypes = getBinderRepos().notebookTypes;
+    const notebookTypes = getBinderRepos().notebookTypes || [];
 
     let select = $(`select#${id}-notebook_type-select`);
     const currentVal = select.val();
