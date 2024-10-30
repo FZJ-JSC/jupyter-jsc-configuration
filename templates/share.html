@@ -44,7 +44,7 @@ window.alert("Setup, start looping")
       <tbody>
         {%- set shared_options = spawner_options_form_values -%}
         {{ home.create_summary_tr(None, shared_options) }}
-        {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=shared_options.name) }}
+        {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=server_name) }}
 
       </tbody>
     </table>
