@@ -1,6 +1,6 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
+{%- macro create_text_input(id, key, label="", placeholder="", value="", pattern="", warning="", persistent_hover=False, clazz="") -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 {#- We use a different margin than the other input elements 
@@ -26,8 +26,8 @@ since the warning  text will already create a margin.#}
     {%- endif %}
   </label>
   <div class="col-8">
-    <input type="text" class="form-control" id="{{id}}-{{key}}-input"
-     placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
+    <input type="text" class="form-control {{clazz}}" id="{{id}}-{{key}}-input"
+     placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %} value="{{value}}">
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
 </div>

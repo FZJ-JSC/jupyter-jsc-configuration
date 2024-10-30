@@ -87,11 +87,15 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   function _toggle_show_element(id, key, type, showInput, pattern) {
     if (showInput) {
       $(`#${id}-${key}-${type}-div`).show();
-      $(`#${id}-${key}-${type}`).attr("required", true);
-      if (pattern) $(`#${id}-${key}-${type}`).attr("pattern", pattern);
+      let element = $(`#${id}-${key}-${type}`);
+      if(element.hasClass("optional")){
+        element.removeAttr("required");
+      }
+      else element.attr("required", true);
+      if (pattern) element.attr("pattern", pattern);
     } else {
       $(`#${id}-${key}-${type}-div`).hide();
-      $(`#${id}-${key}-${type}`).removeAttr("required pattern");
+      element.removeAttr("required pattern");
     }
   }
 
