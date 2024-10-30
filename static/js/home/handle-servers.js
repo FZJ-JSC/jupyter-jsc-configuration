@@ -204,6 +204,21 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     });
   }
 
+  function generateRandomId() {
+    const chars = 'abcdefghijklmnopqrstuvwxyz';
+    const allChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    // Start with a random lowercase letter
+    let result = chars[Math.floor(Math.random() * chars.length)];
+
+    // Add 31 more characters from lowercase letters and numbers
+    for (let i = 1; i < 32; i++) {
+      result += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+
+    return result;
+  }
+
   function shareLab() {
     // Start button is in collapsible tr for new labs
     var [collapsibleTr, id] = _getTrAndId(this);
@@ -246,7 +261,8 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     api.share_server({
       data: JSON.stringify(options),
       success: function (resp) {
-        urlStr = utils.url_path_join(window.origin, base_url, "share", "user_options", resp, id).replace("//", "/");
+        new_id = generateRandomId();
+        urlStr = utils.url_path_join(window.origin, base_url, "share", "user_options", resp, new_id).replace("//", "/");
         showShareDialogue(urlStr);
       },
       error: function (xhr) {
