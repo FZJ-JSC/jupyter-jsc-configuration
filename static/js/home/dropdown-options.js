@@ -539,10 +539,7 @@ define(["jquery", "home/utils"], function (
     const notebook = dropdownOptions["notebook"];
 
     $(`#${id}-image-repo-input`).val(repo);
-    /* gitref is the reference to the branch for the binder git repository. 
-    It has a default value pointing to the head. 
-    Check if another value is coming from the backend and overrite the value only in that case */
-    if (gitref) $(`#${id}-image-gitref-input`).val(gitref);
+    $(`#${id}-image-gitref-input`).val(gitref);
     $(`#${id}-image-notebook-input`).val(notebook);
 
     const notebookTypes = getBinderRepos().notebookTypes;
