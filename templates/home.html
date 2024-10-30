@@ -67,7 +67,7 @@
           </th>
           <th scope="row" colspan="100%" class="text-center">New JupyterLab</th>
         </tr>
-        {{ home.create_collapsible_tr(None, {}, custom_config, new_lab_id=new) }}
+        {{ home.create_collapsible_tr(None, {}, custom_config, lab_id=new) }}
         {#- Existing JupyterLab rows -#}
         {#- By looping through lab_spawners #}
         {%- for spawner in lab_spawners -%}
@@ -155,6 +155,15 @@ function getService(options) {
 function getServiceInfo() {
   return {{custom_config.get("services") | tojson}} || {};
 }
+
+function getShareInfo() {
+  return {{custom_config.get("share") | tojson}} || {};
+}
+
+function getBinderRepos() {
+  return {{custom_config.get("binderRepos") | tojson}} || {};
+}
+
 
 function getBackendServiceInfo() {
   return {{custom_config.get("backendServices") | tojson}} || {};
@@ -305,7 +314,7 @@ require(["jquery", "jhapi", "home/utils", "home/dropdown-options", "home/lab-con
     const sharedOptions = JSON.stringify({{ spawner_options_form_values | safe }});
     if (sharedOptions) {
       const sharedOp = JSON.parse(sharedOptions);
-      let id = sharedOp["name"];
+      let id = "{{ server_name }}";
       let available = lab.checkIfAvailable(id, sharedOp);
       lab.setUserOptions(id, sharedOp, available);
     }
