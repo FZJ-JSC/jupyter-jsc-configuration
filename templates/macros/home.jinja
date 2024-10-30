@@ -12,11 +12,14 @@
 </div>
 {%- endmacro -%}
 
-{%- macro create_summary_tr(s, user_options) -%}
-{%- set name = user_options.get("name") -%}
-{%- if s %} {%- set id = s.name -%}
-{%- else %} {%- set id = name -%}
+{%- macro create_summary_tr(s, user_options, lab_id="", share_structure=false) -%}
+
+{%- set name = user_options.get("name", "") -%}
+{%- if lab_id != "" %} {%- set id = lab_id -%}
+{%- elif s %} {%- set id = s.name -%}
+{%- else %} {%- set id = "new-jupyterlab" -%}
 {%- endif -%}
+
 {%- set system = user_options.get("system", "") -%}
 {%- set flavor = user_options.get("flavor", "") -%}
 {%- set partition = user_options.get("partition", "") -%}
@@ -26,7 +29,7 @@
 {%- set gpus = user_options.get("gpus", "") -%}
 <tr data-server-id="{{id}}" class="summary-tr">
   <td class="details-td" data-bs-target="#{{id}}-collapse">
-    <div class="d-flex mx-auto accordion-icon collapsed mx-4"></div>
+    <div class="d-flex mx-auto accordion-icon {% if not share_structure -%}collapsed {%- endif %}mx-4"></div>
   </td>
   <th scope="row" class="name-td">{{ name }}</th> 
   <td class="config-td">
@@ -58,8 +61,10 @@
       </div>
     </div>
   </td>
+  {%- if s %} 
   {{ create_lab_progress_td(id) }}
-  {%- if s %} {{ create_action_td(id, s) }} {%- endif -%}
+  {{ create_action_td(id, s) }}
+  {%- endif -%}
 </tr>
 {%- endmacro -%}
 
@@ -80,9 +85,9 @@
 </td>
 {%- endmacro -%}
 
-{%- macro create_action_td(id, s) -%}
+{%- macro create_action_td(id, s, share_structure=false, user_name="") -%}
 <td class="actions-td" style="white-space: nowrap;"> 
-  {%- set button_margin = "my-1 me-1" -%} 
+  {%- set button_margin = "my-1 me-1" -%}
   {#- Save N/A status to page #}
   <span id="{{id}}-na-status" class="na-status d-none">0</span>  
   {#- Create and show appropriate buttons #}
@@ -90,38 +95,43 @@
     {{ svg.na_svg | safe }} N/A
   </button>
   <div id="{{id}}-na-info" class="text-muted my-auto" style="display: none; font-size: smaller; white-space: nowrap;"></div>
+  {%- if share_structure %}
+  <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-new-lab ms-auto"> {{ svg.start_svg | safe }} Start </button>
+  {%- else %}
   <button type="button" id="{{id}}-start-btn" class="btn btn-primary btn-start-lab {{button_margin}}" 
-    {% if s.active and not s._stop_pending -%} style="display: none;" {%- endif %}>
+    {% if s and (s.active and not s._stop_pending) -%} style="display: none;" {%- endif %}>
     {{ svg.start_svg | safe }} Start
   </button>
-  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {{button_margin}}" href='/user/{{s.user.name}}/{{id}}' target="_blank"
-    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %} >
+  {%- endif %}
+  <a type="button" id="{{id}}-open-btn" class="btn btn-success btn-open-lab {{button_margin}}" href='/user/{% if s -%}{{s.user.name}}{%- else -%}{{ user_name }}{%- endif %}/{{id}}' target="_blank"
+    {% if (not s) or (not s.active or s._stop_pending) -%} style="display: none;" {%- endif %} >
     {{ svg.open_svg | safe }} Open
   </a>
   <button type="button" id="{{id}}-cancel-btn" class="btn btn-danger btn-cancel-lab"
-    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %}
-    {% if s.active and s.pending == None -%} style="display: none;" {%- endif -%}>
+    {% if (not s) or (not s.active or s._stop_pending) -%} style="display: none;" {%- endif %}
+    {% if (not s) or (s.active and s.pending == None) -%} style="display: none;" {%- endif -%}>
     {{ svg.stop_svg | safe }} Cancel
   </button>
   <button type="button" id="{{id}}-stop-btn" class="btn btn-danger btn-stop-lab"
-    {% if not s.active or s._stop_pending -%} style="display: none;" {%- endif %} 
-    {% if s.active and s.pending != None -%} style="display: none;" {%- endif -%}>
+    {% if (not s) or (not s.active or s._stop_pending) -%} style="display: none;" {%- endif %} 
+    {% if (not s) or (s.active and s.pending != None) -%} style="display: none;" {%- endif -%}>
     {{ svg.stop_svg | safe }} Stop
   </button>
 </td>
 {%- endmacro -%}
 
-{%- macro create_collapsible_tr(s, user_options, custom_config, new_lab_id="new-jupyterlab") -%}
+{%- macro create_collapsible_tr(s, user_options, custom_config, lab_id="", share_structure=false) -%}
 
 {%- set name = user_options.get("name", "") -%}
-{%- if s %} {%- set id = s.name -%}
-{%- elif name == '' %}  {%- set id = new_lab_id -%}
-{%- else %} {%- set id = name -%}
+{%- set new_lab_id = "new-jupyterlab" %}
+{%- if lab_id != "" %} {%- set id = lab_id -%}
+{%- elif s %} {%- set id = s.name -%}
+{%- else %} {%- set id = "new-jupyterlab" -%}
 {%- endif -%}
 
 <tr data-server-id="{{id}}" class="collapsible-tr" style="--bs-table-accent-bg: transparent;">
   <td colspan="100%" class="p-0">  {#- Remove padding to hide td when collapsed #}
-    <div class="collapse" id="{{id}}-collapse">
+    <div class="collapse{% if share_structure -%} show {%- endif %}" id="{{id}}-collapse">
       <div class="d-flex align-items-start m-3">
         {#- TAB NAV PILLS -#}
         {%- set nav_tab_margins = "mb-3" %}
@@ -238,7 +248,7 @@
                 </div>
               </div>
             </form>
-            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+            {{ create_lab_config_buttons(id, id == new_lab_id or share_structure) }}
           </div>
           {#- Lab Resources #}
           <div class="tab-pane fade" id="{{ id }}-resources" role="tabpanel">
@@ -249,7 +259,7 @@
               {{ inputs.create_checkbox_input(id, "xserver-cb", "Activate XServer")}}
               {{ inputs.create_number_input(id, "xserver", "Use XServer GPU Index") }}
             </form>
-            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+            {{ create_lab_config_buttons(id, id == new_lab_id or share_structure) }}
           </div>
           {#- User-selected Modules #}
           <div class="tab-pane fade" id="{{ id }}-modules" role="tabpanel">
@@ -273,13 +283,13 @@
                 <label class="form-check-label" for="{{id}}-modules-select-none">Deselect all</label>
               </div>
             </div>
-            {{ create_lab_config_buttons(id, id == new_lab_id) }}
+            {{ create_lab_config_buttons(id, id == new_lab_id or share_structure) }}
           </div>
           {#- Lab Logs #}
           <div class="tab-pane fade" id="{{ id }}-logs" role="tabpanel">
               {{ inputs.create_select(id, "log") }}
               <div id="{{id}}-log" class="card card-body"></div>
-              {{ create_lab_config_buttons(id, id == new_lab_id) }}
+              {{ create_lab_config_buttons(id, id == new_lab_id or share_structure) }}
           </div>
         </div> {#- End of tab content #}
       </div> {#- End of d-flex #}

@@ -108,8 +108,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
 
     if(show){
-      dropdowns.updateBinder(id, null);
-      dropdowns.updateBinderValues(id, null);
+      dropdowns.updateR2dType(id, null);
+      dropdowns.updateR2dNotebookTypes(id, null);
     }
   }
 

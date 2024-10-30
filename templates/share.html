@@ -37,15 +37,13 @@ window.alert("Setup, start looping")
           <th scope="col" width="1%"></th>
           <th scope="col" width="20%">Name</th>
           <th scope="col">Configuration</th>
-          <th scope="col" width="10%;">Status</th>
         </tr>
       </thead>
       {#- TABLE BODY #}
       <tbody>
         {%- set shared_options = spawner_options_form_values -%}
-        {{ home.create_summary_tr(None, shared_options) }}
-        {{ home.create_collapsible_tr(None, shared_options, custom_config, new_lab_id=server_name) }}
-
+        {{ home.create_summary_tr(None, shared_options, lab_id=server_name) }}
+        {{ home.create_collapsible_tr(None, shared_options, custom_config, lab_id=server_name, share_structure=true) }}
       </tbody>
     </table>
   </div>  {#- table responsive #}
