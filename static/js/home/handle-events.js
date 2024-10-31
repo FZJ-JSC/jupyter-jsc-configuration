@@ -85,13 +85,17 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   /* *************** */
 
   function _toggle_show_element(id, key, type, showInput, pattern) {
+    let element = $(`#${id}-${key}-${type}`);
     if (showInput) {
       $(`#${id}-${key}-${type}-div`).show();
-      $(`#${id}-${key}-${type}`).attr("required", true);
-      if (pattern) $(`#${id}-${key}-${type}`).attr("pattern", pattern);
+      if(element.hasClass("optional")){
+        element.removeAttr("required");
+      }
+      else element.attr("required", true);
+      if (pattern) element.attr("pattern", pattern);
     } else {
       $(`#${id}-${key}-${type}-div`).hide();
-      $(`#${id}-${key}-${type}`).removeAttr("required pattern");
+      element.removeAttr("required pattern");
     }
   }
 
@@ -102,7 +106,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     var show = userInputInfo.isRepo2Docker || false;
     for(let key of repo2DockerInputs){
       let element = $(`#${id}-${key}-input`);
-      dropdowns.resetInputElement(element, false);
+      if(key == "notebook") {
+        dropdowns.resetInputElement(element, false);
+      }
+      else dropdowns.resetInputElement(element);
       _toggle_show_element(id, key, "input", show);
     }
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
@@ -124,18 +131,18 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     var inputRequired = userInputInfo.required || false;
     if (!inputRequired) {
-      dropdowns.resetInputElement(customImageInput, false);
-      dropdowns.resetInputElement(customMountInput, false);
-      dropdowns.resetInputElement(registryAuthsInputs, false);
+      dropdowns.resetInputElement(customImageInput);
+      dropdowns.resetInputElement(customMountInput);
+      dropdowns.resetInputElement(registryAuthsInputs);
 
       registryAuthsInputDivs.hide();
       allUserInputDivs.hide();
     } else {
-      dropdowns.resetInputElement(customImageInput, true);
+      dropdowns.resetInputElement(customImageInput);
 
       // Set default values for the private docker registry authentications to false => fields are hidden and not required
       $(`#${id}-image-private-cb-input`)[0].checked = false;
-      dropdowns.resetInputElement(registryAuthsInputs, false);
+      dropdowns.resetInputElement(registryAuthsInputs);
       allUserInputDivs.show();
 
       // Enable user data mount by default
