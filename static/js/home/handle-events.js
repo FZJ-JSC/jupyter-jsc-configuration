@@ -219,7 +219,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     if ( ["GitHub"].includes(values.r2dtype) ){
       let label = $(`label[for="${id}-notebook-input"]`);
       let input = $(`#${id}-notebook-input`);
-      input.removeAttr('required');
       if ( values.r2dnotebooktype == "File") {
         label.text("Path to a notebook file (optional)");
         input.attr("placeholder", "Path to a notebook file (optional)");
