@@ -115,8 +115,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
 
     if(show){
-      dropdowns.updateBinder(id, null);
-      dropdowns.updateBinderValues(id, null);
+      dropdowns.updateR2dType(id, null);
+      dropdowns.updateR2dNotebookTypes(id, null);
     }
   }
 
@@ -137,8 +137,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
       registryAuthsInputDivs.hide();
       allUserInputDivs.hide();
-      // TODO fix the share button visibility
-      $(`#${id}-share-btn`).hide();
     } else {
       dropdowns.resetInputElement(customImageInput);
 
@@ -146,8 +144,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
       $(`#${id}-image-private-cb-input`)[0].checked = false;
       dropdowns.resetInputElement(registryAuthsInputs);
       allUserInputDivs.show();
-      // TODO fix the share button visibility
-      $(`#${id}-share-btn`).show();
 
       // Enable user data mount by default
       $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
@@ -155,10 +151,16 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   }
 
-  function _toggle_show_share_button(id){
+  function _toggle_show_share_button(id, values, force_hide=false, force_show=false){
     const shareInfo = getShareInfo();
-    if(shareInfo) $(`#${id}-share-btn`).show();
-    else $(`#${id}-share-btn`).hide();
+    const software = "JupyterLab";
+    const service = values.service || "";
+    const system = values.system || "";
+    if ( force_show || ( (! force_hide) && ( shareInfo[software] ) && ( (shareInfo[software][service] || []).includes(system) ) ) ) {
+      $(`#${id}-share-btn`).show();
+    } else {
+      $(`#${id}-share-btn`).hide();
+    }
   }
 
   $("select[id*=version]").change(function () {
@@ -178,15 +180,65 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     _toggle_show_customImage(id, userInputInfo);
     _toggle_show_repo2Docker(id, userInputInfo);
-    _toggle_show_share_button(id);
+  });
+
+  $("select[id*=type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-repo-input"]`);
+      let input = $(`#${id}-repo-input`);
+      label.text("GitHub repository name or URL");
+      input.attr("placeholder", "GitHub repository name or URL");
+    }
+  });
+
+  $("select[id*=notebook_type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-notebook-input"]`);
+      let input = $(`#${id}-notebook-input`);
+      if ( values.r2dnotebooktype == "File") {
+        label.text("Path to a notebook file (optional)");
+        input.attr("placeholder", "Path to a notebook file (optional)");
+      } else {
+        label.text("URL to open (optional)");
+        input.attr("placeholder", "URL to open (optional)");
+      }
+    }
   });
 
   $("input[id*=image-private-cb-input]").change(function () {
     const id = utils.getId(this, -4);
+    const values = utils.getLabConfigSelectValues(id);
     const showInput = this.checked;
     _toggle_show_element(id, "image-private-url", "input", showInput);
     _toggle_show_element(id, "image-private-user", "input", showInput);
     _toggle_show_element(id, "image-private-pass", "input", showInput);
+
+    // If private registry is used, we disable the share button
+    _toggle_show_share_button(id, values, showInput);
   });
 
   $("input[id*=image-mount-cb-input]").change(function () {
@@ -222,6 +274,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     else {
       $(`#${id}-spawner-info`).hide().html("");
     }
+    _toggle_show_share_button(id, values);
   });
 
   $("select[id*=account]").change(function () {

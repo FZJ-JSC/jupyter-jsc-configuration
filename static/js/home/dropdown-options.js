@@ -48,7 +48,7 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
 
     resetInputElement(select);
-    if ($(`#${id}-na-info`).html().includes("flavor")) {
+    if ($(`#${id}-na-info`).length && $(`#${id}-na-info`).html().includes("flavor")) {
       $(`#${id}-na-btn`).hide();
       $(`#${id}-na-info`).empty().hide();
       if (!window.spawnActive[id])
@@ -519,37 +519,28 @@ define(["jquery", "home/utils"], function (
     }
   }
 
-  var updateBinder = function (id, value) {
+  var updateR2dType = function (id, r2dType) {
     // const dropdownOptions = getDropdownOptions();
-    const bRepos = getBinderRepos();
+    const repos = getBinderRepos().repos || [];
 
     let select = $(`select#${id}-type-select`);
     const currentVal = select.val();
     resetInputElement(select);
 
-    bRepos.repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+    repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
 
-    updateLabConfigSelect(select, value, currentVal);
+    updateLabConfigSelect(select, r2dType, currentVal);
   }
 
-  var updateBinderValues = function(id, value){
-    const dropdownOptions = getDropdownOptions();
-    const repo = dropdownOptions["repo"];
-    const gitref = dropdownOptions["gitref"];
-    const notebook = dropdownOptions["notebook"];
-
-    $(`#${id}-image-repo-input`).val(repo);
-    $(`#${id}-image-gitref-input`).val(gitref);
-    $(`#${id}-image-notebook-input`).val(notebook);
-
-    const notebookTypes = getBinderRepos().notebookTypes;
+  var updateR2dNotebookTypes = function(id, r2dNotebookType){
+    const notebookTypes = getBinderRepos().notebookTypes || [];
 
     let select = $(`select#${id}-notebook_type-select`);
     const currentVal = select.val();
     resetInputElement(select);
 
     notebookTypes.forEach((nbType) => select.append(`<option value="${nbType}">${nbType}</option>`))
-    updateLabConfigSelect(select, value, currentVal);
+    updateLabConfigSelect(select, r2dNotebookType, currentVal);
   }
 
   var updateDropdowns = {
@@ -562,8 +553,8 @@ define(["jquery", "home/utils"], function (
     updateReservations: updateReservations,
     updateResources: updateResources,
     updateModules: updateModules,
-    updateBinder : updateBinder,
-    updateBinderValues : updateBinderValues,
+    updateR2dType: updateR2dType,
+    updateR2dNotebookTypes: updateR2dNotebookTypes,
     resetInputElement: resetInputElement,
     updateLabConfigSelect: updateLabConfigSelect,
     updateLabConfigInput: updateLabConfigInput,

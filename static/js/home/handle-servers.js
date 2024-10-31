@@ -246,7 +246,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
     api.share_server({
       data: JSON.stringify(options),
       success: function (resp) {
-        urlStr = utils.url_path_join(window.origin, base_url, "share", "user_options", resp, id).replace("//", "/");
+        urlStr = utils.url_path_join(window.origin, base_url, "share", "user_options", resp).replace("//", "/");
         showShareDialogue(urlStr);
       },
       error: function (xhr) {
@@ -451,10 +451,10 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
       var input = collapsibleTr.find(`input[id*=${param}]`).not(`[type=checkbox]`);
       var value = input.val();
       if (param == "xserver") {
-        if (!collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
+        if (collapsibleTr.find(`input[id*=xserver-cb-input]`).length && collapsibleTr.find(`input[id*=xserver-cb-input]`)[0] && !collapsibleTr.find(`input[id*=xserver-cb-input]`)[0].checked) return;
       }
       else if (param == "image-private") {
-        if (!collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
+        if (collapsibleTr.find(`input[id*=image-private-cb-input]`).length && collapsibleTr.find(`input[id*=image-private-cb-input]`)[0] && !collapsibleTr.find(`input[id*=image-private-cb-input]`)[0].checked) return;
         param = "dockerregistry";
        
         let registry_url = "";
@@ -479,7 +479,7 @@ require(["jquery", "jhapi", "utils", "home/utils", "home/lab-configs"], function
         value = btoa(JSON.stringify(auths));
       }
       else if (param == "image-mount") {
-        if (!collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
+        if (collapsibleTr.find(`input[id*=image-mount-cb-input]`).length && collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0] && !collapsibleTr.find(`input[id*=image-mount-cb-input]`)[0].checked) return;
         param = "userdata_path";
       }
       if (value) options[param] = value;
