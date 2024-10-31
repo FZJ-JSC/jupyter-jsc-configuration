@@ -162,7 +162,7 @@
           <div class="tab-pane fade show active" id="{{ id }}-config" role="tabpanel">
             <form id="{{id}}-lab-config-form">
               {{ inputs.create_text_input(id, "name", placeholder="Give your lab a name") }}
-              {{ inputs.create_select(id, "version", custom_config.get("services").get("JupyterLab").get("options_name", "version")) }}
+              {{ inputs.create_select(id, "version", custom_config.get("services").get("JupyterLab").get("optionsName", "Version")) }}
               {#- Docker images #}
               {%- call inputs.create_text_input(id, "image", 
                 placeholder="e.g. jupyter/datascience-notebook",
