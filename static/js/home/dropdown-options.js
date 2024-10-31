@@ -462,7 +462,9 @@ define(["jquery", "home/utils"], function (
     element.val(null);
     element.removeClass("text-muted disabled");
     if (required) {
-      element.attr("required", required);
+      if(! element.hasClass("optional")){
+        element.attr("required", required);
+      }
     } else {
       element.removeAttr("required");
     }

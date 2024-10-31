@@ -99,55 +99,66 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
   }
 
-  function _toggle_show_repo2Docker(id, userInputInfo){
+  function _toggle_show_repo2Docker(id){
     var repo2DockerInputs = ["repo", "gitref", "notebook"];
     var repo2DockerSelects = ["type", "notebook_type"]
 
-    var show = userInputInfo.isRepo2Docker || false;
+    var values = utils.getLabConfigSelectValues(id);
+    const show = (values.service || "") == "repo2docker";
+
     for(let key of repo2DockerInputs){
       let element = $(`#${id}-${key}-input`);
-      if(key == "notebook") {
-        dropdowns.resetInputElement(element, false);
-      }
-      else dropdowns.resetInputElement(element);
+      dropdowns.resetInputElement(element);
       _toggle_show_element(id, key, "input", show);
     }
     repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
 
-    if(show){
+    if (show) {
       dropdowns.updateR2dType(id, null);
       dropdowns.updateR2dNotebookTypes(id, null);
     }
   }
 
   function _toggle_show_customImage(id, userInputInfo){
-
-    var customImageInput = $(`input#${id}-image-input`);
-    var customMountInput = $(`#${id}-image-mount-input`);
-    var registryAuthsInputs = $(`#${id}-image-private-url-input, #${id}-image-private-user-input, #${id}-image-private-pass-input`);
-
+    var customDockerInputs = ["image"]
+    var customDockerInputsMounts = ["image-mount"]
+    var customDockerInputsPrivate = ["image-private-url", "image-private-user", "image-private-pass"]
     var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
     var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
 
-    var inputRequired = userInputInfo.required || false;
-    if (!inputRequired) {
-      dropdowns.resetInputElement(customImageInput);
-      dropdowns.resetInputElement(customMountInput);
-      dropdowns.resetInputElement(registryAuthsInputs);
+    var values = utils.getLabConfigSelectValues(id);
+    const show = (values.service || "") == "custom";
 
+    for(let key of customDockerInputs){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element, show);
+      _toggle_show_element(id, key, "input", show);
+    }
+
+    // set default values for mount userdata
+    var mount_cb_checked = userInputInfo.defaultMountEnabled || true;
+    $(`#${id}-image-mount-cb-input`)[0].checked = mount_cb_checked;
+
+    if (mount_cb_checked) {
+      for(let key of customDockerInputsMounts){
+        let element = $(`#${id}-${key}-input`);
+        dropdowns.resetInputElement(element, show && mount_cb_checked);
+        _toggle_show_element(id, key, "input", show && mount_cb_checked);
+      }
+    }
+    $(`#${id}-image-mount-input`).val(userInputInfo.defaultMountPath || "/mnt/userdata");
+
+    for(let key of customDockerInputsPrivate){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element, false);
+      _toggle_show_element(id, key, "input", false);
+    }
+
+    if (show) {
+      allUserInputDivs.show();
+    } else {
       registryAuthsInputDivs.hide();
       allUserInputDivs.hide();
-    } else {
-      dropdowns.resetInputElement(customImageInput);
-
-      // Set default values for the private docker registry authentications to false => fields are hidden and not required
-      $(`#${id}-image-private-cb-input`)[0].checked = false;
-      dropdowns.resetInputElement(registryAuthsInputs);
-      allUserInputDivs.show();
-
-      // Enable user data mount by default
-      $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
-      customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
     }
   }
 
@@ -179,7 +190,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const serviceInfo = getServiceInfo();
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     _toggle_show_customImage(id, userInputInfo);
-    _toggle_show_repo2Docker(id, userInputInfo);
+    _toggle_show_repo2Docker(id);
   });
 
   $("select[id*=type]").change(function () {
