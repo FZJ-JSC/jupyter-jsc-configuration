@@ -193,11 +193,10 @@
               {%- endcall %}
               <hr>
               {#- Repo2Docker fields #}
-              {#- { inputs.create_select(id, custom_config.get("repositories")) } #}
               {{ inputs.create_select(id, key="type", label="Repository") }}
               {{ inputs.create_text_input(id, key="repo", label="Repository URL", placeholder="GitHub repository name or URL") }}
               {{ inputs.create_text_input(id, key="gitref", label="Git ref (branch,tag, or commit)", placeholder="HEAD") }}
-              {{ inputs.create_text_input(id, key="notebook", label="URL path to notebook (optional)", placeholder="URL path to notebook (optional)") }}
+              {{ inputs.create_text_input(id, key="notebook", label="URL path to notebook (optional)", placeholder="URL path to notebook (optional)", clazz="optional") }}
               {{ inputs.create_select(id, key="notebook_type", label="Notebook Type") }}
 
               {#- Standard HPC system fields #}
