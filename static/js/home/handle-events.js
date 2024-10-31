@@ -137,7 +137,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     // set default values for mount userdata
     var mount_cb_checked = userInputInfo.defaultMountEnabled || true;
-    $(`#${id}-image-mount-cb-input`)[0].checked = mount_cb_checked;
 
     if (mount_cb_checked) {
       for(let key of customDockerInputsMounts){
@@ -146,7 +145,6 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
         _toggle_show_element(id, key, "input", show && mount_cb_checked);
       }
     }
-    $(`#${id}-image-mount-input`).val(userInputInfo.defaultMountPath || "/mnt/userdata");
 
     for(let key of customDockerInputsPrivate){
       let element = $(`#${id}-${key}-input`);
@@ -155,6 +153,8 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     }
 
     if (show) {
+      $(`#${id}-image-mount-cb-input`)[0].checked = mount_cb_checked;
+      $(`#${id}-image-mount-input`).val(userInputInfo.defaultMountPath || "/mnt/userdata");
       allUserInputDivs.show();
     } else {
       registryAuthsInputDivs.hide();
