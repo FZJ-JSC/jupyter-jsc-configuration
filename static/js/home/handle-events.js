@@ -146,9 +146,10 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   function _toggle_show_share_button(id, values, force_hide=false, force_show=false){
     const shareInfo = getShareInfo();
+    const software = "JupyterLab";
     const service = values.service || "";
     const system = values.system || "";
-    if ( force_show || ( (! force_hide) && ( (shareInfo[service] || []).includes(system) ) ) ) {
+    if ( force_show || ( (! force_hide) && ( shareInfo[software] ) && ( (shareInfo[software][service] || []).includes(system) ) ) ) {
       $(`#${id}-share-btn`).show();
     } else {
       $(`#${id}-share-btn`).hide();
@@ -172,6 +173,53 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
     _toggle_show_customImage(id, userInputInfo);
     _toggle_show_repo2Docker(id, userInputInfo);
+  });
+
+  $("select[id*=type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-repo-input"]`);
+      let input = $(`#${id}-repo-input`);
+      label.text("GitHub repository name or URL");
+      input.attr("placeholder", "GitHub repository name or URL");
+    }
+  });
+
+  $("select[id*=notebook_type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
+
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-notebook-input"]`);
+      let input = $(`#${id}-notebook-input`);
+      if ( values.r2dnotebooktype == "File") {
+        label.text("Path to a notebook file (optional)");
+        input.attr("placeholder", "Path to a notebook file (optional)");
+      } else {
+        label.text("URL to open (optional)");
+        input.attr("placeholder", "URL to open (optional)");
+      }
+    }
   });
 
   $("input[id*=image-private-cb-input]").change(function () {
