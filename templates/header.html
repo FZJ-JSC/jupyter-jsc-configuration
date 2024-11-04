@@ -8,7 +8,6 @@
     <li><a class="dropdown-item disabled text-black">{{ auth_state.get("last_login") }}</a></li>
     <li><hr class="dropdown-divider"></li>
     {%- endif -%}
-    <li><a class="dropdown-item text-decoration-none" href="{{ base_url }}2FA">2-Factor Authentication</a></li>
     <li><hr class="dropdown-divider"></li>
     <li>
       <button id="logout" class="dropdown-item">
@@ -40,7 +39,7 @@
     {#- {%- else %}  -#}
     {#-  <li class="nav-item"><a id="{{prefix}}start-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}login">Sign in</a></li> -#} 
     <li class="nav-item"><a id="{{prefix}}status-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://status.jsc.fz-juelich.de/">JSC Status</a></li>
-    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.jupyter.jsc.fz-juelich.de/github/FZJ-JSC/jupyter-jsc-notebooks/blob/documentation/index.ipynb">Documentation</a></li>
+    <li class="nav-item"><a id="{{prefix}}docs-nav-item" class="nav-link text-decoration-none" target="_blank" href="https://docs.jupyter.jsc.fz-juelich.de">Documentation</a></li>
     <li class="nav-item"><a id="{{prefix}}links-nav-item" class="nav-link text-decoration-none" href="{{ base_url }}links">More Links</a></li>
     {%- endif %}
   </div>
