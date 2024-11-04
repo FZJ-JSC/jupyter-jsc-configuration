@@ -38,8 +38,8 @@ $(document).ready(function () {
   carouselNormalization();
 
   // Start cycling of carousel
-  var carousel = new bootstrap.Carousel($('#login-carousel'), {
-    interval: 5000,
-  })
-  carousel.cycle();
+  // var carousel = new bootstrap.Carousel($('#login-carousel'), {
+  //   interval: 5000,
+  // })
+  // carousel.cycle();
 });

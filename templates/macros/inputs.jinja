@@ -1,6 +1,6 @@
 {%- import "macros/svgs.jinja" as svg -%}
 
-{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False) -%}
+{%- macro create_text_input(id, key, label="", placeholder="", pattern="", warning="", persistent_hover=False, clazz="") -%}
 {#- Macro to create a text input #}
 {%- set key = key.lower() %}
 {#- We use a different margin than the other input elements 
@@ -26,7 +26,7 @@ since the warning  text will already create a margin.#}
     {%- endif %}
   </label>
   <div class="col-8">
-    <input type="text" class="form-control" id="{{id}}-{{key}}-input"
+    <input type="text" class="form-control {{clazz}}" id="{{id}}-{{key}}-input"
      placeholder="{{placeholder}}" {% if pattern -%} pattern={{pattern}} {%- endif %}>
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
@@ -90,4 +90,8 @@ since the warning  text will already create a margin.#}
     <input type="checkbox" class="form-check-input" id="{{id}}-{{key}}-input" value="None">
   </div>
 </div>
+{%- endmacro -%}
+
+{%- macro create_button(id, text) -%}
+<button id="{{ id }}-{{ text }}-btn" type="button" class="btn btn-success me-2"> {{text}} </button>
 {%- endmacro -%}

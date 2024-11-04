@@ -61,6 +61,8 @@ define(["jquery", "jhapi",], function (
       "account": $(`select#${id}-account-select`).val(),
       "project": $(`select#${id}-project-select`).val(),
       "partition": $(`select#${id}-partition-select`).val(),
+      "r2dtype": $(`select#${id}-type-select`).val(),
+      "r2dnotebooktype": $(`select#${id}-notebook_type-select`).val(),
     }
   }
 

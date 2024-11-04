@@ -83,6 +83,15 @@ define(["jquery", "utils"], function ($, utils) {
     );
   };
 
+  JHAPI.prototype.share_server = function (options) {
+    options = options || {};
+    options = update(options, { type: "POST", dataType: null });
+    this.api_request(
+      utils.url_path_join("share", "user_options"),
+      options
+    );
+  };
+
   JHAPI.prototype.stop_server = function (user, options) {
     options = options || {};
     options = update(options, { type: "DELETE", dataType: null });

@@ -48,7 +48,7 @@ define(["jquery", "home/utils"], function (
     const currentVal = select.val();
 
     resetInputElement(select);
-    if ($(`#${id}-na-info`).html().includes("flavor")) {
+    if ($(`#${id}-na-info`).length && $(`#${id}-na-info`).html().includes("flavor")) {
       $(`#${id}-na-btn`).hide();
       $(`#${id}-na-info`).empty().hide();
       if (!window.spawnActive[id])
@@ -378,7 +378,17 @@ define(["jquery", "home/utils"], function (
               // Else create it and set the default value
               if (!currentOptions.includes(module)) {
                 let parent = $(`#${id}-${moduleSet}-checkboxes-div`);
-                let checked = moduleInfo.default ? "checked" : "";
+                var checked = "";
+                if (typeof moduleInfo.default == "boolean") {
+                  var checked = moduleInfo.default ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && service in moduleInfo.default ) {
+                  var checked = ( moduleInfo.default[service] || false) ? "checked" : "";
+                } else if ( typeof moduleInfo.default == "object" && "default" in moduleInfo.default ) {
+                  var checked = moduleInfo.default.default ? "checked" : "";
+                } else {
+                  var checked = "";
+                }
+                // let checked = moduleInfo.default ? "checked" : "";
                 let module_cols = "col-sm-6 col-md-4 col-lg-3";
                 let cbHtml = `
                   <div id="${id}-${module}-cb-div" class="form-check ${module_cols}">
@@ -451,7 +461,13 @@ define(["jquery", "home/utils"], function (
     element.html("");
     element.val(null);
     element.removeClass("text-muted disabled");
-    element.attr("required", required);
+    if (required) {
+      if(! element.hasClass("optional")){
+        element.attr("required", required);
+      }
+    } else {
+      element.removeAttr("required");
+    }
   }
 
   var updateLabConfigSelect = function (select, value, lastSelected) {
@@ -505,6 +521,30 @@ define(["jquery", "home/utils"], function (
     }
   }
 
+  var updateR2dType = function (id, r2dType) {
+    // const dropdownOptions = getDropdownOptions();
+    const repos = getBinderRepos().repos || [];
+
+    let select = $(`select#${id}-type-select`);
+    const currentVal = select.val();
+    resetInputElement(select);
+
+    repos.forEach((repo) => select.append(`<option value="${repo}">${repo}</option>`));
+
+    updateLabConfigSelect(select, r2dType, currentVal);
+  }
+
+  var updateR2dNotebookTypes = function(id, r2dNotebookType){
+    const notebookTypes = getBinderRepos().notebookTypes || [];
+
+    let select = $(`select#${id}-notebook_type-select`);
+    const currentVal = select.val();
+    resetInputElement(select);
+
+    notebookTypes.forEach((nbType) => select.append(`<option value="${nbType}">${nbType}</option>`))
+    updateLabConfigSelect(select, r2dNotebookType, currentVal);
+  }
+
   var updateDropdowns = {
     updateServices: updateServices,
     updateSystems: updateSystems,
@@ -515,6 +555,8 @@ define(["jquery", "home/utils"], function (
     updateReservations: updateReservations,
     updateResources: updateResources,
     updateModules: updateModules,
+    updateR2dType: updateR2dType,
+    updateR2dNotebookTypes: updateR2dNotebookTypes,
     resetInputElement: resetInputElement,
     updateLabConfigSelect: updateLabConfigSelect,
     updateLabConfigInput: updateLabConfigInput,

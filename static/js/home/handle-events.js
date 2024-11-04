@@ -84,14 +84,93 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
   /* LAB CONFIG      */
   /* *************** */
 
-  function _toggle_show_input(id, key, showInput, pattern) {
+  function _toggle_show_element(id, key, type, showInput, pattern) {
+    let element = $(`#${id}-${key}-${type}`);
     if (showInput) {
-      $(`#${id}-${key}-input-div`).show();
-      $(`#${id}-${key}-input`).attr("required", true);
-      if (pattern) $(`#${id}-${key}-input`).attr("pattern", pattern);
+      $(`#${id}-${key}-${type}-div`).show();
+      if(element.hasClass("optional")){
+        element.removeAttr("required");
+      }
+      else element.attr("required", true);
+      if (pattern) element.attr("pattern", pattern);
     } else {
-      $(`#${id}-${key}-input-div`).hide();
-      $(`#${id}-${key}-input`).removeAttr("required pattern");
+      $(`#${id}-${key}-${type}-div`).hide();
+      element.removeAttr("required pattern");
+    }
+  }
+
+  function _toggle_show_repo2Docker(id){
+    var repo2DockerInputs = ["repo", "gitref", "notebook"];
+    var repo2DockerSelects = ["type", "notebook_type"]
+
+    var values = utils.getLabConfigSelectValues(id);
+    const show = (values.service || "") == "repo2docker";
+
+    for(let key of repo2DockerInputs){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element);
+      _toggle_show_element(id, key, "input", show);
+    }
+    repo2DockerSelects.forEach(key => _toggle_show_element(id, key, "select", show));
+
+    if (show) {
+      dropdowns.updateR2dType(id, null);
+      dropdowns.updateR2dNotebookTypes(id, null);
+    }
+  }
+
+  function _toggle_show_customImage(id, userInputInfo){
+    var customDockerInputs = ["image"]
+    var customDockerInputsMounts = ["image-mount"]
+    var customDockerInputsPrivate = ["image-private-url", "image-private-user", "image-private-pass"]
+    var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
+    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+
+    var values = utils.getLabConfigSelectValues(id);
+    const show = (values.service || "") == "custom";
+
+    for(let key of customDockerInputs){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element, show);
+      _toggle_show_element(id, key, "input", show);
+    }
+
+    // set default values for mount userdata
+    var mount_cb_checked = userInputInfo.defaultMountEnabled || true;
+
+    if (mount_cb_checked) {
+      for(let key of customDockerInputsMounts){
+        let element = $(`#${id}-${key}-input`);
+        dropdowns.resetInputElement(element, show && mount_cb_checked);
+        _toggle_show_element(id, key, "input", show && mount_cb_checked);
+      }
+    }
+
+    for(let key of customDockerInputsPrivate){
+      let element = $(`#${id}-${key}-input`);
+      dropdowns.resetInputElement(element, false);
+      _toggle_show_element(id, key, "input", false);
+    }
+
+    if (show) {
+      $(`#${id}-image-mount-cb-input`)[0].checked = mount_cb_checked;
+      $(`#${id}-image-mount-input`).val(userInputInfo.defaultMountPath || "/mnt/userdata");
+      allUserInputDivs.show();
+    } else {
+      registryAuthsInputDivs.hide();
+      allUserInputDivs.hide();
+    }
+  }
+
+  function _toggle_show_share_button(id, values, force_hide=false, force_show=false){
+    const shareInfo = getShareInfo();
+    const software = "JupyterLab";
+    const service = values.service || "";
+    const system = values.system || "";
+    if ( force_show || ( (! force_hide) && ( shareInfo[software] ) && ( (shareInfo[software][service] || []).includes(system) ) ) ) {
+      $(`#${id}-share-btn`).show();
+    } else {
+      $(`#${id}-share-btn`).hide();
     }
   }
 
@@ -110,47 +189,73 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
     const serviceInfo = getServiceInfo();
     const userInputInfo = (serviceInfo.JupyterLab.options[values.service] || {}).userInput || {};
-    var customImageInput = $(`input#${id}-image-input`);
-    var customMountInput = $(`#${id}-image-mount-input`);
-    var registryAuthsInputs = $(`#${id}-image-private-url-input, #${id}-image-private-user-input, #${id}-image-private-pass-input`);
+    _toggle_show_customImage(id, userInputInfo);
+    _toggle_show_repo2Docker(id);
+  });
 
-    var registryAuthsInputDivs = $(`#${id}-image-private-url-input-div,#${id}-image-private-user-input-div, #${id}-image-private-pass-input-div`)
-    var allUserInputDivs = $(`#${id}-image-input-div, #${id}-image-private-cb-input-div, #${id}-image-mount-cb-input-div, #${id}-image-mount-input-div`)
+  $("select[id*=type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
 
-    var inputRequired = userInputInfo.required || false;
-    if (!inputRequired) {
-      dropdowns.resetInputElement(customImageInput, false);
-      dropdowns.resetInputElement(customMountInput, false);
-      dropdowns.resetInputElement(registryAuthsInputs, false);
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-repo-input"]`);
+      let input = $(`#${id}-repo-input`);
+      label.text("GitHub repository name or URL");
+      input.attr("placeholder", "GitHub repository name or URL");
+    }
+  });
 
-      registryAuthsInputDivs.hide();
-      allUserInputDivs.hide();
-    } else {
-      dropdowns.resetInputElement(customImageInput, true);
+  $("select[id*=notebook_type]").change(function () {
+    const id = utils.getId(this);
+    const values = utils.getLabConfigSelectValues(id);
+    if (!$(this).hasClass("no-update")) {
+      try {
+        dropdowns.updateSystems(id, values.service);
+      }
+      catch (e) {
+        utils.setLabAsNA(id, "due to a JS error");
+        console.log(e);
+      }
+    }
 
-      // Set default values for the private docker registry authentications to false => fields are hidden and not required
-      $(`#${id}-image-private-cb-input`)[0].checked = false;
-      dropdowns.resetInputElement(registryAuthsInputs, false);
-      allUserInputDivs.show();
-
-      // Enable user data mount by default
-      $(`#${id}-image-mount-cb-input`)[0].checked = userInputInfo.defaultMountEnabled || true;;
-      customMountInput.val(userInputInfo.defaultMountPath || "/mnt/userdata");
+    if ( ["GitHub"].includes(values.r2dtype) ){
+      let label = $(`label[for="${id}-notebook-input"]`);
+      let input = $(`#${id}-notebook-input`);
+      if ( values.r2dnotebooktype == "File") {
+        label.text("Path to a notebook file (optional)");
+        input.attr("placeholder", "Path to a notebook file (optional)");
+      } else {
+        label.text("URL to open (optional)");
+        input.attr("placeholder", "URL to open (optional)");
+      }
     }
   });
 
   $("input[id*=image-private-cb-input]").change(function () {
     const id = utils.getId(this, -4);
+    const values = utils.getLabConfigSelectValues(id);
     const showInput = this.checked;
-    _toggle_show_input(id, "image-private-url", showInput);
-    _toggle_show_input(id, "image-private-user", showInput);
-    _toggle_show_input(id, "image-private-pass", showInput);
+    _toggle_show_element(id, "image-private-url", "input", showInput);
+    _toggle_show_element(id, "image-private-user", "input", showInput);
+    _toggle_show_element(id, "image-private-pass", "input", showInput);
+
+    // If private registry is used, we disable the share button
+    _toggle_show_share_button(id, values, showInput);
   });
 
   $("input[id*=image-mount-cb-input]").change(function () {
     const id = utils.getId(this, -4);
     const pattern_check = "^\\/[A-Za-z0-9\\-\\/]+";
-    _toggle_show_input(id, "image-mount", this.checked, pattern_check);
+    _toggle_show_element(id, "image-mount", "input", this.checked, pattern_check);
   });
 
   $("select[id*=system]").change(function () {
@@ -180,6 +285,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
     else {
       $(`#${id}-spawner-info`).hide().html("");
     }
+    _toggle_show_share_button(id, values);
   });
 
   $("select[id*=account]").change(function () {
@@ -228,7 +334,7 @@ require(["jquery", "home/utils", "home/dropdown-options"], function (
 
   $("input[id*=xserver-cb-input]").change(function () {
     const id = utils.getId(this, -3);
-    _toggle_show_input(id, "xserver", this.checked);
+    _toggle_show_element(id, "xserver", "input", this.checked);
   });
 
   $("select[id*=reservation]").change(function () {

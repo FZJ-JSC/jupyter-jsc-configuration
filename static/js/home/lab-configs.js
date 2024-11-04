@@ -197,10 +197,14 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
   var setUserOptions = function (id, options, available) {
     const name = options["name"];
     const service = getService(options);
+    const system = options["system"];
+
+    // customDockerImage
     const image = options["image"];
     const dockerregistry = options["dockerregistry"];
     const userdata_path = options["userdata_path"];
-    const system = options["system"];
+
+    // default
     const flavor = options["flavor"];
     const account = options["account"];
     const project = options["project"];
@@ -211,6 +215,13 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
     const gpus = options["gpus"];
     const xserver = options["xserver"];
     const modules = options["userModules"];
+    
+    // repo2Docker values
+    const r2dType = options["type"];
+    const r2dRepo = options["repo"];
+    const r2dGitref = options["gitref"]
+    const r2dNotebook = options["notebook"]
+    const r2dNotebookType = options["notebook_type"]
 
     function _updateDockerRegistryFields(id, value){
       $(`#${id}-image-private-cb-input`)[0].checked = true;
@@ -240,6 +251,9 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         else {
           registryAuthsInputDivs.hide();
         }
+        if (r2dRepo) $(`#${id}-repo-input`).val(r2dRepo);
+        if (r2dGitref) $(`#${id}-gitref-input`).val(r2dGitref);
+        if (r2dNotebook) $(`#${id}-notebook-input`).val(r2dNotebook);
         dropdowns.updateSystems(id, service, system);
         dropdowns.updateFlavors(id, service, system, flavor);
         dropdowns.updateAccounts(id, service, system, account);
@@ -248,6 +262,8 @@ define(["jquery", "home/utils", "home/dropdown-options"], function (
         dropdowns.updateReservations(id, service, system, account, project, partition, reservation);
         dropdowns.updateResources(id, service, system, account, project, partition, nodes, gpus, runtime, xserver);
         dropdowns.updateModules(id, service, system, account, project, partition, modules);
+        dropdowns.updateR2dType(id, r2dType);
+        dropdowns.updateR2dNotebookTypes(id, r2dNotebookType);
       }
       catch (e) { utils.setLabAsNA(id, "due to a JS error");
         console.log(e)
