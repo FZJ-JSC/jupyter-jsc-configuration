@@ -6,7 +6,6 @@
     {%- if auth_state and auth_state.get("last_login", False) %}
     <li><h6 class="dropdown-header">Last login</h6></li>
     <li><a class="dropdown-item disabled text-black">{{ auth_state.get("last_login") }}</a></li>
-    <li><hr class="dropdown-divider"></li>
     {%- endif -%}
     <li><hr class="dropdown-divider"></li>
     <li>
