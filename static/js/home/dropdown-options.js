@@ -148,6 +148,7 @@ define(["jquery", "home/utils"], function (
     const partitionsAllowed = (((dropdownOptions[service] || {})[system] || {})[account] || {})[project] || {};
     const interactivePartitions = (systemInfo[system] || {}).interactivePartitions || [];
     for (const partition of Object.keys(partitionsAllowed).sort()) {
+      if (id == "new-jupyterlab" && system == "JEDI" && partition == "all") continue;
       if (interactivePartitions.includes(partition)) loginNodes.push(partition);
       else computeNodes.push(partition);
     }
